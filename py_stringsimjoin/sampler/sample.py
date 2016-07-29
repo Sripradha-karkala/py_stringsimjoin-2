@@ -62,7 +62,8 @@ def sample_pairs(ltable, rtable, l_key_attr, r_key_attr,
         cand_pos_ltuples_required = ceil(y_param / 2)
 
         sampled_ltuples = set() 
-        for cand in sorted(cand_overlap.items(), key=operator.itemgetter(1)):
+        for cand in sorted(cand_overlap.items(), key=operator.itemgetter(1), 
+                           reverse=True):
             if len(sampled_ltuples) == cand_pos_ltuples_required:
                 break 
             sampled_ltuples.add(cand[0])
