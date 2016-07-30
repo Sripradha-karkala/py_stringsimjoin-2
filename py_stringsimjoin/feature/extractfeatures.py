@@ -86,7 +86,7 @@ def _extract_feature_vecs_split(candset,
                                 ltable, rtable,                                        
                                 l_key_attr, r_key_attr, 
                                 l_join_attr, r_join_attr,      
-                                feature_table, show_progress=True):
+                                feature_table, show_progress):
     # Find column indices of key attr and join attr in ltable                 
     l_columns = list(ltable.columns.values)                                     
     l_key_attr_index = l_columns.index(l_key_attr)                              

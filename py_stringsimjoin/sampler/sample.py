@@ -14,7 +14,7 @@ from py_stringsimjoin.utils.generic_helper import convert_dataframe_to_array, \
 
 
 def sample_pairs(ltable, rtable, l_key_attr, r_key_attr, 
-                 l_join_attr, r_join_attr, sample_size, y_param,
+                 l_join_attr, r_join_attr, sample_size, y_param, seed,
                  l_out_prefix='l_', r_out_prefix='r_', show_progress=True):
     # get attributes to project.                                                
     l_proj_attrs = get_attrs_to_project(None, l_key_attr, l_join_attr)   
@@ -78,6 +78,9 @@ def sample_pairs(ltable, rtable, l_key_attr, r_key_attr,
 
         if show_progress:                                                       
             prog_bar.update()
+
+    for seed_pair_row in seed.itertuples(index=False):                          
+        output_rows.append([seed_pair_row[0], seed_pair_row[1]])
    
     output_header = get_output_header_from_tables(l_key_attr, r_key_attr,       
                                                   None, None,     
