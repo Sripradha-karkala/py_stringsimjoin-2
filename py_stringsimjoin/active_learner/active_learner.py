@@ -16,15 +16,17 @@ class ActiveLearner:
 
     def learn(self, candset, candset_key_attr, candset_l_key_attr, 
               candset_r_key_attr):
+
         unlabeled_pairs = candset.set_index(candset_key_attr) 
         unlabeled_pairs[candset_l_key_attr] = unlabeled_pairs[candset_l_key_attr].astype(str)
         unlabeled_pairs[candset_r_key_attr] = unlabeled_pairs[candset_r_key_attr].astype(str)
+
+        # find the attributes to be used as features
         feature_attrs = list(unlabeled_pairs.columns)
         feature_attrs.remove(candset_l_key_attr)
         feature_attrs.remove(candset_r_key_attr)
                
         # randomly select first batch of pairs to label 
-#        first_batch = unlabeled_pairs.sample(self.batch_size)    
         first_batch = self._get_first_batch(unlabeled_pairs, candset_l_key_attr,
                                             candset_r_key_attr)
         print first_batch
@@ -63,9 +65,12 @@ class ActiveLearner:
             print 'Iteration :', current_iter
 
     def _select_next_batch(self, unlabeled_pairs, feature_attrs):
+        # compute the prediction probabilities for the unlabeled pairs
         probabilities = self.matcher.predict_proba(
                             unlabeled_pairs[feature_attrs].values)
+
         print 'computing entropy'        
+        # compute the entropy for the unlabeled pairs
         entropies = {}
         for i in xrange(len(probabilities)):
             entropy = self._compute_entropy(probabilities[i])
@@ -73,24 +78,30 @@ class ActiveLearner:
                 entropies[i] = entropy
 
         print 'sorting'
+        # select top k unlabeled pairs based on entropy value.
         top_k_pairs = sorted(entropies.items(),                           
             key=operator.itemgetter(1), reverse=True)[:min(100, len(entropies))]
 
-        weights = map(lambda val: val[1], top_k_pairs)
-        selected_pairs = map(lambda val: False, top_k_pairs)
         print 'sampling'
-        wrs = WeightedRandomSampler(weights)
-        next_batch_idxs = []
-        print weights
-        while len(next_batch_idxs) < self.batch_size and len(next_batch_idxs) < len(top_k_pairs):
-            pair_idx = wrs.next()
-#            print pair_idx, len(next_batch_idxs)
-            if selected_pairs[pair_idx]:
-                continue
-            selected_pairs[pair_idx] = True
-            next_batch_idxs.append(top_k_pairs[pair_idx][0])
-#        sample = wsample(weights, self.batch_size)
-#        next_batch_idxs = map(lambda pair_idx: top_k_pairs[pair_idx][0], sample)      
+        next_batch_idxs = []           
+        if len(top_k_pairs) <= self.batch_size:
+            # if the number of unlabeled pairs whose entropy is above zero is
+            # already less than the batch size, then select all of them.
+            next_batch_idxs = map(lambda val: val[0], top_k_pairs)
+        else:
+            # do a weighted random sampling to select the next batch of pairs
+            # to be labeled with entropy as the weight.
+            weights = map(lambda val: val[1], top_k_pairs)                          
+            selected_pairs = map(lambda val: False, top_k_pairs) 
+            print weights                                           
+            wrs = WeightedRandomSampler(weights)
+            while len(next_batch_idxs) < self.batch_size:
+                pair_idx = wrs.next()
+                if selected_pairs[pair_idx]:
+                    continue
+                selected_pairs[pair_idx] = True
+                next_batch_idxs.append(top_k_pairs[pair_idx][0])
+
         return unlabeled_pairs.iloc[next_batch_idxs]
 
     def _compute_entropy(self, arr):
@@ -98,10 +109,6 @@ class ActiveLearner:
         for prob in arr:
             if prob > 0:
                 entropy += prob * log(prob)
-#        if arr[0] > 0:
-#            entropy += arr[0] * log(arr[0])
-#        if arr[1] > 0:
-#            entropy += arr[1] * log(arr[1])
         if entropy != 0:
             entropy = entropy * -1
         return entropy    
@@ -114,8 +121,6 @@ class ActiveLearner:
         return to_be_labeled_pairs
 
     def _get_first_batch(self, unlabeled_pairs, l_key_attr, r_key_attr):
-        print (unlabeled_pairs.columns)
-        print l_key_attr, r_key_attr
         return unlabeled_pairs[unlabeled_pairs.apply(lambda row: 
             self.seed_pairs.get(str(row[l_key_attr]) + ',' + 
                                 str(row[r_key_attr])) != None, 1)].copy()
@@ -135,25 +140,4 @@ def load_seed_pairs(seed):
     for seed_pair_row in seed.itertuples(index=False):
         seed_pairs[str(seed_pair_row[0]) + ',' + 
                    str(seed_pair_row[1])] = int(seed_pair_row[2])                                                        
-#    file_handle = open(seed_file, 'r')                                          
-#    for line in file_handle:
-#        fields = line.strip().split(',')                                                    
-#        seed_pairs[fields[0]+','+fields[1]] = int(fields[2])
-#    file_handle.close()                                            
     return seed_pairs   
-
-def wsample(weights, sample_size):
-    items = range(0, len(weights))
-    sample = []
-    cum_weight = 0.0
-    for i in range(0, sample_size):
-        sample.append(i)
-        cum_weight += weights[i]
-    for i in range(sample_size, len(weights)):
-        prob = weights[i] / cum_weight
-        if random.random() <= prob:
-            sample[random.randint(0, sample_size - 1)] = items[i]
-        cum_weight += weights[i]
-    return sample
-        
-    
