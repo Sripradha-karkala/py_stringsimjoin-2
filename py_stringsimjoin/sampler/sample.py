@@ -42,6 +42,7 @@ def sample_pairs(ltable, rtable, l_key_attr, r_key_attr,
     number_of_r_tuples_to_sample = int(ceil(float(sample_size) / float(y_param)))   
     sample_rtable_indices = random.sample(range(0, len(rtable_array)),
                                           number_of_r_tuples_to_sample)
+    cand_pos_ltuples_required = int(ceil(y_param / 2.0))                    
 
     overlap_filter = OverlapFilter(ws_tok, 1)                                
 
@@ -58,8 +59,6 @@ def sample_pairs(ltable, rtable, l_key_attr, r_key_attr,
         # probe inverted index and find ltable candidates                   
         cand_overlap = overlap_filter.find_candidates(                     
                            r_join_attr_tokens, inverted_index)          
-
-        cand_pos_ltuples_required = ceil(y_param / 2)
 
         sampled_ltuples = set() 
         for cand in sorted(cand_overlap.items(), key=operator.itemgetter(1), 
@@ -91,4 +90,14 @@ def sample_pairs(ltable, rtable, l_key_attr, r_key_attr,
     # add an id column named '_id' to the output table.                         
     output_table.insert(0, '_id', range(0, len(output_table)))    
 
-    return output_table            
+    return output_table           
+
+
+def _get_stop_words():
+    stop_words_set = set()
+    stop_words_file = '/scratch/stop_words.txt'
+    with open(stop_words_file, "rb") as stopwords_file:
+        for stop_words in stopwords_file:
+            stop_words_set.add(stop_words.rstrip())
+
+    return stop_words_set 

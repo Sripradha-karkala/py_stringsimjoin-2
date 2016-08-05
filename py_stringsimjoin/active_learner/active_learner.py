@@ -63,6 +63,7 @@ class ActiveLearner:
 
             current_iter += 1
             print 'Iteration :', current_iter
+        return labeled_pairs
 
     def _select_next_batch(self, unlabeled_pairs, feature_attrs):
         # compute the prediction probabilities for the unlabeled pairs
@@ -121,6 +122,7 @@ class ActiveLearner:
         return to_be_labeled_pairs
 
     def _get_first_batch(self, unlabeled_pairs, l_key_attr, r_key_attr):
+        
         return unlabeled_pairs[unlabeled_pairs.apply(lambda row: 
             self.seed_pairs.get(str(row[l_key_attr]) + ',' + 
                                 str(row[r_key_attr])) != None, 1)].copy()
