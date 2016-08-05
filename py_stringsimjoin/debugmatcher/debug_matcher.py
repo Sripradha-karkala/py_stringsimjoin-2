@@ -44,9 +44,23 @@ def debug_matcher(matcher, train, test, feat_attr, target_attr,
 
     predicted_pos = len(test[test[feat_attr] >= threshold])
     precision = float(predicted_pos - len(false_pos)) / float(predicted_pos)
-    recall = float(predicted_pos - len(false_pos)) / float(len(test[test['label'] == 1]))
+    recall = float(predicted_pos - len(false_pos)) / float(len(test[test[target_attr] == 1]))
     f1 = (2.0 * precision * recall) / float(precision + recall)
 
     stats = {'precision': precision, 'recall':recall, 'f1':f1}
     return {'stats' : stats, 'false_pos' : false_pos_df, 'false_neg' : false_neg_df}
 
+def what_if_matrix(sample, feat_attr, target_attr, threshold, delta, n):
+    threshold_matrix = []
+    curr_t = max(float(threshold) - float(delta * n), 0)
+    end = min(float(threshold) + float(delta * n), 1)
+    while curr_t <= end:
+        predicted_pos = sample[sample[feat_attr] >= curr_t]
+        false_pos = predicted_pos[predicted_pos[target_attr] == 0]
+        precision = float(len(predicted_pos) - len(false_pos)) / float(len(predicted_pos))    
+        recall = float(len(predicted_pos) - len(false_pos)) / float(len(sample[sample[target_attr] == 1]))
+        f1 = (2.0 * precision * recall) / float(precision + recall)                 
+        threshold_matrix.append([curr_t, precision, recall, f1])
+        curr_t += delta 
+    threshold_matrix_df = pd.DataFrame(threshold_matrix, columns=['threshold','precision','recall','f1'])
+    return threshold_matrix_df
