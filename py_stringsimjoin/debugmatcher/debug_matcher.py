@@ -6,7 +6,7 @@ def debug_matcher(matcher, train, test, feat_attr, target_attr,
                   l_key_attr, r_key_attr):
     matcher.fit(train[[feat_attr]].values, train[target_attr].values)
     threshold = -float(matcher.intercept_)/float(matcher.coef_)
-
+    print threshold
     false_pos = test[test.apply(lambda row: row[feat_attr] >= threshold and 
                                             row[target_attr] == 0, axis=1)]
     false_neg = test[test.apply(lambda row: row[feat_attr] < threshold and     
