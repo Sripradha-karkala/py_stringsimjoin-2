@@ -152,5 +152,6 @@ def _extract_feature_vecs_split(candset,
 
     # create output fetaure vectors table
     feature_vectors_table = pd.DataFrame(feature_vectors,
+                                         index=candset.index.values,
                                          columns = feature_vectors_table_header)
     return feature_vectors_table      
