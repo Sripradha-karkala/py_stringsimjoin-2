@@ -49,20 +49,24 @@ class Rule:
                      l_match_attr, r_match_attr, n_jobs=1):
         selected_pred = None
         sel_pred_index = -1
+        rem_preds = map(lambda p: p, self.predicates) 
         for i in xrange(0, len(self.predicates)):
             p = self.predicates[i]
             if valid_predicate(p):
                 selected_pred=p
                 sel_pred_index = i
                 break
-        rem_preds = copy.deepcopy(self.predicates)
         del rem_preds[i]
         rem_rule = Rule(rem_preds)
-        return selected_pred.apply_tables(ltable, rtable,
-                                          l_key_attr, r_key_attr,
-                                          l_match_attr, r_match_attr,
-                                          rem_rule, 
-                                          n_jobs)
+        candset = selected_pred.apply_tables(ltable, rtable,
+                                             l_key_attr, r_key_attr,
+                                             l_match_attr, r_match_attr,
+                                             n_jobs)
+        ltable_copy = ltable.set_index(l_key_attr)
+        rtable_copy = rtable.set_index(r_key_attr)
+        return candset[candset.apply(lambda r: rem_rule.apply_pair(
+            ltable_copy.ix[r['l_'+l_key_attr]][l_match_attr], 
+            rtable_copy.ix[r['r_'+r_key_attr]][r_match_attr]), 1)]
 
     def apply_pair(self, string1, string2):
         for p in self.predicates:
@@ -85,13 +89,13 @@ class Predicate:
     def apply_pair(self, string1, string2):
         val1 = string1
         val2 = string2
-        if tokenizer_type is not None:
+        if self.tokenizer_type is not None:
             val1 = self.tokenizer.tokenize(val1)
             val2 = self.tokenizer.tokenize(val2)
         return self.comp_fn(self.sim_function(val1, val2), self.threshold) 
         
     def apply_tables(self, ltable, rtable, l_key_attr, r_key_attr,              
-                     l_match_attr, r_match_attr, post_rule, n_jobs=1):
+                     l_match_attr, r_match_attr, n_jobs=1):
         if self.sim_measure_type == 'JACCARD':
             return ssj.jaccard_join(ltable, rtable, l_key_attr, r_key_attr,
                                     l_match_attr, r_match_attr, self.tokenizer, 

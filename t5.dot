@@ -1,0 +1,16 @@
+digraph Tree {
+node [shape=box] ;
+0 [label="overlap_coefficient_qg2 <= 0.7587\ngini = 0.2952\nsamples = 32\nvalue = [41, 9]"] ;
+1 [label="overlap_alph_num <= 8.5\ngini = 0.0465\nsamples = 25\nvalue = [41, 1]"] ;
+0 -> 1 [labeldistance=2.5, labelangle=45, headlabel="True"] ;
+2 [label="gini = 0.0\nsamples = 23\nvalue = [38, 0]"] ;
+1 -> 2 ;
+3 [label="cosine_ws <= 0.3909\ngini = 0.375\nsamples = 2\nvalue = [3, 1]"] ;
+1 -> 3 ;
+4 [label="gini = 0.0\nsamples = 1\nvalue = [3, 0]"] ;
+3 -> 4 ;
+5 [label="gini = 0.0\nsamples = 1\nvalue = [0, 1]"] ;
+3 -> 5 ;
+6 [label="gini = 0.0\nsamples = 7\nvalue = [0, 8]"] ;
+0 -> 6 [labeldistance=2.5, labelangle=-45, headlabel="False"] ;
+}
