@@ -131,7 +131,7 @@ def _extract_feature_vecs_split(candset,
         fv.append(candset_row[candset_r_key_attr_index]) 
 
         # compute feature values and append it to the feature vector
-        for feature in feature_table.itertuples():
+        for feature in feature_table.itertuples(index=False):
             tokenizer = feature[2]
             sim_fn = feature[3]  
             if tokenizer is None:
