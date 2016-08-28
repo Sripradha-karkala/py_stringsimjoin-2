@@ -1,3 +1,8 @@
+#include "predicate.h"
+
+#include <vector>
+
+using std::vector;
 
 class Rule {                                                               
   public:                                                                       

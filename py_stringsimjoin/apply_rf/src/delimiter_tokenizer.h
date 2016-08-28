@@ -1,12 +1,13 @@
 #pragma once
-#include "Tokenizer.h"
+#include "tokenizer.h"
 
 class DelimiterTokenizer : public Tokenizer {
   public:
     string delimiters;
     bool return_set;
 
-    DelimiterTokenizer(std::string delimiters, bool return_set);
-    ~DelimiterTokenizer(void);
+    DelimiterTokenizer(string delimiters, bool return_set);
+    ~DelimiterTokenizer();
+
     vector<string> tokenize(const string& str);
 };

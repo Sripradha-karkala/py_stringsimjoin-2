@@ -7,7 +7,8 @@ using std::vector;
 
 class Tokenizer {
   public:
-    Tokenizer(void);
-    virtual ~Tokenizer(void);
+    Tokenizer();
+    virtual ~Tokenizer();
+
     virtual vector<string> tokenize(const string& str) = 0;
 };

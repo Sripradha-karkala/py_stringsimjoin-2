@@ -1,8 +1,5 @@
-#include "Tokenizer.h"
+#include "tokenizer.h"
 
-Tokenizer::Tokenizer(void) {
-}
+Tokenizer::Tokenizer() {}
 
-Tokenizer::~Tokenizer(void) {
-}
-
+Tokenizer::~Tokenizer() {}
