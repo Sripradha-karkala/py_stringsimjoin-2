@@ -1,5 +1,5 @@
 # Declaration of variables
-CC = g++
+CC = /s/gcc-6.1/bin/g++
 CC_FLAGS = -w
 
 # File names

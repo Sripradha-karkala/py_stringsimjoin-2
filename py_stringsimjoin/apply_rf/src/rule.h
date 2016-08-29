@@ -1,3 +1,4 @@
+#pragma once
 #include "predicate.h"
 
 #include <vector>

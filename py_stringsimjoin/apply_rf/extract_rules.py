@@ -1,9 +1,11 @@
 
-from py_stringsimjoin.apply_rf.rule import Predicate, Rule, RuleSet
+from py_stringsimjoin.apply_rf.predicate import Predicate
+from py_stringsimjoin.apply_rf.rule import Rule
+from py_stringsimjoin.apply_rf.rule_set import RuleSet
 from py_stringsimjoin.utils.generic_helper import COMP_OP_MAP
 
  
-def extract_rules(tree, feature_table):                                         
+def extract_pos_rules_from_tree(tree, feature_table):                                         
     feature_names = list(feature_table.index)
     # Get the left, right trees and the threshold from the tree                 
     left = tree.tree_.children_left                                             
@@ -22,7 +24,8 @@ def extract_rules(tree, feature_table):
         if threshold[node] != -2:                                               
             # node is not a leaf node
             feat_row = feature_table.ix[features[node]]
-            p = Predicate(feat_row['sim_measure_type'], 
+            p = Predicate(features[node],
+                          feat_row['sim_measure_type'], 
                           feat_row['tokenizer_type'],
                           feat_row['sim_function'], 
                           feat_row['tokenizer'], '<=', threshold[node])                                           
@@ -30,7 +33,8 @@ def extract_rules(tree, feature_table):
             traverse(left[node], left, right, features, threshold, depth+1, cache)
             prev_pred = cache.pop(depth)
             feat_row = feature_table.ix[features[node]]                         
-            p = Predicate(feat_row['sim_measure_type'],                         
+            p = Predicate(features[node],
+                          feat_row['sim_measure_type'],                         
                           feat_row['tokenizer_type'],                           
                           feat_row['sim_function'],                             
                           feat_row['tokenizer'], '>', threshold[node])                                         
@@ -44,4 +48,10 @@ def extract_rules(tree, feature_table):
                 print 'pos rule: ', cache[0:depth]                              
                                                                                 
     traverse(0, left, right, features, threshold, 0, [])
-    return rule_set  
+    return rule_set 
+
+def extract_pos_rules_from_rf(rf, feature_table):
+    rule_sets = []                                                              
+    for dt in rf.estimators_:                                                   
+        rule_sets.append(extract_pos_rules_from_tree(dt, feature_table))
+    return rule_sets
