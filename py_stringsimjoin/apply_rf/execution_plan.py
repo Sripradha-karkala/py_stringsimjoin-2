@@ -113,4 +113,41 @@ def select_optimal_set_of_trees(rule_sets):
     return (trees_to_apply_over_join, trees_to_apply_over_candset)
 
 def compute_score_for_trees(rule_sets):
-    for 
+    for
+
+def generate_greedy_execution_plan(rule_sets):
+    naive_plan = generate_execution_plan(rule_sets)
+    naive_plan_cost = compute_plan_cost(naive_plan.root, None)
+    greedy_plan = Plan()
+    max_reduction_pred = -1
+    max_reduced_cost = naive_plan_cost
+    for rule_set in rule_sets:
+        for rule in rule_set.rules:
+            for predicate in rule.predicates:
+                
+                pred_dict[predicate.feat_name] 
+        
+
+def compute_plan_cost(plan_node, coverage):
+    if  plan_node.node_type == 'OUTPUT':
+        return 0
+
+    if plan_node.node_type == 'ROOT':
+       cost = 0
+       for child_node in plan_node.children:
+           cost += compute_plan_cost(child_node, coverage)
+       return cost       
+
+    curr_coverage = plan_node.predicate.coverage
+    if plan_node.parent.node_type != 'ROOT':
+        curr_coverage = curr_coverage & coverage
+
+    child_nodes_cost = 0
+    for child_node in plan_node.children:
+        child_nodes_cost += compute_plan_cost(child_node, curr_coverage)
+
+    if plan_node.parent.node_type == 'ROOT':
+        return plan_node.predicate.cost + child_nodes_cost
+    else:
+        sel = sum(coverage) / len(coverage)
+        return sel * plan_node.predicate.cost + child_nodes_cost
