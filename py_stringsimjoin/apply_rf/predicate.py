@@ -5,7 +5,7 @@ import py_stringsimjoin as ssj
 
 class Predicate:                                                                
     def __init__(self, feat_name, sim_measure_type, tokenizer_type, sim_function,          
-                 tokenizer, comp_op, threshold):                                
+                 tokenizer, comp_op, threshold, cost):                                
         self.feat_name = feat_name
         self.sim_measure_type = sim_measure_type                                
         self.tokenizer_type = tokenizer_type                                    
@@ -13,7 +13,8 @@ class Predicate:
         self.tokenizer = tokenizer                                              
         self.comp_op = comp_op                                                  
         self.threshold = threshold                                              
-        self.comp_fn = COMP_OP_MAP[self.comp_op]                               
+        self.comp_fn = COMP_OP_MAP[self.comp_op]
+        self.cost = cost                               
 
     def set_cost(self, cost):
         self.cost = cost

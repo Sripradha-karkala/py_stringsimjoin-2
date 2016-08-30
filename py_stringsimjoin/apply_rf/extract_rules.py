@@ -28,7 +28,7 @@ def extract_pos_rules_from_tree(tree, feature_table):
                           feat_row['sim_measure_type'], 
                           feat_row['tokenizer_type'],
                           feat_row['sim_function'], 
-                          feat_row['tokenizer'], '<=', threshold[node])                                           
+                          feat_row['tokenizer'], '<=', threshold[node], feat_row['cost'])                                           
             cache.insert(depth, p)   
             traverse(left[node], left, right, features, threshold, depth+1, cache)
             prev_pred = cache.pop(depth)
@@ -37,7 +37,7 @@ def extract_pos_rules_from_tree(tree, feature_table):
                           feat_row['sim_measure_type'],                         
                           feat_row['tokenizer_type'],                           
                           feat_row['sim_function'],                             
-                          feat_row['tokenizer'], '>', threshold[node])                                         
+                          feat_row['tokenizer'], '>', threshold[node], feat_row['cost'])                                         
             cache.insert(depth, p)    
             traverse(right[node], left, right, features, threshold, depth+1, cache)
             prev_pred = cache.pop(depth)                                        

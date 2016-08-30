@@ -26,4 +26,16 @@ class RuleSet:
                                     l_key_attr, r_key_attr,                     
                                     l_match_attr, r_match_attr, n_jobs)[['l_id', 'r_id']])
         output_df = pd.concat(rule_outputs)                                     
-        return output_df.drop_duplicates()    
+        return output_df.drop_duplicates()
+ 
+    def _print(self):
+        print ('===========================================================')
+        for rule in self.rules:
+            rule_str = ''
+            for i in range(len(rule.predicates)):
+                rule_str += '( ' + rule.predicates[i].feat_name + ' ' + rule.predicates[i].comp_op + ' ' + str(rule.predicates[i].threshold) + ' )'
+                if i < len(rule.predicates) - 1:
+                    rule_str += ' ^ '
+            rule_str += ' --> match'
+            print (rule_str) 
+        print ('===========================================================')  

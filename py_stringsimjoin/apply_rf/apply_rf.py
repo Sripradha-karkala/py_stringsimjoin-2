@@ -2,7 +2,7 @@
 from six import iteritems                                                       
 import pandas as pd                                                             
                                                                                 
-from py_stringsimjoin.apply_rf.extract_rules import extract_rules   
+from py_stringsimjoin.apply_rf.extract_rules import extract_pos_rules_from_tree   
 from py_stringsimjoin.utils.converter import dataframe_column_to_str
 
 def merge_candsets(candset_list, candset_l_key_attr, candset_r_key_attr, num_trees,        
@@ -31,13 +31,17 @@ def apply_rf(ltable, rtable, l_key_attr, r_key_attr,
              l_match_attr, r_match_attr, rf, feature_table, n_jobs=1):          
     rule_sets = []                                                              
     for dt in rf.estimators_:                                                   
-        rule_sets.append(extract_rules(dt, feature_table))                      
-                             
-    num_trees = len(rf.estimators_)                                                    
+        rule_sets.append(extract_pos_rules_from_tree(dt, feature_table))                      
+
+    return apply_rulesets(ltable, rtable, l_key_attr, r_key_attr,                            
+                          l_match_attr, r_match_attr, rule_sets, n_jobs=1)
+
+def apply_rulesets(ltable, rtable, l_key_attr, r_key_attr,                            
+                   l_match_attr, r_match_attr, rule_sets, n_jobs=1):                   
     rule_set_outputs = []                                                       
     for rule_set in rule_sets:                                                  
         rule_set_outputs.append(rule_set.apply_tables(ltable, rtable,           
                                                   l_key_attr, r_key_attr,       
                                                   l_match_attr, r_match_attr,   
                                                   n_jobs))                      
-    return merge_candsets(rule_set_outputs, 'l_'+l_key_attr, 'r_'+r_key_attr, num_trees)  
+    return merge_candsets(rule_set_outputs, 'l_'+l_key_attr, 'r_'+r_key_attr, len(rule_sets))  
