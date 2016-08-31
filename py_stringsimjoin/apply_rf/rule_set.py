@@ -7,6 +7,9 @@ class RuleSet:
             self.rules = []                                                     
         else:                                                                   
             self.rules = rules                                                  
+
+    def set_name(self, name):                                                   
+        self.name = name     
                                                                                 
     def add_rule(self, rule):                                                   
         self.rules.append(rule)                                                 

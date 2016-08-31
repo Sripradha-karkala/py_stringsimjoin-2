@@ -16,6 +16,9 @@ class Predicate:
         self.comp_fn = COMP_OP_MAP[self.comp_op]
         self.cost = cost                               
 
+    def set_name(self, name):                                                   
+        self.name = name         
+
     def set_cost(self, cost):
         self.cost = cost
 

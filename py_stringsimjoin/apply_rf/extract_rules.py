@@ -5,7 +5,7 @@ from py_stringsimjoin.apply_rf.rule_set import RuleSet
 from py_stringsimjoin.utils.generic_helper import COMP_OP_MAP
 
  
-def extract_pos_rules_from_tree(tree, feature_table):                                         
+def extract_pos_rules_from_tree(tree, feature_table, start_rule_id, start_predicate_id):                                         
     feature_names = list(feature_table.index)
     # Get the left, right trees and the threshold from the tree                 
     left = tree.tree_.children_left                                             
@@ -17,7 +17,9 @@ def extract_pos_rules_from_tree(tree, feature_table):
     value = tree.tree_.value                                                    
                                                     
     rule_set = RuleSet()
-                            
+    curr_rule_id = start_rule_id
+    curr_predicate_id = start_predicate_id
+                    
     def traverse(node, left, right, features, threshold, depth, cache):         
         if node == -1:                                                          
             return                                                              
@@ -29,6 +31,8 @@ def extract_pos_rules_from_tree(tree, feature_table):
                           feat_row['tokenizer_type'],
                           feat_row['sim_function'], 
                           feat_row['tokenizer'], '<=', threshold[node], feat_row['cost'])                                           
+            p.set_name('p'+str(curr_predicate_id))                              
+            curr_predicate_id += 1 
             cache.insert(depth, p)   
             traverse(left[node], left, right, features, threshold, depth+1, cache)
             prev_pred = cache.pop(depth)
@@ -38,20 +42,33 @@ def extract_pos_rules_from_tree(tree, feature_table):
                           feat_row['tokenizer_type'],                           
                           feat_row['sim_function'],                             
                           feat_row['tokenizer'], '>', threshold[node], feat_row['cost'])                                         
+            p.set_name('p'+str(curr_predicate_id))
+            curr_predicate_id += 1
             cache.insert(depth, p)    
             traverse(right[node], left, right, features, threshold, depth+1, cache)
             prev_pred = cache.pop(depth)                                        
         else:                                                                   
             # node is a leaf node                                               
             if value[node][0][0] <= value[node][0][1]:
-                rule_set.add_rule(Rule(cache[0:depth]))                                                                        
+                r = Rule(cache[0:depth])
+                r.set_name('r'+str(curr_rule_id))
+                curr_rule_id += 1
+                rule_set.add_rule(r)                                                                        
                 print 'pos rule: ', cache[0:depth]                              
                                                                                 
     traverse(0, left, right, features, threshold, 0, [])
     return rule_set 
 
 def extract_pos_rules_from_rf(rf, feature_table):
-    rule_sets = []                                                              
+    rule_sets = []
+    rule_id = 1
+    predicate_id = 1
+    tree_id = 1                                                              
     for dt in rf.estimators_:                                                   
-        rule_sets.append(extract_pos_rules_from_tree(dt, feature_table))
+        rs = extract_pos_rules_from_tree(dt, feature_table, rule_id, predicate_id)
+        rs.set_name('t'+str(tree_id))
+        tree_id += 1                                                            
+        rule_id += len(rs.rules)
+        predicate_id += sum(map(lambda r: len(r.predicates), rs.rules))
+        rule_sets.append(rs) 
     return rule_sets

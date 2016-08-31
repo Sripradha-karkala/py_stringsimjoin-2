@@ -14,6 +14,9 @@ class Rule:
     def add_predicate(self, predicate):
         self.predicates.append(predicate)
 
+    def set_name(self, name):
+        self.name = name
+
     def set_cost(self, cost):                                                   
         self.cost = cost                                                        
                                                                                 

@@ -11,7 +11,7 @@ from py_stringsimjoin.feature.autofeaturegen import *
 from py_stringsimjoin.feature.extractfeatures import *
 from py_stringsimjoin.apply_rf.apply_rf import *
 from py_stringsimjoin.apply_rf.estimate_parameters import *
-from py_stringsimjoin.apply_rf.execution_plan import *
+#from py_stringsimjoin.apply_rf.execution_plan import *
 from py_stringsimjoin.apply_rf.extract_rules import *
 from py_stringsimjoin.utils.tokenizers import *
 
