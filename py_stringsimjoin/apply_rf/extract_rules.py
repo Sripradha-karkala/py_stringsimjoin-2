@@ -17,10 +17,10 @@ def extract_pos_rules_from_tree(tree, feature_table, start_rule_id, start_predic
     value = tree.tree_.value                                                    
                                                     
     rule_set = RuleSet()
-    curr_rule_id = start_rule_id
-    curr_predicate_id = start_predicate_id
+#    curr_rule_id = start_rule_id
+    #curr_predicate_id = start_predicate_id
                     
-    def traverse(node, left, right, features, threshold, depth, cache):         
+    def traverse(node, left, right, features, threshold, depth, cache, start_rule_id, curr_predicate_id):         
         if node == -1:                                                          
             return                                                              
         if threshold[node] != -2:                                               
@@ -34,7 +34,7 @@ def extract_pos_rules_from_tree(tree, feature_table, start_rule_id, start_predic
             p.set_name('p'+str(curr_predicate_id))                              
             curr_predicate_id += 1 
             cache.insert(depth, p)   
-            traverse(left[node], left, right, features, threshold, depth+1, cache)
+            traverse(left[node], left, right, features, threshold, depth+1, cache, start_rule_id, curr_predicate_id)
             prev_pred = cache.pop(depth)
             feat_row = feature_table.ix[features[node]]                         
             p = Predicate(features[node],
@@ -45,18 +45,17 @@ def extract_pos_rules_from_tree(tree, feature_table, start_rule_id, start_predic
             p.set_name('p'+str(curr_predicate_id))
             curr_predicate_id += 1
             cache.insert(depth, p)    
-            traverse(right[node], left, right, features, threshold, depth+1, cache)
+            traverse(right[node], left, right, features, threshold, depth+1, cache, start_rule_id, curr_predicate_id)
             prev_pred = cache.pop(depth)                                        
         else:                                                                   
             # node is a leaf node                                               
             if value[node][0][0] <= value[node][0][1]:
                 r = Rule(cache[0:depth])
-                r.set_name('r'+str(curr_rule_id))
-                curr_rule_id += 1
+                r.set_name('r'+str(start_rule_id + len(rule_set.rules)+1))
                 rule_set.add_rule(r)                                                                        
                 print 'pos rule: ', cache[0:depth]                              
                                                                                 
-    traverse(0, left, right, features, threshold, 0, [])
+    traverse(0, left, right, features, threshold, 0, [], start_rule_id, start_predicate_id)
     return rule_set 
 
 def extract_pos_rules_from_rf(rf, feature_table):

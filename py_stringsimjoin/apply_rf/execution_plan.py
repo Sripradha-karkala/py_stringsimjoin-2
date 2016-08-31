@@ -1,5 +1,6 @@
 
 import copy
+import networkx as nx
 
 class Node:
     def __init__(self, node_type, predicate, parent=None):
@@ -11,47 +12,135 @@ class Node:
     def add_child(self, child_node):
         self.children.append(child_node)
 
+    def remove_child(self, child_node):
+        for i in range(len(self.children)):
+            if self.children[i].predicate == child_node.predicate:
+                break
+        self.children.pop(i)
+
 class Plan:
     def __init__(self):
         self.root = Node('ROOT', None)
 
-    def merge_plan(self, plan_to_be_merged):
-        curr_level_children = self.root.children
-        node2 = plan_to_be_merged.root.children[0]
-        while True:
-            node_merged = False
-            for child_node in curr_level_children:
-                if nodes_can_be_merged(child_node, node2):
-                    curr_threhsold = child_node.predicate.threshold            
-                    if node2.node_type == 'JOIN':
-                        if curr_threshold < node2.predicate.threshold:
-                            new_select_node = Node('SELECT', node2.predicate, child_node)
-                            new_select_node.add_child(node2.children[0])
-                            child_node.add_child(new_select_node)
-                    elif node2.node_type == 'FILTER':
-                        if curr_threshold
-                    break
-                    node_merged = True
-            if not node_merged:
+    def _print(self):                                                           
+        print ('ROOT')                                                          
+        print ('--------')                                                      
+        print ('level 1')                                                       
+        for node in self.root.children:                                         
+            print (node.predicate, 'root')                                 
+        print ('--------')                                                      
+        lev_1_ch = self.root.children                                           
+        print ('level 2')                                                       
+        for node in lev_1_ch:                                                   
+            for n in node.children:                                             
+                if n.node_type == 'OUTPUT':                                     
+                    name = 'output'                                             
+                else:                                                           
+                    name = n.predicate                                     
+                print (name, n.parent.predicate)                           
+        print ('---------') 
+
+    def show(self):
+        g = nx.DiGraph()
+        g.add_node('root')
+        for child_node in self.root.children:
+            g.add_node(child_node.predicate)
+            g.add_edge('root', child_node.predicate)
+        curr_list = self.root.children
+        while len(curr_list) > 0:
+            curr_node = curr_list[0]
+            curr_list.pop(0)
+            for child_node in curr_node.children:
+                g.add_node(child_node.predicate)
+                g.add_edge(curr_node.predicate, child_node.predicate)
+            curr_list.extend(curr_node.children)
+        import matplotlib.pyplot as plt
+        nx.draw(g, with_labels=True)   
+        plt.savefig('labels.png')
+        plt.close()
+
+def get_predicate_dict(rule_sets):
+    predicate_dict = {}
+    for rule_set in rule_sets:
+        for rule in rule_set.rules:
+            for predicate in rule.predicates:
+                predicate_dict[predicate.name] = predicate
+    return predicate_dict
+
+def generate_combined_execution_plan(plans, rule_sets):
+    predicate_dict = get_predicate_dict(rule_sets)
+    curr_plan = copy.deepcopy(plans[0])
+    for i in range(1, len(plans)):
+        merge_plans(curr_plan, copy.deepcopy(plans[i]), predicate_dict)
+    return curr_plan 
+
+def merge_plans(plan1, plan2, predicate_dict):
+    sibling_nodes_in_plan1 = plan1.root.children
+    plan2_node = plan2.root.children[0]
+    while True:
+        continue_merge = False
+        no_common_join_predicate = True
+        pred2 = predicate_dict[plan2_node.predicate]
+        for sibling_node in sibling_nodes_in_plan1:
+            print 'sib : ', sibling_node.node_type
+            pred1 = predicate_dict[sibling_node.predicate]
+            if nodes_can_be_merged(sibling_node, plan2_node, pred1, pred2):
+                print 't1', plan2_node.node_type
+                if plan2_node.node_type == 'JOIN':
+                    if ((pred1.threshold < pred2.threshold) or 
+                        (pred1.threshold == pred2.threshold and 
+                         pred1.comp_op == '>=' and pred2.comp_op == '>')):
+                        print 't2'
+                        plan2_node.node_type = 'SELECT'
+                        plan2_node.parent = sibling_node
+                        sibling_node.add_child(plan2_node)
+                        sibling_nodes_to_check = sibling_node.children
+                        continue_merge = True
+                    elif ((pred1.threshold > pred2.threshold) or
+                          (pred1.threshold == pred2.threshold and    
+                           pred1.comp_op == '>' and pred2.comp_op == '>=')):
+                        print 't3'                           
+                        sibling_node.node_type = 'SELECT'
+                        plan2_node.add_child(sibling_node)
+                        plan2_node.parent = sibling_node.parent
+                        sibling_node.parent.add_child(plan2_node)
+                        sibling_node.parent.remove_child(sibling_node)
+                        sibling_node.parent = plan2_node                           
+                    elif pred1.threshold == pred2.threshold:
+                        print 't4'
+                        sibling_node.add_child(plan2_node.children[0])
+                        plan2_node.children[0].parent = sibling_node
+                        sibling_nodes_to_check = sibling_node.children
+                        plan2_node = plan2_node.children[0]
+                        continue_merge = True
+                elif plan2_node.node_type == 'SELECT':
+                    sibling_nodes_to_check = sibling_node.children
+                    
+                    plan2_node.children[0].parent = sibling_node
+                    
+                    continue_merge = True
+                no_common_join_predicate = False
                 break
-            node2 = new_node
-            curr_level_children
-        
-            
 
-        if not node_merged:
-            self.root.add_child(plan_to_be_merged.root.children[0])                 
- 
+        if no_common_join_predicate:
+            break
+        if not continue_merge:
+            break
 
-def nodes_can_be_merged(node1, node2):
+    if no_common_join_predicate:
+        plan1.root.add_child(plan2.root.children[0])                 
+
+
+def nodes_can_be_merged(node1, node2, pred1, pred2):
     if node1.node_type != node2.node_type:
         return False
-    if node1.predicate.feat_name != node2.predicate.feat_name:
+    if pred1.feat_name != pred2.feat_name:
         return False
-    return are_comp_ops_compatible(node1.predicate.comp_op, 
-                                   node2.predicate.comp_op)  
+    return are_comp_ops_compatible(pred1.comp_op, pred2.comp_op, node1.node_type)  
 
-def are_comp_ops_compatible(comp_op1, comp_op2):
+def are_comp_ops_compatible(comp_op1, comp_op2, node_type):
+    if node_type == 'SELECT':
+        return comp_op1 == comp_op2
     if comp_op1 in ['<', '<='] and comp_op2 in ['>' '>=']:
         return False
     if comp_op1 in ['>', '>='] and comp_op2 in ['<', '<=']:
@@ -74,15 +163,15 @@ def get_optimal_plan_for_rule(rule):
     join_pred = True        
     for predicate in optimal_predicate_seq:    
         if join_pred:
-            new_node = Node('JOIN', predicate, curr_node)
+            new_node = Node('JOIN', predicate.name, curr_node)
             curr_node.add_child(new_node)
             curr_node = new_node
             join_pred = False
         else:
-            new_node = Node('FILTER', predicate, curr_node)
+            new_node = Node('FILTER', predicate.name, curr_node)
             curr_node.add_child(new_node)
             curr_node = new_node
-    curr_node.add_child(Node('OUTPUT', None, curr_node))
+    curr_node.add_child(Node('OUTPUT', 'out_'+rule.name, curr_node))
     return plan
 
 def get_optimal_predicate_seq(predicates):
@@ -93,7 +182,8 @@ def get_optimal_predicate_seq(predicates):
             valid_predicates.append(predicate)                                  
         else:                                                                   
             invalid_predicates.append(predicate)  
-
+    valid_predicates.extend(invalid_predicates)
+    return valid_predicates
     optimal_predicate_seq = []                                                  
     selected_predicates = {}                                                    
     max_score = 0                                                               
