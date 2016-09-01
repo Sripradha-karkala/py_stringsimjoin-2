@@ -87,6 +87,7 @@ def merge_plans(plan1, plan2, predicate_dict):
             if nodes_can_be_merged(sibling_node, plan2_node, pred1, pred2):
                 print 't1', plan2_node.node_type
                 if plan2_node.node_type == 'JOIN':
+
                     if ((pred1.threshold < pred2.threshold) or 
                         (pred1.threshold == pred2.threshold and 
                          pred1.comp_op == '>=' and pred2.comp_op == '>')):
@@ -94,8 +95,7 @@ def merge_plans(plan1, plan2, predicate_dict):
                         plan2_node.node_type = 'SELECT'
                         plan2_node.parent = sibling_node
                         sibling_node.add_child(plan2_node)
-                        sibling_nodes_to_check = sibling_node.children
-                        continue_merge = True
+
                     elif ((pred1.threshold > pred2.threshold) or
                           (pred1.threshold == pred2.threshold and    
                            pred1.comp_op == '>' and pred2.comp_op == '>=')):
@@ -106,19 +106,28 @@ def merge_plans(plan1, plan2, predicate_dict):
                         sibling_node.parent.add_child(plan2_node)
                         sibling_node.parent.remove_child(sibling_node)
                         sibling_node.parent = plan2_node                           
+
                     elif pred1.threshold == pred2.threshold:
                         print 't4'
-                        sibling_node.add_child(plan2_node.children[0])
                         plan2_node.children[0].parent = sibling_node
                         sibling_nodes_to_check = sibling_node.children
-                        plan2_node = plan2_node.children[0]
+                        plan2_node = plan2_node.children[0]                                           
+                        sibling_node.add_child(plan2_node.children[0])
                         continue_merge = True
-                elif plan2_node.node_type == 'SELECT':
-                    sibling_nodes_to_check = sibling_node.children
-                    
-                    plan2_node.children[0].parent = sibling_node
-                    
+ 
+               elif (plan2_node.node_type == 'SELECT' and 
+                     pred1.threshold == pred2.threshold):
+                    plan2_node.parent.remove_child(plan2_node)                
+                    plan2_node.children[0].parent = sibling_node  
+                    sibling_nodes_to_check = sibling_node.children              
+                    plan2_node = plan2_node.children[0]     
+                    sibling_node.add_child(plan2_node.children[0])
                     continue_merge = True
+
+                elif plan2_node.node_type == 'FILTER':
+                    
+                    
+                    
                 no_common_join_predicate = False
                 break
 
