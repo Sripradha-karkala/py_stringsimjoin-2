@@ -67,19 +67,12 @@ def get_predicate_dict(rule_sets):
                 predicate_dict[predicate.name] = predicate
     return predicate_dict
 
-def generate_combined_execution_plan(plans, rule_sets):
-    predicate_dict = get_predicate_dict(rule_sets)
-    curr_plan = copy.deepcopy(plans[0])
-    for i in range(1, len(plans)):
-        merge_plans(curr_plan, copy.deepcopy(plans[i]), predicate_dict)
-    return curr_plan 
-
 def merge_plans(plan1, plan2, predicate_dict):
     sibling_nodes_in_plan1 = plan1.root.children
     plan2_node = plan2.root.children[0]
+    no_common_join_predicate = True                                         
     while True:
         continue_merge = False
-        no_common_join_predicate = True
         pred2 = predicate_dict[plan2_node.predicate]
         for sibling_node in sibling_nodes_in_plan1:
             print 'sib : ', sibling_node.node_type
@@ -115,8 +108,8 @@ def merge_plans(plan1, plan2, predicate_dict):
                         sibling_node.add_child(plan2_node.children[0])
                         continue_merge = True
  
-               elif (plan2_node.node_type == 'SELECT' and 
-                     pred1.threshold == pred2.threshold):
+                elif (plan2_node.node_type == 'SELECT' and 
+                      pred1.threshold == pred2.threshold):
                     plan2_node.parent.remove_child(plan2_node)                
                     plan2_node.children[0].parent = sibling_node  
                     sibling_nodes_to_check = sibling_node.children              
@@ -125,9 +118,20 @@ def merge_plans(plan1, plan2, predicate_dict):
                     continue_merge = True
 
                 elif plan2_node.node_type == 'FILTER':
-                    
-                    
-                    
+                    plan2_node.node_type = 'SELECT'
+                    sibling_node.node_type = 'SELECT'
+                    new_node = Node('FEATURE', sibling_node.predicate, 
+                                    sibling_node.parent)
+                    parent_node = sibling_node.parent
+                    parent_node.remove_child(sibling_node)
+                    parent_node.remove_child(plan2_node)
+                    new_node.add_child(sibling_node)
+                    new_node.add_child(plan2_node)
+                    sibling_node.parent = new_node
+                    plan2_node.parent = new_node
+                    parent_node.add_child(new_node)
+                    new_node.parent = parent_node
+
                 no_common_join_predicate = False
                 break
 
@@ -148,6 +152,8 @@ def nodes_can_be_merged(node1, node2, pred1, pred2):
     return are_comp_ops_compatible(pred1.comp_op, pred2.comp_op, node1.node_type)  
 
 def are_comp_ops_compatible(comp_op1, comp_op2, node_type):
+    if node_type == 'FILTER':
+        return True
     if node_type == 'SELECT':
         return comp_op1 == comp_op2
     if comp_op1 in ['<', '<='] and comp_op2 in ['>' '>=']:
@@ -157,12 +163,16 @@ def are_comp_ops_compatible(comp_op1, comp_op2, node_type):
     return True        
 
 def generate_execution_plan(rule_sets):
-    ex_plan = Plan()
+    plans = []
     for rule_set in rule_sets:
         for rule in rule_set.rules:
-            plan_for_rule = get_optimal_plan_for_rule(rule)
-            ex_plan.merge_plan(plan_for_rule)
-    return ex_plan  
+            plans.append(get_optimal_plan_for_rule(rule))
+
+    predicate_dict = get_predicate_dict(rule_sets)                              
+    curr_plan = copy.deepcopy(plans[0])                                         
+    for i in range(1, len(plans)):                                              
+        merge_plans(curr_plan, copy.deepcopy(plans[i]), predicate_dict)         
+    return curr_plan             
 
 def get_optimal_plan_for_rule(rule):
     optimal_predicate_seq = get_optimal_predicate_seq(rule.predicates)
@@ -191,8 +201,8 @@ def get_optimal_predicate_seq(predicates):
             valid_predicates.append(predicate)                                  
         else:                                                                   
             invalid_predicates.append(predicate)  
-    valid_predicates.extend(invalid_predicates)
-    return valid_predicates
+    if len(valid_predicates) == 0:
+        print 'invalid rf'
     optimal_predicate_seq = []                                                  
     selected_predicates = {}                                                    
     max_score = 0                                                               
