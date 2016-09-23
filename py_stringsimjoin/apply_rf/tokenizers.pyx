@@ -1,20 +1,30 @@
 
+import time
+from operator import itemgetter 
+
+from cython.parallel import prange
+
+from libc.stdlib cimport atoi
 from libcpp.vector cimport vector
 from libcpp.set cimport set as oset                                             
 from libcpp.string cimport string
 from libcpp cimport bool
+from libcpp.map cimport map as omap                                             
+from libcpp.pair cimport pair                                                   
+from libc.stdio cimport printf, fprintf, fopen, fclose, FILE, sprintf           
 
 import re2
 
-cdef extern from "string.h":                                                    
+cdef extern from "string.h" nogil:                                                    
     char *strtok (char *inp_str, const char *delimiters)  
 
 cdef class WhitespaceTokenizer:
+    cdef bool return_set
 
     def __init__(self, bool return_set):
         self.return_set = return_set
 
-    cdef vector[string] tokenize(self, const string& inp_string):
+    cdef vector[string] tokenize(self, const string& inp_string) nogil:
         cdef char* pch                                                              
         pch = strtok (<char*> inp_string.c_str(), " ") 
         cdef oset[string] tokens                                            
@@ -32,6 +42,10 @@ cdef class WhitespaceTokenizer:
         return out_tokens 
 
 cdef class QgramTokenizer:
+    cdef int qval                                                               
+    cdef char prefix_pad, suffix_pad                                            
+    cdef bool padding, return_set        
+
     def __init__(self, int qval, bool padding, char prefix_pad, char suffix_pad, 
                  bool return_set):                                        
         self.qval = qval
@@ -40,13 +54,13 @@ cdef class QgramTokenizer:
         self.suffix_pad = suffix_pad
         self.return_set = return_set                                            
                                                                                 
-    cdef vector[string] tokenize(self, const string& inp_string):               
+    cpdef vector[string] tokenize(self, const string& inp_string):               
         cdef string inp_str = inp_string;                                                         
         if self.padding:                                                                
             inp_str = string(self.qval - 1, self.prefix_pad) + inp_str + string(self.qval - 1, self.suffix_pad)
         cdef oset[string] tokens                                                
         cdef vector[string] out_tokens     
-        cdef int i, n = inp_str.length() - self.qval + 1
+        cdef unsigned int i, n = inp_str.length() - self.qval + 1
         if self.return_set:
             for i in range(n):                                                  
                 tokens.insert(inp_str.substr(i, self.qval))
@@ -121,7 +135,111 @@ def test_tok(df, attr):
     for s in strings:
         t = ws.tokenize(s)                
         print t                
- 
+
+def test_tok2(df1, attr1, df2, attr2):
+    cdef vector[string] lstrings, rstrings                                      
+    convert_to_vector(df1[attr1], lstrings)                                    
+    convert_to_vector(df2[attr2], rstrings)                                    
+    st = time.time()
+    tokenize(lstrings, rstrings, 'ws', 'gh') 
+    print 'time : ', time.time() - st
+
+cdef vector[int] split(string inp_string):
+    cdef char* pch                                                          
+    pch = strtok (<char*> inp_string.c_str(), " ")                          
+    cdef vector[int] out_tokens                                          
+    while pch != NULL:                                                  
+        out_tokens.push_back(atoi(pch))                               
+        pch = strtok (NULL, " ")                                        
+    return out_tokens  
+
+def load_tok(tok_type, path):
+    cdef vector[vector[int]] ltokens, rtokens
+    st =time.time()
+    fp = open(path+"/ltable_"+tok_type)
+    for line in fp:
+        ltokens.push_back(split(line)) 
+    fp.close()    
+    fp = open(path+"/rtable_"+tok_type)                                         
+    for line in fp:                                                             
+        rtokens.push_back(split(line))                                          
+    fp.close()   
+    print 'time : ', time.time()
+    print ltokens.size(), rtokens.size()
+
+cdef bool mycomp(pair[string, int] i, pair[string, int] j):
+    return (i.second < j.second)
+
+cpdef void tokenize(vector[string]& lstrings, vector[string]& rstrings,          
+                   const string& tok_type, const string& working_dir):          
+    cdef object tok                                                               
+    if tok_type.compare('ws') == 0:                                             
+        tok = WhitespaceTokenizer(True)                              
+    elif tok_type.compare('alph') == 0:                                         
+        tok = AlphabeticTokenizer(True)                              
+    elif tok_type.compare('alph_num') == 0:                                     
+        tok = AlphanumericTokenizer(True)                            
+    elif tok_type.compare('num') == 0:                                          
+        tok = NumericTokenizer(True)                                 
+    elif tok_type.compare('qg2') == 0:                                          
+        tok = QgramTokenizer(2, True, ord('#'), ord('$'), True)      
+    elif tok_type.compare('qg3') == 0:                                          
+        tok = QgramTokenizer(3, True, ord('#'), ord('$'), True)      
+                                                                                
+    cdef string s, token                                                        
+    cdef vector[string] tokens                                                  
+    cdef omap[string, int] token_freq, token_ordering                           
+    cdef vector[vector[string]] ltokens, rtokens                                
+    cdef int j, n=lstrings.size()
+
+    for j in range(n):                                                          
+        tokens = tok.tokenize(lstrings[j])                                                         
+        ltokens.push_back(tokens)                                               
+        for token in tokens:                                                    
+            token_freq[token] += 1                                              
+
+    n = rstrings.size()                                                 
+    for j in range(n):                                                          
+        tokens = tok.tokenize(rstrings[j])                                                
+        rtokens.push_back(tokens)                                               
+        for token in tokens:                                                    
+            token_freq[token] += 1                                              
+
+    ordered_tokens = []                              
+    for entry in token_freq:
+        ordered_tokens.append((entry.first, entry.second))                                                    
+
+    cdef int order_idx = 1
+    for token_freq_tuple in sorted(ordered_tokens, key=itemgetter(1)):
+        token_ordering[token_freq_tuple[0]] = order_idx
+        order_idx += 1
+
+    fp = open(working_dir + "/ltable_" + tok_type, 'w')
+    cdef char buf[10]
+    cdef string space = " "
+    for tokens in ltokens:
+        s = ""
+        n = tokens.size() - 1
+        for j in range(n):
+            sprintf(buf, '%d', token_ordering[tokens[j]])
+            s += string(buf) + space
+        sprintf(buf, '%d', token_ordering[tokens[n]])                       
+        s += string(buf)
+        fp.write(s+'\n')
+    fp.close()
+
+    fp = open(working_dir + "/rtable_" + tok_type, 'w')                         
+    for tokens in rtokens:                                                      
+        s = ""
+        n = tokens.size() - 1                                                                 
+        for j in range(n):                                      
+            sprintf(buf, '%d', token_ordering[tokens[j]])                       
+            s += string(buf) + space
+        sprintf(buf, '%d', token_ordering[tokens[n]])           
+        s += string(buf)        
+        fp.write(s+'\n')                                                       
+    fp.close()      
+
 cdef void convert_to_vector(string_col, vector[string]& string_vector):         
     for val in string_col:                                                      
         string_vector.push_back(val)

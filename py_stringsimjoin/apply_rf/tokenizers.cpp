@@ -259,15 +259,18 @@ static CYTHON_INLINE float __PYX_NAN() {
 
 #define __PYX_HAVE__py_stringsimjoin__apply_rf__tokenizers
 #define __PYX_HAVE_API__py_stringsimjoin__apply_rf__tokenizers
+#include "string.h"
+#include "stdlib.h"
 #include <vector>
 #include "ios"
 #include "new"
 #include "stdexcept"
 #include "typeinfo"
-#include "string.h"
-#include <string>
 #include <utility>
 #include <set>
+#include <string>
+#include <map>
+#include "stdio.h"
 #ifdef _OPENMP
 #include <omp.h>
 #endif /* _OPENMP */
@@ -484,12 +487,12 @@ static const char *__pyx_f[] = {
 struct __pyx_obj_16py_stringsimjoin_8apply_rf_10tokenizers_WhitespaceTokenizer;
 struct __pyx_obj_16py_stringsimjoin_8apply_rf_10tokenizers_QgramTokenizer;
 
-/* "py_stringsimjoin/apply_rf/tokenizers.pxd":6
- * from libcpp.string cimport string
+/* "py_stringsimjoin/apply_rf/tokenizers.pyx":21
+ *     char *strtok (char *inp_str, const char *delimiters)
  * 
  * cdef class WhitespaceTokenizer:             # <<<<<<<<<<<<<<
  *     cdef bool return_set
- *     cdef vector[string] tokenize(self, const string&)
+ * 
  */
 struct __pyx_obj_16py_stringsimjoin_8apply_rf_10tokenizers_WhitespaceTokenizer {
   PyObject_HEAD
@@ -498,8 +501,8 @@ struct __pyx_obj_16py_stringsimjoin_8apply_rf_10tokenizers_WhitespaceTokenizer {
 };
 
 
-/* "py_stringsimjoin/apply_rf/tokenizers.pxd":10
- *     cdef vector[string] tokenize(self, const string&)
+/* "py_stringsimjoin/apply_rf/tokenizers.pyx":44
+ *         return out_tokens
  * 
  * cdef class QgramTokenizer:             # <<<<<<<<<<<<<<
  *     cdef int qval
@@ -517,12 +520,12 @@ struct __pyx_obj_16py_stringsimjoin_8apply_rf_10tokenizers_QgramTokenizer {
 
 
 
-/* "py_stringsimjoin/apply_rf/tokenizers.pyx":12
+/* "py_stringsimjoin/apply_rf/tokenizers.pyx":21
  *     char *strtok (char *inp_str, const char *delimiters)
  * 
  * cdef class WhitespaceTokenizer:             # <<<<<<<<<<<<<<
+ *     cdef bool return_set
  * 
- *     def __init__(self, bool return_set):
  */
 
 struct __pyx_vtabstruct_16py_stringsimjoin_8apply_rf_10tokenizers_WhitespaceTokenizer {
@@ -531,16 +534,16 @@ struct __pyx_vtabstruct_16py_stringsimjoin_8apply_rf_10tokenizers_WhitespaceToke
 static struct __pyx_vtabstruct_16py_stringsimjoin_8apply_rf_10tokenizers_WhitespaceTokenizer *__pyx_vtabptr_16py_stringsimjoin_8apply_rf_10tokenizers_WhitespaceTokenizer;
 
 
-/* "py_stringsimjoin/apply_rf/tokenizers.pyx":34
+/* "py_stringsimjoin/apply_rf/tokenizers.pyx":44
  *         return out_tokens
  * 
  * cdef class QgramTokenizer:             # <<<<<<<<<<<<<<
- *     def __init__(self, int qval, bool padding, char prefix_pad, char suffix_pad,
- *                  bool return_set):
+ *     cdef int qval
+ *     cdef char prefix_pad, suffix_pad
  */
 
 struct __pyx_vtabstruct_16py_stringsimjoin_8apply_rf_10tokenizers_QgramTokenizer {
-  std::vector<std::string>  (*tokenize)(struct __pyx_obj_16py_stringsimjoin_8apply_rf_10tokenizers_QgramTokenizer *, std::string const &);
+  std::vector<std::string>  (*tokenize)(struct __pyx_obj_16py_stringsimjoin_8apply_rf_10tokenizers_QgramTokenizer *, std::string const &, int __pyx_skip_dispatch);
 };
 static struct __pyx_vtabstruct_16py_stringsimjoin_8apply_rf_10tokenizers_QgramTokenizer *__pyx_vtabptr_16py_stringsimjoin_8apply_rf_10tokenizers_QgramTokenizer;
 
@@ -633,6 +636,10 @@ static int __Pyx_ParseOptionalKeywords(PyObject *kwds, PyObject **argnames[],\
 static void __Pyx_RaiseArgtupleInvalid(const char* func_name, int exact,
     Py_ssize_t num_min, Py_ssize_t num_max, Py_ssize_t num_found);
 
+#ifndef __PYX_FORCE_INIT_THREADS
+  #define __PYX_FORCE_INIT_THREADS 0
+#endif
+
 static CYTHON_INLINE void __Pyx_ErrRestore(PyObject *type, PyObject *value, PyObject *tb);
 static CYTHON_INLINE void __Pyx_ErrFetch(PyObject **type, PyObject **value, PyObject **tb);
 
@@ -640,13 +647,19 @@ static void __Pyx_WriteUnraisable(const char *name, int clineno,
                                   int lineno, const char *filename,
                                   int full_traceback, int nogil);
 
-static CYTHON_INLINE PyObject *__Pyx_GetModuleGlobalName(PyObject *name);
-
 #if CYTHON_COMPILING_IN_CPYTHON
 static CYTHON_INLINE PyObject* __Pyx_PyObject_Call(PyObject *func, PyObject *arg, PyObject *kw);
 #else
 #define __Pyx_PyObject_Call(func, arg, kw) PyObject_Call(func, arg, kw)
 #endif
+
+#if CYTHON_COMPILING_IN_CPYTHON
+static CYTHON_INLINE PyObject* __Pyx_PyObject_CallMethO(PyObject *func, PyObject *arg);
+#endif
+
+static CYTHON_INLINE PyObject* __Pyx_PyObject_CallOneArg(PyObject *func, PyObject *arg);
+
+static CYTHON_INLINE PyObject *__Pyx_GetModuleGlobalName(PyObject *name);
 
 #if CYTHON_COMPILING_IN_CPYTHON
 #define __Pyx_PyObject_DelAttrStr(o,n) __Pyx_PyObject_SetAttrStr(o,n,NULL)
@@ -666,10 +679,49 @@ static CYTHON_INLINE int __Pyx_PyObject_SetAttrStr(PyObject* obj, PyObject* attr
 #endif
 
 #if CYTHON_COMPILING_IN_CPYTHON
-static CYTHON_INLINE PyObject* __Pyx_PyObject_CallMethO(PyObject *func, PyObject *arg);
+static CYTHON_INLINE PyObject* __Pyx_PyObject_CallNoArg(PyObject *func);
+#else
+#define __Pyx_PyObject_CallNoArg(func) __Pyx_PyObject_Call(func, __pyx_empty_tuple, NULL)
 #endif
 
-static CYTHON_INLINE PyObject* __Pyx_PyObject_CallOneArg(PyObject *func, PyObject *arg);
+static CYTHON_INLINE void __Pyx_RaiseUnboundLocalError(const char *varname);
+
+#if CYTHON_COMPILING_IN_CPYTHON
+static CYTHON_INLINE int __Pyx_PyList_Append(PyObject* list, PyObject* x) {
+    PyListObject* L = (PyListObject*) list;
+    Py_ssize_t len = Py_SIZE(list);
+    if (likely(L->allocated > len) & likely(len > (L->allocated >> 1))) {
+        Py_INCREF(x);
+        PyList_SET_ITEM(list, len, x);
+        Py_SIZE(list) = len+1;
+        return 0;
+    }
+    return PyList_Append(list, x);
+}
+#else
+#define __Pyx_PyList_Append(L,x) PyList_Append(L,x)
+#endif
+
+#define __Pyx_GetItemInt(o, i, type, is_signed, to_py_func, is_list, wraparound, boundscheck)\
+    (__Pyx_fits_Py_ssize_t(i, type, is_signed) ?\
+    __Pyx_GetItemInt_Fast(o, (Py_ssize_t)i, is_list, wraparound, boundscheck) :\
+    (is_list ? (PyErr_SetString(PyExc_IndexError, "list index out of range"), (PyObject*)NULL) :\
+               __Pyx_GetItemInt_Generic(o, to_py_func(i))))
+#define __Pyx_GetItemInt_List(o, i, type, is_signed, to_py_func, is_list, wraparound, boundscheck)\
+    (__Pyx_fits_Py_ssize_t(i, type, is_signed) ?\
+    __Pyx_GetItemInt_List_Fast(o, (Py_ssize_t)i, wraparound, boundscheck) :\
+    (PyErr_SetString(PyExc_IndexError, "list index out of range"), (PyObject*)NULL))
+static CYTHON_INLINE PyObject *__Pyx_GetItemInt_List_Fast(PyObject *o, Py_ssize_t i,
+                                                              int wraparound, int boundscheck);
+#define __Pyx_GetItemInt_Tuple(o, i, type, is_signed, to_py_func, is_list, wraparound, boundscheck)\
+    (__Pyx_fits_Py_ssize_t(i, type, is_signed) ?\
+    __Pyx_GetItemInt_Tuple_Fast(o, (Py_ssize_t)i, wraparound, boundscheck) :\
+    (PyErr_SetString(PyExc_IndexError, "tuple index out of range"), (PyObject*)NULL))
+static CYTHON_INLINE PyObject *__Pyx_GetItemInt_Tuple_Fast(PyObject *o, Py_ssize_t i,
+                                                              int wraparound, int boundscheck);
+static CYTHON_INLINE PyObject *__Pyx_GetItemInt_Generic(PyObject *o, PyObject* j);
+static CYTHON_INLINE PyObject *__Pyx_GetItemInt_Fast(PyObject *o, Py_ssize_t i,
+                                                     int is_list, int wraparound, int boundscheck);
 
 #if CYTHON_COMPILING_IN_CPYTHON
 static CYTHON_INLINE int __Pyx_ListComp_Append(PyObject* list, PyObject* x) {
@@ -690,6 +742,8 @@ static CYTHON_INLINE int __Pyx_ListComp_Append(PyObject* list, PyObject* x) {
 static int __Pyx_SetVtable(PyObject *dict, void *vtable);
 
 static PyObject *__Pyx_Import(PyObject *name, PyObject *from_list, int level);
+
+static PyObject* __Pyx_ImportFrom(PyObject* module, PyObject* name);
 
 static PyTypeObject* __Pyx_FetchCommonType(PyTypeObject* type);
 
@@ -813,6 +867,10 @@ static void __Pyx_CppExn2PyErr() {
 }
 #endif
 
+static CYTHON_INLINE PyObject* __Pyx_PyInt_From_unsigned_int(unsigned int value);
+
+static CYTHON_INLINE unsigned int __Pyx_PyInt_As_unsigned_int(PyObject *);
+
 static CYTHON_INLINE PyObject* __Pyx_PyInt_From_int(int value);
 
 static int __Pyx_Print(PyObject*, PyObject *, int);
@@ -823,9 +881,9 @@ static PyObject* __pyx_print_kwargs = 0;
 
 static int __Pyx_PrintOne(PyObject* stream, PyObject *o);
 
-static CYTHON_INLINE size_t __Pyx_PyInt_As_size_t(PyObject *);
-
 static CYTHON_INLINE PyObject* __Pyx_PyInt_From_long(long value);
+
+static CYTHON_INLINE size_t __Pyx_PyInt_As_size_t(PyObject *);
 
 static CYTHON_INLINE long __Pyx_PyInt_As_long(PyObject *);
 
@@ -834,25 +892,36 @@ static int __Pyx_check_binary_version(void);
 static int __Pyx_InitStrings(__Pyx_StringTabEntry *t);
 
 static std::vector<std::string>  __pyx_f_16py_stringsimjoin_8apply_rf_10tokenizers_19WhitespaceTokenizer_tokenize(struct __pyx_obj_16py_stringsimjoin_8apply_rf_10tokenizers_WhitespaceTokenizer *__pyx_v_self, std::string const &__pyx_v_inp_string); /* proto*/
-static std::vector<std::string>  __pyx_f_16py_stringsimjoin_8apply_rf_10tokenizers_14QgramTokenizer_tokenize(struct __pyx_obj_16py_stringsimjoin_8apply_rf_10tokenizers_QgramTokenizer *__pyx_v_self, std::string const &__pyx_v_inp_string); /* proto*/
-
-/* Module declarations from 'libcpp' */
-
-/* Module declarations from 'libcpp.vector' */
+static std::vector<std::string>  __pyx_f_16py_stringsimjoin_8apply_rf_10tokenizers_14QgramTokenizer_tokenize(struct __pyx_obj_16py_stringsimjoin_8apply_rf_10tokenizers_QgramTokenizer *__pyx_v_self, std::string const &__pyx_v_inp_string, int __pyx_skip_dispatch); /* proto*/
 
 /* Module declarations from 'libc.string' */
 
-/* Module declarations from 'libcpp.string' */
+/* Module declarations from 'libc.stdlib' */
+
+/* Module declarations from 'libcpp.vector' */
 
 /* Module declarations from 'libcpp.utility' */
 
 /* Module declarations from 'libcpp.set' */
 
+/* Module declarations from 'libcpp.string' */
+
+/* Module declarations from 'libcpp' */
+
+/* Module declarations from 'libcpp.map' */
+
+/* Module declarations from 'libcpp.pair' */
+
+/* Module declarations from 'libc.stdio' */
+
 /* Module declarations from 'py_stringsimjoin.apply_rf.tokenizers' */
 static PyTypeObject *__pyx_ptype_16py_stringsimjoin_8apply_rf_10tokenizers_WhitespaceTokenizer = 0;
 static PyTypeObject *__pyx_ptype_16py_stringsimjoin_8apply_rf_10tokenizers_QgramTokenizer = 0;
+static std::vector<int>  __pyx_f_16py_stringsimjoin_8apply_rf_10tokenizers_split(std::string); /*proto*/
+static void __pyx_f_16py_stringsimjoin_8apply_rf_10tokenizers_tokenize(std::vector<std::string>  &, std::vector<std::string>  &, std::string const &, std::string const &, int __pyx_skip_dispatch); /*proto*/
 static void __pyx_f_16py_stringsimjoin_8apply_rf_10tokenizers_convert_to_vector(PyObject *, std::vector<std::string>  &); /*proto*/
 static std::string __pyx_convert_string_from_py_std__in_string(PyObject *); /*proto*/
+static std::vector<std::string>  __pyx_convert_vector_from_py_std_3a__3a_string(PyObject *); /*proto*/
 static CYTHON_INLINE PyObject *__pyx_convert_PyObject_string_to_py_std__in_string(std::string const &); /*proto*/
 static CYTHON_INLINE PyObject *__pyx_convert_PyUnicode_string_to_py_std__in_string(std::string const &); /*proto*/
 static CYTHON_INLINE PyObject *__pyx_convert_PyStr_string_to_py_std__in_string(std::string const &); /*proto*/
@@ -864,46 +933,85 @@ int __pyx_module_is_main_py_stringsimjoin__apply_rf__tokenizers = 0;
 
 /* Implementation of 'py_stringsimjoin.apply_rf.tokenizers' */
 static PyObject *__pyx_builtin_range;
+static PyObject *__pyx_builtin_open;
+static PyObject *__pyx_builtin_sorted;
 static char __pyx_k_[] = " ";
+static char __pyx_k_d[] = "%d";
 static char __pyx_k_q[] = "q";
 static char __pyx_k_s[] = "s";
 static char __pyx_k_t[] = "t";
+static char __pyx_k_w[] = "w";
 static char __pyx_k_df[] = "df";
+static char __pyx_k_fp[] = "fp";
+static char __pyx_k_gh[] = "gh";
+static char __pyx_k_st[] = "st";
 static char __pyx_k_ws[] = "ws";
 static char __pyx_k_0_9[] = "[0-9]+";
+static char __pyx_k__12[] = "";
+static char __pyx_k__13[] = "\n";
+static char __pyx_k_df1[] = "df1";
+static char __pyx_k_df2[] = "df2";
 static char __pyx_k_doc[] = "__doc__";
 static char __pyx_k_end[] = "end";
+static char __pyx_k_key[] = "key";
+static char __pyx_k_num[] = "num";
+static char __pyx_k_qg2[] = "qg2";
+static char __pyx_k_qg3[] = "qg3";
 static char __pyx_k_re2[] = "re2";
+static char __pyx_k_alph[] = "alph";
 static char __pyx_k_attr[] = "attr";
 static char __pyx_k_file[] = "file";
 static char __pyx_k_init[] = "__init__";
+static char __pyx_k_line[] = "line";
 static char __pyx_k_main[] = "__main__";
+static char __pyx_k_open[] = "open";
+static char __pyx_k_path[] = "path";
 static char __pyx_k_qval[] = "qval";
 static char __pyx_k_self[] = "self";
 static char __pyx_k_test[] = "__test__";
+static char __pyx_k_time[] = "time";
+static char __pyx_k_attr1[] = "attr1";
+static char __pyx_k_attr2[] = "attr2";
+static char __pyx_k_close[] = "close";
 static char __pyx_k_print[] = "print";
 static char __pyx_k_range[] = "range";
 static char __pyx_k_regex[] = "regex";
+static char __pyx_k_write[] = "write";
 static char __pyx_k_a_zA_Z[] = "[a-zA-Z]+";
 static char __pyx_k_import[] = "__import__";
+static char __pyx_k_ltable[] = "/ltable_";
 static char __pyx_k_module[] = "__module__";
+static char __pyx_k_rtable[] = "/rtable_";
+static char __pyx_k_sorted[] = "sorted";
+static char __pyx_k_time_2[] = "time : ";
 static char __pyx_k_tokens[] = "tokens";
 static char __pyx_k_compile[] = "compile";
 static char __pyx_k_findall[] = "findall";
+static char __pyx_k_ltokens[] = "ltokens";
 static char __pyx_k_padding[] = "padding";
 static char __pyx_k_prepare[] = "__prepare__";
+static char __pyx_k_rtokens[] = "rtokens";
 static char __pyx_k_strings[] = "strings";
+static char __pyx_k_alph_num[] = "alph_num";
+static char __pyx_k_load_tok[] = "load_tok";
+static char __pyx_k_lstrings[] = "lstrings";
+static char __pyx_k_operator[] = "operator";
 static char __pyx_k_qualname[] = "__qualname__";
+static char __pyx_k_rstrings[] = "rstrings";
 static char __pyx_k_test_tok[] = "test_tok";
+static char __pyx_k_tok_type[] = "tok_type";
 static char __pyx_k_tokenize[] = "tokenize";
 static char __pyx_k_a_zA_Z0_9[] = "[a-zA-Z0-9]+";
 static char __pyx_k_metaclass[] = "__metaclass__";
+static char __pyx_k_test_tok2[] = "test_tok2";
 static char __pyx_k_inp_string[] = "inp_string";
+static char __pyx_k_itemgetter[] = "itemgetter";
 static char __pyx_k_out_tokens[] = "out_tokens";
 static char __pyx_k_prefix_pad[] = "prefix_pad";
 static char __pyx_k_pyx_vtable[] = "__pyx_vtable__";
 static char __pyx_k_return_set[] = "return_set";
 static char __pyx_k_suffix_pad[] = "suffix_pad";
+static char __pyx_k_working_dir[] = "working_dir";
 static char __pyx_k_NumericTokenizer[] = "NumericTokenizer";
 static char __pyx_k_AlphabeticTokenizer[] = "AlphabeticTokenizer";
 static char __pyx_k_AlphanumericTokenizer[] = "AlphanumericTokenizer";
@@ -915,6 +1023,7 @@ static char __pyx_k_AlphanumericTokenizer___init[] = "AlphanumericTokenizer.__in
 static char __pyx_k_AlphanumericTokenizer_tokenize[] = "AlphanumericTokenizer.tokenize";
 static char __pyx_k_afs_cs_wisc_edu_u_p_a_paulgc_gi[] = "/afs/cs.wisc.edu/u/p/a/paulgc/git-repos/ssj_current/py_stringsimjoin/apply_rf/tokenizers.pyx";
 static char __pyx_k_py_stringsimjoin_apply_rf_tokeni[] = "py_stringsimjoin.apply_rf.tokenizers";
+static PyObject *__pyx_kp_b_;
 static PyObject *__pyx_kp_s_0_9;
 static PyObject *__pyx_n_s_AlphabeticTokenizer;
 static PyObject *__pyx_n_s_AlphabeticTokenizer___init;
@@ -925,48 +1034,86 @@ static PyObject *__pyx_n_s_AlphanumericTokenizer_tokenize;
 static PyObject *__pyx_n_s_NumericTokenizer;
 static PyObject *__pyx_n_s_NumericTokenizer___init;
 static PyObject *__pyx_n_s_NumericTokenizer_tokenize;
+static PyObject *__pyx_kp_b__12;
+static PyObject *__pyx_kp_s__13;
 static PyObject *__pyx_kp_s_a_zA_Z;
 static PyObject *__pyx_kp_s_a_zA_Z0_9;
 static PyObject *__pyx_kp_s_afs_cs_wisc_edu_u_p_a_paulgc_gi;
+static PyObject *__pyx_n_b_alph;
+static PyObject *__pyx_n_b_alph_num;
 static PyObject *__pyx_n_s_attr;
+static PyObject *__pyx_n_s_attr1;
+static PyObject *__pyx_n_s_attr2;
+static PyObject *__pyx_n_s_close;
 static PyObject *__pyx_n_s_compile;
 static PyObject *__pyx_n_s_df;
+static PyObject *__pyx_n_s_df1;
+static PyObject *__pyx_n_s_df2;
 static PyObject *__pyx_n_s_doc;
 static PyObject *__pyx_n_s_end;
 static PyObject *__pyx_n_s_file;
 static PyObject *__pyx_n_s_findall;
+static PyObject *__pyx_n_s_fp;
+static PyObject *__pyx_n_b_gh;
 static PyObject *__pyx_n_s_import;
 static PyObject *__pyx_n_s_init;
 static PyObject *__pyx_n_s_inp_string;
+static PyObject *__pyx_n_s_itemgetter;
+static PyObject *__pyx_n_s_key;
+static PyObject *__pyx_n_s_line;
+static PyObject *__pyx_n_s_load_tok;
+static PyObject *__pyx_n_s_lstrings;
+static PyObject *__pyx_kp_s_ltable;
+static PyObject *__pyx_n_s_ltokens;
 static PyObject *__pyx_n_s_main;
 static PyObject *__pyx_n_s_metaclass;
 static PyObject *__pyx_n_s_module;
+static PyObject *__pyx_n_b_num;
+static PyObject *__pyx_n_s_open;
+static PyObject *__pyx_n_s_operator;
 static PyObject *__pyx_n_s_out_tokens;
 static PyObject *__pyx_n_s_padding;
+static PyObject *__pyx_n_s_path;
 static PyObject *__pyx_n_s_prefix_pad;
 static PyObject *__pyx_n_s_prepare;
 static PyObject *__pyx_n_s_print;
 static PyObject *__pyx_n_s_py_stringsimjoin_apply_rf_tokeni;
 static PyObject *__pyx_n_s_pyx_vtable;
 static PyObject *__pyx_n_s_q;
+static PyObject *__pyx_n_b_qg2;
+static PyObject *__pyx_n_b_qg3;
 static PyObject *__pyx_n_s_qualname;
 static PyObject *__pyx_n_s_qval;
 static PyObject *__pyx_n_s_range;
 static PyObject *__pyx_n_s_re2;
 static PyObject *__pyx_n_s_regex;
 static PyObject *__pyx_n_s_return_set;
+static PyObject *__pyx_n_s_rstrings;
+static PyObject *__pyx_kp_s_rtable;
+static PyObject *__pyx_n_s_rtokens;
 static PyObject *__pyx_n_s_s;
 static PyObject *__pyx_n_s_self;
+static PyObject *__pyx_n_s_sorted;
+static PyObject *__pyx_n_s_st;
 static PyObject *__pyx_n_s_strings;
 static PyObject *__pyx_n_s_suffix_pad;
 static PyObject *__pyx_n_s_t;
 static PyObject *__pyx_n_s_test;
 static PyObject *__pyx_n_s_test_tok;
+static PyObject *__pyx_n_s_test_tok2;
+static PyObject *__pyx_n_s_time;
+static PyObject *__pyx_kp_s_time_2;
+static PyObject *__pyx_n_s_tok_type;
 static PyObject *__pyx_n_s_tokenize;
 static PyObject *__pyx_n_s_tokens;
+static PyObject *__pyx_n_s_w;
+static PyObject *__pyx_n_s_working_dir;
+static PyObject *__pyx_n_s_write;
+static PyObject *__pyx_n_b_ws;
 static PyObject *__pyx_n_s_ws;
 static int __pyx_pf_16py_stringsimjoin_8apply_rf_10tokenizers_19WhitespaceTokenizer___init__(struct __pyx_obj_16py_stringsimjoin_8apply_rf_10tokenizers_WhitespaceTokenizer *__pyx_v_self, bool __pyx_v_return_set); /* proto */
 static int __pyx_pf_16py_stringsimjoin_8apply_rf_10tokenizers_14QgramTokenizer___init__(struct __pyx_obj_16py_stringsimjoin_8apply_rf_10tokenizers_QgramTokenizer *__pyx_v_self, int __pyx_v_qval, bool __pyx_v_padding, char __pyx_v_prefix_pad, char __pyx_v_suffix_pad, bool __pyx_v_return_set); /* proto */
+static PyObject *__pyx_pf_16py_stringsimjoin_8apply_rf_10tokenizers_14QgramTokenizer_2tokenize(struct __pyx_obj_16py_stringsimjoin_8apply_rf_10tokenizers_QgramTokenizer *__pyx_v_self, std::string __pyx_v_inp_string); /* proto */
 static PyObject *__pyx_pf_16py_stringsimjoin_8apply_rf_10tokenizers_19AlphabeticTokenizer___init__(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self, PyObject *__pyx_v_return_set); /* proto */
 static PyObject *__pyx_pf_16py_stringsimjoin_8apply_rf_10tokenizers_19AlphabeticTokenizer_2tokenize(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self, std::string __pyx_v_inp_string); /* proto */
 static PyObject *__pyx_pf_16py_stringsimjoin_8apply_rf_10tokenizers_21AlphanumericTokenizer___init__(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self, PyObject *__pyx_v_return_set); /* proto */
@@ -974,30 +1121,47 @@ static PyObject *__pyx_pf_16py_stringsimjoin_8apply_rf_10tokenizers_21Alphanumer
 static PyObject *__pyx_pf_16py_stringsimjoin_8apply_rf_10tokenizers_16NumericTokenizer___init__(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self, PyObject *__pyx_v_return_set); /* proto */
 static PyObject *__pyx_pf_16py_stringsimjoin_8apply_rf_10tokenizers_16NumericTokenizer_2tokenize(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self, std::string __pyx_v_inp_string); /* proto */
 static PyObject *__pyx_pf_16py_stringsimjoin_8apply_rf_10tokenizers_test_tok(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_df, PyObject *__pyx_v_attr); /* proto */
+static PyObject *__pyx_pf_16py_stringsimjoin_8apply_rf_10tokenizers_2test_tok2(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_df1, PyObject *__pyx_v_attr1, PyObject *__pyx_v_df2, PyObject *__pyx_v_attr2); /* proto */
+static PyObject *__pyx_pf_16py_stringsimjoin_8apply_rf_10tokenizers_4load_tok(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_tok_type, PyObject *__pyx_v_path); /* proto */
+static PyObject *__pyx_pf_16py_stringsimjoin_8apply_rf_10tokenizers_6tokenize(CYTHON_UNUSED PyObject *__pyx_self, std::vector<std::string>  __pyx_v_lstrings, std::vector<std::string>  __pyx_v_rstrings, std::string __pyx_v_tok_type, std::string __pyx_v_working_dir); /* proto */
 static PyObject *__pyx_tp_new_16py_stringsimjoin_8apply_rf_10tokenizers_WhitespaceTokenizer(PyTypeObject *t, PyObject *a, PyObject *k); /*proto*/
 static PyObject *__pyx_tp_new_16py_stringsimjoin_8apply_rf_10tokenizers_QgramTokenizer(PyTypeObject *t, PyObject *a, PyObject *k); /*proto*/
+static PyObject *__pyx_int_1;
+static PyObject *__pyx_int_2;
+static PyObject *__pyx_int_3;
 static PyObject *__pyx_int_35;
 static PyObject *__pyx_int_36;
 static PyObject *__pyx_tuple__2;
 static PyObject *__pyx_tuple__3;
 static PyObject *__pyx_tuple__4;
 static PyObject *__pyx_tuple__5;
+static PyObject *__pyx_tuple__6;
 static PyObject *__pyx_tuple__7;
+static PyObject *__pyx_tuple__8;
 static PyObject *__pyx_tuple__9;
+static PyObject *__pyx_tuple__10;
 static PyObject *__pyx_tuple__11;
-static PyObject *__pyx_tuple__13;
-static PyObject *__pyx_tuple__15;
-static PyObject *__pyx_tuple__17;
-static PyObject *__pyx_codeobj__6;
-static PyObject *__pyx_codeobj__8;
-static PyObject *__pyx_codeobj__10;
-static PyObject *__pyx_codeobj__12;
-static PyObject *__pyx_codeobj__14;
-static PyObject *__pyx_codeobj__16;
-static PyObject *__pyx_codeobj__18;
+static PyObject *__pyx_tuple__14;
+static PyObject *__pyx_tuple__16;
+static PyObject *__pyx_tuple__18;
+static PyObject *__pyx_tuple__20;
+static PyObject *__pyx_tuple__22;
+static PyObject *__pyx_tuple__24;
+static PyObject *__pyx_tuple__26;
+static PyObject *__pyx_tuple__28;
+static PyObject *__pyx_tuple__30;
+static PyObject *__pyx_codeobj__15;
+static PyObject *__pyx_codeobj__17;
+static PyObject *__pyx_codeobj__19;
+static PyObject *__pyx_codeobj__21;
+static PyObject *__pyx_codeobj__23;
+static PyObject *__pyx_codeobj__25;
+static PyObject *__pyx_codeobj__27;
+static PyObject *__pyx_codeobj__29;
+static PyObject *__pyx_codeobj__31;
 
-/* "py_stringsimjoin/apply_rf/tokenizers.pyx":14
- * cdef class WhitespaceTokenizer:
+/* "py_stringsimjoin/apply_rf/tokenizers.pyx":24
+ *     cdef bool return_set
  * 
  *     def __init__(self, bool return_set):             # <<<<<<<<<<<<<<
  *         self.return_set = return_set
@@ -1032,18 +1196,18 @@ static int __pyx_pw_16py_stringsimjoin_8apply_rf_10tokenizers_19WhitespaceTokeni
         else goto __pyx_L5_argtuple_error;
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "__init__") < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 14; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "__init__") < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 24; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 1) {
       goto __pyx_L5_argtuple_error;
     } else {
       values[0] = PyTuple_GET_ITEM(__pyx_args, 0);
     }
-    __pyx_v_return_set = __Pyx_PyObject_IsTrue(values[0]); if (unlikely((__pyx_v_return_set == (bool)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 14; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+    __pyx_v_return_set = __Pyx_PyObject_IsTrue(values[0]); if (unlikely((__pyx_v_return_set == (bool)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 24; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("__init__", 1, 1, 1, PyTuple_GET_SIZE(__pyx_args)); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 14; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+  __Pyx_RaiseArgtupleInvalid("__init__", 1, 1, 1, PyTuple_GET_SIZE(__pyx_args)); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 24; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
   __pyx_L3_error:;
   __Pyx_AddTraceback("py_stringsimjoin.apply_rf.tokenizers.WhitespaceTokenizer.__init__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
@@ -1061,17 +1225,17 @@ static int __pyx_pf_16py_stringsimjoin_8apply_rf_10tokenizers_19WhitespaceTokeni
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__init__", 0);
 
-  /* "py_stringsimjoin/apply_rf/tokenizers.pyx":15
+  /* "py_stringsimjoin/apply_rf/tokenizers.pyx":25
  * 
  *     def __init__(self, bool return_set):
  *         self.return_set = return_set             # <<<<<<<<<<<<<<
  * 
- *     cdef vector[string] tokenize(self, const string& inp_string):
+ *     cdef vector[string] tokenize(self, const string& inp_string) nogil:
  */
   __pyx_v_self->return_set = __pyx_v_return_set;
 
-  /* "py_stringsimjoin/apply_rf/tokenizers.pyx":14
- * cdef class WhitespaceTokenizer:
+  /* "py_stringsimjoin/apply_rf/tokenizers.pyx":24
+ *     cdef bool return_set
  * 
  *     def __init__(self, bool return_set):             # <<<<<<<<<<<<<<
  *         self.return_set = return_set
@@ -1084,10 +1248,10 @@ static int __pyx_pf_16py_stringsimjoin_8apply_rf_10tokenizers_19WhitespaceTokeni
   return __pyx_r;
 }
 
-/* "py_stringsimjoin/apply_rf/tokenizers.pyx":17
+/* "py_stringsimjoin/apply_rf/tokenizers.pyx":27
  *         self.return_set = return_set
  * 
- *     cdef vector[string] tokenize(self, const string& inp_string):             # <<<<<<<<<<<<<<
+ *     cdef vector[string] tokenize(self, const string& inp_string) nogil:             # <<<<<<<<<<<<<<
  *         cdef char* pch
  *         pch = strtok (<char*> inp_string.c_str(), " ")
  */
@@ -1098,17 +1262,15 @@ static std::vector<std::string>  __pyx_f_16py_stringsimjoin_8apply_rf_10tokenize
   std::vector<std::string>  __pyx_v_out_tokens;
   std::string __pyx_v_s;
   std::vector<std::string>  __pyx_r;
-  __Pyx_RefNannyDeclarations
   int __pyx_t_1;
   std::string __pyx_t_2;
   std::set<std::string> ::iterator __pyx_t_3;
   int __pyx_lineno = 0;
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
-  __Pyx_RefNannySetupContext("tokenize", 0);
 
-  /* "py_stringsimjoin/apply_rf/tokenizers.pyx":19
- *     cdef vector[string] tokenize(self, const string& inp_string):
+  /* "py_stringsimjoin/apply_rf/tokenizers.pyx":29
+ *     cdef vector[string] tokenize(self, const string& inp_string) nogil:
  *         cdef char* pch
  *         pch = strtok (<char*> inp_string.c_str(), " ")             # <<<<<<<<<<<<<<
  *         cdef oset[string] tokens
@@ -1116,7 +1278,7 @@ static std::vector<std::string>  __pyx_f_16py_stringsimjoin_8apply_rf_10tokenize
  */
   __pyx_v_pch = strtok(((char *)__pyx_v_inp_string.c_str()), __pyx_k_);
 
-  /* "py_stringsimjoin/apply_rf/tokenizers.pyx":22
+  /* "py_stringsimjoin/apply_rf/tokenizers.pyx":32
  *         cdef oset[string] tokens
  *         cdef vector[string] out_tokens
  *         if self.return_set:             # <<<<<<<<<<<<<<
@@ -1126,7 +1288,7 @@ static std::vector<std::string>  __pyx_f_16py_stringsimjoin_8apply_rf_10tokenize
   __pyx_t_1 = (__pyx_v_self->return_set != 0);
   if (__pyx_t_1) {
 
-    /* "py_stringsimjoin/apply_rf/tokenizers.pyx":23
+    /* "py_stringsimjoin/apply_rf/tokenizers.pyx":33
  *         cdef vector[string] out_tokens
  *         if self.return_set:
  *             while pch != NULL:             # <<<<<<<<<<<<<<
@@ -1137,7 +1299,7 @@ static std::vector<std::string>  __pyx_f_16py_stringsimjoin_8apply_rf_10tokenize
       __pyx_t_1 = ((__pyx_v_pch != NULL) != 0);
       if (!__pyx_t_1) break;
 
-      /* "py_stringsimjoin/apply_rf/tokenizers.pyx":24
+      /* "py_stringsimjoin/apply_rf/tokenizers.pyx":34
  *         if self.return_set:
  *             while pch != NULL:
  *                 tokens.insert(string(pch))             # <<<<<<<<<<<<<<
@@ -1147,17 +1309,29 @@ static std::vector<std::string>  __pyx_f_16py_stringsimjoin_8apply_rf_10tokenize
       try {
         __pyx_t_2 = std::string(__pyx_v_pch);
       } catch(...) {
+        #ifdef WITH_THREAD
+        PyGILState_STATE __pyx_gilstate_save = PyGILState_Ensure();
+        #endif
         __Pyx_CppExn2PyErr();
-        {__pyx_filename = __pyx_f[0]; __pyx_lineno = 24; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        #ifdef WITH_THREAD
+        PyGILState_Release(__pyx_gilstate_save);
+        #endif
+        {__pyx_filename = __pyx_f[0]; __pyx_lineno = 34; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       }
       try {
         __pyx_v_tokens.insert(__pyx_t_2);
       } catch(...) {
+        #ifdef WITH_THREAD
+        PyGILState_STATE __pyx_gilstate_save = PyGILState_Ensure();
+        #endif
         __Pyx_CppExn2PyErr();
-        {__pyx_filename = __pyx_f[0]; __pyx_lineno = 24; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        #ifdef WITH_THREAD
+        PyGILState_Release(__pyx_gilstate_save);
+        #endif
+        {__pyx_filename = __pyx_f[0]; __pyx_lineno = 34; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       }
 
-      /* "py_stringsimjoin/apply_rf/tokenizers.pyx":25
+      /* "py_stringsimjoin/apply_rf/tokenizers.pyx":35
  *             while pch != NULL:
  *                 tokens.insert(string(pch))
  *                 pch = strtok (NULL, " ")             # <<<<<<<<<<<<<<
@@ -1167,7 +1341,7 @@ static std::vector<std::string>  __pyx_f_16py_stringsimjoin_8apply_rf_10tokenize
       __pyx_v_pch = strtok(NULL, __pyx_k_);
     }
 
-    /* "py_stringsimjoin/apply_rf/tokenizers.pyx":26
+    /* "py_stringsimjoin/apply_rf/tokenizers.pyx":36
  *                 tokens.insert(string(pch))
  *                 pch = strtok (NULL, " ")
  *             for s in tokens:             # <<<<<<<<<<<<<<
@@ -1181,7 +1355,7 @@ static std::vector<std::string>  __pyx_f_16py_stringsimjoin_8apply_rf_10tokenize
       ++__pyx_t_3;
       __pyx_v_s = __pyx_t_2;
 
-      /* "py_stringsimjoin/apply_rf/tokenizers.pyx":27
+      /* "py_stringsimjoin/apply_rf/tokenizers.pyx":37
  *                 pch = strtok (NULL, " ")
  *             for s in tokens:
  *                 out_tokens.push_back(s)             # <<<<<<<<<<<<<<
@@ -1191,11 +1365,17 @@ static std::vector<std::string>  __pyx_f_16py_stringsimjoin_8apply_rf_10tokenize
       try {
         __pyx_v_out_tokens.push_back(__pyx_v_s);
       } catch(...) {
+        #ifdef WITH_THREAD
+        PyGILState_STATE __pyx_gilstate_save = PyGILState_Ensure();
+        #endif
         __Pyx_CppExn2PyErr();
-        {__pyx_filename = __pyx_f[0]; __pyx_lineno = 27; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        #ifdef WITH_THREAD
+        PyGILState_Release(__pyx_gilstate_save);
+        #endif
+        {__pyx_filename = __pyx_f[0]; __pyx_lineno = 37; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       }
 
-      /* "py_stringsimjoin/apply_rf/tokenizers.pyx":26
+      /* "py_stringsimjoin/apply_rf/tokenizers.pyx":36
  *                 tokens.insert(string(pch))
  *                 pch = strtok (NULL, " ")
  *             for s in tokens:             # <<<<<<<<<<<<<<
@@ -1204,7 +1384,7 @@ static std::vector<std::string>  __pyx_f_16py_stringsimjoin_8apply_rf_10tokenize
  */
     }
 
-    /* "py_stringsimjoin/apply_rf/tokenizers.pyx":22
+    /* "py_stringsimjoin/apply_rf/tokenizers.pyx":32
  *         cdef oset[string] tokens
  *         cdef vector[string] out_tokens
  *         if self.return_set:             # <<<<<<<<<<<<<<
@@ -1214,7 +1394,7 @@ static std::vector<std::string>  __pyx_f_16py_stringsimjoin_8apply_rf_10tokenize
     goto __pyx_L3;
   }
 
-  /* "py_stringsimjoin/apply_rf/tokenizers.pyx":29
+  /* "py_stringsimjoin/apply_rf/tokenizers.pyx":39
  *                 out_tokens.push_back(s)
  *         else:
  *             while pch != NULL:             # <<<<<<<<<<<<<<
@@ -1226,7 +1406,7 @@ static std::vector<std::string>  __pyx_f_16py_stringsimjoin_8apply_rf_10tokenize
       __pyx_t_1 = ((__pyx_v_pch != NULL) != 0);
       if (!__pyx_t_1) break;
 
-      /* "py_stringsimjoin/apply_rf/tokenizers.pyx":30
+      /* "py_stringsimjoin/apply_rf/tokenizers.pyx":40
  *         else:
  *             while pch != NULL:
  *                 out_tokens.push_back(string(pch))             # <<<<<<<<<<<<<<
@@ -1236,17 +1416,29 @@ static std::vector<std::string>  __pyx_f_16py_stringsimjoin_8apply_rf_10tokenize
       try {
         __pyx_t_2 = std::string(__pyx_v_pch);
       } catch(...) {
+        #ifdef WITH_THREAD
+        PyGILState_STATE __pyx_gilstate_save = PyGILState_Ensure();
+        #endif
         __Pyx_CppExn2PyErr();
-        {__pyx_filename = __pyx_f[0]; __pyx_lineno = 30; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        #ifdef WITH_THREAD
+        PyGILState_Release(__pyx_gilstate_save);
+        #endif
+        {__pyx_filename = __pyx_f[0]; __pyx_lineno = 40; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       }
       try {
         __pyx_v_out_tokens.push_back(__pyx_t_2);
       } catch(...) {
+        #ifdef WITH_THREAD
+        PyGILState_STATE __pyx_gilstate_save = PyGILState_Ensure();
+        #endif
         __Pyx_CppExn2PyErr();
-        {__pyx_filename = __pyx_f[0]; __pyx_lineno = 30; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        #ifdef WITH_THREAD
+        PyGILState_Release(__pyx_gilstate_save);
+        #endif
+        {__pyx_filename = __pyx_f[0]; __pyx_lineno = 40; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       }
 
-      /* "py_stringsimjoin/apply_rf/tokenizers.pyx":31
+      /* "py_stringsimjoin/apply_rf/tokenizers.pyx":41
  *             while pch != NULL:
  *                 out_tokens.push_back(string(pch))
  *                 pch = strtok (NULL, " ")             # <<<<<<<<<<<<<<
@@ -1258,7 +1450,7 @@ static std::vector<std::string>  __pyx_f_16py_stringsimjoin_8apply_rf_10tokenize
   }
   __pyx_L3:;
 
-  /* "py_stringsimjoin/apply_rf/tokenizers.pyx":32
+  /* "py_stringsimjoin/apply_rf/tokenizers.pyx":42
  *                 out_tokens.push_back(string(pch))
  *                 pch = strtok (NULL, " ")
  *         return out_tokens             # <<<<<<<<<<<<<<
@@ -1268,25 +1460,24 @@ static std::vector<std::string>  __pyx_f_16py_stringsimjoin_8apply_rf_10tokenize
   __pyx_r = __pyx_v_out_tokens;
   goto __pyx_L0;
 
-  /* "py_stringsimjoin/apply_rf/tokenizers.pyx":17
+  /* "py_stringsimjoin/apply_rf/tokenizers.pyx":27
  *         self.return_set = return_set
  * 
- *     cdef vector[string] tokenize(self, const string& inp_string):             # <<<<<<<<<<<<<<
+ *     cdef vector[string] tokenize(self, const string& inp_string) nogil:             # <<<<<<<<<<<<<<
  *         cdef char* pch
  *         pch = strtok (<char*> inp_string.c_str(), " ")
  */
 
   /* function exit code */
   __pyx_L1_error:;
-  __Pyx_WriteUnraisable("py_stringsimjoin.apply_rf.tokenizers.WhitespaceTokenizer.tokenize", __pyx_clineno, __pyx_lineno, __pyx_filename, 0, 0);
+  __Pyx_WriteUnraisable("py_stringsimjoin.apply_rf.tokenizers.WhitespaceTokenizer.tokenize", __pyx_clineno, __pyx_lineno, __pyx_filename, 0, 1);
   __pyx_L0:;
-  __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-/* "py_stringsimjoin/apply_rf/tokenizers.pyx":35
+/* "py_stringsimjoin/apply_rf/tokenizers.pyx":49
+ *     cdef bool padding, return_set
  * 
- * cdef class QgramTokenizer:
  *     def __init__(self, int qval, bool padding, char prefix_pad, char suffix_pad,             # <<<<<<<<<<<<<<
  *                  bool return_set):
  *         self.qval = qval
@@ -1329,26 +1520,26 @@ static int __pyx_pw_16py_stringsimjoin_8apply_rf_10tokenizers_14QgramTokenizer_1
         case  1:
         if (likely((values[1] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_padding)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("__init__", 1, 5, 5, 1); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 35; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+          __Pyx_RaiseArgtupleInvalid("__init__", 1, 5, 5, 1); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 49; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
         }
         case  2:
         if (likely((values[2] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_prefix_pad)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("__init__", 1, 5, 5, 2); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 35; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+          __Pyx_RaiseArgtupleInvalid("__init__", 1, 5, 5, 2); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 49; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
         }
         case  3:
         if (likely((values[3] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_suffix_pad)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("__init__", 1, 5, 5, 3); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 35; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+          __Pyx_RaiseArgtupleInvalid("__init__", 1, 5, 5, 3); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 49; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
         }
         case  4:
         if (likely((values[4] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_return_set)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("__init__", 1, 5, 5, 4); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 35; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+          __Pyx_RaiseArgtupleInvalid("__init__", 1, 5, 5, 4); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 49; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "__init__") < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 35; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "__init__") < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 49; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 5) {
       goto __pyx_L5_argtuple_error;
@@ -1359,15 +1550,15 @@ static int __pyx_pw_16py_stringsimjoin_8apply_rf_10tokenizers_14QgramTokenizer_1
       values[3] = PyTuple_GET_ITEM(__pyx_args, 3);
       values[4] = PyTuple_GET_ITEM(__pyx_args, 4);
     }
-    __pyx_v_qval = __Pyx_PyInt_As_int(values[0]); if (unlikely((__pyx_v_qval == (int)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 35; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
-    __pyx_v_padding = __Pyx_PyObject_IsTrue(values[1]); if (unlikely((__pyx_v_padding == (bool)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 35; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
-    __pyx_v_prefix_pad = __Pyx_PyInt_As_char(values[2]); if (unlikely((__pyx_v_prefix_pad == (char)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 35; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
-    __pyx_v_suffix_pad = __Pyx_PyInt_As_char(values[3]); if (unlikely((__pyx_v_suffix_pad == (char)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 35; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
-    __pyx_v_return_set = __Pyx_PyObject_IsTrue(values[4]); if (unlikely((__pyx_v_return_set == (bool)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 36; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+    __pyx_v_qval = __Pyx_PyInt_As_int(values[0]); if (unlikely((__pyx_v_qval == (int)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 49; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+    __pyx_v_padding = __Pyx_PyObject_IsTrue(values[1]); if (unlikely((__pyx_v_padding == (bool)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 49; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+    __pyx_v_prefix_pad = __Pyx_PyInt_As_char(values[2]); if (unlikely((__pyx_v_prefix_pad == (char)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 49; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+    __pyx_v_suffix_pad = __Pyx_PyInt_As_char(values[3]); if (unlikely((__pyx_v_suffix_pad == (char)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 49; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+    __pyx_v_return_set = __Pyx_PyObject_IsTrue(values[4]); if (unlikely((__pyx_v_return_set == (bool)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 50; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("__init__", 1, 5, 5, PyTuple_GET_SIZE(__pyx_args)); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 35; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+  __Pyx_RaiseArgtupleInvalid("__init__", 1, 5, 5, PyTuple_GET_SIZE(__pyx_args)); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 49; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
   __pyx_L3_error:;
   __Pyx_AddTraceback("py_stringsimjoin.apply_rf.tokenizers.QgramTokenizer.__init__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
@@ -1385,7 +1576,7 @@ static int __pyx_pf_16py_stringsimjoin_8apply_rf_10tokenizers_14QgramTokenizer__
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__init__", 0);
 
-  /* "py_stringsimjoin/apply_rf/tokenizers.pyx":37
+  /* "py_stringsimjoin/apply_rf/tokenizers.pyx":51
  *     def __init__(self, int qval, bool padding, char prefix_pad, char suffix_pad,
  *                  bool return_set):
  *         self.qval = qval             # <<<<<<<<<<<<<<
@@ -1394,7 +1585,7 @@ static int __pyx_pf_16py_stringsimjoin_8apply_rf_10tokenizers_14QgramTokenizer__
  */
   __pyx_v_self->qval = __pyx_v_qval;
 
-  /* "py_stringsimjoin/apply_rf/tokenizers.pyx":38
+  /* "py_stringsimjoin/apply_rf/tokenizers.pyx":52
  *                  bool return_set):
  *         self.qval = qval
  *         self.padding = padding             # <<<<<<<<<<<<<<
@@ -1403,7 +1594,7 @@ static int __pyx_pf_16py_stringsimjoin_8apply_rf_10tokenizers_14QgramTokenizer__
  */
   __pyx_v_self->padding = __pyx_v_padding;
 
-  /* "py_stringsimjoin/apply_rf/tokenizers.pyx":39
+  /* "py_stringsimjoin/apply_rf/tokenizers.pyx":53
  *         self.qval = qval
  *         self.padding = padding
  *         self.prefix_pad = prefix_pad             # <<<<<<<<<<<<<<
@@ -1412,7 +1603,7 @@ static int __pyx_pf_16py_stringsimjoin_8apply_rf_10tokenizers_14QgramTokenizer__
  */
   __pyx_v_self->prefix_pad = __pyx_v_prefix_pad;
 
-  /* "py_stringsimjoin/apply_rf/tokenizers.pyx":40
+  /* "py_stringsimjoin/apply_rf/tokenizers.pyx":54
  *         self.padding = padding
  *         self.prefix_pad = prefix_pad
  *         self.suffix_pad = suffix_pad             # <<<<<<<<<<<<<<
@@ -1421,18 +1612,18 @@ static int __pyx_pf_16py_stringsimjoin_8apply_rf_10tokenizers_14QgramTokenizer__
  */
   __pyx_v_self->suffix_pad = __pyx_v_suffix_pad;
 
-  /* "py_stringsimjoin/apply_rf/tokenizers.pyx":41
+  /* "py_stringsimjoin/apply_rf/tokenizers.pyx":55
  *         self.prefix_pad = prefix_pad
  *         self.suffix_pad = suffix_pad
  *         self.return_set = return_set             # <<<<<<<<<<<<<<
  * 
- *     cdef vector[string] tokenize(self, const string& inp_string):
+ *     cpdef vector[string] tokenize(self, const string& inp_string):
  */
   __pyx_v_self->return_set = __pyx_v_return_set;
 
-  /* "py_stringsimjoin/apply_rf/tokenizers.pyx":35
+  /* "py_stringsimjoin/apply_rf/tokenizers.pyx":49
+ *     cdef bool padding, return_set
  * 
- * cdef class QgramTokenizer:
  *     def __init__(self, int qval, bool padding, char prefix_pad, char suffix_pad,             # <<<<<<<<<<<<<<
  *                  bool return_set):
  *         self.qval = qval
@@ -1444,54 +1635,106 @@ static int __pyx_pf_16py_stringsimjoin_8apply_rf_10tokenizers_14QgramTokenizer__
   return __pyx_r;
 }
 
-/* "py_stringsimjoin/apply_rf/tokenizers.pyx":43
+/* "py_stringsimjoin/apply_rf/tokenizers.pyx":57
  *         self.return_set = return_set
  * 
- *     cdef vector[string] tokenize(self, const string& inp_string):             # <<<<<<<<<<<<<<
+ *     cpdef vector[string] tokenize(self, const string& inp_string):             # <<<<<<<<<<<<<<
  *         cdef string inp_str = inp_string;
  *         if self.padding:
  */
 
-static std::vector<std::string>  __pyx_f_16py_stringsimjoin_8apply_rf_10tokenizers_14QgramTokenizer_tokenize(struct __pyx_obj_16py_stringsimjoin_8apply_rf_10tokenizers_QgramTokenizer *__pyx_v_self, std::string const &__pyx_v_inp_string) {
+static PyObject *__pyx_pw_16py_stringsimjoin_8apply_rf_10tokenizers_14QgramTokenizer_3tokenize(PyObject *__pyx_v_self, PyObject *__pyx_arg_inp_string); /*proto*/
+static std::vector<std::string>  __pyx_f_16py_stringsimjoin_8apply_rf_10tokenizers_14QgramTokenizer_tokenize(struct __pyx_obj_16py_stringsimjoin_8apply_rf_10tokenizers_QgramTokenizer *__pyx_v_self, std::string const &__pyx_v_inp_string, int __pyx_skip_dispatch) {
   std::string __pyx_v_inp_str;
   std::set<std::string>  __pyx_v_tokens;
   std::vector<std::string>  __pyx_v_out_tokens;
-  int __pyx_v_i;
-  int __pyx_v_n;
+  unsigned int __pyx_v_i;
+  unsigned int __pyx_v_n;
   std::string __pyx_v_s;
   std::vector<std::string>  __pyx_r;
   __Pyx_RefNannyDeclarations
-  int __pyx_t_1;
-  std::string __pyx_t_2;
-  std::string __pyx_t_3;
-  int __pyx_t_4;
-  int __pyx_t_5;
-  std::set<std::string> ::iterator __pyx_t_6;
+  PyObject *__pyx_t_1 = NULL;
+  PyObject *__pyx_t_2 = NULL;
+  PyObject *__pyx_t_3 = NULL;
+  PyObject *__pyx_t_4 = NULL;
+  PyObject *__pyx_t_5 = NULL;
+  PyObject *__pyx_t_6 = NULL;
+  std::vector<std::string>  __pyx_t_7;
+  int __pyx_t_8;
+  std::string __pyx_t_9;
+  std::string __pyx_t_10;
+  unsigned int __pyx_t_11;
+  unsigned int __pyx_t_12;
+  std::set<std::string> ::iterator __pyx_t_13;
   int __pyx_lineno = 0;
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("tokenize", 0);
+  /* Check if called by wrapper */
+  if (unlikely(__pyx_skip_dispatch)) ;
+  /* Check if overridden in Python */
+  else if (unlikely(Py_TYPE(((PyObject *)__pyx_v_self))->tp_dictoffset != 0)) {
+    __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_tokenize); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 57; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __Pyx_GOTREF(__pyx_t_1);
+    if (!PyCFunction_Check(__pyx_t_1) || (PyCFunction_GET_FUNCTION(__pyx_t_1) != (PyCFunction)__pyx_pw_16py_stringsimjoin_8apply_rf_10tokenizers_14QgramTokenizer_3tokenize)) {
+      __pyx_t_3 = __pyx_convert_PyBytes_string_to_py_std__in_string(__pyx_v_inp_string); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 57; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __Pyx_GOTREF(__pyx_t_3);
+      __Pyx_INCREF(__pyx_t_1);
+      __pyx_t_4 = __pyx_t_1; __pyx_t_5 = NULL;
+      if (CYTHON_COMPILING_IN_CPYTHON && unlikely(PyMethod_Check(__pyx_t_4))) {
+        __pyx_t_5 = PyMethod_GET_SELF(__pyx_t_4);
+        if (likely(__pyx_t_5)) {
+          PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_4);
+          __Pyx_INCREF(__pyx_t_5);
+          __Pyx_INCREF(function);
+          __Pyx_DECREF_SET(__pyx_t_4, function);
+        }
+      }
+      if (!__pyx_t_5) {
+        __pyx_t_2 = __Pyx_PyObject_CallOneArg(__pyx_t_4, __pyx_t_3); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 57; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+        __Pyx_GOTREF(__pyx_t_2);
+      } else {
+        __pyx_t_6 = PyTuple_New(1+1); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 57; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        __Pyx_GOTREF(__pyx_t_6);
+        __Pyx_GIVEREF(__pyx_t_5); PyTuple_SET_ITEM(__pyx_t_6, 0, __pyx_t_5); __pyx_t_5 = NULL;
+        __Pyx_GIVEREF(__pyx_t_3);
+        PyTuple_SET_ITEM(__pyx_t_6, 0+1, __pyx_t_3);
+        __pyx_t_3 = 0;
+        __pyx_t_2 = __Pyx_PyObject_Call(__pyx_t_4, __pyx_t_6, NULL); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 57; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        __Pyx_GOTREF(__pyx_t_2);
+        __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
+      }
+      __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+      __pyx_t_7 = __pyx_convert_vector_from_py_std_3a__3a_string(__pyx_t_2); if (unlikely(PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 57; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+      __pyx_r = __pyx_t_7;
+      __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+      goto __pyx_L0;
+    }
+    __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  }
 
-  /* "py_stringsimjoin/apply_rf/tokenizers.pyx":44
+  /* "py_stringsimjoin/apply_rf/tokenizers.pyx":58
  * 
- *     cdef vector[string] tokenize(self, const string& inp_string):
+ *     cpdef vector[string] tokenize(self, const string& inp_string):
  *         cdef string inp_str = inp_string;             # <<<<<<<<<<<<<<
  *         if self.padding:
  *             inp_str = string(self.qval - 1, self.prefix_pad) + inp_str + string(self.qval - 1, self.suffix_pad)
  */
   __pyx_v_inp_str = __pyx_v_inp_string;
 
-  /* "py_stringsimjoin/apply_rf/tokenizers.pyx":45
- *     cdef vector[string] tokenize(self, const string& inp_string):
+  /* "py_stringsimjoin/apply_rf/tokenizers.pyx":59
+ *     cpdef vector[string] tokenize(self, const string& inp_string):
  *         cdef string inp_str = inp_string;
  *         if self.padding:             # <<<<<<<<<<<<<<
  *             inp_str = string(self.qval - 1, self.prefix_pad) + inp_str + string(self.qval - 1, self.suffix_pad)
  *         cdef oset[string] tokens
  */
-  __pyx_t_1 = (__pyx_v_self->padding != 0);
-  if (__pyx_t_1) {
+  __pyx_t_8 = (__pyx_v_self->padding != 0);
+  if (__pyx_t_8) {
 
-    /* "py_stringsimjoin/apply_rf/tokenizers.pyx":46
+    /* "py_stringsimjoin/apply_rf/tokenizers.pyx":60
  *         cdef string inp_str = inp_string;
  *         if self.padding:
  *             inp_str = string(self.qval - 1, self.prefix_pad) + inp_str + string(self.qval - 1, self.suffix_pad)             # <<<<<<<<<<<<<<
@@ -1499,21 +1742,21 @@ static std::vector<std::string>  __pyx_f_16py_stringsimjoin_8apply_rf_10tokenize
  *         cdef vector[string] out_tokens
  */
     try {
-      __pyx_t_2 = std::string((__pyx_v_self->qval - 1), __pyx_v_self->prefix_pad);
+      __pyx_t_9 = std::string((__pyx_v_self->qval - 1), __pyx_v_self->prefix_pad);
     } catch(...) {
       __Pyx_CppExn2PyErr();
-      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 46; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 60; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     }
     try {
-      __pyx_t_3 = std::string((__pyx_v_self->qval - 1), __pyx_v_self->suffix_pad);
+      __pyx_t_10 = std::string((__pyx_v_self->qval - 1), __pyx_v_self->suffix_pad);
     } catch(...) {
       __Pyx_CppExn2PyErr();
-      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 46; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 60; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     }
-    __pyx_v_inp_str = ((__pyx_t_2 + __pyx_v_inp_str) + __pyx_t_3);
+    __pyx_v_inp_str = ((__pyx_t_9 + __pyx_v_inp_str) + __pyx_t_10);
 
-    /* "py_stringsimjoin/apply_rf/tokenizers.pyx":45
- *     cdef vector[string] tokenize(self, const string& inp_string):
+    /* "py_stringsimjoin/apply_rf/tokenizers.pyx":59
+ *     cpdef vector[string] tokenize(self, const string& inp_string):
  *         cdef string inp_str = inp_string;
  *         if self.padding:             # <<<<<<<<<<<<<<
  *             inp_str = string(self.qval - 1, self.prefix_pad) + inp_str + string(self.qval - 1, self.suffix_pad)
@@ -1521,37 +1764,37 @@ static std::vector<std::string>  __pyx_f_16py_stringsimjoin_8apply_rf_10tokenize
  */
   }
 
-  /* "py_stringsimjoin/apply_rf/tokenizers.pyx":49
+  /* "py_stringsimjoin/apply_rf/tokenizers.pyx":63
  *         cdef oset[string] tokens
  *         cdef vector[string] out_tokens
- *         cdef int i, n = inp_str.length() - self.qval + 1             # <<<<<<<<<<<<<<
+ *         cdef unsigned int i, n = inp_str.length() - self.qval + 1             # <<<<<<<<<<<<<<
  *         if self.return_set:
  *             for i in range(n):
  */
   __pyx_v_n = ((__pyx_v_inp_str.length() - __pyx_v_self->qval) + 1);
 
-  /* "py_stringsimjoin/apply_rf/tokenizers.pyx":50
+  /* "py_stringsimjoin/apply_rf/tokenizers.pyx":64
  *         cdef vector[string] out_tokens
- *         cdef int i, n = inp_str.length() - self.qval + 1
+ *         cdef unsigned int i, n = inp_str.length() - self.qval + 1
  *         if self.return_set:             # <<<<<<<<<<<<<<
  *             for i in range(n):
  *                 tokens.insert(inp_str.substr(i, self.qval))
  */
-  __pyx_t_1 = (__pyx_v_self->return_set != 0);
-  if (__pyx_t_1) {
+  __pyx_t_8 = (__pyx_v_self->return_set != 0);
+  if (__pyx_t_8) {
 
-    /* "py_stringsimjoin/apply_rf/tokenizers.pyx":51
- *         cdef int i, n = inp_str.length() - self.qval + 1
+    /* "py_stringsimjoin/apply_rf/tokenizers.pyx":65
+ *         cdef unsigned int i, n = inp_str.length() - self.qval + 1
  *         if self.return_set:
  *             for i in range(n):             # <<<<<<<<<<<<<<
  *                 tokens.insert(inp_str.substr(i, self.qval))
  *             for s in tokens:
  */
-    __pyx_t_4 = __pyx_v_n;
-    for (__pyx_t_5 = 0; __pyx_t_5 < __pyx_t_4; __pyx_t_5+=1) {
-      __pyx_v_i = __pyx_t_5;
+    __pyx_t_11 = __pyx_v_n;
+    for (__pyx_t_12 = 0; __pyx_t_12 < __pyx_t_11; __pyx_t_12+=1) {
+      __pyx_v_i = __pyx_t_12;
 
-      /* "py_stringsimjoin/apply_rf/tokenizers.pyx":52
+      /* "py_stringsimjoin/apply_rf/tokenizers.pyx":66
  *         if self.return_set:
  *             for i in range(n):
  *                 tokens.insert(inp_str.substr(i, self.qval))             # <<<<<<<<<<<<<<
@@ -1562,25 +1805,25 @@ static std::vector<std::string>  __pyx_f_16py_stringsimjoin_8apply_rf_10tokenize
         __pyx_v_tokens.insert(__pyx_v_inp_str.substr(__pyx_v_i, __pyx_v_self->qval));
       } catch(...) {
         __Pyx_CppExn2PyErr();
-        {__pyx_filename = __pyx_f[0]; __pyx_lineno = 52; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        {__pyx_filename = __pyx_f[0]; __pyx_lineno = 66; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       }
     }
 
-    /* "py_stringsimjoin/apply_rf/tokenizers.pyx":53
+    /* "py_stringsimjoin/apply_rf/tokenizers.pyx":67
  *             for i in range(n):
  *                 tokens.insert(inp_str.substr(i, self.qval))
  *             for s in tokens:             # <<<<<<<<<<<<<<
  *                 out_tokens.push_back(s)
  *         else:
  */
-    __pyx_t_6 = __pyx_v_tokens.begin();
+    __pyx_t_13 = __pyx_v_tokens.begin();
     for (;;) {
-      if (!(__pyx_t_6 != __pyx_v_tokens.end())) break;
-      __pyx_t_3 = *__pyx_t_6;
-      ++__pyx_t_6;
-      __pyx_v_s = __pyx_t_3;
+      if (!(__pyx_t_13 != __pyx_v_tokens.end())) break;
+      __pyx_t_10 = *__pyx_t_13;
+      ++__pyx_t_13;
+      __pyx_v_s = __pyx_t_10;
 
-      /* "py_stringsimjoin/apply_rf/tokenizers.pyx":54
+      /* "py_stringsimjoin/apply_rf/tokenizers.pyx":68
  *                 tokens.insert(inp_str.substr(i, self.qval))
  *             for s in tokens:
  *                 out_tokens.push_back(s)             # <<<<<<<<<<<<<<
@@ -1591,10 +1834,10 @@ static std::vector<std::string>  __pyx_f_16py_stringsimjoin_8apply_rf_10tokenize
         __pyx_v_out_tokens.push_back(__pyx_v_s);
       } catch(...) {
         __Pyx_CppExn2PyErr();
-        {__pyx_filename = __pyx_f[0]; __pyx_lineno = 54; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        {__pyx_filename = __pyx_f[0]; __pyx_lineno = 68; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       }
 
-      /* "py_stringsimjoin/apply_rf/tokenizers.pyx":53
+      /* "py_stringsimjoin/apply_rf/tokenizers.pyx":67
  *             for i in range(n):
  *                 tokens.insert(inp_str.substr(i, self.qval))
  *             for s in tokens:             # <<<<<<<<<<<<<<
@@ -1603,9 +1846,9 @@ static std::vector<std::string>  __pyx_f_16py_stringsimjoin_8apply_rf_10tokenize
  */
     }
 
-    /* "py_stringsimjoin/apply_rf/tokenizers.pyx":50
+    /* "py_stringsimjoin/apply_rf/tokenizers.pyx":64
  *         cdef vector[string] out_tokens
- *         cdef int i, n = inp_str.length() - self.qval + 1
+ *         cdef unsigned int i, n = inp_str.length() - self.qval + 1
  *         if self.return_set:             # <<<<<<<<<<<<<<
  *             for i in range(n):
  *                 tokens.insert(inp_str.substr(i, self.qval))
@@ -1613,7 +1856,7 @@ static std::vector<std::string>  __pyx_f_16py_stringsimjoin_8apply_rf_10tokenize
     goto __pyx_L4;
   }
 
-  /* "py_stringsimjoin/apply_rf/tokenizers.pyx":56
+  /* "py_stringsimjoin/apply_rf/tokenizers.pyx":70
  *                 out_tokens.push_back(s)
  *         else:
  *             for i in range(n):             # <<<<<<<<<<<<<<
@@ -1621,11 +1864,11 @@ static std::vector<std::string>  __pyx_f_16py_stringsimjoin_8apply_rf_10tokenize
  *         return out_tokens
  */
   /*else*/ {
-    __pyx_t_4 = __pyx_v_n;
-    for (__pyx_t_5 = 0; __pyx_t_5 < __pyx_t_4; __pyx_t_5+=1) {
-      __pyx_v_i = __pyx_t_5;
+    __pyx_t_11 = __pyx_v_n;
+    for (__pyx_t_12 = 0; __pyx_t_12 < __pyx_t_11; __pyx_t_12+=1) {
+      __pyx_v_i = __pyx_t_12;
 
-      /* "py_stringsimjoin/apply_rf/tokenizers.pyx":57
+      /* "py_stringsimjoin/apply_rf/tokenizers.pyx":71
  *         else:
  *             for i in range(n):
  *                 out_tokens.push_back(inp_str.substr(i, self.qval))             # <<<<<<<<<<<<<<
@@ -1636,13 +1879,13 @@ static std::vector<std::string>  __pyx_f_16py_stringsimjoin_8apply_rf_10tokenize
         __pyx_v_out_tokens.push_back(__pyx_v_inp_str.substr(__pyx_v_i, __pyx_v_self->qval));
       } catch(...) {
         __Pyx_CppExn2PyErr();
-        {__pyx_filename = __pyx_f[0]; __pyx_lineno = 57; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        {__pyx_filename = __pyx_f[0]; __pyx_lineno = 71; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       }
     }
   }
   __pyx_L4:;
 
-  /* "py_stringsimjoin/apply_rf/tokenizers.pyx":58
+  /* "py_stringsimjoin/apply_rf/tokenizers.pyx":72
  *             for i in range(n):
  *                 out_tokens.push_back(inp_str.substr(i, self.qval))
  *         return out_tokens             # <<<<<<<<<<<<<<
@@ -1652,23 +1895,81 @@ static std::vector<std::string>  __pyx_f_16py_stringsimjoin_8apply_rf_10tokenize
   __pyx_r = __pyx_v_out_tokens;
   goto __pyx_L0;
 
-  /* "py_stringsimjoin/apply_rf/tokenizers.pyx":43
+  /* "py_stringsimjoin/apply_rf/tokenizers.pyx":57
  *         self.return_set = return_set
  * 
- *     cdef vector[string] tokenize(self, const string& inp_string):             # <<<<<<<<<<<<<<
+ *     cpdef vector[string] tokenize(self, const string& inp_string):             # <<<<<<<<<<<<<<
  *         cdef string inp_str = inp_string;
  *         if self.padding:
  */
 
   /* function exit code */
   __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
+  __Pyx_XDECREF(__pyx_t_2);
+  __Pyx_XDECREF(__pyx_t_3);
+  __Pyx_XDECREF(__pyx_t_4);
+  __Pyx_XDECREF(__pyx_t_5);
+  __Pyx_XDECREF(__pyx_t_6);
   __Pyx_WriteUnraisable("py_stringsimjoin.apply_rf.tokenizers.QgramTokenizer.tokenize", __pyx_clineno, __pyx_lineno, __pyx_filename, 0, 0);
   __pyx_L0:;
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-/* "py_stringsimjoin/apply_rf/tokenizers.pyx":61
+/* Python wrapper */
+static PyObject *__pyx_pw_16py_stringsimjoin_8apply_rf_10tokenizers_14QgramTokenizer_3tokenize(PyObject *__pyx_v_self, PyObject *__pyx_arg_inp_string); /*proto*/
+static PyObject *__pyx_pw_16py_stringsimjoin_8apply_rf_10tokenizers_14QgramTokenizer_3tokenize(PyObject *__pyx_v_self, PyObject *__pyx_arg_inp_string) {
+  std::string __pyx_v_inp_string;
+  int __pyx_lineno = 0;
+  const char *__pyx_filename = NULL;
+  int __pyx_clineno = 0;
+  PyObject *__pyx_r = 0;
+  __Pyx_RefNannyDeclarations
+  __Pyx_RefNannySetupContext("tokenize (wrapper)", 0);
+  assert(__pyx_arg_inp_string); {
+    __pyx_v_inp_string = __pyx_convert_string_from_py_std__in_string(__pyx_arg_inp_string); if (unlikely(PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 57; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+  }
+  goto __pyx_L4_argument_unpacking_done;
+  __pyx_L3_error:;
+  __Pyx_AddTraceback("py_stringsimjoin.apply_rf.tokenizers.QgramTokenizer.tokenize", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_RefNannyFinishContext();
+  return NULL;
+  __pyx_L4_argument_unpacking_done:;
+  __pyx_r = __pyx_pf_16py_stringsimjoin_8apply_rf_10tokenizers_14QgramTokenizer_2tokenize(((struct __pyx_obj_16py_stringsimjoin_8apply_rf_10tokenizers_QgramTokenizer *)__pyx_v_self), ((std::string)__pyx_v_inp_string));
+
+  /* function exit code */
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+static PyObject *__pyx_pf_16py_stringsimjoin_8apply_rf_10tokenizers_14QgramTokenizer_2tokenize(struct __pyx_obj_16py_stringsimjoin_8apply_rf_10tokenizers_QgramTokenizer *__pyx_v_self, std::string __pyx_v_inp_string) {
+  PyObject *__pyx_r = NULL;
+  __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
+  int __pyx_lineno = 0;
+  const char *__pyx_filename = NULL;
+  int __pyx_clineno = 0;
+  __Pyx_RefNannySetupContext("tokenize", 0);
+  __Pyx_XDECREF(__pyx_r);
+  __pyx_t_1 = __pyx_convert_vector_to_py_std_3a__3a_string(__pyx_f_16py_stringsimjoin_8apply_rf_10tokenizers_14QgramTokenizer_tokenize(__pyx_v_self, __pyx_v_inp_string, 1)); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 57; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_1);
+  __pyx_r = __pyx_t_1;
+  __pyx_t_1 = 0;
+  goto __pyx_L0;
+
+  /* function exit code */
+  __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
+  __Pyx_AddTraceback("py_stringsimjoin.apply_rf.tokenizers.QgramTokenizer.tokenize", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __pyx_r = NULL;
+  __pyx_L0:;
+  __Pyx_XGIVEREF(__pyx_r);
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+/* "py_stringsimjoin/apply_rf/tokenizers.pyx":75
  * 
  * class AlphabeticTokenizer:
  *     def __init__(self, return_set):             # <<<<<<<<<<<<<<
@@ -1708,11 +2009,11 @@ static PyObject *__pyx_pw_16py_stringsimjoin_8apply_rf_10tokenizers_19Alphabetic
         case  1:
         if (likely((values[1] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_return_set)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("__init__", 1, 2, 2, 1); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 61; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+          __Pyx_RaiseArgtupleInvalid("__init__", 1, 2, 2, 1); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 75; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "__init__") < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 61; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "__init__") < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 75; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 2) {
       goto __pyx_L5_argtuple_error;
@@ -1725,7 +2026,7 @@ static PyObject *__pyx_pw_16py_stringsimjoin_8apply_rf_10tokenizers_19Alphabetic
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("__init__", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 61; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+  __Pyx_RaiseArgtupleInvalid("__init__", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 75; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
   __pyx_L3_error:;
   __Pyx_AddTraceback("py_stringsimjoin.apply_rf.tokenizers.AlphabeticTokenizer.__init__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
@@ -1748,34 +2049,34 @@ static PyObject *__pyx_pf_16py_stringsimjoin_8apply_rf_10tokenizers_19Alphabetic
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__init__", 0);
 
-  /* "py_stringsimjoin/apply_rf/tokenizers.pyx":62
+  /* "py_stringsimjoin/apply_rf/tokenizers.pyx":76
  * class AlphabeticTokenizer:
  *     def __init__(self, return_set):
  *         self.regex = re2.compile('[a-zA-Z]+')             # <<<<<<<<<<<<<<
  *         self.return_set = return_set
  * 
  */
-  __pyx_t_1 = __Pyx_GetModuleGlobalName(__pyx_n_s_re2); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 62; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = __Pyx_GetModuleGlobalName(__pyx_n_s_re2); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 76; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_compile); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 62; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_compile); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 76; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_tuple__2, NULL); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 62; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_tuple__2, NULL); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 76; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  if (__Pyx_PyObject_SetAttrStr(__pyx_v_self, __pyx_n_s_regex, __pyx_t_1) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 62; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (__Pyx_PyObject_SetAttrStr(__pyx_v_self, __pyx_n_s_regex, __pyx_t_1) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 76; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "py_stringsimjoin/apply_rf/tokenizers.pyx":63
+  /* "py_stringsimjoin/apply_rf/tokenizers.pyx":77
  *     def __init__(self, return_set):
  *         self.regex = re2.compile('[a-zA-Z]+')
  *         self.return_set = return_set             # <<<<<<<<<<<<<<
  * 
  *     def tokenize(self, const string& inp_string):
  */
-  if (__Pyx_PyObject_SetAttrStr(__pyx_v_self, __pyx_n_s_return_set, __pyx_v_return_set) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 63; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (__Pyx_PyObject_SetAttrStr(__pyx_v_self, __pyx_n_s_return_set, __pyx_v_return_set) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 77; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
 
-  /* "py_stringsimjoin/apply_rf/tokenizers.pyx":61
+  /* "py_stringsimjoin/apply_rf/tokenizers.pyx":75
  * 
  * class AlphabeticTokenizer:
  *     def __init__(self, return_set):             # <<<<<<<<<<<<<<
@@ -1797,7 +2098,7 @@ static PyObject *__pyx_pf_16py_stringsimjoin_8apply_rf_10tokenizers_19Alphabetic
   return __pyx_r;
 }
 
-/* "py_stringsimjoin/apply_rf/tokenizers.pyx":65
+/* "py_stringsimjoin/apply_rf/tokenizers.pyx":79
  *         self.return_set = return_set
  * 
  *     def tokenize(self, const string& inp_string):             # <<<<<<<<<<<<<<
@@ -1837,11 +2138,11 @@ static PyObject *__pyx_pw_16py_stringsimjoin_8apply_rf_10tokenizers_19Alphabetic
         case  1:
         if (likely((values[1] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_inp_string)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("tokenize", 1, 2, 2, 1); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 65; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+          __Pyx_RaiseArgtupleInvalid("tokenize", 1, 2, 2, 1); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 79; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "tokenize") < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 65; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "tokenize") < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 79; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 2) {
       goto __pyx_L5_argtuple_error;
@@ -1850,11 +2151,11 @@ static PyObject *__pyx_pw_16py_stringsimjoin_8apply_rf_10tokenizers_19Alphabetic
       values[1] = PyTuple_GET_ITEM(__pyx_args, 1);
     }
     __pyx_v_self = values[0];
-    __pyx_v_inp_string = __pyx_convert_string_from_py_std__in_string(values[1]); if (unlikely(PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 65; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+    __pyx_v_inp_string = __pyx_convert_string_from_py_std__in_string(values[1]); if (unlikely(PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 79; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("tokenize", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 65; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+  __Pyx_RaiseArgtupleInvalid("tokenize", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 79; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
   __pyx_L3_error:;
   __Pyx_AddTraceback("py_stringsimjoin.apply_rf.tokenizers.AlphabeticTokenizer.tokenize", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
@@ -1888,32 +2189,32 @@ static PyObject *__pyx_pf_16py_stringsimjoin_8apply_rf_10tokenizers_19Alphabetic
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("tokenize", 0);
 
-  /* "py_stringsimjoin/apply_rf/tokenizers.pyx":68
+  /* "py_stringsimjoin/apply_rf/tokenizers.pyx":82
  *         cdef oset[string] tokens
  *         cdef vector[string] out_tokens
  *         if self.return_set:             # <<<<<<<<<<<<<<
  *             for s in self.regex.findall(inp_string):
  *                 tokens.insert(s)
  */
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_return_set); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 68; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_return_set); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 82; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_2 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 68; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_2 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 82; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   if (__pyx_t_2) {
 
-    /* "py_stringsimjoin/apply_rf/tokenizers.pyx":69
+    /* "py_stringsimjoin/apply_rf/tokenizers.pyx":83
  *         cdef vector[string] out_tokens
  *         if self.return_set:
  *             for s in self.regex.findall(inp_string):             # <<<<<<<<<<<<<<
  *                 tokens.insert(s)
  *             for s in tokens:
  */
-    __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_regex); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 69; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_regex); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 83; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_3);
-    __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_findall); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 69; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_findall); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 83; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_4);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    __pyx_t_3 = __pyx_convert_PyBytes_string_to_py_std__in_string(__pyx_v_inp_string); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 69; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_3 = __pyx_convert_PyBytes_string_to_py_std__in_string(__pyx_v_inp_string); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 83; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_3);
     __pyx_t_5 = NULL;
     if (CYTHON_COMPILING_IN_CPYTHON && likely(PyMethod_Check(__pyx_t_4))) {
@@ -1926,17 +2227,17 @@ static PyObject *__pyx_pf_16py_stringsimjoin_8apply_rf_10tokenizers_19Alphabetic
       }
     }
     if (!__pyx_t_5) {
-      __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_t_4, __pyx_t_3); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 69; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_t_4, __pyx_t_3); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 83; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
       __Pyx_GOTREF(__pyx_t_1);
     } else {
-      __pyx_t_6 = PyTuple_New(1+1); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 69; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_6 = PyTuple_New(1+1); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 83; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_GOTREF(__pyx_t_6);
       __Pyx_GIVEREF(__pyx_t_5); PyTuple_SET_ITEM(__pyx_t_6, 0, __pyx_t_5); __pyx_t_5 = NULL;
       __Pyx_GIVEREF(__pyx_t_3);
       PyTuple_SET_ITEM(__pyx_t_6, 0+1, __pyx_t_3);
       __pyx_t_3 = 0;
-      __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_4, __pyx_t_6, NULL); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 69; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_4, __pyx_t_6, NULL); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 83; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_GOTREF(__pyx_t_1);
       __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
     }
@@ -1945,9 +2246,9 @@ static PyObject *__pyx_pf_16py_stringsimjoin_8apply_rf_10tokenizers_19Alphabetic
       __pyx_t_4 = __pyx_t_1; __Pyx_INCREF(__pyx_t_4); __pyx_t_7 = 0;
       __pyx_t_8 = NULL;
     } else {
-      __pyx_t_7 = -1; __pyx_t_4 = PyObject_GetIter(__pyx_t_1); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 69; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_7 = -1; __pyx_t_4 = PyObject_GetIter(__pyx_t_1); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 83; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_GOTREF(__pyx_t_4);
-      __pyx_t_8 = Py_TYPE(__pyx_t_4)->tp_iternext; if (unlikely(!__pyx_t_8)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 69; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_8 = Py_TYPE(__pyx_t_4)->tp_iternext; if (unlikely(!__pyx_t_8)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 83; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     }
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
     for (;;) {
@@ -1955,17 +2256,17 @@ static PyObject *__pyx_pf_16py_stringsimjoin_8apply_rf_10tokenizers_19Alphabetic
         if (likely(PyList_CheckExact(__pyx_t_4))) {
           if (__pyx_t_7 >= PyList_GET_SIZE(__pyx_t_4)) break;
           #if CYTHON_COMPILING_IN_CPYTHON
-          __pyx_t_1 = PyList_GET_ITEM(__pyx_t_4, __pyx_t_7); __Pyx_INCREF(__pyx_t_1); __pyx_t_7++; if (unlikely(0 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 69; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+          __pyx_t_1 = PyList_GET_ITEM(__pyx_t_4, __pyx_t_7); __Pyx_INCREF(__pyx_t_1); __pyx_t_7++; if (unlikely(0 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 83; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
           #else
-          __pyx_t_1 = PySequence_ITEM(__pyx_t_4, __pyx_t_7); __pyx_t_7++; if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 69; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+          __pyx_t_1 = PySequence_ITEM(__pyx_t_4, __pyx_t_7); __pyx_t_7++; if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 83; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
           __Pyx_GOTREF(__pyx_t_1);
           #endif
         } else {
           if (__pyx_t_7 >= PyTuple_GET_SIZE(__pyx_t_4)) break;
           #if CYTHON_COMPILING_IN_CPYTHON
-          __pyx_t_1 = PyTuple_GET_ITEM(__pyx_t_4, __pyx_t_7); __Pyx_INCREF(__pyx_t_1); __pyx_t_7++; if (unlikely(0 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 69; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+          __pyx_t_1 = PyTuple_GET_ITEM(__pyx_t_4, __pyx_t_7); __Pyx_INCREF(__pyx_t_1); __pyx_t_7++; if (unlikely(0 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 83; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
           #else
-          __pyx_t_1 = PySequence_ITEM(__pyx_t_4, __pyx_t_7); __pyx_t_7++; if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 69; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+          __pyx_t_1 = PySequence_ITEM(__pyx_t_4, __pyx_t_7); __pyx_t_7++; if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 83; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
           __Pyx_GOTREF(__pyx_t_1);
           #endif
         }
@@ -1975,7 +2276,7 @@ static PyObject *__pyx_pf_16py_stringsimjoin_8apply_rf_10tokenizers_19Alphabetic
           PyObject* exc_type = PyErr_Occurred();
           if (exc_type) {
             if (likely(exc_type == PyExc_StopIteration || PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) PyErr_Clear();
-            else {__pyx_filename = __pyx_f[0]; __pyx_lineno = 69; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+            else {__pyx_filename = __pyx_f[0]; __pyx_lineno = 83; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
           }
           break;
         }
@@ -1984,22 +2285,22 @@ static PyObject *__pyx_pf_16py_stringsimjoin_8apply_rf_10tokenizers_19Alphabetic
       __Pyx_XDECREF_SET(__pyx_v_s, __pyx_t_1);
       __pyx_t_1 = 0;
 
-      /* "py_stringsimjoin/apply_rf/tokenizers.pyx":70
+      /* "py_stringsimjoin/apply_rf/tokenizers.pyx":84
  *         if self.return_set:
  *             for s in self.regex.findall(inp_string):
  *                 tokens.insert(s)             # <<<<<<<<<<<<<<
  *             for s in tokens:
  *                 out_tokens.push_back(s)
  */
-      __pyx_t_9 = __pyx_convert_string_from_py_std__in_string(__pyx_v_s); if (unlikely(PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 70; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_9 = __pyx_convert_string_from_py_std__in_string(__pyx_v_s); if (unlikely(PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 84; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       try {
         __pyx_v_tokens.insert(__pyx_t_9);
       } catch(...) {
         __Pyx_CppExn2PyErr();
-        {__pyx_filename = __pyx_f[0]; __pyx_lineno = 70; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        {__pyx_filename = __pyx_f[0]; __pyx_lineno = 84; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       }
 
-      /* "py_stringsimjoin/apply_rf/tokenizers.pyx":69
+      /* "py_stringsimjoin/apply_rf/tokenizers.pyx":83
  *         cdef vector[string] out_tokens
  *         if self.return_set:
  *             for s in self.regex.findall(inp_string):             # <<<<<<<<<<<<<<
@@ -2009,7 +2310,7 @@ static PyObject *__pyx_pf_16py_stringsimjoin_8apply_rf_10tokenizers_19Alphabetic
     }
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-    /* "py_stringsimjoin/apply_rf/tokenizers.pyx":71
+    /* "py_stringsimjoin/apply_rf/tokenizers.pyx":85
  *             for s in self.regex.findall(inp_string):
  *                 tokens.insert(s)
  *             for s in tokens:             # <<<<<<<<<<<<<<
@@ -2021,27 +2322,27 @@ static PyObject *__pyx_pf_16py_stringsimjoin_8apply_rf_10tokenizers_19Alphabetic
       if (!(__pyx_t_10 != __pyx_v_tokens.end())) break;
       __pyx_t_9 = *__pyx_t_10;
       ++__pyx_t_10;
-      __pyx_t_4 = __pyx_convert_PyBytes_string_to_py_std__in_string(__pyx_t_9); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 71; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_4 = __pyx_convert_PyBytes_string_to_py_std__in_string(__pyx_t_9); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 85; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_GOTREF(__pyx_t_4);
       __Pyx_XDECREF_SET(__pyx_v_s, __pyx_t_4);
       __pyx_t_4 = 0;
 
-      /* "py_stringsimjoin/apply_rf/tokenizers.pyx":72
+      /* "py_stringsimjoin/apply_rf/tokenizers.pyx":86
  *                 tokens.insert(s)
  *             for s in tokens:
  *                 out_tokens.push_back(s)             # <<<<<<<<<<<<<<
  *         else:
  *             for s in self.regex.findall(inp_string):
  */
-      __pyx_t_9 = __pyx_convert_string_from_py_std__in_string(__pyx_v_s); if (unlikely(PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 72; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_9 = __pyx_convert_string_from_py_std__in_string(__pyx_v_s); if (unlikely(PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 86; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       try {
         __pyx_v_out_tokens.push_back(__pyx_t_9);
       } catch(...) {
         __Pyx_CppExn2PyErr();
-        {__pyx_filename = __pyx_f[0]; __pyx_lineno = 72; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        {__pyx_filename = __pyx_f[0]; __pyx_lineno = 86; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       }
 
-      /* "py_stringsimjoin/apply_rf/tokenizers.pyx":71
+      /* "py_stringsimjoin/apply_rf/tokenizers.pyx":85
  *             for s in self.regex.findall(inp_string):
  *                 tokens.insert(s)
  *             for s in tokens:             # <<<<<<<<<<<<<<
@@ -2050,7 +2351,7 @@ static PyObject *__pyx_pf_16py_stringsimjoin_8apply_rf_10tokenizers_19Alphabetic
  */
     }
 
-    /* "py_stringsimjoin/apply_rf/tokenizers.pyx":68
+    /* "py_stringsimjoin/apply_rf/tokenizers.pyx":82
  *         cdef oset[string] tokens
  *         cdef vector[string] out_tokens
  *         if self.return_set:             # <<<<<<<<<<<<<<
@@ -2060,7 +2361,7 @@ static PyObject *__pyx_pf_16py_stringsimjoin_8apply_rf_10tokenizers_19Alphabetic
     goto __pyx_L3;
   }
 
-  /* "py_stringsimjoin/apply_rf/tokenizers.pyx":74
+  /* "py_stringsimjoin/apply_rf/tokenizers.pyx":88
  *                 out_tokens.push_back(s)
  *         else:
  *             for s in self.regex.findall(inp_string):             # <<<<<<<<<<<<<<
@@ -2068,12 +2369,12 @@ static PyObject *__pyx_pf_16py_stringsimjoin_8apply_rf_10tokenizers_19Alphabetic
  *         return out_tokens
  */
   /*else*/ {
-    __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_regex); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 74; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_regex); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 88; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_1);
-    __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_findall); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 74; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_findall); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 88; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_6);
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-    __pyx_t_1 = __pyx_convert_PyBytes_string_to_py_std__in_string(__pyx_v_inp_string); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 74; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_1 = __pyx_convert_PyBytes_string_to_py_std__in_string(__pyx_v_inp_string); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 88; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_1);
     __pyx_t_3 = NULL;
     if (CYTHON_COMPILING_IN_CPYTHON && likely(PyMethod_Check(__pyx_t_6))) {
@@ -2086,17 +2387,17 @@ static PyObject *__pyx_pf_16py_stringsimjoin_8apply_rf_10tokenizers_19Alphabetic
       }
     }
     if (!__pyx_t_3) {
-      __pyx_t_4 = __Pyx_PyObject_CallOneArg(__pyx_t_6, __pyx_t_1); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 74; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_4 = __Pyx_PyObject_CallOneArg(__pyx_t_6, __pyx_t_1); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 88; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
       __Pyx_GOTREF(__pyx_t_4);
     } else {
-      __pyx_t_5 = PyTuple_New(1+1); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 74; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_5 = PyTuple_New(1+1); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 88; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_GOTREF(__pyx_t_5);
       __Pyx_GIVEREF(__pyx_t_3); PyTuple_SET_ITEM(__pyx_t_5, 0, __pyx_t_3); __pyx_t_3 = NULL;
       __Pyx_GIVEREF(__pyx_t_1);
       PyTuple_SET_ITEM(__pyx_t_5, 0+1, __pyx_t_1);
       __pyx_t_1 = 0;
-      __pyx_t_4 = __Pyx_PyObject_Call(__pyx_t_6, __pyx_t_5, NULL); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 74; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_4 = __Pyx_PyObject_Call(__pyx_t_6, __pyx_t_5, NULL); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 88; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_GOTREF(__pyx_t_4);
       __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
     }
@@ -2105,9 +2406,9 @@ static PyObject *__pyx_pf_16py_stringsimjoin_8apply_rf_10tokenizers_19Alphabetic
       __pyx_t_6 = __pyx_t_4; __Pyx_INCREF(__pyx_t_6); __pyx_t_7 = 0;
       __pyx_t_8 = NULL;
     } else {
-      __pyx_t_7 = -1; __pyx_t_6 = PyObject_GetIter(__pyx_t_4); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 74; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_7 = -1; __pyx_t_6 = PyObject_GetIter(__pyx_t_4); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 88; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_GOTREF(__pyx_t_6);
-      __pyx_t_8 = Py_TYPE(__pyx_t_6)->tp_iternext; if (unlikely(!__pyx_t_8)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 74; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_8 = Py_TYPE(__pyx_t_6)->tp_iternext; if (unlikely(!__pyx_t_8)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 88; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     }
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     for (;;) {
@@ -2115,17 +2416,17 @@ static PyObject *__pyx_pf_16py_stringsimjoin_8apply_rf_10tokenizers_19Alphabetic
         if (likely(PyList_CheckExact(__pyx_t_6))) {
           if (__pyx_t_7 >= PyList_GET_SIZE(__pyx_t_6)) break;
           #if CYTHON_COMPILING_IN_CPYTHON
-          __pyx_t_4 = PyList_GET_ITEM(__pyx_t_6, __pyx_t_7); __Pyx_INCREF(__pyx_t_4); __pyx_t_7++; if (unlikely(0 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 74; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+          __pyx_t_4 = PyList_GET_ITEM(__pyx_t_6, __pyx_t_7); __Pyx_INCREF(__pyx_t_4); __pyx_t_7++; if (unlikely(0 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 88; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
           #else
-          __pyx_t_4 = PySequence_ITEM(__pyx_t_6, __pyx_t_7); __pyx_t_7++; if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 74; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+          __pyx_t_4 = PySequence_ITEM(__pyx_t_6, __pyx_t_7); __pyx_t_7++; if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 88; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
           __Pyx_GOTREF(__pyx_t_4);
           #endif
         } else {
           if (__pyx_t_7 >= PyTuple_GET_SIZE(__pyx_t_6)) break;
           #if CYTHON_COMPILING_IN_CPYTHON
-          __pyx_t_4 = PyTuple_GET_ITEM(__pyx_t_6, __pyx_t_7); __Pyx_INCREF(__pyx_t_4); __pyx_t_7++; if (unlikely(0 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 74; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+          __pyx_t_4 = PyTuple_GET_ITEM(__pyx_t_6, __pyx_t_7); __Pyx_INCREF(__pyx_t_4); __pyx_t_7++; if (unlikely(0 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 88; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
           #else
-          __pyx_t_4 = PySequence_ITEM(__pyx_t_6, __pyx_t_7); __pyx_t_7++; if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 74; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+          __pyx_t_4 = PySequence_ITEM(__pyx_t_6, __pyx_t_7); __pyx_t_7++; if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 88; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
           __Pyx_GOTREF(__pyx_t_4);
           #endif
         }
@@ -2135,7 +2436,7 @@ static PyObject *__pyx_pf_16py_stringsimjoin_8apply_rf_10tokenizers_19Alphabetic
           PyObject* exc_type = PyErr_Occurred();
           if (exc_type) {
             if (likely(exc_type == PyExc_StopIteration || PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) PyErr_Clear();
-            else {__pyx_filename = __pyx_f[0]; __pyx_lineno = 74; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+            else {__pyx_filename = __pyx_f[0]; __pyx_lineno = 88; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
           }
           break;
         }
@@ -2144,22 +2445,22 @@ static PyObject *__pyx_pf_16py_stringsimjoin_8apply_rf_10tokenizers_19Alphabetic
       __Pyx_XDECREF_SET(__pyx_v_s, __pyx_t_4);
       __pyx_t_4 = 0;
 
-      /* "py_stringsimjoin/apply_rf/tokenizers.pyx":75
+      /* "py_stringsimjoin/apply_rf/tokenizers.pyx":89
  *         else:
  *             for s in self.regex.findall(inp_string):
  *                 out_tokens.push_back(s)             # <<<<<<<<<<<<<<
  *         return out_tokens
  * 
  */
-      __pyx_t_9 = __pyx_convert_string_from_py_std__in_string(__pyx_v_s); if (unlikely(PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 75; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_9 = __pyx_convert_string_from_py_std__in_string(__pyx_v_s); if (unlikely(PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 89; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       try {
         __pyx_v_out_tokens.push_back(__pyx_t_9);
       } catch(...) {
         __Pyx_CppExn2PyErr();
-        {__pyx_filename = __pyx_f[0]; __pyx_lineno = 75; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        {__pyx_filename = __pyx_f[0]; __pyx_lineno = 89; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       }
 
-      /* "py_stringsimjoin/apply_rf/tokenizers.pyx":74
+      /* "py_stringsimjoin/apply_rf/tokenizers.pyx":88
  *                 out_tokens.push_back(s)
  *         else:
  *             for s in self.regex.findall(inp_string):             # <<<<<<<<<<<<<<
@@ -2171,7 +2472,7 @@ static PyObject *__pyx_pf_16py_stringsimjoin_8apply_rf_10tokenizers_19Alphabetic
   }
   __pyx_L3:;
 
-  /* "py_stringsimjoin/apply_rf/tokenizers.pyx":76
+  /* "py_stringsimjoin/apply_rf/tokenizers.pyx":90
  *             for s in self.regex.findall(inp_string):
  *                 out_tokens.push_back(s)
  *         return out_tokens             # <<<<<<<<<<<<<<
@@ -2179,13 +2480,13 @@ static PyObject *__pyx_pf_16py_stringsimjoin_8apply_rf_10tokenizers_19Alphabetic
  * class AlphanumericTokenizer:
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_6 = __pyx_convert_vector_to_py_std_3a__3a_string(__pyx_v_out_tokens); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 76; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_6 = __pyx_convert_vector_to_py_std_3a__3a_string(__pyx_v_out_tokens); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 90; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_6);
   __pyx_r = __pyx_t_6;
   __pyx_t_6 = 0;
   goto __pyx_L0;
 
-  /* "py_stringsimjoin/apply_rf/tokenizers.pyx":65
+  /* "py_stringsimjoin/apply_rf/tokenizers.pyx":79
  *         self.return_set = return_set
  * 
  *     def tokenize(self, const string& inp_string):             # <<<<<<<<<<<<<<
@@ -2209,7 +2510,7 @@ static PyObject *__pyx_pf_16py_stringsimjoin_8apply_rf_10tokenizers_19Alphabetic
   return __pyx_r;
 }
 
-/* "py_stringsimjoin/apply_rf/tokenizers.pyx":79
+/* "py_stringsimjoin/apply_rf/tokenizers.pyx":93
  * 
  * class AlphanumericTokenizer:
  *     def __init__(self, return_set):             # <<<<<<<<<<<<<<
@@ -2249,11 +2550,11 @@ static PyObject *__pyx_pw_16py_stringsimjoin_8apply_rf_10tokenizers_21Alphanumer
         case  1:
         if (likely((values[1] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_return_set)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("__init__", 1, 2, 2, 1); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 79; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+          __Pyx_RaiseArgtupleInvalid("__init__", 1, 2, 2, 1); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 93; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "__init__") < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 79; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "__init__") < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 93; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 2) {
       goto __pyx_L5_argtuple_error;
@@ -2266,7 +2567,7 @@ static PyObject *__pyx_pw_16py_stringsimjoin_8apply_rf_10tokenizers_21Alphanumer
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("__init__", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 79; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+  __Pyx_RaiseArgtupleInvalid("__init__", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 93; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
   __pyx_L3_error:;
   __Pyx_AddTraceback("py_stringsimjoin.apply_rf.tokenizers.AlphanumericTokenizer.__init__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
@@ -2289,34 +2590,34 @@ static PyObject *__pyx_pf_16py_stringsimjoin_8apply_rf_10tokenizers_21Alphanumer
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__init__", 0);
 
-  /* "py_stringsimjoin/apply_rf/tokenizers.pyx":80
+  /* "py_stringsimjoin/apply_rf/tokenizers.pyx":94
  * class AlphanumericTokenizer:
  *     def __init__(self, return_set):
  *         self.regex = re2.compile('[a-zA-Z0-9]+')             # <<<<<<<<<<<<<<
  *         self.return_set = return_set
  * 
  */
-  __pyx_t_1 = __Pyx_GetModuleGlobalName(__pyx_n_s_re2); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 80; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = __Pyx_GetModuleGlobalName(__pyx_n_s_re2); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 94; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_compile); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 80; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_compile); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 94; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_tuple__3, NULL); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 80; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_tuple__3, NULL); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 94; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  if (__Pyx_PyObject_SetAttrStr(__pyx_v_self, __pyx_n_s_regex, __pyx_t_1) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 80; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (__Pyx_PyObject_SetAttrStr(__pyx_v_self, __pyx_n_s_regex, __pyx_t_1) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 94; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "py_stringsimjoin/apply_rf/tokenizers.pyx":81
+  /* "py_stringsimjoin/apply_rf/tokenizers.pyx":95
  *     def __init__(self, return_set):
  *         self.regex = re2.compile('[a-zA-Z0-9]+')
  *         self.return_set = return_set             # <<<<<<<<<<<<<<
  * 
  *     def tokenize(self, const string& inp_string):
  */
-  if (__Pyx_PyObject_SetAttrStr(__pyx_v_self, __pyx_n_s_return_set, __pyx_v_return_set) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 81; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (__Pyx_PyObject_SetAttrStr(__pyx_v_self, __pyx_n_s_return_set, __pyx_v_return_set) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 95; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
 
-  /* "py_stringsimjoin/apply_rf/tokenizers.pyx":79
+  /* "py_stringsimjoin/apply_rf/tokenizers.pyx":93
  * 
  * class AlphanumericTokenizer:
  *     def __init__(self, return_set):             # <<<<<<<<<<<<<<
@@ -2338,7 +2639,7 @@ static PyObject *__pyx_pf_16py_stringsimjoin_8apply_rf_10tokenizers_21Alphanumer
   return __pyx_r;
 }
 
-/* "py_stringsimjoin/apply_rf/tokenizers.pyx":83
+/* "py_stringsimjoin/apply_rf/tokenizers.pyx":97
  *         self.return_set = return_set
  * 
  *     def tokenize(self, const string& inp_string):             # <<<<<<<<<<<<<<
@@ -2378,11 +2679,11 @@ static PyObject *__pyx_pw_16py_stringsimjoin_8apply_rf_10tokenizers_21Alphanumer
         case  1:
         if (likely((values[1] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_inp_string)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("tokenize", 1, 2, 2, 1); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 83; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+          __Pyx_RaiseArgtupleInvalid("tokenize", 1, 2, 2, 1); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 97; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "tokenize") < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 83; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "tokenize") < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 97; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 2) {
       goto __pyx_L5_argtuple_error;
@@ -2391,11 +2692,11 @@ static PyObject *__pyx_pw_16py_stringsimjoin_8apply_rf_10tokenizers_21Alphanumer
       values[1] = PyTuple_GET_ITEM(__pyx_args, 1);
     }
     __pyx_v_self = values[0];
-    __pyx_v_inp_string = __pyx_convert_string_from_py_std__in_string(values[1]); if (unlikely(PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 83; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+    __pyx_v_inp_string = __pyx_convert_string_from_py_std__in_string(values[1]); if (unlikely(PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 97; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("tokenize", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 83; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+  __Pyx_RaiseArgtupleInvalid("tokenize", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 97; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
   __pyx_L3_error:;
   __Pyx_AddTraceback("py_stringsimjoin.apply_rf.tokenizers.AlphanumericTokenizer.tokenize", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
@@ -2429,32 +2730,32 @@ static PyObject *__pyx_pf_16py_stringsimjoin_8apply_rf_10tokenizers_21Alphanumer
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("tokenize", 0);
 
-  /* "py_stringsimjoin/apply_rf/tokenizers.pyx":86
+  /* "py_stringsimjoin/apply_rf/tokenizers.pyx":100
  *         cdef oset[string] tokens
  *         cdef vector[string] out_tokens
  *         if self.return_set:             # <<<<<<<<<<<<<<
  *             for s in self.regex.findall(inp_string):
  *                 tokens.insert(s)
  */
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_return_set); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 86; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_return_set); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 100; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_2 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 86; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_2 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 100; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   if (__pyx_t_2) {
 
-    /* "py_stringsimjoin/apply_rf/tokenizers.pyx":87
+    /* "py_stringsimjoin/apply_rf/tokenizers.pyx":101
  *         cdef vector[string] out_tokens
  *         if self.return_set:
  *             for s in self.regex.findall(inp_string):             # <<<<<<<<<<<<<<
  *                 tokens.insert(s)
  *             for s in tokens:
  */
-    __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_regex); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 87; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_regex); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 101; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_3);
-    __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_findall); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 87; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_findall); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 101; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_4);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    __pyx_t_3 = __pyx_convert_PyBytes_string_to_py_std__in_string(__pyx_v_inp_string); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 87; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_3 = __pyx_convert_PyBytes_string_to_py_std__in_string(__pyx_v_inp_string); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 101; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_3);
     __pyx_t_5 = NULL;
     if (CYTHON_COMPILING_IN_CPYTHON && likely(PyMethod_Check(__pyx_t_4))) {
@@ -2467,17 +2768,17 @@ static PyObject *__pyx_pf_16py_stringsimjoin_8apply_rf_10tokenizers_21Alphanumer
       }
     }
     if (!__pyx_t_5) {
-      __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_t_4, __pyx_t_3); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 87; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_t_4, __pyx_t_3); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 101; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
       __Pyx_GOTREF(__pyx_t_1);
     } else {
-      __pyx_t_6 = PyTuple_New(1+1); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 87; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_6 = PyTuple_New(1+1); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 101; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_GOTREF(__pyx_t_6);
       __Pyx_GIVEREF(__pyx_t_5); PyTuple_SET_ITEM(__pyx_t_6, 0, __pyx_t_5); __pyx_t_5 = NULL;
       __Pyx_GIVEREF(__pyx_t_3);
       PyTuple_SET_ITEM(__pyx_t_6, 0+1, __pyx_t_3);
       __pyx_t_3 = 0;
-      __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_4, __pyx_t_6, NULL); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 87; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_4, __pyx_t_6, NULL); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 101; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_GOTREF(__pyx_t_1);
       __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
     }
@@ -2486,9 +2787,9 @@ static PyObject *__pyx_pf_16py_stringsimjoin_8apply_rf_10tokenizers_21Alphanumer
       __pyx_t_4 = __pyx_t_1; __Pyx_INCREF(__pyx_t_4); __pyx_t_7 = 0;
       __pyx_t_8 = NULL;
     } else {
-      __pyx_t_7 = -1; __pyx_t_4 = PyObject_GetIter(__pyx_t_1); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 87; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_7 = -1; __pyx_t_4 = PyObject_GetIter(__pyx_t_1); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 101; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_GOTREF(__pyx_t_4);
-      __pyx_t_8 = Py_TYPE(__pyx_t_4)->tp_iternext; if (unlikely(!__pyx_t_8)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 87; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_8 = Py_TYPE(__pyx_t_4)->tp_iternext; if (unlikely(!__pyx_t_8)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 101; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     }
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
     for (;;) {
@@ -2496,17 +2797,17 @@ static PyObject *__pyx_pf_16py_stringsimjoin_8apply_rf_10tokenizers_21Alphanumer
         if (likely(PyList_CheckExact(__pyx_t_4))) {
           if (__pyx_t_7 >= PyList_GET_SIZE(__pyx_t_4)) break;
           #if CYTHON_COMPILING_IN_CPYTHON
-          __pyx_t_1 = PyList_GET_ITEM(__pyx_t_4, __pyx_t_7); __Pyx_INCREF(__pyx_t_1); __pyx_t_7++; if (unlikely(0 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 87; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+          __pyx_t_1 = PyList_GET_ITEM(__pyx_t_4, __pyx_t_7); __Pyx_INCREF(__pyx_t_1); __pyx_t_7++; if (unlikely(0 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 101; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
           #else
-          __pyx_t_1 = PySequence_ITEM(__pyx_t_4, __pyx_t_7); __pyx_t_7++; if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 87; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+          __pyx_t_1 = PySequence_ITEM(__pyx_t_4, __pyx_t_7); __pyx_t_7++; if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 101; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
           __Pyx_GOTREF(__pyx_t_1);
           #endif
         } else {
           if (__pyx_t_7 >= PyTuple_GET_SIZE(__pyx_t_4)) break;
           #if CYTHON_COMPILING_IN_CPYTHON
-          __pyx_t_1 = PyTuple_GET_ITEM(__pyx_t_4, __pyx_t_7); __Pyx_INCREF(__pyx_t_1); __pyx_t_7++; if (unlikely(0 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 87; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+          __pyx_t_1 = PyTuple_GET_ITEM(__pyx_t_4, __pyx_t_7); __Pyx_INCREF(__pyx_t_1); __pyx_t_7++; if (unlikely(0 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 101; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
           #else
-          __pyx_t_1 = PySequence_ITEM(__pyx_t_4, __pyx_t_7); __pyx_t_7++; if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 87; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+          __pyx_t_1 = PySequence_ITEM(__pyx_t_4, __pyx_t_7); __pyx_t_7++; if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 101; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
           __Pyx_GOTREF(__pyx_t_1);
           #endif
         }
@@ -2516,7 +2817,7 @@ static PyObject *__pyx_pf_16py_stringsimjoin_8apply_rf_10tokenizers_21Alphanumer
           PyObject* exc_type = PyErr_Occurred();
           if (exc_type) {
             if (likely(exc_type == PyExc_StopIteration || PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) PyErr_Clear();
-            else {__pyx_filename = __pyx_f[0]; __pyx_lineno = 87; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+            else {__pyx_filename = __pyx_f[0]; __pyx_lineno = 101; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
           }
           break;
         }
@@ -2525,22 +2826,22 @@ static PyObject *__pyx_pf_16py_stringsimjoin_8apply_rf_10tokenizers_21Alphanumer
       __Pyx_XDECREF_SET(__pyx_v_s, __pyx_t_1);
       __pyx_t_1 = 0;
 
-      /* "py_stringsimjoin/apply_rf/tokenizers.pyx":88
+      /* "py_stringsimjoin/apply_rf/tokenizers.pyx":102
  *         if self.return_set:
  *             for s in self.regex.findall(inp_string):
  *                 tokens.insert(s)             # <<<<<<<<<<<<<<
  *             for s in tokens:
  *                 out_tokens.push_back(s)
  */
-      __pyx_t_9 = __pyx_convert_string_from_py_std__in_string(__pyx_v_s); if (unlikely(PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 88; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_9 = __pyx_convert_string_from_py_std__in_string(__pyx_v_s); if (unlikely(PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 102; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       try {
         __pyx_v_tokens.insert(__pyx_t_9);
       } catch(...) {
         __Pyx_CppExn2PyErr();
-        {__pyx_filename = __pyx_f[0]; __pyx_lineno = 88; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        {__pyx_filename = __pyx_f[0]; __pyx_lineno = 102; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       }
 
-      /* "py_stringsimjoin/apply_rf/tokenizers.pyx":87
+      /* "py_stringsimjoin/apply_rf/tokenizers.pyx":101
  *         cdef vector[string] out_tokens
  *         if self.return_set:
  *             for s in self.regex.findall(inp_string):             # <<<<<<<<<<<<<<
@@ -2550,7 +2851,7 @@ static PyObject *__pyx_pf_16py_stringsimjoin_8apply_rf_10tokenizers_21Alphanumer
     }
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-    /* "py_stringsimjoin/apply_rf/tokenizers.pyx":89
+    /* "py_stringsimjoin/apply_rf/tokenizers.pyx":103
  *             for s in self.regex.findall(inp_string):
  *                 tokens.insert(s)
  *             for s in tokens:             # <<<<<<<<<<<<<<
@@ -2562,27 +2863,27 @@ static PyObject *__pyx_pf_16py_stringsimjoin_8apply_rf_10tokenizers_21Alphanumer
       if (!(__pyx_t_10 != __pyx_v_tokens.end())) break;
       __pyx_t_9 = *__pyx_t_10;
       ++__pyx_t_10;
-      __pyx_t_4 = __pyx_convert_PyBytes_string_to_py_std__in_string(__pyx_t_9); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 89; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_4 = __pyx_convert_PyBytes_string_to_py_std__in_string(__pyx_t_9); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 103; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_GOTREF(__pyx_t_4);
       __Pyx_XDECREF_SET(__pyx_v_s, __pyx_t_4);
       __pyx_t_4 = 0;
 
-      /* "py_stringsimjoin/apply_rf/tokenizers.pyx":90
+      /* "py_stringsimjoin/apply_rf/tokenizers.pyx":104
  *                 tokens.insert(s)
  *             for s in tokens:
  *                 out_tokens.push_back(s)             # <<<<<<<<<<<<<<
  *         else:
  *             for s in self.regex.findall(inp_string):
  */
-      __pyx_t_9 = __pyx_convert_string_from_py_std__in_string(__pyx_v_s); if (unlikely(PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 90; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_9 = __pyx_convert_string_from_py_std__in_string(__pyx_v_s); if (unlikely(PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 104; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       try {
         __pyx_v_out_tokens.push_back(__pyx_t_9);
       } catch(...) {
         __Pyx_CppExn2PyErr();
-        {__pyx_filename = __pyx_f[0]; __pyx_lineno = 90; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        {__pyx_filename = __pyx_f[0]; __pyx_lineno = 104; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       }
 
-      /* "py_stringsimjoin/apply_rf/tokenizers.pyx":89
+      /* "py_stringsimjoin/apply_rf/tokenizers.pyx":103
  *             for s in self.regex.findall(inp_string):
  *                 tokens.insert(s)
  *             for s in tokens:             # <<<<<<<<<<<<<<
@@ -2591,7 +2892,7 @@ static PyObject *__pyx_pf_16py_stringsimjoin_8apply_rf_10tokenizers_21Alphanumer
  */
     }
 
-    /* "py_stringsimjoin/apply_rf/tokenizers.pyx":86
+    /* "py_stringsimjoin/apply_rf/tokenizers.pyx":100
  *         cdef oset[string] tokens
  *         cdef vector[string] out_tokens
  *         if self.return_set:             # <<<<<<<<<<<<<<
@@ -2601,7 +2902,7 @@ static PyObject *__pyx_pf_16py_stringsimjoin_8apply_rf_10tokenizers_21Alphanumer
     goto __pyx_L3;
   }
 
-  /* "py_stringsimjoin/apply_rf/tokenizers.pyx":92
+  /* "py_stringsimjoin/apply_rf/tokenizers.pyx":106
  *                 out_tokens.push_back(s)
  *         else:
  *             for s in self.regex.findall(inp_string):             # <<<<<<<<<<<<<<
@@ -2609,12 +2910,12 @@ static PyObject *__pyx_pf_16py_stringsimjoin_8apply_rf_10tokenizers_21Alphanumer
  *         return out_tokens
  */
   /*else*/ {
-    __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_regex); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 92; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_regex); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 106; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_1);
-    __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_findall); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 92; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_findall); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 106; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_6);
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-    __pyx_t_1 = __pyx_convert_PyBytes_string_to_py_std__in_string(__pyx_v_inp_string); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 92; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_1 = __pyx_convert_PyBytes_string_to_py_std__in_string(__pyx_v_inp_string); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 106; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_1);
     __pyx_t_3 = NULL;
     if (CYTHON_COMPILING_IN_CPYTHON && likely(PyMethod_Check(__pyx_t_6))) {
@@ -2627,17 +2928,17 @@ static PyObject *__pyx_pf_16py_stringsimjoin_8apply_rf_10tokenizers_21Alphanumer
       }
     }
     if (!__pyx_t_3) {
-      __pyx_t_4 = __Pyx_PyObject_CallOneArg(__pyx_t_6, __pyx_t_1); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 92; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_4 = __Pyx_PyObject_CallOneArg(__pyx_t_6, __pyx_t_1); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 106; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
       __Pyx_GOTREF(__pyx_t_4);
     } else {
-      __pyx_t_5 = PyTuple_New(1+1); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 92; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_5 = PyTuple_New(1+1); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 106; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_GOTREF(__pyx_t_5);
       __Pyx_GIVEREF(__pyx_t_3); PyTuple_SET_ITEM(__pyx_t_5, 0, __pyx_t_3); __pyx_t_3 = NULL;
       __Pyx_GIVEREF(__pyx_t_1);
       PyTuple_SET_ITEM(__pyx_t_5, 0+1, __pyx_t_1);
       __pyx_t_1 = 0;
-      __pyx_t_4 = __Pyx_PyObject_Call(__pyx_t_6, __pyx_t_5, NULL); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 92; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_4 = __Pyx_PyObject_Call(__pyx_t_6, __pyx_t_5, NULL); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 106; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_GOTREF(__pyx_t_4);
       __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
     }
@@ -2646,9 +2947,9 @@ static PyObject *__pyx_pf_16py_stringsimjoin_8apply_rf_10tokenizers_21Alphanumer
       __pyx_t_6 = __pyx_t_4; __Pyx_INCREF(__pyx_t_6); __pyx_t_7 = 0;
       __pyx_t_8 = NULL;
     } else {
-      __pyx_t_7 = -1; __pyx_t_6 = PyObject_GetIter(__pyx_t_4); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 92; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_7 = -1; __pyx_t_6 = PyObject_GetIter(__pyx_t_4); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 106; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_GOTREF(__pyx_t_6);
-      __pyx_t_8 = Py_TYPE(__pyx_t_6)->tp_iternext; if (unlikely(!__pyx_t_8)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 92; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_8 = Py_TYPE(__pyx_t_6)->tp_iternext; if (unlikely(!__pyx_t_8)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 106; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     }
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     for (;;) {
@@ -2656,17 +2957,17 @@ static PyObject *__pyx_pf_16py_stringsimjoin_8apply_rf_10tokenizers_21Alphanumer
         if (likely(PyList_CheckExact(__pyx_t_6))) {
           if (__pyx_t_7 >= PyList_GET_SIZE(__pyx_t_6)) break;
           #if CYTHON_COMPILING_IN_CPYTHON
-          __pyx_t_4 = PyList_GET_ITEM(__pyx_t_6, __pyx_t_7); __Pyx_INCREF(__pyx_t_4); __pyx_t_7++; if (unlikely(0 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 92; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+          __pyx_t_4 = PyList_GET_ITEM(__pyx_t_6, __pyx_t_7); __Pyx_INCREF(__pyx_t_4); __pyx_t_7++; if (unlikely(0 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 106; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
           #else
-          __pyx_t_4 = PySequence_ITEM(__pyx_t_6, __pyx_t_7); __pyx_t_7++; if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 92; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+          __pyx_t_4 = PySequence_ITEM(__pyx_t_6, __pyx_t_7); __pyx_t_7++; if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 106; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
           __Pyx_GOTREF(__pyx_t_4);
           #endif
         } else {
           if (__pyx_t_7 >= PyTuple_GET_SIZE(__pyx_t_6)) break;
           #if CYTHON_COMPILING_IN_CPYTHON
-          __pyx_t_4 = PyTuple_GET_ITEM(__pyx_t_6, __pyx_t_7); __Pyx_INCREF(__pyx_t_4); __pyx_t_7++; if (unlikely(0 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 92; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+          __pyx_t_4 = PyTuple_GET_ITEM(__pyx_t_6, __pyx_t_7); __Pyx_INCREF(__pyx_t_4); __pyx_t_7++; if (unlikely(0 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 106; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
           #else
-          __pyx_t_4 = PySequence_ITEM(__pyx_t_6, __pyx_t_7); __pyx_t_7++; if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 92; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+          __pyx_t_4 = PySequence_ITEM(__pyx_t_6, __pyx_t_7); __pyx_t_7++; if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 106; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
           __Pyx_GOTREF(__pyx_t_4);
           #endif
         }
@@ -2676,7 +2977,7 @@ static PyObject *__pyx_pf_16py_stringsimjoin_8apply_rf_10tokenizers_21Alphanumer
           PyObject* exc_type = PyErr_Occurred();
           if (exc_type) {
             if (likely(exc_type == PyExc_StopIteration || PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) PyErr_Clear();
-            else {__pyx_filename = __pyx_f[0]; __pyx_lineno = 92; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+            else {__pyx_filename = __pyx_f[0]; __pyx_lineno = 106; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
           }
           break;
         }
@@ -2685,22 +2986,22 @@ static PyObject *__pyx_pf_16py_stringsimjoin_8apply_rf_10tokenizers_21Alphanumer
       __Pyx_XDECREF_SET(__pyx_v_s, __pyx_t_4);
       __pyx_t_4 = 0;
 
-      /* "py_stringsimjoin/apply_rf/tokenizers.pyx":93
+      /* "py_stringsimjoin/apply_rf/tokenizers.pyx":107
  *         else:
  *             for s in self.regex.findall(inp_string):
  *                 out_tokens.push_back(s)             # <<<<<<<<<<<<<<
  *         return out_tokens
  * 
  */
-      __pyx_t_9 = __pyx_convert_string_from_py_std__in_string(__pyx_v_s); if (unlikely(PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 93; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_9 = __pyx_convert_string_from_py_std__in_string(__pyx_v_s); if (unlikely(PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 107; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       try {
         __pyx_v_out_tokens.push_back(__pyx_t_9);
       } catch(...) {
         __Pyx_CppExn2PyErr();
-        {__pyx_filename = __pyx_f[0]; __pyx_lineno = 93; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        {__pyx_filename = __pyx_f[0]; __pyx_lineno = 107; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       }
 
-      /* "py_stringsimjoin/apply_rf/tokenizers.pyx":92
+      /* "py_stringsimjoin/apply_rf/tokenizers.pyx":106
  *                 out_tokens.push_back(s)
  *         else:
  *             for s in self.regex.findall(inp_string):             # <<<<<<<<<<<<<<
@@ -2712,7 +3013,7 @@ static PyObject *__pyx_pf_16py_stringsimjoin_8apply_rf_10tokenizers_21Alphanumer
   }
   __pyx_L3:;
 
-  /* "py_stringsimjoin/apply_rf/tokenizers.pyx":94
+  /* "py_stringsimjoin/apply_rf/tokenizers.pyx":108
  *             for s in self.regex.findall(inp_string):
  *                 out_tokens.push_back(s)
  *         return out_tokens             # <<<<<<<<<<<<<<
@@ -2720,13 +3021,13 @@ static PyObject *__pyx_pf_16py_stringsimjoin_8apply_rf_10tokenizers_21Alphanumer
  * class NumericTokenizer:
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_6 = __pyx_convert_vector_to_py_std_3a__3a_string(__pyx_v_out_tokens); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 94; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_6 = __pyx_convert_vector_to_py_std_3a__3a_string(__pyx_v_out_tokens); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 108; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_6);
   __pyx_r = __pyx_t_6;
   __pyx_t_6 = 0;
   goto __pyx_L0;
 
-  /* "py_stringsimjoin/apply_rf/tokenizers.pyx":83
+  /* "py_stringsimjoin/apply_rf/tokenizers.pyx":97
  *         self.return_set = return_set
  * 
  *     def tokenize(self, const string& inp_string):             # <<<<<<<<<<<<<<
@@ -2750,7 +3051,7 @@ static PyObject *__pyx_pf_16py_stringsimjoin_8apply_rf_10tokenizers_21Alphanumer
   return __pyx_r;
 }
 
-/* "py_stringsimjoin/apply_rf/tokenizers.pyx":97
+/* "py_stringsimjoin/apply_rf/tokenizers.pyx":111
  * 
  * class NumericTokenizer:
  *     def __init__(self, return_set):             # <<<<<<<<<<<<<<
@@ -2790,11 +3091,11 @@ static PyObject *__pyx_pw_16py_stringsimjoin_8apply_rf_10tokenizers_16NumericTok
         case  1:
         if (likely((values[1] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_return_set)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("__init__", 1, 2, 2, 1); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 97; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+          __Pyx_RaiseArgtupleInvalid("__init__", 1, 2, 2, 1); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 111; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "__init__") < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 97; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "__init__") < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 111; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 2) {
       goto __pyx_L5_argtuple_error;
@@ -2807,7 +3108,7 @@ static PyObject *__pyx_pw_16py_stringsimjoin_8apply_rf_10tokenizers_16NumericTok
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("__init__", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 97; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+  __Pyx_RaiseArgtupleInvalid("__init__", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 111; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
   __pyx_L3_error:;
   __Pyx_AddTraceback("py_stringsimjoin.apply_rf.tokenizers.NumericTokenizer.__init__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
@@ -2830,34 +3131,34 @@ static PyObject *__pyx_pf_16py_stringsimjoin_8apply_rf_10tokenizers_16NumericTok
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__init__", 0);
 
-  /* "py_stringsimjoin/apply_rf/tokenizers.pyx":98
+  /* "py_stringsimjoin/apply_rf/tokenizers.pyx":112
  * class NumericTokenizer:
  *     def __init__(self, return_set):
  *         self.regex = re2.compile('[0-9]+')             # <<<<<<<<<<<<<<
  *         self.return_set = return_set
  * 
  */
-  __pyx_t_1 = __Pyx_GetModuleGlobalName(__pyx_n_s_re2); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 98; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = __Pyx_GetModuleGlobalName(__pyx_n_s_re2); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 112; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_compile); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 98; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_compile); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 112; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_tuple__4, NULL); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 98; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_tuple__4, NULL); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 112; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  if (__Pyx_PyObject_SetAttrStr(__pyx_v_self, __pyx_n_s_regex, __pyx_t_1) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 98; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (__Pyx_PyObject_SetAttrStr(__pyx_v_self, __pyx_n_s_regex, __pyx_t_1) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 112; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "py_stringsimjoin/apply_rf/tokenizers.pyx":99
+  /* "py_stringsimjoin/apply_rf/tokenizers.pyx":113
  *     def __init__(self, return_set):
  *         self.regex = re2.compile('[0-9]+')
  *         self.return_set = return_set             # <<<<<<<<<<<<<<
  * 
  *     def tokenize(self, const string& inp_string):
  */
-  if (__Pyx_PyObject_SetAttrStr(__pyx_v_self, __pyx_n_s_return_set, __pyx_v_return_set) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 99; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (__Pyx_PyObject_SetAttrStr(__pyx_v_self, __pyx_n_s_return_set, __pyx_v_return_set) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 113; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
 
-  /* "py_stringsimjoin/apply_rf/tokenizers.pyx":97
+  /* "py_stringsimjoin/apply_rf/tokenizers.pyx":111
  * 
  * class NumericTokenizer:
  *     def __init__(self, return_set):             # <<<<<<<<<<<<<<
@@ -2879,7 +3180,7 @@ static PyObject *__pyx_pf_16py_stringsimjoin_8apply_rf_10tokenizers_16NumericTok
   return __pyx_r;
 }
 
-/* "py_stringsimjoin/apply_rf/tokenizers.pyx":101
+/* "py_stringsimjoin/apply_rf/tokenizers.pyx":115
  *         self.return_set = return_set
  * 
  *     def tokenize(self, const string& inp_string):             # <<<<<<<<<<<<<<
@@ -2919,11 +3220,11 @@ static PyObject *__pyx_pw_16py_stringsimjoin_8apply_rf_10tokenizers_16NumericTok
         case  1:
         if (likely((values[1] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_inp_string)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("tokenize", 1, 2, 2, 1); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 101; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+          __Pyx_RaiseArgtupleInvalid("tokenize", 1, 2, 2, 1); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 115; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "tokenize") < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 101; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "tokenize") < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 115; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 2) {
       goto __pyx_L5_argtuple_error;
@@ -2932,11 +3233,11 @@ static PyObject *__pyx_pw_16py_stringsimjoin_8apply_rf_10tokenizers_16NumericTok
       values[1] = PyTuple_GET_ITEM(__pyx_args, 1);
     }
     __pyx_v_self = values[0];
-    __pyx_v_inp_string = __pyx_convert_string_from_py_std__in_string(values[1]); if (unlikely(PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 101; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+    __pyx_v_inp_string = __pyx_convert_string_from_py_std__in_string(values[1]); if (unlikely(PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 115; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("tokenize", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 101; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+  __Pyx_RaiseArgtupleInvalid("tokenize", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 115; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
   __pyx_L3_error:;
   __Pyx_AddTraceback("py_stringsimjoin.apply_rf.tokenizers.NumericTokenizer.tokenize", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
@@ -2970,32 +3271,32 @@ static PyObject *__pyx_pf_16py_stringsimjoin_8apply_rf_10tokenizers_16NumericTok
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("tokenize", 0);
 
-  /* "py_stringsimjoin/apply_rf/tokenizers.pyx":104
+  /* "py_stringsimjoin/apply_rf/tokenizers.pyx":118
  *         cdef oset[string] tokens
  *         cdef vector[string] out_tokens
  *         if self.return_set:             # <<<<<<<<<<<<<<
  *             for s in self.regex.findall(inp_string):
  *                 tokens.insert(s)
  */
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_return_set); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 104; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_return_set); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 118; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_2 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 104; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_2 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 118; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   if (__pyx_t_2) {
 
-    /* "py_stringsimjoin/apply_rf/tokenizers.pyx":105
+    /* "py_stringsimjoin/apply_rf/tokenizers.pyx":119
  *         cdef vector[string] out_tokens
  *         if self.return_set:
  *             for s in self.regex.findall(inp_string):             # <<<<<<<<<<<<<<
  *                 tokens.insert(s)
  *             for s in tokens:
  */
-    __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_regex); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 105; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_regex); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 119; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_3);
-    __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_findall); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 105; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_findall); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 119; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_4);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    __pyx_t_3 = __pyx_convert_PyBytes_string_to_py_std__in_string(__pyx_v_inp_string); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 105; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_3 = __pyx_convert_PyBytes_string_to_py_std__in_string(__pyx_v_inp_string); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 119; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_3);
     __pyx_t_5 = NULL;
     if (CYTHON_COMPILING_IN_CPYTHON && likely(PyMethod_Check(__pyx_t_4))) {
@@ -3008,17 +3309,17 @@ static PyObject *__pyx_pf_16py_stringsimjoin_8apply_rf_10tokenizers_16NumericTok
       }
     }
     if (!__pyx_t_5) {
-      __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_t_4, __pyx_t_3); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 105; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_t_4, __pyx_t_3); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 119; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
       __Pyx_GOTREF(__pyx_t_1);
     } else {
-      __pyx_t_6 = PyTuple_New(1+1); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 105; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_6 = PyTuple_New(1+1); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 119; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_GOTREF(__pyx_t_6);
       __Pyx_GIVEREF(__pyx_t_5); PyTuple_SET_ITEM(__pyx_t_6, 0, __pyx_t_5); __pyx_t_5 = NULL;
       __Pyx_GIVEREF(__pyx_t_3);
       PyTuple_SET_ITEM(__pyx_t_6, 0+1, __pyx_t_3);
       __pyx_t_3 = 0;
-      __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_4, __pyx_t_6, NULL); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 105; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_4, __pyx_t_6, NULL); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 119; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_GOTREF(__pyx_t_1);
       __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
     }
@@ -3027,9 +3328,9 @@ static PyObject *__pyx_pf_16py_stringsimjoin_8apply_rf_10tokenizers_16NumericTok
       __pyx_t_4 = __pyx_t_1; __Pyx_INCREF(__pyx_t_4); __pyx_t_7 = 0;
       __pyx_t_8 = NULL;
     } else {
-      __pyx_t_7 = -1; __pyx_t_4 = PyObject_GetIter(__pyx_t_1); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 105; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_7 = -1; __pyx_t_4 = PyObject_GetIter(__pyx_t_1); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 119; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_GOTREF(__pyx_t_4);
-      __pyx_t_8 = Py_TYPE(__pyx_t_4)->tp_iternext; if (unlikely(!__pyx_t_8)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 105; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_8 = Py_TYPE(__pyx_t_4)->tp_iternext; if (unlikely(!__pyx_t_8)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 119; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     }
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
     for (;;) {
@@ -3037,17 +3338,17 @@ static PyObject *__pyx_pf_16py_stringsimjoin_8apply_rf_10tokenizers_16NumericTok
         if (likely(PyList_CheckExact(__pyx_t_4))) {
           if (__pyx_t_7 >= PyList_GET_SIZE(__pyx_t_4)) break;
           #if CYTHON_COMPILING_IN_CPYTHON
-          __pyx_t_1 = PyList_GET_ITEM(__pyx_t_4, __pyx_t_7); __Pyx_INCREF(__pyx_t_1); __pyx_t_7++; if (unlikely(0 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 105; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+          __pyx_t_1 = PyList_GET_ITEM(__pyx_t_4, __pyx_t_7); __Pyx_INCREF(__pyx_t_1); __pyx_t_7++; if (unlikely(0 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 119; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
           #else
-          __pyx_t_1 = PySequence_ITEM(__pyx_t_4, __pyx_t_7); __pyx_t_7++; if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 105; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+          __pyx_t_1 = PySequence_ITEM(__pyx_t_4, __pyx_t_7); __pyx_t_7++; if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 119; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
           __Pyx_GOTREF(__pyx_t_1);
           #endif
         } else {
           if (__pyx_t_7 >= PyTuple_GET_SIZE(__pyx_t_4)) break;
           #if CYTHON_COMPILING_IN_CPYTHON
-          __pyx_t_1 = PyTuple_GET_ITEM(__pyx_t_4, __pyx_t_7); __Pyx_INCREF(__pyx_t_1); __pyx_t_7++; if (unlikely(0 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 105; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+          __pyx_t_1 = PyTuple_GET_ITEM(__pyx_t_4, __pyx_t_7); __Pyx_INCREF(__pyx_t_1); __pyx_t_7++; if (unlikely(0 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 119; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
           #else
-          __pyx_t_1 = PySequence_ITEM(__pyx_t_4, __pyx_t_7); __pyx_t_7++; if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 105; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+          __pyx_t_1 = PySequence_ITEM(__pyx_t_4, __pyx_t_7); __pyx_t_7++; if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 119; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
           __Pyx_GOTREF(__pyx_t_1);
           #endif
         }
@@ -3057,7 +3358,7 @@ static PyObject *__pyx_pf_16py_stringsimjoin_8apply_rf_10tokenizers_16NumericTok
           PyObject* exc_type = PyErr_Occurred();
           if (exc_type) {
             if (likely(exc_type == PyExc_StopIteration || PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) PyErr_Clear();
-            else {__pyx_filename = __pyx_f[0]; __pyx_lineno = 105; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+            else {__pyx_filename = __pyx_f[0]; __pyx_lineno = 119; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
           }
           break;
         }
@@ -3066,22 +3367,22 @@ static PyObject *__pyx_pf_16py_stringsimjoin_8apply_rf_10tokenizers_16NumericTok
       __Pyx_XDECREF_SET(__pyx_v_s, __pyx_t_1);
       __pyx_t_1 = 0;
 
-      /* "py_stringsimjoin/apply_rf/tokenizers.pyx":106
+      /* "py_stringsimjoin/apply_rf/tokenizers.pyx":120
  *         if self.return_set:
  *             for s in self.regex.findall(inp_string):
  *                 tokens.insert(s)             # <<<<<<<<<<<<<<
  *             for s in tokens:
  *                 out_tokens.push_back(s)
  */
-      __pyx_t_9 = __pyx_convert_string_from_py_std__in_string(__pyx_v_s); if (unlikely(PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 106; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_9 = __pyx_convert_string_from_py_std__in_string(__pyx_v_s); if (unlikely(PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 120; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       try {
         __pyx_v_tokens.insert(__pyx_t_9);
       } catch(...) {
         __Pyx_CppExn2PyErr();
-        {__pyx_filename = __pyx_f[0]; __pyx_lineno = 106; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        {__pyx_filename = __pyx_f[0]; __pyx_lineno = 120; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       }
 
-      /* "py_stringsimjoin/apply_rf/tokenizers.pyx":105
+      /* "py_stringsimjoin/apply_rf/tokenizers.pyx":119
  *         cdef vector[string] out_tokens
  *         if self.return_set:
  *             for s in self.regex.findall(inp_string):             # <<<<<<<<<<<<<<
@@ -3091,7 +3392,7 @@ static PyObject *__pyx_pf_16py_stringsimjoin_8apply_rf_10tokenizers_16NumericTok
     }
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-    /* "py_stringsimjoin/apply_rf/tokenizers.pyx":107
+    /* "py_stringsimjoin/apply_rf/tokenizers.pyx":121
  *             for s in self.regex.findall(inp_string):
  *                 tokens.insert(s)
  *             for s in tokens:             # <<<<<<<<<<<<<<
@@ -3103,27 +3404,27 @@ static PyObject *__pyx_pf_16py_stringsimjoin_8apply_rf_10tokenizers_16NumericTok
       if (!(__pyx_t_10 != __pyx_v_tokens.end())) break;
       __pyx_t_9 = *__pyx_t_10;
       ++__pyx_t_10;
-      __pyx_t_4 = __pyx_convert_PyBytes_string_to_py_std__in_string(__pyx_t_9); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 107; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_4 = __pyx_convert_PyBytes_string_to_py_std__in_string(__pyx_t_9); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 121; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_GOTREF(__pyx_t_4);
       __Pyx_XDECREF_SET(__pyx_v_s, __pyx_t_4);
       __pyx_t_4 = 0;
 
-      /* "py_stringsimjoin/apply_rf/tokenizers.pyx":108
+      /* "py_stringsimjoin/apply_rf/tokenizers.pyx":122
  *                 tokens.insert(s)
  *             for s in tokens:
  *                 out_tokens.push_back(s)             # <<<<<<<<<<<<<<
  *         else:
  *             for s in self.regex.findall(inp_string):
  */
-      __pyx_t_9 = __pyx_convert_string_from_py_std__in_string(__pyx_v_s); if (unlikely(PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 108; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_9 = __pyx_convert_string_from_py_std__in_string(__pyx_v_s); if (unlikely(PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 122; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       try {
         __pyx_v_out_tokens.push_back(__pyx_t_9);
       } catch(...) {
         __Pyx_CppExn2PyErr();
-        {__pyx_filename = __pyx_f[0]; __pyx_lineno = 108; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        {__pyx_filename = __pyx_f[0]; __pyx_lineno = 122; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       }
 
-      /* "py_stringsimjoin/apply_rf/tokenizers.pyx":107
+      /* "py_stringsimjoin/apply_rf/tokenizers.pyx":121
  *             for s in self.regex.findall(inp_string):
  *                 tokens.insert(s)
  *             for s in tokens:             # <<<<<<<<<<<<<<
@@ -3132,7 +3433,7 @@ static PyObject *__pyx_pf_16py_stringsimjoin_8apply_rf_10tokenizers_16NumericTok
  */
     }
 
-    /* "py_stringsimjoin/apply_rf/tokenizers.pyx":104
+    /* "py_stringsimjoin/apply_rf/tokenizers.pyx":118
  *         cdef oset[string] tokens
  *         cdef vector[string] out_tokens
  *         if self.return_set:             # <<<<<<<<<<<<<<
@@ -3142,7 +3443,7 @@ static PyObject *__pyx_pf_16py_stringsimjoin_8apply_rf_10tokenizers_16NumericTok
     goto __pyx_L3;
   }
 
-  /* "py_stringsimjoin/apply_rf/tokenizers.pyx":110
+  /* "py_stringsimjoin/apply_rf/tokenizers.pyx":124
  *                 out_tokens.push_back(s)
  *         else:
  *             for s in self.regex.findall(inp_string):             # <<<<<<<<<<<<<<
@@ -3150,12 +3451,12 @@ static PyObject *__pyx_pf_16py_stringsimjoin_8apply_rf_10tokenizers_16NumericTok
  *         return out_tokens
  */
   /*else*/ {
-    __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_regex); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 110; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_regex); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 124; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_1);
-    __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_findall); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 110; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_findall); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 124; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_6);
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-    __pyx_t_1 = __pyx_convert_PyBytes_string_to_py_std__in_string(__pyx_v_inp_string); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 110; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_1 = __pyx_convert_PyBytes_string_to_py_std__in_string(__pyx_v_inp_string); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 124; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_1);
     __pyx_t_3 = NULL;
     if (CYTHON_COMPILING_IN_CPYTHON && likely(PyMethod_Check(__pyx_t_6))) {
@@ -3168,17 +3469,17 @@ static PyObject *__pyx_pf_16py_stringsimjoin_8apply_rf_10tokenizers_16NumericTok
       }
     }
     if (!__pyx_t_3) {
-      __pyx_t_4 = __Pyx_PyObject_CallOneArg(__pyx_t_6, __pyx_t_1); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 110; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_4 = __Pyx_PyObject_CallOneArg(__pyx_t_6, __pyx_t_1); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 124; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
       __Pyx_GOTREF(__pyx_t_4);
     } else {
-      __pyx_t_5 = PyTuple_New(1+1); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 110; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_5 = PyTuple_New(1+1); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 124; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_GOTREF(__pyx_t_5);
       __Pyx_GIVEREF(__pyx_t_3); PyTuple_SET_ITEM(__pyx_t_5, 0, __pyx_t_3); __pyx_t_3 = NULL;
       __Pyx_GIVEREF(__pyx_t_1);
       PyTuple_SET_ITEM(__pyx_t_5, 0+1, __pyx_t_1);
       __pyx_t_1 = 0;
-      __pyx_t_4 = __Pyx_PyObject_Call(__pyx_t_6, __pyx_t_5, NULL); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 110; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_4 = __Pyx_PyObject_Call(__pyx_t_6, __pyx_t_5, NULL); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 124; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_GOTREF(__pyx_t_4);
       __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
     }
@@ -3187,9 +3488,9 @@ static PyObject *__pyx_pf_16py_stringsimjoin_8apply_rf_10tokenizers_16NumericTok
       __pyx_t_6 = __pyx_t_4; __Pyx_INCREF(__pyx_t_6); __pyx_t_7 = 0;
       __pyx_t_8 = NULL;
     } else {
-      __pyx_t_7 = -1; __pyx_t_6 = PyObject_GetIter(__pyx_t_4); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 110; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_7 = -1; __pyx_t_6 = PyObject_GetIter(__pyx_t_4); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 124; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_GOTREF(__pyx_t_6);
-      __pyx_t_8 = Py_TYPE(__pyx_t_6)->tp_iternext; if (unlikely(!__pyx_t_8)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 110; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_8 = Py_TYPE(__pyx_t_6)->tp_iternext; if (unlikely(!__pyx_t_8)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 124; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     }
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     for (;;) {
@@ -3197,17 +3498,17 @@ static PyObject *__pyx_pf_16py_stringsimjoin_8apply_rf_10tokenizers_16NumericTok
         if (likely(PyList_CheckExact(__pyx_t_6))) {
           if (__pyx_t_7 >= PyList_GET_SIZE(__pyx_t_6)) break;
           #if CYTHON_COMPILING_IN_CPYTHON
-          __pyx_t_4 = PyList_GET_ITEM(__pyx_t_6, __pyx_t_7); __Pyx_INCREF(__pyx_t_4); __pyx_t_7++; if (unlikely(0 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 110; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+          __pyx_t_4 = PyList_GET_ITEM(__pyx_t_6, __pyx_t_7); __Pyx_INCREF(__pyx_t_4); __pyx_t_7++; if (unlikely(0 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 124; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
           #else
-          __pyx_t_4 = PySequence_ITEM(__pyx_t_6, __pyx_t_7); __pyx_t_7++; if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 110; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+          __pyx_t_4 = PySequence_ITEM(__pyx_t_6, __pyx_t_7); __pyx_t_7++; if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 124; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
           __Pyx_GOTREF(__pyx_t_4);
           #endif
         } else {
           if (__pyx_t_7 >= PyTuple_GET_SIZE(__pyx_t_6)) break;
           #if CYTHON_COMPILING_IN_CPYTHON
-          __pyx_t_4 = PyTuple_GET_ITEM(__pyx_t_6, __pyx_t_7); __Pyx_INCREF(__pyx_t_4); __pyx_t_7++; if (unlikely(0 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 110; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+          __pyx_t_4 = PyTuple_GET_ITEM(__pyx_t_6, __pyx_t_7); __Pyx_INCREF(__pyx_t_4); __pyx_t_7++; if (unlikely(0 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 124; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
           #else
-          __pyx_t_4 = PySequence_ITEM(__pyx_t_6, __pyx_t_7); __pyx_t_7++; if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 110; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+          __pyx_t_4 = PySequence_ITEM(__pyx_t_6, __pyx_t_7); __pyx_t_7++; if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 124; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
           __Pyx_GOTREF(__pyx_t_4);
           #endif
         }
@@ -3217,7 +3518,7 @@ static PyObject *__pyx_pf_16py_stringsimjoin_8apply_rf_10tokenizers_16NumericTok
           PyObject* exc_type = PyErr_Occurred();
           if (exc_type) {
             if (likely(exc_type == PyExc_StopIteration || PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) PyErr_Clear();
-            else {__pyx_filename = __pyx_f[0]; __pyx_lineno = 110; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+            else {__pyx_filename = __pyx_f[0]; __pyx_lineno = 124; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
           }
           break;
         }
@@ -3226,22 +3527,22 @@ static PyObject *__pyx_pf_16py_stringsimjoin_8apply_rf_10tokenizers_16NumericTok
       __Pyx_XDECREF_SET(__pyx_v_s, __pyx_t_4);
       __pyx_t_4 = 0;
 
-      /* "py_stringsimjoin/apply_rf/tokenizers.pyx":111
+      /* "py_stringsimjoin/apply_rf/tokenizers.pyx":125
  *         else:
  *             for s in self.regex.findall(inp_string):
  *                 out_tokens.push_back(s)             # <<<<<<<<<<<<<<
  *         return out_tokens
  * 
  */
-      __pyx_t_9 = __pyx_convert_string_from_py_std__in_string(__pyx_v_s); if (unlikely(PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 111; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_9 = __pyx_convert_string_from_py_std__in_string(__pyx_v_s); if (unlikely(PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 125; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       try {
         __pyx_v_out_tokens.push_back(__pyx_t_9);
       } catch(...) {
         __Pyx_CppExn2PyErr();
-        {__pyx_filename = __pyx_f[0]; __pyx_lineno = 111; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        {__pyx_filename = __pyx_f[0]; __pyx_lineno = 125; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       }
 
-      /* "py_stringsimjoin/apply_rf/tokenizers.pyx":110
+      /* "py_stringsimjoin/apply_rf/tokenizers.pyx":124
  *                 out_tokens.push_back(s)
  *         else:
  *             for s in self.regex.findall(inp_string):             # <<<<<<<<<<<<<<
@@ -3253,7 +3554,7 @@ static PyObject *__pyx_pf_16py_stringsimjoin_8apply_rf_10tokenizers_16NumericTok
   }
   __pyx_L3:;
 
-  /* "py_stringsimjoin/apply_rf/tokenizers.pyx":112
+  /* "py_stringsimjoin/apply_rf/tokenizers.pyx":126
  *             for s in self.regex.findall(inp_string):
  *                 out_tokens.push_back(s)
  *         return out_tokens             # <<<<<<<<<<<<<<
@@ -3261,13 +3562,13 @@ static PyObject *__pyx_pf_16py_stringsimjoin_8apply_rf_10tokenizers_16NumericTok
  * def test_tok(df, attr):
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_6 = __pyx_convert_vector_to_py_std_3a__3a_string(__pyx_v_out_tokens); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 112; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_6 = __pyx_convert_vector_to_py_std_3a__3a_string(__pyx_v_out_tokens); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 126; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_6);
   __pyx_r = __pyx_t_6;
   __pyx_t_6 = 0;
   goto __pyx_L0;
 
-  /* "py_stringsimjoin/apply_rf/tokenizers.pyx":101
+  /* "py_stringsimjoin/apply_rf/tokenizers.pyx":115
  *         self.return_set = return_set
  * 
  *     def tokenize(self, const string& inp_string):             # <<<<<<<<<<<<<<
@@ -3291,7 +3592,7 @@ static PyObject *__pyx_pf_16py_stringsimjoin_8apply_rf_10tokenizers_16NumericTok
   return __pyx_r;
 }
 
-/* "py_stringsimjoin/apply_rf/tokenizers.pyx":114
+/* "py_stringsimjoin/apply_rf/tokenizers.pyx":128
  *         return out_tokens
  * 
  * def test_tok(df, attr):             # <<<<<<<<<<<<<<
@@ -3331,11 +3632,11 @@ static PyObject *__pyx_pw_16py_stringsimjoin_8apply_rf_10tokenizers_1test_tok(Py
         case  1:
         if (likely((values[1] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_attr)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("test_tok", 1, 2, 2, 1); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 114; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+          __Pyx_RaiseArgtupleInvalid("test_tok", 1, 2, 2, 1); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 128; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "test_tok") < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 114; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "test_tok") < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 128; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 2) {
       goto __pyx_L5_argtuple_error;
@@ -3348,7 +3649,7 @@ static PyObject *__pyx_pw_16py_stringsimjoin_8apply_rf_10tokenizers_1test_tok(Py
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("test_tok", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 114; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+  __Pyx_RaiseArgtupleInvalid("test_tok", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 128; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
   __pyx_L3_error:;
   __Pyx_AddTraceback("py_stringsimjoin.apply_rf.tokenizers.test_tok", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
@@ -3378,7 +3679,7 @@ static PyObject *__pyx_pf_16py_stringsimjoin_8apply_rf_10tokenizers_test_tok(CYT
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("test_tok", 0);
 
-  /* "py_stringsimjoin/apply_rf/tokenizers.pyx":115
+  /* "py_stringsimjoin/apply_rf/tokenizers.pyx":129
  * 
  * def test_tok(df, attr):
  *     cdef int q=3             # <<<<<<<<<<<<<<
@@ -3387,16 +3688,16 @@ static PyObject *__pyx_pf_16py_stringsimjoin_8apply_rf_10tokenizers_test_tok(CYT
  */
   __pyx_v_q = 3;
 
-  /* "py_stringsimjoin/apply_rf/tokenizers.pyx":116
+  /* "py_stringsimjoin/apply_rf/tokenizers.pyx":130
  * def test_tok(df, attr):
  *     cdef int q=3
  *     ws = QgramTokenizer(q, True, ord('#'), ord('$'), True)             # <<<<<<<<<<<<<<
  * #    ws = AlphanumericTokenizer(True)
  *     cdef vector[string] strings
  */
-  __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_v_q); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 116; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_v_q); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 130; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = PyTuple_New(5); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 116; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_2 = PyTuple_New(5); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 130; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_GIVEREF(__pyx_t_1);
   PyTuple_SET_ITEM(__pyx_t_2, 0, __pyx_t_1);
@@ -3413,25 +3714,25 @@ static PyObject *__pyx_pf_16py_stringsimjoin_8apply_rf_10tokenizers_test_tok(CYT
   __Pyx_GIVEREF(Py_True);
   PyTuple_SET_ITEM(__pyx_t_2, 4, Py_True);
   __pyx_t_1 = 0;
-  __pyx_t_1 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_16py_stringsimjoin_8apply_rf_10tokenizers_QgramTokenizer), __pyx_t_2, NULL); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 116; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_16py_stringsimjoin_8apply_rf_10tokenizers_QgramTokenizer), __pyx_t_2, NULL); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 130; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __pyx_v_ws = ((struct __pyx_obj_16py_stringsimjoin_8apply_rf_10tokenizers_QgramTokenizer *)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "py_stringsimjoin/apply_rf/tokenizers.pyx":119
+  /* "py_stringsimjoin/apply_rf/tokenizers.pyx":133
  * #    ws = AlphanumericTokenizer(True)
  *     cdef vector[string] strings
  *     convert_to_vector(df[attr], strings)             # <<<<<<<<<<<<<<
  *     cdef vector[string] t
  *     for s in strings:
  */
-  __pyx_t_1 = PyObject_GetItem(__pyx_v_df, __pyx_v_attr); if (unlikely(__pyx_t_1 == NULL)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 119; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
+  __pyx_t_1 = PyObject_GetItem(__pyx_v_df, __pyx_v_attr); if (unlikely(__pyx_t_1 == NULL)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 133; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_f_16py_stringsimjoin_8apply_rf_10tokenizers_convert_to_vector(__pyx_t_1, __pyx_v_strings);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "py_stringsimjoin/apply_rf/tokenizers.pyx":121
+  /* "py_stringsimjoin/apply_rf/tokenizers.pyx":135
  *     convert_to_vector(df[attr], strings)
  *     cdef vector[string] t
  *     for s in strings:             # <<<<<<<<<<<<<<
@@ -3445,28 +3746,28 @@ static PyObject *__pyx_pf_16py_stringsimjoin_8apply_rf_10tokenizers_test_tok(CYT
     ++__pyx_t_3;
     __pyx_v_s = __pyx_t_4;
 
-    /* "py_stringsimjoin/apply_rf/tokenizers.pyx":122
+    /* "py_stringsimjoin/apply_rf/tokenizers.pyx":136
  *     cdef vector[string] t
  *     for s in strings:
  *         t = ws.tokenize(s)             # <<<<<<<<<<<<<<
  *         print t
  * 
  */
-    __pyx_v_t = ((struct __pyx_vtabstruct_16py_stringsimjoin_8apply_rf_10tokenizers_QgramTokenizer *)__pyx_v_ws->__pyx_vtab)->tokenize(__pyx_v_ws, __pyx_v_s);
+    __pyx_v_t = ((struct __pyx_vtabstruct_16py_stringsimjoin_8apply_rf_10tokenizers_QgramTokenizer *)__pyx_v_ws->__pyx_vtab)->tokenize(__pyx_v_ws, __pyx_v_s, 0);
 
-    /* "py_stringsimjoin/apply_rf/tokenizers.pyx":123
+    /* "py_stringsimjoin/apply_rf/tokenizers.pyx":137
  *     for s in strings:
  *         t = ws.tokenize(s)
  *         print t             # <<<<<<<<<<<<<<
  * 
- * cdef void convert_to_vector(string_col, vector[string]& string_vector):
+ * def test_tok2(df1, attr1, df2, attr2):
  */
-    __pyx_t_1 = __pyx_convert_vector_to_py_std_3a__3a_string(__pyx_v_t); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 123; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_1 = __pyx_convert_vector_to_py_std_3a__3a_string(__pyx_v_t); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 137; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_1);
-    if (__Pyx_PrintOne(0, __pyx_t_1) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 123; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    if (__Pyx_PrintOne(0, __pyx_t_1) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 137; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-    /* "py_stringsimjoin/apply_rf/tokenizers.pyx":121
+    /* "py_stringsimjoin/apply_rf/tokenizers.pyx":135
  *     convert_to_vector(df[attr], strings)
  *     cdef vector[string] t
  *     for s in strings:             # <<<<<<<<<<<<<<
@@ -3475,7 +3776,7 @@ static PyObject *__pyx_pf_16py_stringsimjoin_8apply_rf_10tokenizers_test_tok(CYT
  */
   }
 
-  /* "py_stringsimjoin/apply_rf/tokenizers.pyx":114
+  /* "py_stringsimjoin/apply_rf/tokenizers.pyx":128
  *         return out_tokens
  * 
  * def test_tok(df, attr):             # <<<<<<<<<<<<<<
@@ -3498,8 +3799,2030 @@ static PyObject *__pyx_pf_16py_stringsimjoin_8apply_rf_10tokenizers_test_tok(CYT
   return __pyx_r;
 }
 
-/* "py_stringsimjoin/apply_rf/tokenizers.pyx":125
+/* "py_stringsimjoin/apply_rf/tokenizers.pyx":139
  *         print t
+ * 
+ * def test_tok2(df1, attr1, df2, attr2):             # <<<<<<<<<<<<<<
+ *     cdef vector[string] lstrings, rstrings
+ *     convert_to_vector(df1[attr1], lstrings)
+ */
+
+/* Python wrapper */
+static PyObject *__pyx_pw_16py_stringsimjoin_8apply_rf_10tokenizers_3test_tok2(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static PyMethodDef __pyx_mdef_16py_stringsimjoin_8apply_rf_10tokenizers_3test_tok2 = {"test_tok2", (PyCFunction)__pyx_pw_16py_stringsimjoin_8apply_rf_10tokenizers_3test_tok2, METH_VARARGS|METH_KEYWORDS, 0};
+static PyObject *__pyx_pw_16py_stringsimjoin_8apply_rf_10tokenizers_3test_tok2(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+  PyObject *__pyx_v_df1 = 0;
+  PyObject *__pyx_v_attr1 = 0;
+  PyObject *__pyx_v_df2 = 0;
+  PyObject *__pyx_v_attr2 = 0;
+  int __pyx_lineno = 0;
+  const char *__pyx_filename = NULL;
+  int __pyx_clineno = 0;
+  PyObject *__pyx_r = 0;
+  __Pyx_RefNannyDeclarations
+  __Pyx_RefNannySetupContext("test_tok2 (wrapper)", 0);
+  {
+    static PyObject **__pyx_pyargnames[] = {&__pyx_n_s_df1,&__pyx_n_s_attr1,&__pyx_n_s_df2,&__pyx_n_s_attr2,0};
+    PyObject* values[4] = {0,0,0,0};
+    if (unlikely(__pyx_kwds)) {
+      Py_ssize_t kw_args;
+      const Py_ssize_t pos_args = PyTuple_GET_SIZE(__pyx_args);
+      switch (pos_args) {
+        case  4: values[3] = PyTuple_GET_ITEM(__pyx_args, 3);
+        case  3: values[2] = PyTuple_GET_ITEM(__pyx_args, 2);
+        case  2: values[1] = PyTuple_GET_ITEM(__pyx_args, 1);
+        case  1: values[0] = PyTuple_GET_ITEM(__pyx_args, 0);
+        case  0: break;
+        default: goto __pyx_L5_argtuple_error;
+      }
+      kw_args = PyDict_Size(__pyx_kwds);
+      switch (pos_args) {
+        case  0:
+        if (likely((values[0] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_df1)) != 0)) kw_args--;
+        else goto __pyx_L5_argtuple_error;
+        case  1:
+        if (likely((values[1] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_attr1)) != 0)) kw_args--;
+        else {
+          __Pyx_RaiseArgtupleInvalid("test_tok2", 1, 4, 4, 1); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 139; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+        }
+        case  2:
+        if (likely((values[2] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_df2)) != 0)) kw_args--;
+        else {
+          __Pyx_RaiseArgtupleInvalid("test_tok2", 1, 4, 4, 2); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 139; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+        }
+        case  3:
+        if (likely((values[3] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_attr2)) != 0)) kw_args--;
+        else {
+          __Pyx_RaiseArgtupleInvalid("test_tok2", 1, 4, 4, 3); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 139; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+        }
+      }
+      if (unlikely(kw_args > 0)) {
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "test_tok2") < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 139; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+      }
+    } else if (PyTuple_GET_SIZE(__pyx_args) != 4) {
+      goto __pyx_L5_argtuple_error;
+    } else {
+      values[0] = PyTuple_GET_ITEM(__pyx_args, 0);
+      values[1] = PyTuple_GET_ITEM(__pyx_args, 1);
+      values[2] = PyTuple_GET_ITEM(__pyx_args, 2);
+      values[3] = PyTuple_GET_ITEM(__pyx_args, 3);
+    }
+    __pyx_v_df1 = values[0];
+    __pyx_v_attr1 = values[1];
+    __pyx_v_df2 = values[2];
+    __pyx_v_attr2 = values[3];
+  }
+  goto __pyx_L4_argument_unpacking_done;
+  __pyx_L5_argtuple_error:;
+  __Pyx_RaiseArgtupleInvalid("test_tok2", 1, 4, 4, PyTuple_GET_SIZE(__pyx_args)); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 139; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+  __pyx_L3_error:;
+  __Pyx_AddTraceback("py_stringsimjoin.apply_rf.tokenizers.test_tok2", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_RefNannyFinishContext();
+  return NULL;
+  __pyx_L4_argument_unpacking_done:;
+  __pyx_r = __pyx_pf_16py_stringsimjoin_8apply_rf_10tokenizers_2test_tok2(__pyx_self, __pyx_v_df1, __pyx_v_attr1, __pyx_v_df2, __pyx_v_attr2);
+
+  /* function exit code */
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+static PyObject *__pyx_pf_16py_stringsimjoin_8apply_rf_10tokenizers_2test_tok2(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_df1, PyObject *__pyx_v_attr1, PyObject *__pyx_v_df2, PyObject *__pyx_v_attr2) {
+  std::vector<std::string>  __pyx_v_lstrings;
+  std::vector<std::string>  __pyx_v_rstrings;
+  PyObject *__pyx_v_st = NULL;
+  PyObject *__pyx_r = NULL;
+  __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
+  PyObject *__pyx_t_2 = NULL;
+  PyObject *__pyx_t_3 = NULL;
+  std::string __pyx_t_4;
+  std::string __pyx_t_5;
+  int __pyx_lineno = 0;
+  const char *__pyx_filename = NULL;
+  int __pyx_clineno = 0;
+  __Pyx_RefNannySetupContext("test_tok2", 0);
+
+  /* "py_stringsimjoin/apply_rf/tokenizers.pyx":141
+ * def test_tok2(df1, attr1, df2, attr2):
+ *     cdef vector[string] lstrings, rstrings
+ *     convert_to_vector(df1[attr1], lstrings)             # <<<<<<<<<<<<<<
+ *     convert_to_vector(df2[attr2], rstrings)
+ *     st = time.time()
+ */
+  __pyx_t_1 = PyObject_GetItem(__pyx_v_df1, __pyx_v_attr1); if (unlikely(__pyx_t_1 == NULL)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 141; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
+  __Pyx_GOTREF(__pyx_t_1);
+  __pyx_f_16py_stringsimjoin_8apply_rf_10tokenizers_convert_to_vector(__pyx_t_1, __pyx_v_lstrings);
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+
+  /* "py_stringsimjoin/apply_rf/tokenizers.pyx":142
+ *     cdef vector[string] lstrings, rstrings
+ *     convert_to_vector(df1[attr1], lstrings)
+ *     convert_to_vector(df2[attr2], rstrings)             # <<<<<<<<<<<<<<
+ *     st = time.time()
+ *     tokenize(lstrings, rstrings, 'ws', 'gh')
+ */
+  __pyx_t_1 = PyObject_GetItem(__pyx_v_df2, __pyx_v_attr2); if (unlikely(__pyx_t_1 == NULL)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 142; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
+  __Pyx_GOTREF(__pyx_t_1);
+  __pyx_f_16py_stringsimjoin_8apply_rf_10tokenizers_convert_to_vector(__pyx_t_1, __pyx_v_rstrings);
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+
+  /* "py_stringsimjoin/apply_rf/tokenizers.pyx":143
+ *     convert_to_vector(df1[attr1], lstrings)
+ *     convert_to_vector(df2[attr2], rstrings)
+ *     st = time.time()             # <<<<<<<<<<<<<<
+ *     tokenize(lstrings, rstrings, 'ws', 'gh')
+ *     print 'time : ', time.time() - st
+ */
+  __pyx_t_2 = __Pyx_GetModuleGlobalName(__pyx_n_s_time); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 143; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_2);
+  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_time); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 143; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_3);
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  __pyx_t_2 = NULL;
+  if (CYTHON_COMPILING_IN_CPYTHON && unlikely(PyMethod_Check(__pyx_t_3))) {
+    __pyx_t_2 = PyMethod_GET_SELF(__pyx_t_3);
+    if (likely(__pyx_t_2)) {
+      PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_3);
+      __Pyx_INCREF(__pyx_t_2);
+      __Pyx_INCREF(function);
+      __Pyx_DECREF_SET(__pyx_t_3, function);
+    }
+  }
+  if (__pyx_t_2) {
+    __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_t_3, __pyx_t_2); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 143; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  } else {
+    __pyx_t_1 = __Pyx_PyObject_CallNoArg(__pyx_t_3); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 143; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  }
+  __Pyx_GOTREF(__pyx_t_1);
+  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+  __pyx_v_st = __pyx_t_1;
+  __pyx_t_1 = 0;
+
+  /* "py_stringsimjoin/apply_rf/tokenizers.pyx":144
+ *     convert_to_vector(df2[attr2], rstrings)
+ *     st = time.time()
+ *     tokenize(lstrings, rstrings, 'ws', 'gh')             # <<<<<<<<<<<<<<
+ *     print 'time : ', time.time() - st
+ * 
+ */
+  __pyx_t_4 = __pyx_convert_string_from_py_std__in_string(__pyx_n_b_ws); if (unlikely(PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 144; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_5 = __pyx_convert_string_from_py_std__in_string(__pyx_n_b_gh); if (unlikely(PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 144; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_f_16py_stringsimjoin_8apply_rf_10tokenizers_tokenize(__pyx_v_lstrings, __pyx_v_rstrings, __pyx_t_4, __pyx_t_5, 0);
+
+  /* "py_stringsimjoin/apply_rf/tokenizers.pyx":145
+ *     st = time.time()
+ *     tokenize(lstrings, rstrings, 'ws', 'gh')
+ *     print 'time : ', time.time() - st             # <<<<<<<<<<<<<<
+ * 
+ * cdef vector[int] split(string inp_string):
+ */
+  __pyx_t_3 = __Pyx_GetModuleGlobalName(__pyx_n_s_time); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 145; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_3);
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_time); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 145; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_2);
+  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+  __pyx_t_3 = NULL;
+  if (CYTHON_COMPILING_IN_CPYTHON && unlikely(PyMethod_Check(__pyx_t_2))) {
+    __pyx_t_3 = PyMethod_GET_SELF(__pyx_t_2);
+    if (likely(__pyx_t_3)) {
+      PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_2);
+      __Pyx_INCREF(__pyx_t_3);
+      __Pyx_INCREF(function);
+      __Pyx_DECREF_SET(__pyx_t_2, function);
+    }
+  }
+  if (__pyx_t_3) {
+    __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_t_3); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 145; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+  } else {
+    __pyx_t_1 = __Pyx_PyObject_CallNoArg(__pyx_t_2); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 145; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  }
+  __Pyx_GOTREF(__pyx_t_1);
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  __pyx_t_2 = PyNumber_Subtract(__pyx_t_1, __pyx_v_st); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 145; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_2);
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  __pyx_t_1 = PyTuple_New(2); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 145; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_1);
+  __Pyx_INCREF(__pyx_kp_s_time_2);
+  __Pyx_GIVEREF(__pyx_kp_s_time_2);
+  PyTuple_SET_ITEM(__pyx_t_1, 0, __pyx_kp_s_time_2);
+  __Pyx_GIVEREF(__pyx_t_2);
+  PyTuple_SET_ITEM(__pyx_t_1, 1, __pyx_t_2);
+  __pyx_t_2 = 0;
+  if (__Pyx_Print(0, __pyx_t_1, 1) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 145; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+
+  /* "py_stringsimjoin/apply_rf/tokenizers.pyx":139
+ *         print t
+ * 
+ * def test_tok2(df1, attr1, df2, attr2):             # <<<<<<<<<<<<<<
+ *     cdef vector[string] lstrings, rstrings
+ *     convert_to_vector(df1[attr1], lstrings)
+ */
+
+  /* function exit code */
+  __pyx_r = Py_None; __Pyx_INCREF(Py_None);
+  goto __pyx_L0;
+  __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
+  __Pyx_XDECREF(__pyx_t_2);
+  __Pyx_XDECREF(__pyx_t_3);
+  __Pyx_AddTraceback("py_stringsimjoin.apply_rf.tokenizers.test_tok2", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __pyx_r = NULL;
+  __pyx_L0:;
+  __Pyx_XDECREF(__pyx_v_st);
+  __Pyx_XGIVEREF(__pyx_r);
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+/* "py_stringsimjoin/apply_rf/tokenizers.pyx":147
+ *     print 'time : ', time.time() - st
+ * 
+ * cdef vector[int] split(string inp_string):             # <<<<<<<<<<<<<<
+ *     cdef char* pch
+ *     pch = strtok (<char*> inp_string.c_str(), " ")
+ */
+
+static std::vector<int>  __pyx_f_16py_stringsimjoin_8apply_rf_10tokenizers_split(std::string __pyx_v_inp_string) {
+  char *__pyx_v_pch;
+  std::vector<int>  __pyx_v_out_tokens;
+  std::vector<int>  __pyx_r;
+  __Pyx_RefNannyDeclarations
+  int __pyx_t_1;
+  int __pyx_lineno = 0;
+  const char *__pyx_filename = NULL;
+  int __pyx_clineno = 0;
+  __Pyx_RefNannySetupContext("split", 0);
+
+  /* "py_stringsimjoin/apply_rf/tokenizers.pyx":149
+ * cdef vector[int] split(string inp_string):
+ *     cdef char* pch
+ *     pch = strtok (<char*> inp_string.c_str(), " ")             # <<<<<<<<<<<<<<
+ *     cdef vector[int] out_tokens
+ *     while pch != NULL:
+ */
+  __pyx_v_pch = strtok(((char *)__pyx_v_inp_string.c_str()), __pyx_k_);
+
+  /* "py_stringsimjoin/apply_rf/tokenizers.pyx":151
+ *     pch = strtok (<char*> inp_string.c_str(), " ")
+ *     cdef vector[int] out_tokens
+ *     while pch != NULL:             # <<<<<<<<<<<<<<
+ *         out_tokens.push_back(atoi(pch))
+ *         pch = strtok (NULL, " ")
+ */
+  while (1) {
+    __pyx_t_1 = ((__pyx_v_pch != NULL) != 0);
+    if (!__pyx_t_1) break;
+
+    /* "py_stringsimjoin/apply_rf/tokenizers.pyx":152
+ *     cdef vector[int] out_tokens
+ *     while pch != NULL:
+ *         out_tokens.push_back(atoi(pch))             # <<<<<<<<<<<<<<
+ *         pch = strtok (NULL, " ")
+ *     return out_tokens
+ */
+    try {
+      __pyx_v_out_tokens.push_back(atoi(__pyx_v_pch));
+    } catch(...) {
+      __Pyx_CppExn2PyErr();
+      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 152; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    }
+
+    /* "py_stringsimjoin/apply_rf/tokenizers.pyx":153
+ *     while pch != NULL:
+ *         out_tokens.push_back(atoi(pch))
+ *         pch = strtok (NULL, " ")             # <<<<<<<<<<<<<<
+ *     return out_tokens
+ * 
+ */
+    __pyx_v_pch = strtok(NULL, __pyx_k_);
+  }
+
+  /* "py_stringsimjoin/apply_rf/tokenizers.pyx":154
+ *         out_tokens.push_back(atoi(pch))
+ *         pch = strtok (NULL, " ")
+ *     return out_tokens             # <<<<<<<<<<<<<<
+ * 
+ * def load_tok(tok_type, path):
+ */
+  __pyx_r = __pyx_v_out_tokens;
+  goto __pyx_L0;
+
+  /* "py_stringsimjoin/apply_rf/tokenizers.pyx":147
+ *     print 'time : ', time.time() - st
+ * 
+ * cdef vector[int] split(string inp_string):             # <<<<<<<<<<<<<<
+ *     cdef char* pch
+ *     pch = strtok (<char*> inp_string.c_str(), " ")
+ */
+
+  /* function exit code */
+  __pyx_L1_error:;
+  __Pyx_WriteUnraisable("py_stringsimjoin.apply_rf.tokenizers.split", __pyx_clineno, __pyx_lineno, __pyx_filename, 0, 0);
+  __pyx_L0:;
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+/* "py_stringsimjoin/apply_rf/tokenizers.pyx":156
+ *     return out_tokens
+ * 
+ * def load_tok(tok_type, path):             # <<<<<<<<<<<<<<
+ *     cdef vector[vector[int]] ltokens, rtokens
+ *     st =time.time()
+ */
+
+/* Python wrapper */
+static PyObject *__pyx_pw_16py_stringsimjoin_8apply_rf_10tokenizers_5load_tok(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static PyMethodDef __pyx_mdef_16py_stringsimjoin_8apply_rf_10tokenizers_5load_tok = {"load_tok", (PyCFunction)__pyx_pw_16py_stringsimjoin_8apply_rf_10tokenizers_5load_tok, METH_VARARGS|METH_KEYWORDS, 0};
+static PyObject *__pyx_pw_16py_stringsimjoin_8apply_rf_10tokenizers_5load_tok(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+  PyObject *__pyx_v_tok_type = 0;
+  PyObject *__pyx_v_path = 0;
+  int __pyx_lineno = 0;
+  const char *__pyx_filename = NULL;
+  int __pyx_clineno = 0;
+  PyObject *__pyx_r = 0;
+  __Pyx_RefNannyDeclarations
+  __Pyx_RefNannySetupContext("load_tok (wrapper)", 0);
+  {
+    static PyObject **__pyx_pyargnames[] = {&__pyx_n_s_tok_type,&__pyx_n_s_path,0};
+    PyObject* values[2] = {0,0};
+    if (unlikely(__pyx_kwds)) {
+      Py_ssize_t kw_args;
+      const Py_ssize_t pos_args = PyTuple_GET_SIZE(__pyx_args);
+      switch (pos_args) {
+        case  2: values[1] = PyTuple_GET_ITEM(__pyx_args, 1);
+        case  1: values[0] = PyTuple_GET_ITEM(__pyx_args, 0);
+        case  0: break;
+        default: goto __pyx_L5_argtuple_error;
+      }
+      kw_args = PyDict_Size(__pyx_kwds);
+      switch (pos_args) {
+        case  0:
+        if (likely((values[0] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_tok_type)) != 0)) kw_args--;
+        else goto __pyx_L5_argtuple_error;
+        case  1:
+        if (likely((values[1] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_path)) != 0)) kw_args--;
+        else {
+          __Pyx_RaiseArgtupleInvalid("load_tok", 1, 2, 2, 1); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 156; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+        }
+      }
+      if (unlikely(kw_args > 0)) {
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "load_tok") < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 156; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+      }
+    } else if (PyTuple_GET_SIZE(__pyx_args) != 2) {
+      goto __pyx_L5_argtuple_error;
+    } else {
+      values[0] = PyTuple_GET_ITEM(__pyx_args, 0);
+      values[1] = PyTuple_GET_ITEM(__pyx_args, 1);
+    }
+    __pyx_v_tok_type = values[0];
+    __pyx_v_path = values[1];
+  }
+  goto __pyx_L4_argument_unpacking_done;
+  __pyx_L5_argtuple_error:;
+  __Pyx_RaiseArgtupleInvalid("load_tok", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 156; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+  __pyx_L3_error:;
+  __Pyx_AddTraceback("py_stringsimjoin.apply_rf.tokenizers.load_tok", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_RefNannyFinishContext();
+  return NULL;
+  __pyx_L4_argument_unpacking_done:;
+  __pyx_r = __pyx_pf_16py_stringsimjoin_8apply_rf_10tokenizers_4load_tok(__pyx_self, __pyx_v_tok_type, __pyx_v_path);
+
+  /* function exit code */
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+static PyObject *__pyx_pf_16py_stringsimjoin_8apply_rf_10tokenizers_4load_tok(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_tok_type, PyObject *__pyx_v_path) {
+  std::vector<std::vector<int> >  __pyx_v_ltokens;
+  std::vector<std::vector<int> >  __pyx_v_rtokens;
+  CYTHON_UNUSED PyObject *__pyx_v_st = NULL;
+  PyObject *__pyx_v_fp = NULL;
+  PyObject *__pyx_v_line = NULL;
+  PyObject *__pyx_r = NULL;
+  __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
+  PyObject *__pyx_t_2 = NULL;
+  PyObject *__pyx_t_3 = NULL;
+  Py_ssize_t __pyx_t_4;
+  PyObject *(*__pyx_t_5)(PyObject *);
+  std::string __pyx_t_6;
+  int __pyx_lineno = 0;
+  const char *__pyx_filename = NULL;
+  int __pyx_clineno = 0;
+  __Pyx_RefNannySetupContext("load_tok", 0);
+
+  /* "py_stringsimjoin/apply_rf/tokenizers.pyx":158
+ * def load_tok(tok_type, path):
+ *     cdef vector[vector[int]] ltokens, rtokens
+ *     st =time.time()             # <<<<<<<<<<<<<<
+ *     fp = open(path+"/ltable_"+tok_type)
+ *     for line in fp:
+ */
+  __pyx_t_2 = __Pyx_GetModuleGlobalName(__pyx_n_s_time); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 158; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_2);
+  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_time); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 158; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_3);
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  __pyx_t_2 = NULL;
+  if (CYTHON_COMPILING_IN_CPYTHON && unlikely(PyMethod_Check(__pyx_t_3))) {
+    __pyx_t_2 = PyMethod_GET_SELF(__pyx_t_3);
+    if (likely(__pyx_t_2)) {
+      PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_3);
+      __Pyx_INCREF(__pyx_t_2);
+      __Pyx_INCREF(function);
+      __Pyx_DECREF_SET(__pyx_t_3, function);
+    }
+  }
+  if (__pyx_t_2) {
+    __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_t_3, __pyx_t_2); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 158; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  } else {
+    __pyx_t_1 = __Pyx_PyObject_CallNoArg(__pyx_t_3); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 158; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  }
+  __Pyx_GOTREF(__pyx_t_1);
+  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+  __pyx_v_st = __pyx_t_1;
+  __pyx_t_1 = 0;
+
+  /* "py_stringsimjoin/apply_rf/tokenizers.pyx":159
+ *     cdef vector[vector[int]] ltokens, rtokens
+ *     st =time.time()
+ *     fp = open(path+"/ltable_"+tok_type)             # <<<<<<<<<<<<<<
+ *     for line in fp:
+ *         ltokens.push_back(split(line))
+ */
+  __pyx_t_1 = PyNumber_Add(__pyx_v_path, __pyx_kp_s_ltable); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 159; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_1);
+  __pyx_t_3 = PyNumber_Add(__pyx_t_1, __pyx_v_tok_type); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 159; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_3);
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  __pyx_t_1 = PyTuple_New(1); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 159; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_1);
+  __Pyx_GIVEREF(__pyx_t_3);
+  PyTuple_SET_ITEM(__pyx_t_1, 0, __pyx_t_3);
+  __pyx_t_3 = 0;
+  __pyx_t_3 = __Pyx_PyObject_Call(__pyx_builtin_open, __pyx_t_1, NULL); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 159; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_3);
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  __pyx_v_fp = __pyx_t_3;
+  __pyx_t_3 = 0;
+
+  /* "py_stringsimjoin/apply_rf/tokenizers.pyx":160
+ *     st =time.time()
+ *     fp = open(path+"/ltable_"+tok_type)
+ *     for line in fp:             # <<<<<<<<<<<<<<
+ *         ltokens.push_back(split(line))
+ *     fp.close()
+ */
+  if (likely(PyList_CheckExact(__pyx_v_fp)) || PyTuple_CheckExact(__pyx_v_fp)) {
+    __pyx_t_3 = __pyx_v_fp; __Pyx_INCREF(__pyx_t_3); __pyx_t_4 = 0;
+    __pyx_t_5 = NULL;
+  } else {
+    __pyx_t_4 = -1; __pyx_t_3 = PyObject_GetIter(__pyx_v_fp); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 160; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __Pyx_GOTREF(__pyx_t_3);
+    __pyx_t_5 = Py_TYPE(__pyx_t_3)->tp_iternext; if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 160; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  }
+  for (;;) {
+    if (likely(!__pyx_t_5)) {
+      if (likely(PyList_CheckExact(__pyx_t_3))) {
+        if (__pyx_t_4 >= PyList_GET_SIZE(__pyx_t_3)) break;
+        #if CYTHON_COMPILING_IN_CPYTHON
+        __pyx_t_1 = PyList_GET_ITEM(__pyx_t_3, __pyx_t_4); __Pyx_INCREF(__pyx_t_1); __pyx_t_4++; if (unlikely(0 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 160; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        #else
+        __pyx_t_1 = PySequence_ITEM(__pyx_t_3, __pyx_t_4); __pyx_t_4++; if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 160; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        __Pyx_GOTREF(__pyx_t_1);
+        #endif
+      } else {
+        if (__pyx_t_4 >= PyTuple_GET_SIZE(__pyx_t_3)) break;
+        #if CYTHON_COMPILING_IN_CPYTHON
+        __pyx_t_1 = PyTuple_GET_ITEM(__pyx_t_3, __pyx_t_4); __Pyx_INCREF(__pyx_t_1); __pyx_t_4++; if (unlikely(0 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 160; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        #else
+        __pyx_t_1 = PySequence_ITEM(__pyx_t_3, __pyx_t_4); __pyx_t_4++; if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 160; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        __Pyx_GOTREF(__pyx_t_1);
+        #endif
+      }
+    } else {
+      __pyx_t_1 = __pyx_t_5(__pyx_t_3);
+      if (unlikely(!__pyx_t_1)) {
+        PyObject* exc_type = PyErr_Occurred();
+        if (exc_type) {
+          if (likely(exc_type == PyExc_StopIteration || PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) PyErr_Clear();
+          else {__pyx_filename = __pyx_f[0]; __pyx_lineno = 160; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        }
+        break;
+      }
+      __Pyx_GOTREF(__pyx_t_1);
+    }
+    __Pyx_XDECREF_SET(__pyx_v_line, __pyx_t_1);
+    __pyx_t_1 = 0;
+
+    /* "py_stringsimjoin/apply_rf/tokenizers.pyx":161
+ *     fp = open(path+"/ltable_"+tok_type)
+ *     for line in fp:
+ *         ltokens.push_back(split(line))             # <<<<<<<<<<<<<<
+ *     fp.close()
+ *     fp = open(path+"/rtable_"+tok_type)
+ */
+    __pyx_t_6 = __pyx_convert_string_from_py_std__in_string(__pyx_v_line); if (unlikely(PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 161; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    try {
+      __pyx_v_ltokens.push_back(__pyx_f_16py_stringsimjoin_8apply_rf_10tokenizers_split(__pyx_t_6));
+    } catch(...) {
+      __Pyx_CppExn2PyErr();
+      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 161; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    }
+
+    /* "py_stringsimjoin/apply_rf/tokenizers.pyx":160
+ *     st =time.time()
+ *     fp = open(path+"/ltable_"+tok_type)
+ *     for line in fp:             # <<<<<<<<<<<<<<
+ *         ltokens.push_back(split(line))
+ *     fp.close()
+ */
+  }
+  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+
+  /* "py_stringsimjoin/apply_rf/tokenizers.pyx":162
+ *     for line in fp:
+ *         ltokens.push_back(split(line))
+ *     fp.close()             # <<<<<<<<<<<<<<
+ *     fp = open(path+"/rtable_"+tok_type)
+ *     for line in fp:
+ */
+  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_fp, __pyx_n_s_close); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 162; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_1);
+  __pyx_t_2 = NULL;
+  if (CYTHON_COMPILING_IN_CPYTHON && likely(PyMethod_Check(__pyx_t_1))) {
+    __pyx_t_2 = PyMethod_GET_SELF(__pyx_t_1);
+    if (likely(__pyx_t_2)) {
+      PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_1);
+      __Pyx_INCREF(__pyx_t_2);
+      __Pyx_INCREF(function);
+      __Pyx_DECREF_SET(__pyx_t_1, function);
+    }
+  }
+  if (__pyx_t_2) {
+    __pyx_t_3 = __Pyx_PyObject_CallOneArg(__pyx_t_1, __pyx_t_2); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 162; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  } else {
+    __pyx_t_3 = __Pyx_PyObject_CallNoArg(__pyx_t_1); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 162; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  }
+  __Pyx_GOTREF(__pyx_t_3);
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+
+  /* "py_stringsimjoin/apply_rf/tokenizers.pyx":163
+ *         ltokens.push_back(split(line))
+ *     fp.close()
+ *     fp = open(path+"/rtable_"+tok_type)             # <<<<<<<<<<<<<<
+ *     for line in fp:
+ *         rtokens.push_back(split(line))
+ */
+  __pyx_t_3 = PyNumber_Add(__pyx_v_path, __pyx_kp_s_rtable); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 163; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_3);
+  __pyx_t_1 = PyNumber_Add(__pyx_t_3, __pyx_v_tok_type); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 163; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_1);
+  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+  __pyx_t_3 = PyTuple_New(1); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 163; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_3);
+  __Pyx_GIVEREF(__pyx_t_1);
+  PyTuple_SET_ITEM(__pyx_t_3, 0, __pyx_t_1);
+  __pyx_t_1 = 0;
+  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_open, __pyx_t_3, NULL); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 163; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_1);
+  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+  __Pyx_DECREF_SET(__pyx_v_fp, __pyx_t_1);
+  __pyx_t_1 = 0;
+
+  /* "py_stringsimjoin/apply_rf/tokenizers.pyx":164
+ *     fp.close()
+ *     fp = open(path+"/rtable_"+tok_type)
+ *     for line in fp:             # <<<<<<<<<<<<<<
+ *         rtokens.push_back(split(line))
+ *     fp.close()
+ */
+  if (likely(PyList_CheckExact(__pyx_v_fp)) || PyTuple_CheckExact(__pyx_v_fp)) {
+    __pyx_t_1 = __pyx_v_fp; __Pyx_INCREF(__pyx_t_1); __pyx_t_4 = 0;
+    __pyx_t_5 = NULL;
+  } else {
+    __pyx_t_4 = -1; __pyx_t_1 = PyObject_GetIter(__pyx_v_fp); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 164; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __Pyx_GOTREF(__pyx_t_1);
+    __pyx_t_5 = Py_TYPE(__pyx_t_1)->tp_iternext; if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 164; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  }
+  for (;;) {
+    if (likely(!__pyx_t_5)) {
+      if (likely(PyList_CheckExact(__pyx_t_1))) {
+        if (__pyx_t_4 >= PyList_GET_SIZE(__pyx_t_1)) break;
+        #if CYTHON_COMPILING_IN_CPYTHON
+        __pyx_t_3 = PyList_GET_ITEM(__pyx_t_1, __pyx_t_4); __Pyx_INCREF(__pyx_t_3); __pyx_t_4++; if (unlikely(0 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 164; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        #else
+        __pyx_t_3 = PySequence_ITEM(__pyx_t_1, __pyx_t_4); __pyx_t_4++; if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 164; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        __Pyx_GOTREF(__pyx_t_3);
+        #endif
+      } else {
+        if (__pyx_t_4 >= PyTuple_GET_SIZE(__pyx_t_1)) break;
+        #if CYTHON_COMPILING_IN_CPYTHON
+        __pyx_t_3 = PyTuple_GET_ITEM(__pyx_t_1, __pyx_t_4); __Pyx_INCREF(__pyx_t_3); __pyx_t_4++; if (unlikely(0 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 164; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        #else
+        __pyx_t_3 = PySequence_ITEM(__pyx_t_1, __pyx_t_4); __pyx_t_4++; if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 164; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        __Pyx_GOTREF(__pyx_t_3);
+        #endif
+      }
+    } else {
+      __pyx_t_3 = __pyx_t_5(__pyx_t_1);
+      if (unlikely(!__pyx_t_3)) {
+        PyObject* exc_type = PyErr_Occurred();
+        if (exc_type) {
+          if (likely(exc_type == PyExc_StopIteration || PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) PyErr_Clear();
+          else {__pyx_filename = __pyx_f[0]; __pyx_lineno = 164; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        }
+        break;
+      }
+      __Pyx_GOTREF(__pyx_t_3);
+    }
+    __Pyx_XDECREF_SET(__pyx_v_line, __pyx_t_3);
+    __pyx_t_3 = 0;
+
+    /* "py_stringsimjoin/apply_rf/tokenizers.pyx":165
+ *     fp = open(path+"/rtable_"+tok_type)
+ *     for line in fp:
+ *         rtokens.push_back(split(line))             # <<<<<<<<<<<<<<
+ *     fp.close()
+ *     print 'time : ', time.time()
+ */
+    __pyx_t_6 = __pyx_convert_string_from_py_std__in_string(__pyx_v_line); if (unlikely(PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 165; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    try {
+      __pyx_v_rtokens.push_back(__pyx_f_16py_stringsimjoin_8apply_rf_10tokenizers_split(__pyx_t_6));
+    } catch(...) {
+      __Pyx_CppExn2PyErr();
+      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 165; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    }
+
+    /* "py_stringsimjoin/apply_rf/tokenizers.pyx":164
+ *     fp.close()
+ *     fp = open(path+"/rtable_"+tok_type)
+ *     for line in fp:             # <<<<<<<<<<<<<<
+ *         rtokens.push_back(split(line))
+ *     fp.close()
+ */
+  }
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+
+  /* "py_stringsimjoin/apply_rf/tokenizers.pyx":166
+ *     for line in fp:
+ *         rtokens.push_back(split(line))
+ *     fp.close()             # <<<<<<<<<<<<<<
+ *     print 'time : ', time.time()
+ *     print ltokens.size(), rtokens.size()
+ */
+  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_fp, __pyx_n_s_close); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 166; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_3);
+  __pyx_t_2 = NULL;
+  if (CYTHON_COMPILING_IN_CPYTHON && likely(PyMethod_Check(__pyx_t_3))) {
+    __pyx_t_2 = PyMethod_GET_SELF(__pyx_t_3);
+    if (likely(__pyx_t_2)) {
+      PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_3);
+      __Pyx_INCREF(__pyx_t_2);
+      __Pyx_INCREF(function);
+      __Pyx_DECREF_SET(__pyx_t_3, function);
+    }
+  }
+  if (__pyx_t_2) {
+    __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_t_3, __pyx_t_2); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 166; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  } else {
+    __pyx_t_1 = __Pyx_PyObject_CallNoArg(__pyx_t_3); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 166; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  }
+  __Pyx_GOTREF(__pyx_t_1);
+  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+
+  /* "py_stringsimjoin/apply_rf/tokenizers.pyx":167
+ *         rtokens.push_back(split(line))
+ *     fp.close()
+ *     print 'time : ', time.time()             # <<<<<<<<<<<<<<
+ *     print ltokens.size(), rtokens.size()
+ * 
+ */
+  __pyx_t_3 = __Pyx_GetModuleGlobalName(__pyx_n_s_time); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 167; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_3);
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_time); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 167; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_2);
+  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+  __pyx_t_3 = NULL;
+  if (CYTHON_COMPILING_IN_CPYTHON && unlikely(PyMethod_Check(__pyx_t_2))) {
+    __pyx_t_3 = PyMethod_GET_SELF(__pyx_t_2);
+    if (likely(__pyx_t_3)) {
+      PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_2);
+      __Pyx_INCREF(__pyx_t_3);
+      __Pyx_INCREF(function);
+      __Pyx_DECREF_SET(__pyx_t_2, function);
+    }
+  }
+  if (__pyx_t_3) {
+    __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_t_3); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 167; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+  } else {
+    __pyx_t_1 = __Pyx_PyObject_CallNoArg(__pyx_t_2); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 167; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  }
+  __Pyx_GOTREF(__pyx_t_1);
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  __pyx_t_2 = PyTuple_New(2); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 167; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_2);
+  __Pyx_INCREF(__pyx_kp_s_time_2);
+  __Pyx_GIVEREF(__pyx_kp_s_time_2);
+  PyTuple_SET_ITEM(__pyx_t_2, 0, __pyx_kp_s_time_2);
+  __Pyx_GIVEREF(__pyx_t_1);
+  PyTuple_SET_ITEM(__pyx_t_2, 1, __pyx_t_1);
+  __pyx_t_1 = 0;
+  if (__Pyx_Print(0, __pyx_t_2, 1) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 167; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+
+  /* "py_stringsimjoin/apply_rf/tokenizers.pyx":168
+ *     fp.close()
+ *     print 'time : ', time.time()
+ *     print ltokens.size(), rtokens.size()             # <<<<<<<<<<<<<<
+ * 
+ * cdef bool mycomp(pair[string, int] i, pair[string, int] j):
+ */
+  __pyx_t_2 = __Pyx_PyInt_FromSize_t(__pyx_v_ltokens.size()); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 168; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_2);
+  __pyx_t_1 = __Pyx_PyInt_FromSize_t(__pyx_v_rtokens.size()); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 168; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_1);
+  __pyx_t_3 = PyTuple_New(2); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 168; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_3);
+  __Pyx_GIVEREF(__pyx_t_2);
+  PyTuple_SET_ITEM(__pyx_t_3, 0, __pyx_t_2);
+  __Pyx_GIVEREF(__pyx_t_1);
+  PyTuple_SET_ITEM(__pyx_t_3, 1, __pyx_t_1);
+  __pyx_t_2 = 0;
+  __pyx_t_1 = 0;
+  if (__Pyx_Print(0, __pyx_t_3, 1) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 168; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+
+  /* "py_stringsimjoin/apply_rf/tokenizers.pyx":156
+ *     return out_tokens
+ * 
+ * def load_tok(tok_type, path):             # <<<<<<<<<<<<<<
+ *     cdef vector[vector[int]] ltokens, rtokens
+ *     st =time.time()
+ */
+
+  /* function exit code */
+  __pyx_r = Py_None; __Pyx_INCREF(Py_None);
+  goto __pyx_L0;
+  __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
+  __Pyx_XDECREF(__pyx_t_2);
+  __Pyx_XDECREF(__pyx_t_3);
+  __Pyx_AddTraceback("py_stringsimjoin.apply_rf.tokenizers.load_tok", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __pyx_r = NULL;
+  __pyx_L0:;
+  __Pyx_XDECREF(__pyx_v_st);
+  __Pyx_XDECREF(__pyx_v_fp);
+  __Pyx_XDECREF(__pyx_v_line);
+  __Pyx_XGIVEREF(__pyx_r);
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+/* "py_stringsimjoin/apply_rf/tokenizers.pyx":170
+ *     print ltokens.size(), rtokens.size()
+ * 
+ * cdef bool mycomp(pair[string, int] i, pair[string, int] j):             # <<<<<<<<<<<<<<
+ *     return (i.second < j.second)
+ * 
+ */
+
+static bool __pyx_f_16py_stringsimjoin_8apply_rf_10tokenizers_mycomp(std::pair<std::string,int>  __pyx_v_i, std::pair<std::string,int>  __pyx_v_j) {
+  bool __pyx_r;
+  __Pyx_RefNannyDeclarations
+  __Pyx_RefNannySetupContext("mycomp", 0);
+
+  /* "py_stringsimjoin/apply_rf/tokenizers.pyx":171
+ * 
+ * cdef bool mycomp(pair[string, int] i, pair[string, int] j):
+ *     return (i.second < j.second)             # <<<<<<<<<<<<<<
+ * 
+ * cpdef void tokenize(vector[string]& lstrings, vector[string]& rstrings,
+ */
+  __pyx_r = (__pyx_v_i.second < __pyx_v_j.second);
+  goto __pyx_L0;
+
+  /* "py_stringsimjoin/apply_rf/tokenizers.pyx":170
+ *     print ltokens.size(), rtokens.size()
+ * 
+ * cdef bool mycomp(pair[string, int] i, pair[string, int] j):             # <<<<<<<<<<<<<<
+ *     return (i.second < j.second)
+ * 
+ */
+
+  /* function exit code */
+  __pyx_L0:;
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+/* "py_stringsimjoin/apply_rf/tokenizers.pyx":173
+ *     return (i.second < j.second)
+ * 
+ * cpdef void tokenize(vector[string]& lstrings, vector[string]& rstrings,             # <<<<<<<<<<<<<<
+ *                    const string& tok_type, const string& working_dir):
+ *     cdef object tok
+ */
+
+static PyObject *__pyx_pw_16py_stringsimjoin_8apply_rf_10tokenizers_7tokenize(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static void __pyx_f_16py_stringsimjoin_8apply_rf_10tokenizers_tokenize(std::vector<std::string>  &__pyx_v_lstrings, std::vector<std::string>  &__pyx_v_rstrings, std::string const &__pyx_v_tok_type, std::string const &__pyx_v_working_dir, CYTHON_UNUSED int __pyx_skip_dispatch) {
+  PyObject *__pyx_v_tok = 0;
+  std::string __pyx_v_s;
+  std::string __pyx_v_token;
+  std::vector<std::string>  __pyx_v_tokens;
+  std::map<std::string,int>  __pyx_v_token_freq;
+  std::map<std::string,int>  __pyx_v_token_ordering;
+  std::vector<std::vector<std::string> >  __pyx_v_ltokens;
+  std::vector<std::vector<std::string> >  __pyx_v_rtokens;
+  int __pyx_v_j;
+  int __pyx_v_n;
+  PyObject *__pyx_v_ordered_tokens = NULL;
+  std::pair<std::string,int>  __pyx_v_entry;
+  int __pyx_v_order_idx;
+  PyObject *__pyx_v_token_freq_tuple = NULL;
+  PyObject *__pyx_v_fp = NULL;
+  char __pyx_v_buf[10];
+  std::string __pyx_v_space;
+  __Pyx_RefNannyDeclarations
+  std::string __pyx_t_1;
+  int __pyx_t_2;
+  PyObject *__pyx_t_3 = NULL;
+  PyObject *__pyx_t_4 = NULL;
+  int __pyx_t_5;
+  int __pyx_t_6;
+  PyObject *__pyx_t_7 = NULL;
+  PyObject *__pyx_t_8 = NULL;
+  PyObject *__pyx_t_9 = NULL;
+  std::vector<std::string>  __pyx_t_10;
+  std::vector<std::string> ::iterator __pyx_t_11;
+  std::map<std::string,int> ::iterator __pyx_t_12;
+  std::pair<std::string,int>  __pyx_t_13;
+  int __pyx_t_14;
+  Py_ssize_t __pyx_t_15;
+  PyObject *(*__pyx_t_16)(PyObject *);
+  std::vector<std::vector<std::string> > ::iterator __pyx_t_17;
+  int __pyx_lineno = 0;
+  const char *__pyx_filename = NULL;
+  int __pyx_clineno = 0;
+  __Pyx_RefNannySetupContext("tokenize", 0);
+
+  /* "py_stringsimjoin/apply_rf/tokenizers.pyx":176
+ *                    const string& tok_type, const string& working_dir):
+ *     cdef object tok
+ *     if tok_type.compare('ws') == 0:             # <<<<<<<<<<<<<<
+ *         tok = WhitespaceTokenizer(True)
+ *     elif tok_type.compare('alph') == 0:
+ */
+  __pyx_t_1 = __pyx_convert_string_from_py_std__in_string(__pyx_n_b_ws); if (unlikely(PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 176; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_2 = ((__pyx_v_tok_type.compare(__pyx_t_1) == 0) != 0);
+  if (__pyx_t_2) {
+
+    /* "py_stringsimjoin/apply_rf/tokenizers.pyx":177
+ *     cdef object tok
+ *     if tok_type.compare('ws') == 0:
+ *         tok = WhitespaceTokenizer(True)             # <<<<<<<<<<<<<<
+ *     elif tok_type.compare('alph') == 0:
+ *         tok = AlphabeticTokenizer(True)
+ */
+    __pyx_t_3 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_16py_stringsimjoin_8apply_rf_10tokenizers_WhitespaceTokenizer), __pyx_tuple__5, NULL); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 177; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __Pyx_GOTREF(__pyx_t_3);
+    __pyx_v_tok = __pyx_t_3;
+    __pyx_t_3 = 0;
+
+    /* "py_stringsimjoin/apply_rf/tokenizers.pyx":176
+ *                    const string& tok_type, const string& working_dir):
+ *     cdef object tok
+ *     if tok_type.compare('ws') == 0:             # <<<<<<<<<<<<<<
+ *         tok = WhitespaceTokenizer(True)
+ *     elif tok_type.compare('alph') == 0:
+ */
+    goto __pyx_L3;
+  }
+
+  /* "py_stringsimjoin/apply_rf/tokenizers.pyx":178
+ *     if tok_type.compare('ws') == 0:
+ *         tok = WhitespaceTokenizer(True)
+ *     elif tok_type.compare('alph') == 0:             # <<<<<<<<<<<<<<
+ *         tok = AlphabeticTokenizer(True)
+ *     elif tok_type.compare('alph_num') == 0:
+ */
+  __pyx_t_1 = __pyx_convert_string_from_py_std__in_string(__pyx_n_b_alph); if (unlikely(PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 178; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_2 = ((__pyx_v_tok_type.compare(__pyx_t_1) == 0) != 0);
+  if (__pyx_t_2) {
+
+    /* "py_stringsimjoin/apply_rf/tokenizers.pyx":179
+ *         tok = WhitespaceTokenizer(True)
+ *     elif tok_type.compare('alph') == 0:
+ *         tok = AlphabeticTokenizer(True)             # <<<<<<<<<<<<<<
+ *     elif tok_type.compare('alph_num') == 0:
+ *         tok = AlphanumericTokenizer(True)
+ */
+    __pyx_t_3 = __Pyx_GetModuleGlobalName(__pyx_n_s_AlphabeticTokenizer); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 179; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __Pyx_GOTREF(__pyx_t_3);
+    __pyx_t_4 = __Pyx_PyObject_Call(__pyx_t_3, __pyx_tuple__6, NULL); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 179; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __Pyx_GOTREF(__pyx_t_4);
+    __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+    __pyx_v_tok = __pyx_t_4;
+    __pyx_t_4 = 0;
+
+    /* "py_stringsimjoin/apply_rf/tokenizers.pyx":178
+ *     if tok_type.compare('ws') == 0:
+ *         tok = WhitespaceTokenizer(True)
+ *     elif tok_type.compare('alph') == 0:             # <<<<<<<<<<<<<<
+ *         tok = AlphabeticTokenizer(True)
+ *     elif tok_type.compare('alph_num') == 0:
+ */
+    goto __pyx_L3;
+  }
+
+  /* "py_stringsimjoin/apply_rf/tokenizers.pyx":180
+ *     elif tok_type.compare('alph') == 0:
+ *         tok = AlphabeticTokenizer(True)
+ *     elif tok_type.compare('alph_num') == 0:             # <<<<<<<<<<<<<<
+ *         tok = AlphanumericTokenizer(True)
+ *     elif tok_type.compare('num') == 0:
+ */
+  __pyx_t_1 = __pyx_convert_string_from_py_std__in_string(__pyx_n_b_alph_num); if (unlikely(PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 180; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_2 = ((__pyx_v_tok_type.compare(__pyx_t_1) == 0) != 0);
+  if (__pyx_t_2) {
+
+    /* "py_stringsimjoin/apply_rf/tokenizers.pyx":181
+ *         tok = AlphabeticTokenizer(True)
+ *     elif tok_type.compare('alph_num') == 0:
+ *         tok = AlphanumericTokenizer(True)             # <<<<<<<<<<<<<<
+ *     elif tok_type.compare('num') == 0:
+ *         tok = NumericTokenizer(True)
+ */
+    __pyx_t_4 = __Pyx_GetModuleGlobalName(__pyx_n_s_AlphanumericTokenizer); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 181; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __Pyx_GOTREF(__pyx_t_4);
+    __pyx_t_3 = __Pyx_PyObject_Call(__pyx_t_4, __pyx_tuple__7, NULL); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 181; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __Pyx_GOTREF(__pyx_t_3);
+    __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+    __pyx_v_tok = __pyx_t_3;
+    __pyx_t_3 = 0;
+
+    /* "py_stringsimjoin/apply_rf/tokenizers.pyx":180
+ *     elif tok_type.compare('alph') == 0:
+ *         tok = AlphabeticTokenizer(True)
+ *     elif tok_type.compare('alph_num') == 0:             # <<<<<<<<<<<<<<
+ *         tok = AlphanumericTokenizer(True)
+ *     elif tok_type.compare('num') == 0:
+ */
+    goto __pyx_L3;
+  }
+
+  /* "py_stringsimjoin/apply_rf/tokenizers.pyx":182
+ *     elif tok_type.compare('alph_num') == 0:
+ *         tok = AlphanumericTokenizer(True)
+ *     elif tok_type.compare('num') == 0:             # <<<<<<<<<<<<<<
+ *         tok = NumericTokenizer(True)
+ *     elif tok_type.compare('qg2') == 0:
+ */
+  __pyx_t_1 = __pyx_convert_string_from_py_std__in_string(__pyx_n_b_num); if (unlikely(PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 182; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_2 = ((__pyx_v_tok_type.compare(__pyx_t_1) == 0) != 0);
+  if (__pyx_t_2) {
+
+    /* "py_stringsimjoin/apply_rf/tokenizers.pyx":183
+ *         tok = AlphanumericTokenizer(True)
+ *     elif tok_type.compare('num') == 0:
+ *         tok = NumericTokenizer(True)             # <<<<<<<<<<<<<<
+ *     elif tok_type.compare('qg2') == 0:
+ *         tok = QgramTokenizer(2, True, ord('#'), ord('$'), True)
+ */
+    __pyx_t_3 = __Pyx_GetModuleGlobalName(__pyx_n_s_NumericTokenizer); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 183; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __Pyx_GOTREF(__pyx_t_3);
+    __pyx_t_4 = __Pyx_PyObject_Call(__pyx_t_3, __pyx_tuple__8, NULL); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 183; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __Pyx_GOTREF(__pyx_t_4);
+    __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+    __pyx_v_tok = __pyx_t_4;
+    __pyx_t_4 = 0;
+
+    /* "py_stringsimjoin/apply_rf/tokenizers.pyx":182
+ *     elif tok_type.compare('alph_num') == 0:
+ *         tok = AlphanumericTokenizer(True)
+ *     elif tok_type.compare('num') == 0:             # <<<<<<<<<<<<<<
+ *         tok = NumericTokenizer(True)
+ *     elif tok_type.compare('qg2') == 0:
+ */
+    goto __pyx_L3;
+  }
+
+  /* "py_stringsimjoin/apply_rf/tokenizers.pyx":184
+ *     elif tok_type.compare('num') == 0:
+ *         tok = NumericTokenizer(True)
+ *     elif tok_type.compare('qg2') == 0:             # <<<<<<<<<<<<<<
+ *         tok = QgramTokenizer(2, True, ord('#'), ord('$'), True)
+ *     elif tok_type.compare('qg3') == 0:
+ */
+  __pyx_t_1 = __pyx_convert_string_from_py_std__in_string(__pyx_n_b_qg2); if (unlikely(PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 184; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_2 = ((__pyx_v_tok_type.compare(__pyx_t_1) == 0) != 0);
+  if (__pyx_t_2) {
+
+    /* "py_stringsimjoin/apply_rf/tokenizers.pyx":185
+ *         tok = NumericTokenizer(True)
+ *     elif tok_type.compare('qg2') == 0:
+ *         tok = QgramTokenizer(2, True, ord('#'), ord('$'), True)             # <<<<<<<<<<<<<<
+ *     elif tok_type.compare('qg3') == 0:
+ *         tok = QgramTokenizer(3, True, ord('#'), ord('$'), True)
+ */
+    __pyx_t_4 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_16py_stringsimjoin_8apply_rf_10tokenizers_QgramTokenizer), __pyx_tuple__9, NULL); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 185; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __Pyx_GOTREF(__pyx_t_4);
+    __pyx_v_tok = __pyx_t_4;
+    __pyx_t_4 = 0;
+
+    /* "py_stringsimjoin/apply_rf/tokenizers.pyx":184
+ *     elif tok_type.compare('num') == 0:
+ *         tok = NumericTokenizer(True)
+ *     elif tok_type.compare('qg2') == 0:             # <<<<<<<<<<<<<<
+ *         tok = QgramTokenizer(2, True, ord('#'), ord('$'), True)
+ *     elif tok_type.compare('qg3') == 0:
+ */
+    goto __pyx_L3;
+  }
+
+  /* "py_stringsimjoin/apply_rf/tokenizers.pyx":186
+ *     elif tok_type.compare('qg2') == 0:
+ *         tok = QgramTokenizer(2, True, ord('#'), ord('$'), True)
+ *     elif tok_type.compare('qg3') == 0:             # <<<<<<<<<<<<<<
+ *         tok = QgramTokenizer(3, True, ord('#'), ord('$'), True)
+ * 
+ */
+  __pyx_t_1 = __pyx_convert_string_from_py_std__in_string(__pyx_n_b_qg3); if (unlikely(PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 186; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_2 = ((__pyx_v_tok_type.compare(__pyx_t_1) == 0) != 0);
+  if (__pyx_t_2) {
+
+    /* "py_stringsimjoin/apply_rf/tokenizers.pyx":187
+ *         tok = QgramTokenizer(2, True, ord('#'), ord('$'), True)
+ *     elif tok_type.compare('qg3') == 0:
+ *         tok = QgramTokenizer(3, True, ord('#'), ord('$'), True)             # <<<<<<<<<<<<<<
+ * 
+ *     cdef string s, token
+ */
+    __pyx_t_4 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_16py_stringsimjoin_8apply_rf_10tokenizers_QgramTokenizer), __pyx_tuple__10, NULL); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 187; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __Pyx_GOTREF(__pyx_t_4);
+    __pyx_v_tok = __pyx_t_4;
+    __pyx_t_4 = 0;
+
+    /* "py_stringsimjoin/apply_rf/tokenizers.pyx":186
+ *     elif tok_type.compare('qg2') == 0:
+ *         tok = QgramTokenizer(2, True, ord('#'), ord('$'), True)
+ *     elif tok_type.compare('qg3') == 0:             # <<<<<<<<<<<<<<
+ *         tok = QgramTokenizer(3, True, ord('#'), ord('$'), True)
+ * 
+ */
+  }
+  __pyx_L3:;
+
+  /* "py_stringsimjoin/apply_rf/tokenizers.pyx":193
+ *     cdef omap[string, int] token_freq, token_ordering
+ *     cdef vector[vector[string]] ltokens, rtokens
+ *     cdef int j, n=lstrings.size()             # <<<<<<<<<<<<<<
+ * 
+ *     for j in range(n):
+ */
+  __pyx_v_n = __pyx_v_lstrings.size();
+
+  /* "py_stringsimjoin/apply_rf/tokenizers.pyx":195
+ *     cdef int j, n=lstrings.size()
+ * 
+ *     for j in range(n):             # <<<<<<<<<<<<<<
+ *         tokens = tok.tokenize(lstrings[j])
+ *         ltokens.push_back(tokens)
+ */
+  __pyx_t_5 = __pyx_v_n;
+  for (__pyx_t_6 = 0; __pyx_t_6 < __pyx_t_5; __pyx_t_6+=1) {
+    __pyx_v_j = __pyx_t_6;
+
+    /* "py_stringsimjoin/apply_rf/tokenizers.pyx":196
+ * 
+ *     for j in range(n):
+ *         tokens = tok.tokenize(lstrings[j])             # <<<<<<<<<<<<<<
+ *         ltokens.push_back(tokens)
+ *         for token in tokens:
+ */
+    if (unlikely(!__pyx_v_tok)) { __Pyx_RaiseUnboundLocalError("tok"); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 196; __pyx_clineno = __LINE__; goto __pyx_L1_error;} }
+    __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_tok, __pyx_n_s_tokenize); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 196; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __Pyx_GOTREF(__pyx_t_3);
+    __pyx_t_7 = __pyx_convert_PyBytes_string_to_py_std__in_string((__pyx_v_lstrings[__pyx_v_j])); if (unlikely(!__pyx_t_7)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 196; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __Pyx_GOTREF(__pyx_t_7);
+    __pyx_t_8 = NULL;
+    if (CYTHON_COMPILING_IN_CPYTHON && likely(PyMethod_Check(__pyx_t_3))) {
+      __pyx_t_8 = PyMethod_GET_SELF(__pyx_t_3);
+      if (likely(__pyx_t_8)) {
+        PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_3);
+        __Pyx_INCREF(__pyx_t_8);
+        __Pyx_INCREF(function);
+        __Pyx_DECREF_SET(__pyx_t_3, function);
+      }
+    }
+    if (!__pyx_t_8) {
+      __pyx_t_4 = __Pyx_PyObject_CallOneArg(__pyx_t_3, __pyx_t_7); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 196; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
+      __Pyx_GOTREF(__pyx_t_4);
+    } else {
+      __pyx_t_9 = PyTuple_New(1+1); if (unlikely(!__pyx_t_9)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 196; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __Pyx_GOTREF(__pyx_t_9);
+      __Pyx_GIVEREF(__pyx_t_8); PyTuple_SET_ITEM(__pyx_t_9, 0, __pyx_t_8); __pyx_t_8 = NULL;
+      __Pyx_GIVEREF(__pyx_t_7);
+      PyTuple_SET_ITEM(__pyx_t_9, 0+1, __pyx_t_7);
+      __pyx_t_7 = 0;
+      __pyx_t_4 = __Pyx_PyObject_Call(__pyx_t_3, __pyx_t_9, NULL); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 196; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __Pyx_GOTREF(__pyx_t_4);
+      __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
+    }
+    __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+    __pyx_t_10 = __pyx_convert_vector_from_py_std_3a__3a_string(__pyx_t_4); if (unlikely(PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 196; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+    __pyx_v_tokens = __pyx_t_10;
+
+    /* "py_stringsimjoin/apply_rf/tokenizers.pyx":197
+ *     for j in range(n):
+ *         tokens = tok.tokenize(lstrings[j])
+ *         ltokens.push_back(tokens)             # <<<<<<<<<<<<<<
+ *         for token in tokens:
+ *             token_freq[token] += 1
+ */
+    try {
+      __pyx_v_ltokens.push_back(__pyx_v_tokens);
+    } catch(...) {
+      __Pyx_CppExn2PyErr();
+      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 197; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    }
+
+    /* "py_stringsimjoin/apply_rf/tokenizers.pyx":198
+ *         tokens = tok.tokenize(lstrings[j])
+ *         ltokens.push_back(tokens)
+ *         for token in tokens:             # <<<<<<<<<<<<<<
+ *             token_freq[token] += 1
+ * 
+ */
+    __pyx_t_11 = __pyx_v_tokens.begin();
+    for (;;) {
+      if (!(__pyx_t_11 != __pyx_v_tokens.end())) break;
+      __pyx_t_1 = *__pyx_t_11;
+      ++__pyx_t_11;
+      __pyx_v_token = __pyx_t_1;
+
+      /* "py_stringsimjoin/apply_rf/tokenizers.pyx":199
+ *         ltokens.push_back(tokens)
+ *         for token in tokens:
+ *             token_freq[token] += 1             # <<<<<<<<<<<<<<
+ * 
+ *     n = rstrings.size()
+ */
+      __pyx_t_1 = __pyx_v_token;
+      (__pyx_v_token_freq[__pyx_t_1]) = ((__pyx_v_token_freq[__pyx_t_1]) + 1);
+
+      /* "py_stringsimjoin/apply_rf/tokenizers.pyx":198
+ *         tokens = tok.tokenize(lstrings[j])
+ *         ltokens.push_back(tokens)
+ *         for token in tokens:             # <<<<<<<<<<<<<<
+ *             token_freq[token] += 1
+ * 
+ */
+    }
+  }
+
+  /* "py_stringsimjoin/apply_rf/tokenizers.pyx":201
+ *             token_freq[token] += 1
+ * 
+ *     n = rstrings.size()             # <<<<<<<<<<<<<<
+ *     for j in range(n):
+ *         tokens = tok.tokenize(rstrings[j])
+ */
+  __pyx_v_n = __pyx_v_rstrings.size();
+
+  /* "py_stringsimjoin/apply_rf/tokenizers.pyx":202
+ * 
+ *     n = rstrings.size()
+ *     for j in range(n):             # <<<<<<<<<<<<<<
+ *         tokens = tok.tokenize(rstrings[j])
+ *         rtokens.push_back(tokens)
+ */
+  __pyx_t_5 = __pyx_v_n;
+  for (__pyx_t_6 = 0; __pyx_t_6 < __pyx_t_5; __pyx_t_6+=1) {
+    __pyx_v_j = __pyx_t_6;
+
+    /* "py_stringsimjoin/apply_rf/tokenizers.pyx":203
+ *     n = rstrings.size()
+ *     for j in range(n):
+ *         tokens = tok.tokenize(rstrings[j])             # <<<<<<<<<<<<<<
+ *         rtokens.push_back(tokens)
+ *         for token in tokens:
+ */
+    if (unlikely(!__pyx_v_tok)) { __Pyx_RaiseUnboundLocalError("tok"); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 203; __pyx_clineno = __LINE__; goto __pyx_L1_error;} }
+    __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_tok, __pyx_n_s_tokenize); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 203; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __Pyx_GOTREF(__pyx_t_3);
+    __pyx_t_9 = __pyx_convert_PyBytes_string_to_py_std__in_string((__pyx_v_rstrings[__pyx_v_j])); if (unlikely(!__pyx_t_9)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 203; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __Pyx_GOTREF(__pyx_t_9);
+    __pyx_t_7 = NULL;
+    if (CYTHON_COMPILING_IN_CPYTHON && likely(PyMethod_Check(__pyx_t_3))) {
+      __pyx_t_7 = PyMethod_GET_SELF(__pyx_t_3);
+      if (likely(__pyx_t_7)) {
+        PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_3);
+        __Pyx_INCREF(__pyx_t_7);
+        __Pyx_INCREF(function);
+        __Pyx_DECREF_SET(__pyx_t_3, function);
+      }
+    }
+    if (!__pyx_t_7) {
+      __pyx_t_4 = __Pyx_PyObject_CallOneArg(__pyx_t_3, __pyx_t_9); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 203; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
+      __Pyx_GOTREF(__pyx_t_4);
+    } else {
+      __pyx_t_8 = PyTuple_New(1+1); if (unlikely(!__pyx_t_8)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 203; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __Pyx_GOTREF(__pyx_t_8);
+      __Pyx_GIVEREF(__pyx_t_7); PyTuple_SET_ITEM(__pyx_t_8, 0, __pyx_t_7); __pyx_t_7 = NULL;
+      __Pyx_GIVEREF(__pyx_t_9);
+      PyTuple_SET_ITEM(__pyx_t_8, 0+1, __pyx_t_9);
+      __pyx_t_9 = 0;
+      __pyx_t_4 = __Pyx_PyObject_Call(__pyx_t_3, __pyx_t_8, NULL); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 203; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __Pyx_GOTREF(__pyx_t_4);
+      __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
+    }
+    __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+    __pyx_t_10 = __pyx_convert_vector_from_py_std_3a__3a_string(__pyx_t_4); if (unlikely(PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 203; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+    __pyx_v_tokens = __pyx_t_10;
+
+    /* "py_stringsimjoin/apply_rf/tokenizers.pyx":204
+ *     for j in range(n):
+ *         tokens = tok.tokenize(rstrings[j])
+ *         rtokens.push_back(tokens)             # <<<<<<<<<<<<<<
+ *         for token in tokens:
+ *             token_freq[token] += 1
+ */
+    try {
+      __pyx_v_rtokens.push_back(__pyx_v_tokens);
+    } catch(...) {
+      __Pyx_CppExn2PyErr();
+      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 204; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    }
+
+    /* "py_stringsimjoin/apply_rf/tokenizers.pyx":205
+ *         tokens = tok.tokenize(rstrings[j])
+ *         rtokens.push_back(tokens)
+ *         for token in tokens:             # <<<<<<<<<<<<<<
+ *             token_freq[token] += 1
+ * 
+ */
+    __pyx_t_11 = __pyx_v_tokens.begin();
+    for (;;) {
+      if (!(__pyx_t_11 != __pyx_v_tokens.end())) break;
+      __pyx_t_1 = *__pyx_t_11;
+      ++__pyx_t_11;
+      __pyx_v_token = __pyx_t_1;
+
+      /* "py_stringsimjoin/apply_rf/tokenizers.pyx":206
+ *         rtokens.push_back(tokens)
+ *         for token in tokens:
+ *             token_freq[token] += 1             # <<<<<<<<<<<<<<
+ * 
+ *     ordered_tokens = []
+ */
+      __pyx_t_1 = __pyx_v_token;
+      (__pyx_v_token_freq[__pyx_t_1]) = ((__pyx_v_token_freq[__pyx_t_1]) + 1);
+
+      /* "py_stringsimjoin/apply_rf/tokenizers.pyx":205
+ *         tokens = tok.tokenize(rstrings[j])
+ *         rtokens.push_back(tokens)
+ *         for token in tokens:             # <<<<<<<<<<<<<<
+ *             token_freq[token] += 1
+ * 
+ */
+    }
+  }
+
+  /* "py_stringsimjoin/apply_rf/tokenizers.pyx":208
+ *             token_freq[token] += 1
+ * 
+ *     ordered_tokens = []             # <<<<<<<<<<<<<<
+ *     for entry in token_freq:
+ *         ordered_tokens.append((entry.first, entry.second))
+ */
+  __pyx_t_4 = PyList_New(0); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 208; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_4);
+  __pyx_v_ordered_tokens = ((PyObject*)__pyx_t_4);
+  __pyx_t_4 = 0;
+
+  /* "py_stringsimjoin/apply_rf/tokenizers.pyx":209
+ * 
+ *     ordered_tokens = []
+ *     for entry in token_freq:             # <<<<<<<<<<<<<<
+ *         ordered_tokens.append((entry.first, entry.second))
+ * 
+ */
+  __pyx_t_12 = __pyx_v_token_freq.begin();
+  for (;;) {
+    if (!(__pyx_t_12 != __pyx_v_token_freq.end())) break;
+    __pyx_t_13 = *__pyx_t_12;
+    ++__pyx_t_12;
+    __pyx_v_entry = __pyx_t_13;
+
+    /* "py_stringsimjoin/apply_rf/tokenizers.pyx":210
+ *     ordered_tokens = []
+ *     for entry in token_freq:
+ *         ordered_tokens.append((entry.first, entry.second))             # <<<<<<<<<<<<<<
+ * 
+ *     cdef int order_idx = 1
+ */
+    __pyx_t_4 = __pyx_convert_PyBytes_string_to_py_std__in_string(__pyx_v_entry.first); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 210; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __Pyx_GOTREF(__pyx_t_4);
+    __pyx_t_3 = __Pyx_PyInt_From_int(__pyx_v_entry.second); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 210; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __Pyx_GOTREF(__pyx_t_3);
+    __pyx_t_8 = PyTuple_New(2); if (unlikely(!__pyx_t_8)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 210; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __Pyx_GOTREF(__pyx_t_8);
+    __Pyx_GIVEREF(__pyx_t_4);
+    PyTuple_SET_ITEM(__pyx_t_8, 0, __pyx_t_4);
+    __Pyx_GIVEREF(__pyx_t_3);
+    PyTuple_SET_ITEM(__pyx_t_8, 1, __pyx_t_3);
+    __pyx_t_4 = 0;
+    __pyx_t_3 = 0;
+    __pyx_t_14 = __Pyx_PyList_Append(__pyx_v_ordered_tokens, __pyx_t_8); if (unlikely(__pyx_t_14 == -1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 210; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
+
+    /* "py_stringsimjoin/apply_rf/tokenizers.pyx":209
+ * 
+ *     ordered_tokens = []
+ *     for entry in token_freq:             # <<<<<<<<<<<<<<
+ *         ordered_tokens.append((entry.first, entry.second))
+ * 
+ */
+  }
+
+  /* "py_stringsimjoin/apply_rf/tokenizers.pyx":212
+ *         ordered_tokens.append((entry.first, entry.second))
+ * 
+ *     cdef int order_idx = 1             # <<<<<<<<<<<<<<
+ *     for token_freq_tuple in sorted(ordered_tokens, key=itemgetter(1)):
+ *         token_ordering[token_freq_tuple[0]] = order_idx
+ */
+  __pyx_v_order_idx = 1;
+
+  /* "py_stringsimjoin/apply_rf/tokenizers.pyx":213
+ * 
+ *     cdef int order_idx = 1
+ *     for token_freq_tuple in sorted(ordered_tokens, key=itemgetter(1)):             # <<<<<<<<<<<<<<
+ *         token_ordering[token_freq_tuple[0]] = order_idx
+ *         order_idx += 1
+ */
+  __pyx_t_8 = PyTuple_New(1); if (unlikely(!__pyx_t_8)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 213; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_8);
+  __Pyx_INCREF(__pyx_v_ordered_tokens);
+  __Pyx_GIVEREF(__pyx_v_ordered_tokens);
+  PyTuple_SET_ITEM(__pyx_t_8, 0, __pyx_v_ordered_tokens);
+  __pyx_t_3 = PyDict_New(); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 213; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_3);
+  __pyx_t_4 = __Pyx_GetModuleGlobalName(__pyx_n_s_itemgetter); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 213; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_4);
+  __pyx_t_9 = __Pyx_PyObject_Call(__pyx_t_4, __pyx_tuple__11, NULL); if (unlikely(!__pyx_t_9)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 213; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_9);
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+  if (PyDict_SetItem(__pyx_t_3, __pyx_n_s_key, __pyx_t_9) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 213; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
+  __pyx_t_9 = __Pyx_PyObject_Call(__pyx_builtin_sorted, __pyx_t_8, __pyx_t_3); if (unlikely(!__pyx_t_9)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 213; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_9);
+  __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
+  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+  if (likely(PyList_CheckExact(__pyx_t_9)) || PyTuple_CheckExact(__pyx_t_9)) {
+    __pyx_t_3 = __pyx_t_9; __Pyx_INCREF(__pyx_t_3); __pyx_t_15 = 0;
+    __pyx_t_16 = NULL;
+  } else {
+    __pyx_t_15 = -1; __pyx_t_3 = PyObject_GetIter(__pyx_t_9); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 213; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __Pyx_GOTREF(__pyx_t_3);
+    __pyx_t_16 = Py_TYPE(__pyx_t_3)->tp_iternext; if (unlikely(!__pyx_t_16)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 213; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  }
+  __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
+  for (;;) {
+    if (likely(!__pyx_t_16)) {
+      if (likely(PyList_CheckExact(__pyx_t_3))) {
+        if (__pyx_t_15 >= PyList_GET_SIZE(__pyx_t_3)) break;
+        #if CYTHON_COMPILING_IN_CPYTHON
+        __pyx_t_9 = PyList_GET_ITEM(__pyx_t_3, __pyx_t_15); __Pyx_INCREF(__pyx_t_9); __pyx_t_15++; if (unlikely(0 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 213; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        #else
+        __pyx_t_9 = PySequence_ITEM(__pyx_t_3, __pyx_t_15); __pyx_t_15++; if (unlikely(!__pyx_t_9)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 213; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        __Pyx_GOTREF(__pyx_t_9);
+        #endif
+      } else {
+        if (__pyx_t_15 >= PyTuple_GET_SIZE(__pyx_t_3)) break;
+        #if CYTHON_COMPILING_IN_CPYTHON
+        __pyx_t_9 = PyTuple_GET_ITEM(__pyx_t_3, __pyx_t_15); __Pyx_INCREF(__pyx_t_9); __pyx_t_15++; if (unlikely(0 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 213; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        #else
+        __pyx_t_9 = PySequence_ITEM(__pyx_t_3, __pyx_t_15); __pyx_t_15++; if (unlikely(!__pyx_t_9)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 213; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        __Pyx_GOTREF(__pyx_t_9);
+        #endif
+      }
+    } else {
+      __pyx_t_9 = __pyx_t_16(__pyx_t_3);
+      if (unlikely(!__pyx_t_9)) {
+        PyObject* exc_type = PyErr_Occurred();
+        if (exc_type) {
+          if (likely(exc_type == PyExc_StopIteration || PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) PyErr_Clear();
+          else {__pyx_filename = __pyx_f[0]; __pyx_lineno = 213; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        }
+        break;
+      }
+      __Pyx_GOTREF(__pyx_t_9);
+    }
+    __Pyx_XDECREF_SET(__pyx_v_token_freq_tuple, __pyx_t_9);
+    __pyx_t_9 = 0;
+
+    /* "py_stringsimjoin/apply_rf/tokenizers.pyx":214
+ *     cdef int order_idx = 1
+ *     for token_freq_tuple in sorted(ordered_tokens, key=itemgetter(1)):
+ *         token_ordering[token_freq_tuple[0]] = order_idx             # <<<<<<<<<<<<<<
+ *         order_idx += 1
+ * 
+ */
+    __pyx_t_9 = __Pyx_GetItemInt(__pyx_v_token_freq_tuple, 0, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(__pyx_t_9 == NULL)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 214; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
+    __Pyx_GOTREF(__pyx_t_9);
+    __pyx_t_1 = __pyx_convert_string_from_py_std__in_string(__pyx_t_9); if (unlikely(PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 214; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
+    (__pyx_v_token_ordering[__pyx_t_1]) = __pyx_v_order_idx;
+
+    /* "py_stringsimjoin/apply_rf/tokenizers.pyx":215
+ *     for token_freq_tuple in sorted(ordered_tokens, key=itemgetter(1)):
+ *         token_ordering[token_freq_tuple[0]] = order_idx
+ *         order_idx += 1             # <<<<<<<<<<<<<<
+ * 
+ *     fp = open(working_dir + "/ltable_" + tok_type, 'w')
+ */
+    __pyx_v_order_idx = (__pyx_v_order_idx + 1);
+
+    /* "py_stringsimjoin/apply_rf/tokenizers.pyx":213
+ * 
+ *     cdef int order_idx = 1
+ *     for token_freq_tuple in sorted(ordered_tokens, key=itemgetter(1)):             # <<<<<<<<<<<<<<
+ *         token_ordering[token_freq_tuple[0]] = order_idx
+ *         order_idx += 1
+ */
+  }
+  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+
+  /* "py_stringsimjoin/apply_rf/tokenizers.pyx":217
+ *         order_idx += 1
+ * 
+ *     fp = open(working_dir + "/ltable_" + tok_type, 'w')             # <<<<<<<<<<<<<<
+ *     cdef char buf[10]
+ *     cdef string space = " "
+ */
+  __pyx_t_3 = __pyx_convert_PyBytes_string_to_py_std__in_string(__pyx_v_working_dir); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 217; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_3);
+  __pyx_t_9 = PyNumber_Add(__pyx_t_3, __pyx_kp_s_ltable); if (unlikely(!__pyx_t_9)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 217; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_9);
+  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+  __pyx_t_3 = __pyx_convert_PyBytes_string_to_py_std__in_string(__pyx_v_tok_type); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 217; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_3);
+  __pyx_t_8 = PyNumber_Add(__pyx_t_9, __pyx_t_3); if (unlikely(!__pyx_t_8)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 217; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_8);
+  __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
+  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+  __pyx_t_3 = PyTuple_New(2); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 217; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_3);
+  __Pyx_GIVEREF(__pyx_t_8);
+  PyTuple_SET_ITEM(__pyx_t_3, 0, __pyx_t_8);
+  __Pyx_INCREF(__pyx_n_s_w);
+  __Pyx_GIVEREF(__pyx_n_s_w);
+  PyTuple_SET_ITEM(__pyx_t_3, 1, __pyx_n_s_w);
+  __pyx_t_8 = 0;
+  __pyx_t_8 = __Pyx_PyObject_Call(__pyx_builtin_open, __pyx_t_3, NULL); if (unlikely(!__pyx_t_8)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 217; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_8);
+  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+  __pyx_v_fp = __pyx_t_8;
+  __pyx_t_8 = 0;
+
+  /* "py_stringsimjoin/apply_rf/tokenizers.pyx":219
+ *     fp = open(working_dir + "/ltable_" + tok_type, 'w')
+ *     cdef char buf[10]
+ *     cdef string space = " "             # <<<<<<<<<<<<<<
+ *     for tokens in ltokens:
+ *         s = ""
+ */
+  __pyx_t_1 = __pyx_convert_string_from_py_std__in_string(__pyx_kp_b_); if (unlikely(PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 219; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_v_space = __pyx_t_1;
+
+  /* "py_stringsimjoin/apply_rf/tokenizers.pyx":220
+ *     cdef char buf[10]
+ *     cdef string space = " "
+ *     for tokens in ltokens:             # <<<<<<<<<<<<<<
+ *         s = ""
+ *         n = tokens.size() - 1
+ */
+  __pyx_t_17 = __pyx_v_ltokens.begin();
+  for (;;) {
+    if (!(__pyx_t_17 != __pyx_v_ltokens.end())) break;
+    __pyx_t_10 = *__pyx_t_17;
+    ++__pyx_t_17;
+    __pyx_v_tokens = __pyx_t_10;
+
+    /* "py_stringsimjoin/apply_rf/tokenizers.pyx":221
+ *     cdef string space = " "
+ *     for tokens in ltokens:
+ *         s = ""             # <<<<<<<<<<<<<<
+ *         n = tokens.size() - 1
+ *         for j in range(n):
+ */
+    __pyx_t_1 = __pyx_convert_string_from_py_std__in_string(__pyx_kp_b__12); if (unlikely(PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 221; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_v_s = __pyx_t_1;
+
+    /* "py_stringsimjoin/apply_rf/tokenizers.pyx":222
+ *     for tokens in ltokens:
+ *         s = ""
+ *         n = tokens.size() - 1             # <<<<<<<<<<<<<<
+ *         for j in range(n):
+ *             sprintf(buf, '%d', token_ordering[tokens[j]])
+ */
+    __pyx_v_n = (__pyx_v_tokens.size() - 1);
+
+    /* "py_stringsimjoin/apply_rf/tokenizers.pyx":223
+ *         s = ""
+ *         n = tokens.size() - 1
+ *         for j in range(n):             # <<<<<<<<<<<<<<
+ *             sprintf(buf, '%d', token_ordering[tokens[j]])
+ *             s += string(buf) + space
+ */
+    __pyx_t_5 = __pyx_v_n;
+    for (__pyx_t_6 = 0; __pyx_t_6 < __pyx_t_5; __pyx_t_6+=1) {
+      __pyx_v_j = __pyx_t_6;
+
+      /* "py_stringsimjoin/apply_rf/tokenizers.pyx":224
+ *         n = tokens.size() - 1
+ *         for j in range(n):
+ *             sprintf(buf, '%d', token_ordering[tokens[j]])             # <<<<<<<<<<<<<<
+ *             s += string(buf) + space
+ *         sprintf(buf, '%d', token_ordering[tokens[n]])
+ */
+      sprintf(__pyx_v_buf, __pyx_k_d, (__pyx_v_token_ordering[(__pyx_v_tokens[__pyx_v_j])]));
+
+      /* "py_stringsimjoin/apply_rf/tokenizers.pyx":225
+ *         for j in range(n):
+ *             sprintf(buf, '%d', token_ordering[tokens[j]])
+ *             s += string(buf) + space             # <<<<<<<<<<<<<<
+ *         sprintf(buf, '%d', token_ordering[tokens[n]])
+ *         s += string(buf)
+ */
+      try {
+        __pyx_t_1 = std::string(__pyx_v_buf);
+      } catch(...) {
+        __Pyx_CppExn2PyErr();
+        {__pyx_filename = __pyx_f[0]; __pyx_lineno = 225; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      }
+      __pyx_v_s += (__pyx_t_1 + __pyx_v_space);
+    }
+
+    /* "py_stringsimjoin/apply_rf/tokenizers.pyx":226
+ *             sprintf(buf, '%d', token_ordering[tokens[j]])
+ *             s += string(buf) + space
+ *         sprintf(buf, '%d', token_ordering[tokens[n]])             # <<<<<<<<<<<<<<
+ *         s += string(buf)
+ *         fp.write(s+'\n')
+ */
+    sprintf(__pyx_v_buf, __pyx_k_d, (__pyx_v_token_ordering[(__pyx_v_tokens[__pyx_v_n])]));
+
+    /* "py_stringsimjoin/apply_rf/tokenizers.pyx":227
+ *             s += string(buf) + space
+ *         sprintf(buf, '%d', token_ordering[tokens[n]])
+ *         s += string(buf)             # <<<<<<<<<<<<<<
+ *         fp.write(s+'\n')
+ *     fp.close()
+ */
+    try {
+      __pyx_t_1 = std::string(__pyx_v_buf);
+    } catch(...) {
+      __Pyx_CppExn2PyErr();
+      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 227; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    }
+    __pyx_v_s += __pyx_t_1;
+
+    /* "py_stringsimjoin/apply_rf/tokenizers.pyx":228
+ *         sprintf(buf, '%d', token_ordering[tokens[n]])
+ *         s += string(buf)
+ *         fp.write(s+'\n')             # <<<<<<<<<<<<<<
+ *     fp.close()
+ * 
+ */
+    __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_fp, __pyx_n_s_write); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 228; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __Pyx_GOTREF(__pyx_t_3);
+    __pyx_t_9 = __pyx_convert_PyBytes_string_to_py_std__in_string(__pyx_v_s); if (unlikely(!__pyx_t_9)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 228; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __Pyx_GOTREF(__pyx_t_9);
+    __pyx_t_4 = PyNumber_Add(__pyx_t_9, __pyx_kp_s__13); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 228; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __Pyx_GOTREF(__pyx_t_4);
+    __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
+    __pyx_t_9 = NULL;
+    if (CYTHON_COMPILING_IN_CPYTHON && likely(PyMethod_Check(__pyx_t_3))) {
+      __pyx_t_9 = PyMethod_GET_SELF(__pyx_t_3);
+      if (likely(__pyx_t_9)) {
+        PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_3);
+        __Pyx_INCREF(__pyx_t_9);
+        __Pyx_INCREF(function);
+        __Pyx_DECREF_SET(__pyx_t_3, function);
+      }
+    }
+    if (!__pyx_t_9) {
+      __pyx_t_8 = __Pyx_PyObject_CallOneArg(__pyx_t_3, __pyx_t_4); if (unlikely(!__pyx_t_8)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 228; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+      __Pyx_GOTREF(__pyx_t_8);
+    } else {
+      __pyx_t_7 = PyTuple_New(1+1); if (unlikely(!__pyx_t_7)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 228; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __Pyx_GOTREF(__pyx_t_7);
+      __Pyx_GIVEREF(__pyx_t_9); PyTuple_SET_ITEM(__pyx_t_7, 0, __pyx_t_9); __pyx_t_9 = NULL;
+      __Pyx_GIVEREF(__pyx_t_4);
+      PyTuple_SET_ITEM(__pyx_t_7, 0+1, __pyx_t_4);
+      __pyx_t_4 = 0;
+      __pyx_t_8 = __Pyx_PyObject_Call(__pyx_t_3, __pyx_t_7, NULL); if (unlikely(!__pyx_t_8)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 228; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __Pyx_GOTREF(__pyx_t_8);
+      __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
+    }
+    __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+    __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
+
+    /* "py_stringsimjoin/apply_rf/tokenizers.pyx":220
+ *     cdef char buf[10]
+ *     cdef string space = " "
+ *     for tokens in ltokens:             # <<<<<<<<<<<<<<
+ *         s = ""
+ *         n = tokens.size() - 1
+ */
+  }
+
+  /* "py_stringsimjoin/apply_rf/tokenizers.pyx":229
+ *         s += string(buf)
+ *         fp.write(s+'\n')
+ *     fp.close()             # <<<<<<<<<<<<<<
+ * 
+ *     fp = open(working_dir + "/rtable_" + tok_type, 'w')
+ */
+  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_fp, __pyx_n_s_close); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 229; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_3);
+  __pyx_t_7 = NULL;
+  if (CYTHON_COMPILING_IN_CPYTHON && likely(PyMethod_Check(__pyx_t_3))) {
+    __pyx_t_7 = PyMethod_GET_SELF(__pyx_t_3);
+    if (likely(__pyx_t_7)) {
+      PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_3);
+      __Pyx_INCREF(__pyx_t_7);
+      __Pyx_INCREF(function);
+      __Pyx_DECREF_SET(__pyx_t_3, function);
+    }
+  }
+  if (__pyx_t_7) {
+    __pyx_t_8 = __Pyx_PyObject_CallOneArg(__pyx_t_3, __pyx_t_7); if (unlikely(!__pyx_t_8)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 229; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
+  } else {
+    __pyx_t_8 = __Pyx_PyObject_CallNoArg(__pyx_t_3); if (unlikely(!__pyx_t_8)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 229; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  }
+  __Pyx_GOTREF(__pyx_t_8);
+  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+  __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
+
+  /* "py_stringsimjoin/apply_rf/tokenizers.pyx":231
+ *     fp.close()
+ * 
+ *     fp = open(working_dir + "/rtable_" + tok_type, 'w')             # <<<<<<<<<<<<<<
+ *     for tokens in rtokens:
+ *         s = ""
+ */
+  __pyx_t_8 = __pyx_convert_PyBytes_string_to_py_std__in_string(__pyx_v_working_dir); if (unlikely(!__pyx_t_8)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 231; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_8);
+  __pyx_t_3 = PyNumber_Add(__pyx_t_8, __pyx_kp_s_rtable); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 231; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_3);
+  __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
+  __pyx_t_8 = __pyx_convert_PyBytes_string_to_py_std__in_string(__pyx_v_tok_type); if (unlikely(!__pyx_t_8)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 231; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_8);
+  __pyx_t_7 = PyNumber_Add(__pyx_t_3, __pyx_t_8); if (unlikely(!__pyx_t_7)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 231; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_7);
+  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+  __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
+  __pyx_t_8 = PyTuple_New(2); if (unlikely(!__pyx_t_8)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 231; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_8);
+  __Pyx_GIVEREF(__pyx_t_7);
+  PyTuple_SET_ITEM(__pyx_t_8, 0, __pyx_t_7);
+  __Pyx_INCREF(__pyx_n_s_w);
+  __Pyx_GIVEREF(__pyx_n_s_w);
+  PyTuple_SET_ITEM(__pyx_t_8, 1, __pyx_n_s_w);
+  __pyx_t_7 = 0;
+  __pyx_t_7 = __Pyx_PyObject_Call(__pyx_builtin_open, __pyx_t_8, NULL); if (unlikely(!__pyx_t_7)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 231; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_7);
+  __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
+  __Pyx_DECREF_SET(__pyx_v_fp, __pyx_t_7);
+  __pyx_t_7 = 0;
+
+  /* "py_stringsimjoin/apply_rf/tokenizers.pyx":232
+ * 
+ *     fp = open(working_dir + "/rtable_" + tok_type, 'w')
+ *     for tokens in rtokens:             # <<<<<<<<<<<<<<
+ *         s = ""
+ *         n = tokens.size() - 1
+ */
+  __pyx_t_17 = __pyx_v_rtokens.begin();
+  for (;;) {
+    if (!(__pyx_t_17 != __pyx_v_rtokens.end())) break;
+    __pyx_t_10 = *__pyx_t_17;
+    ++__pyx_t_17;
+    __pyx_v_tokens = __pyx_t_10;
+
+    /* "py_stringsimjoin/apply_rf/tokenizers.pyx":233
+ *     fp = open(working_dir + "/rtable_" + tok_type, 'w')
+ *     for tokens in rtokens:
+ *         s = ""             # <<<<<<<<<<<<<<
+ *         n = tokens.size() - 1
+ *         for j in range(n):
+ */
+    __pyx_t_1 = __pyx_convert_string_from_py_std__in_string(__pyx_kp_b__12); if (unlikely(PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 233; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_v_s = __pyx_t_1;
+
+    /* "py_stringsimjoin/apply_rf/tokenizers.pyx":234
+ *     for tokens in rtokens:
+ *         s = ""
+ *         n = tokens.size() - 1             # <<<<<<<<<<<<<<
+ *         for j in range(n):
+ *             sprintf(buf, '%d', token_ordering[tokens[j]])
+ */
+    __pyx_v_n = (__pyx_v_tokens.size() - 1);
+
+    /* "py_stringsimjoin/apply_rf/tokenizers.pyx":235
+ *         s = ""
+ *         n = tokens.size() - 1
+ *         for j in range(n):             # <<<<<<<<<<<<<<
+ *             sprintf(buf, '%d', token_ordering[tokens[j]])
+ *             s += string(buf) + space
+ */
+    __pyx_t_5 = __pyx_v_n;
+    for (__pyx_t_6 = 0; __pyx_t_6 < __pyx_t_5; __pyx_t_6+=1) {
+      __pyx_v_j = __pyx_t_6;
+
+      /* "py_stringsimjoin/apply_rf/tokenizers.pyx":236
+ *         n = tokens.size() - 1
+ *         for j in range(n):
+ *             sprintf(buf, '%d', token_ordering[tokens[j]])             # <<<<<<<<<<<<<<
+ *             s += string(buf) + space
+ *         sprintf(buf, '%d', token_ordering[tokens[n]])
+ */
+      sprintf(__pyx_v_buf, __pyx_k_d, (__pyx_v_token_ordering[(__pyx_v_tokens[__pyx_v_j])]));
+
+      /* "py_stringsimjoin/apply_rf/tokenizers.pyx":237
+ *         for j in range(n):
+ *             sprintf(buf, '%d', token_ordering[tokens[j]])
+ *             s += string(buf) + space             # <<<<<<<<<<<<<<
+ *         sprintf(buf, '%d', token_ordering[tokens[n]])
+ *         s += string(buf)
+ */
+      try {
+        __pyx_t_1 = std::string(__pyx_v_buf);
+      } catch(...) {
+        __Pyx_CppExn2PyErr();
+        {__pyx_filename = __pyx_f[0]; __pyx_lineno = 237; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      }
+      __pyx_v_s += (__pyx_t_1 + __pyx_v_space);
+    }
+
+    /* "py_stringsimjoin/apply_rf/tokenizers.pyx":238
+ *             sprintf(buf, '%d', token_ordering[tokens[j]])
+ *             s += string(buf) + space
+ *         sprintf(buf, '%d', token_ordering[tokens[n]])             # <<<<<<<<<<<<<<
+ *         s += string(buf)
+ *         fp.write(s+'\n')
+ */
+    sprintf(__pyx_v_buf, __pyx_k_d, (__pyx_v_token_ordering[(__pyx_v_tokens[__pyx_v_n])]));
+
+    /* "py_stringsimjoin/apply_rf/tokenizers.pyx":239
+ *             s += string(buf) + space
+ *         sprintf(buf, '%d', token_ordering[tokens[n]])
+ *         s += string(buf)             # <<<<<<<<<<<<<<
+ *         fp.write(s+'\n')
+ *     fp.close()
+ */
+    try {
+      __pyx_t_1 = std::string(__pyx_v_buf);
+    } catch(...) {
+      __Pyx_CppExn2PyErr();
+      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 239; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    }
+    __pyx_v_s += __pyx_t_1;
+
+    /* "py_stringsimjoin/apply_rf/tokenizers.pyx":240
+ *         sprintf(buf, '%d', token_ordering[tokens[n]])
+ *         s += string(buf)
+ *         fp.write(s+'\n')             # <<<<<<<<<<<<<<
+ *     fp.close()
+ * 
+ */
+    __pyx_t_8 = __Pyx_PyObject_GetAttrStr(__pyx_v_fp, __pyx_n_s_write); if (unlikely(!__pyx_t_8)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 240; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __Pyx_GOTREF(__pyx_t_8);
+    __pyx_t_3 = __pyx_convert_PyBytes_string_to_py_std__in_string(__pyx_v_s); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 240; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __Pyx_GOTREF(__pyx_t_3);
+    __pyx_t_4 = PyNumber_Add(__pyx_t_3, __pyx_kp_s__13); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 240; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __Pyx_GOTREF(__pyx_t_4);
+    __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+    __pyx_t_3 = NULL;
+    if (CYTHON_COMPILING_IN_CPYTHON && likely(PyMethod_Check(__pyx_t_8))) {
+      __pyx_t_3 = PyMethod_GET_SELF(__pyx_t_8);
+      if (likely(__pyx_t_3)) {
+        PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_8);
+        __Pyx_INCREF(__pyx_t_3);
+        __Pyx_INCREF(function);
+        __Pyx_DECREF_SET(__pyx_t_8, function);
+      }
+    }
+    if (!__pyx_t_3) {
+      __pyx_t_7 = __Pyx_PyObject_CallOneArg(__pyx_t_8, __pyx_t_4); if (unlikely(!__pyx_t_7)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 240; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+      __Pyx_GOTREF(__pyx_t_7);
+    } else {
+      __pyx_t_9 = PyTuple_New(1+1); if (unlikely(!__pyx_t_9)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 240; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __Pyx_GOTREF(__pyx_t_9);
+      __Pyx_GIVEREF(__pyx_t_3); PyTuple_SET_ITEM(__pyx_t_9, 0, __pyx_t_3); __pyx_t_3 = NULL;
+      __Pyx_GIVEREF(__pyx_t_4);
+      PyTuple_SET_ITEM(__pyx_t_9, 0+1, __pyx_t_4);
+      __pyx_t_4 = 0;
+      __pyx_t_7 = __Pyx_PyObject_Call(__pyx_t_8, __pyx_t_9, NULL); if (unlikely(!__pyx_t_7)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 240; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __Pyx_GOTREF(__pyx_t_7);
+      __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
+    }
+    __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
+    __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
+
+    /* "py_stringsimjoin/apply_rf/tokenizers.pyx":232
+ * 
+ *     fp = open(working_dir + "/rtable_" + tok_type, 'w')
+ *     for tokens in rtokens:             # <<<<<<<<<<<<<<
+ *         s = ""
+ *         n = tokens.size() - 1
+ */
+  }
+
+  /* "py_stringsimjoin/apply_rf/tokenizers.pyx":241
+ *         s += string(buf)
+ *         fp.write(s+'\n')
+ *     fp.close()             # <<<<<<<<<<<<<<
+ * 
+ * cdef void convert_to_vector(string_col, vector[string]& string_vector):
+ */
+  __pyx_t_8 = __Pyx_PyObject_GetAttrStr(__pyx_v_fp, __pyx_n_s_close); if (unlikely(!__pyx_t_8)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 241; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_8);
+  __pyx_t_9 = NULL;
+  if (CYTHON_COMPILING_IN_CPYTHON && likely(PyMethod_Check(__pyx_t_8))) {
+    __pyx_t_9 = PyMethod_GET_SELF(__pyx_t_8);
+    if (likely(__pyx_t_9)) {
+      PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_8);
+      __Pyx_INCREF(__pyx_t_9);
+      __Pyx_INCREF(function);
+      __Pyx_DECREF_SET(__pyx_t_8, function);
+    }
+  }
+  if (__pyx_t_9) {
+    __pyx_t_7 = __Pyx_PyObject_CallOneArg(__pyx_t_8, __pyx_t_9); if (unlikely(!__pyx_t_7)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 241; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
+  } else {
+    __pyx_t_7 = __Pyx_PyObject_CallNoArg(__pyx_t_8); if (unlikely(!__pyx_t_7)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 241; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  }
+  __Pyx_GOTREF(__pyx_t_7);
+  __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
+  __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
+
+  /* "py_stringsimjoin/apply_rf/tokenizers.pyx":173
+ *     return (i.second < j.second)
+ * 
+ * cpdef void tokenize(vector[string]& lstrings, vector[string]& rstrings,             # <<<<<<<<<<<<<<
+ *                    const string& tok_type, const string& working_dir):
+ *     cdef object tok
+ */
+
+  /* function exit code */
+  goto __pyx_L0;
+  __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_3);
+  __Pyx_XDECREF(__pyx_t_4);
+  __Pyx_XDECREF(__pyx_t_7);
+  __Pyx_XDECREF(__pyx_t_8);
+  __Pyx_XDECREF(__pyx_t_9);
+  __Pyx_WriteUnraisable("py_stringsimjoin.apply_rf.tokenizers.tokenize", __pyx_clineno, __pyx_lineno, __pyx_filename, 0, 0);
+  __pyx_L0:;
+  __Pyx_XDECREF(__pyx_v_tok);
+  __Pyx_XDECREF(__pyx_v_ordered_tokens);
+  __Pyx_XDECREF(__pyx_v_token_freq_tuple);
+  __Pyx_XDECREF(__pyx_v_fp);
+  __Pyx_RefNannyFinishContext();
+}
+
+/* Python wrapper */
+static PyObject *__pyx_pw_16py_stringsimjoin_8apply_rf_10tokenizers_7tokenize(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static PyObject *__pyx_pw_16py_stringsimjoin_8apply_rf_10tokenizers_7tokenize(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+  std::vector<std::string>  __pyx_v_lstrings;
+  std::vector<std::string>  __pyx_v_rstrings;
+  std::string __pyx_v_tok_type;
+  std::string __pyx_v_working_dir;
+  int __pyx_lineno = 0;
+  const char *__pyx_filename = NULL;
+  int __pyx_clineno = 0;
+  PyObject *__pyx_r = 0;
+  __Pyx_RefNannyDeclarations
+  __Pyx_RefNannySetupContext("tokenize (wrapper)", 0);
+  {
+    static PyObject **__pyx_pyargnames[] = {&__pyx_n_s_lstrings,&__pyx_n_s_rstrings,&__pyx_n_s_tok_type,&__pyx_n_s_working_dir,0};
+    PyObject* values[4] = {0,0,0,0};
+    if (unlikely(__pyx_kwds)) {
+      Py_ssize_t kw_args;
+      const Py_ssize_t pos_args = PyTuple_GET_SIZE(__pyx_args);
+      switch (pos_args) {
+        case  4: values[3] = PyTuple_GET_ITEM(__pyx_args, 3);
+        case  3: values[2] = PyTuple_GET_ITEM(__pyx_args, 2);
+        case  2: values[1] = PyTuple_GET_ITEM(__pyx_args, 1);
+        case  1: values[0] = PyTuple_GET_ITEM(__pyx_args, 0);
+        case  0: break;
+        default: goto __pyx_L5_argtuple_error;
+      }
+      kw_args = PyDict_Size(__pyx_kwds);
+      switch (pos_args) {
+        case  0:
+        if (likely((values[0] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_lstrings)) != 0)) kw_args--;
+        else goto __pyx_L5_argtuple_error;
+        case  1:
+        if (likely((values[1] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_rstrings)) != 0)) kw_args--;
+        else {
+          __Pyx_RaiseArgtupleInvalid("tokenize", 1, 4, 4, 1); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 173; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+        }
+        case  2:
+        if (likely((values[2] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_tok_type)) != 0)) kw_args--;
+        else {
+          __Pyx_RaiseArgtupleInvalid("tokenize", 1, 4, 4, 2); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 173; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+        }
+        case  3:
+        if (likely((values[3] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_working_dir)) != 0)) kw_args--;
+        else {
+          __Pyx_RaiseArgtupleInvalid("tokenize", 1, 4, 4, 3); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 173; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+        }
+      }
+      if (unlikely(kw_args > 0)) {
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "tokenize") < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 173; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+      }
+    } else if (PyTuple_GET_SIZE(__pyx_args) != 4) {
+      goto __pyx_L5_argtuple_error;
+    } else {
+      values[0] = PyTuple_GET_ITEM(__pyx_args, 0);
+      values[1] = PyTuple_GET_ITEM(__pyx_args, 1);
+      values[2] = PyTuple_GET_ITEM(__pyx_args, 2);
+      values[3] = PyTuple_GET_ITEM(__pyx_args, 3);
+    }
+    __pyx_v_lstrings = __pyx_convert_vector_from_py_std_3a__3a_string(values[0]); if (unlikely(PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 173; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+    __pyx_v_rstrings = __pyx_convert_vector_from_py_std_3a__3a_string(values[1]); if (unlikely(PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 173; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+    __pyx_v_tok_type = __pyx_convert_string_from_py_std__in_string(values[2]); if (unlikely(PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 174; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+    __pyx_v_working_dir = __pyx_convert_string_from_py_std__in_string(values[3]); if (unlikely(PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 174; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+  }
+  goto __pyx_L4_argument_unpacking_done;
+  __pyx_L5_argtuple_error:;
+  __Pyx_RaiseArgtupleInvalid("tokenize", 1, 4, 4, PyTuple_GET_SIZE(__pyx_args)); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 173; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+  __pyx_L3_error:;
+  __Pyx_AddTraceback("py_stringsimjoin.apply_rf.tokenizers.tokenize", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_RefNannyFinishContext();
+  return NULL;
+  __pyx_L4_argument_unpacking_done:;
+  __pyx_r = __pyx_pf_16py_stringsimjoin_8apply_rf_10tokenizers_6tokenize(__pyx_self, __pyx_v_lstrings, __pyx_v_rstrings, __pyx_v_tok_type, __pyx_v_working_dir);
+
+  /* function exit code */
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+static PyObject *__pyx_pf_16py_stringsimjoin_8apply_rf_10tokenizers_6tokenize(CYTHON_UNUSED PyObject *__pyx_self, std::vector<std::string>  __pyx_v_lstrings, std::vector<std::string>  __pyx_v_rstrings, std::string __pyx_v_tok_type, std::string __pyx_v_working_dir) {
+  PyObject *__pyx_r = NULL;
+  __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
+  int __pyx_lineno = 0;
+  const char *__pyx_filename = NULL;
+  int __pyx_clineno = 0;
+  __Pyx_RefNannySetupContext("tokenize", 0);
+  __Pyx_XDECREF(__pyx_r);
+  __pyx_t_1 = __Pyx_void_to_None(__pyx_f_16py_stringsimjoin_8apply_rf_10tokenizers_tokenize(__pyx_v_lstrings, __pyx_v_rstrings, __pyx_v_tok_type, __pyx_v_working_dir, 0)); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 173; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_1);
+  __pyx_r = __pyx_t_1;
+  __pyx_t_1 = 0;
+  goto __pyx_L0;
+
+  /* function exit code */
+  __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
+  __Pyx_AddTraceback("py_stringsimjoin.apply_rf.tokenizers.tokenize", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __pyx_r = NULL;
+  __pyx_L0:;
+  __Pyx_XGIVEREF(__pyx_r);
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+/* "py_stringsimjoin/apply_rf/tokenizers.pyx":243
+ *     fp.close()
  * 
  * cdef void convert_to_vector(string_col, vector[string]& string_vector):             # <<<<<<<<<<<<<<
  *     for val in string_col:
@@ -3519,7 +5842,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_10tokenizers_convert_to_vector(
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("convert_to_vector", 0);
 
-  /* "py_stringsimjoin/apply_rf/tokenizers.pyx":126
+  /* "py_stringsimjoin/apply_rf/tokenizers.pyx":244
  * 
  * cdef void convert_to_vector(string_col, vector[string]& string_vector):
  *     for val in string_col:             # <<<<<<<<<<<<<<
@@ -3530,26 +5853,26 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_10tokenizers_convert_to_vector(
     __pyx_t_1 = __pyx_v_string_col; __Pyx_INCREF(__pyx_t_1); __pyx_t_2 = 0;
     __pyx_t_3 = NULL;
   } else {
-    __pyx_t_2 = -1; __pyx_t_1 = PyObject_GetIter(__pyx_v_string_col); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 126; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_2 = -1; __pyx_t_1 = PyObject_GetIter(__pyx_v_string_col); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 244; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_1);
-    __pyx_t_3 = Py_TYPE(__pyx_t_1)->tp_iternext; if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 126; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_3 = Py_TYPE(__pyx_t_1)->tp_iternext; if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 244; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   }
   for (;;) {
     if (likely(!__pyx_t_3)) {
       if (likely(PyList_CheckExact(__pyx_t_1))) {
         if (__pyx_t_2 >= PyList_GET_SIZE(__pyx_t_1)) break;
         #if CYTHON_COMPILING_IN_CPYTHON
-        __pyx_t_4 = PyList_GET_ITEM(__pyx_t_1, __pyx_t_2); __Pyx_INCREF(__pyx_t_4); __pyx_t_2++; if (unlikely(0 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 126; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        __pyx_t_4 = PyList_GET_ITEM(__pyx_t_1, __pyx_t_2); __Pyx_INCREF(__pyx_t_4); __pyx_t_2++; if (unlikely(0 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 244; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
         #else
-        __pyx_t_4 = PySequence_ITEM(__pyx_t_1, __pyx_t_2); __pyx_t_2++; if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 126; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        __pyx_t_4 = PySequence_ITEM(__pyx_t_1, __pyx_t_2); __pyx_t_2++; if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 244; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
         __Pyx_GOTREF(__pyx_t_4);
         #endif
       } else {
         if (__pyx_t_2 >= PyTuple_GET_SIZE(__pyx_t_1)) break;
         #if CYTHON_COMPILING_IN_CPYTHON
-        __pyx_t_4 = PyTuple_GET_ITEM(__pyx_t_1, __pyx_t_2); __Pyx_INCREF(__pyx_t_4); __pyx_t_2++; if (unlikely(0 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 126; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        __pyx_t_4 = PyTuple_GET_ITEM(__pyx_t_1, __pyx_t_2); __Pyx_INCREF(__pyx_t_4); __pyx_t_2++; if (unlikely(0 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 244; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
         #else
-        __pyx_t_4 = PySequence_ITEM(__pyx_t_1, __pyx_t_2); __pyx_t_2++; if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 126; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        __pyx_t_4 = PySequence_ITEM(__pyx_t_1, __pyx_t_2); __pyx_t_2++; if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 244; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
         __Pyx_GOTREF(__pyx_t_4);
         #endif
       }
@@ -3559,7 +5882,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_10tokenizers_convert_to_vector(
         PyObject* exc_type = PyErr_Occurred();
         if (exc_type) {
           if (likely(exc_type == PyExc_StopIteration || PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) PyErr_Clear();
-          else {__pyx_filename = __pyx_f[0]; __pyx_lineno = 126; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+          else {__pyx_filename = __pyx_f[0]; __pyx_lineno = 244; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
         }
         break;
       }
@@ -3568,22 +5891,22 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_10tokenizers_convert_to_vector(
     __Pyx_XDECREF_SET(__pyx_v_val, __pyx_t_4);
     __pyx_t_4 = 0;
 
-    /* "py_stringsimjoin/apply_rf/tokenizers.pyx":127
+    /* "py_stringsimjoin/apply_rf/tokenizers.pyx":245
  * cdef void convert_to_vector(string_col, vector[string]& string_vector):
  *     for val in string_col:
  *         string_vector.push_back(val)             # <<<<<<<<<<<<<<
  * 
  * cdef vector[string] remove_duplicates(vector[string]& inp_vector):
  */
-    __pyx_t_5 = __pyx_convert_string_from_py_std__in_string(__pyx_v_val); if (unlikely(PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 127; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_5 = __pyx_convert_string_from_py_std__in_string(__pyx_v_val); if (unlikely(PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 245; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     try {
       __pyx_v_string_vector.push_back(__pyx_t_5);
     } catch(...) {
       __Pyx_CppExn2PyErr();
-      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 127; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 245; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     }
 
-    /* "py_stringsimjoin/apply_rf/tokenizers.pyx":126
+    /* "py_stringsimjoin/apply_rf/tokenizers.pyx":244
  * 
  * cdef void convert_to_vector(string_col, vector[string]& string_vector):
  *     for val in string_col:             # <<<<<<<<<<<<<<
@@ -3593,8 +5916,8 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_10tokenizers_convert_to_vector(
   }
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "py_stringsimjoin/apply_rf/tokenizers.pyx":125
- *         print t
+  /* "py_stringsimjoin/apply_rf/tokenizers.pyx":243
+ *     fp.close()
  * 
  * cdef void convert_to_vector(string_col, vector[string]& string_vector):             # <<<<<<<<<<<<<<
  *     for val in string_col:
@@ -3612,7 +5935,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_10tokenizers_convert_to_vector(
   __Pyx_RefNannyFinishContext();
 }
 
-/* "py_stringsimjoin/apply_rf/tokenizers.pyx":129
+/* "py_stringsimjoin/apply_rf/tokenizers.pyx":247
  *         string_vector.push_back(val)
  * 
  * cdef vector[string] remove_duplicates(vector[string]& inp_vector):             # <<<<<<<<<<<<<<
@@ -3634,7 +5957,7 @@ static std::vector<std::string>  __pyx_f_16py_stringsimjoin_8apply_rf_10tokenize
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("remove_duplicates", 0);
 
-  /* "py_stringsimjoin/apply_rf/tokenizers.pyx":133
+  /* "py_stringsimjoin/apply_rf/tokenizers.pyx":251
  *     cdef oset[string] seen_tokens
  *     cdef string inp_str
  *     for inp_str in inp_vector:             # <<<<<<<<<<<<<<
@@ -3648,7 +5971,7 @@ static std::vector<std::string>  __pyx_f_16py_stringsimjoin_8apply_rf_10tokenize
     ++__pyx_t_1;
     __pyx_v_inp_str = __pyx_t_2;
 
-    /* "py_stringsimjoin/apply_rf/tokenizers.pyx":134
+    /* "py_stringsimjoin/apply_rf/tokenizers.pyx":252
  *     cdef string inp_str
  *     for inp_str in inp_vector:
  *         if seen_tokens.find(inp_str) == seen_tokens.end():             # <<<<<<<<<<<<<<
@@ -3658,7 +5981,7 @@ static std::vector<std::string>  __pyx_f_16py_stringsimjoin_8apply_rf_10tokenize
     __pyx_t_3 = ((__pyx_v_seen_tokens.find(__pyx_v_inp_str) == __pyx_v_seen_tokens.end()) != 0);
     if (__pyx_t_3) {
 
-      /* "py_stringsimjoin/apply_rf/tokenizers.pyx":135
+      /* "py_stringsimjoin/apply_rf/tokenizers.pyx":253
  *     for inp_str in inp_vector:
  *         if seen_tokens.find(inp_str) == seen_tokens.end():
  *             out_tokens.push_back(inp_str)             # <<<<<<<<<<<<<<
@@ -3669,10 +5992,10 @@ static std::vector<std::string>  __pyx_f_16py_stringsimjoin_8apply_rf_10tokenize
         __pyx_v_out_tokens.push_back(__pyx_v_inp_str);
       } catch(...) {
         __Pyx_CppExn2PyErr();
-        {__pyx_filename = __pyx_f[0]; __pyx_lineno = 135; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        {__pyx_filename = __pyx_f[0]; __pyx_lineno = 253; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       }
 
-      /* "py_stringsimjoin/apply_rf/tokenizers.pyx":136
+      /* "py_stringsimjoin/apply_rf/tokenizers.pyx":254
  *         if seen_tokens.find(inp_str) == seen_tokens.end():
  *             out_tokens.push_back(inp_str)
  *             seen_tokens.insert(inp_str)             # <<<<<<<<<<<<<<
@@ -3682,10 +6005,10 @@ static std::vector<std::string>  __pyx_f_16py_stringsimjoin_8apply_rf_10tokenize
         __pyx_v_seen_tokens.insert(__pyx_v_inp_str);
       } catch(...) {
         __Pyx_CppExn2PyErr();
-        {__pyx_filename = __pyx_f[0]; __pyx_lineno = 136; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        {__pyx_filename = __pyx_f[0]; __pyx_lineno = 254; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       }
 
-      /* "py_stringsimjoin/apply_rf/tokenizers.pyx":134
+      /* "py_stringsimjoin/apply_rf/tokenizers.pyx":252
  *     cdef string inp_str
  *     for inp_str in inp_vector:
  *         if seen_tokens.find(inp_str) == seen_tokens.end():             # <<<<<<<<<<<<<<
@@ -3694,7 +6017,7 @@ static std::vector<std::string>  __pyx_f_16py_stringsimjoin_8apply_rf_10tokenize
  */
     }
 
-    /* "py_stringsimjoin/apply_rf/tokenizers.pyx":133
+    /* "py_stringsimjoin/apply_rf/tokenizers.pyx":251
  *     cdef oset[string] seen_tokens
  *     cdef string inp_str
  *     for inp_str in inp_vector:             # <<<<<<<<<<<<<<
@@ -3703,7 +6026,7 @@ static std::vector<std::string>  __pyx_f_16py_stringsimjoin_8apply_rf_10tokenize
  */
   }
 
-  /* "py_stringsimjoin/apply_rf/tokenizers.pyx":137
+  /* "py_stringsimjoin/apply_rf/tokenizers.pyx":255
  *             out_tokens.push_back(inp_str)
  *             seen_tokens.insert(inp_str)
  *     return out_tokens             # <<<<<<<<<<<<<<
@@ -3711,7 +6034,7 @@ static std::vector<std::string>  __pyx_f_16py_stringsimjoin_8apply_rf_10tokenize
   __pyx_r = __pyx_v_out_tokens;
   goto __pyx_L0;
 
-  /* "py_stringsimjoin/apply_rf/tokenizers.pyx":129
+  /* "py_stringsimjoin/apply_rf/tokenizers.pyx":247
  *         string_vector.push_back(val)
  * 
  * cdef vector[string] remove_duplicates(vector[string]& inp_vector):             # <<<<<<<<<<<<<<
@@ -3778,6 +6101,127 @@ static std::string __pyx_convert_string_from_py_std__in_string(PyObject *__pyx_v
   __pyx_L1_error:;
   __Pyx_AddTraceback("string.from_py.__pyx_convert_string_from_py_std__in_string", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_L0:;
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+/* "vector.from_py":50
+ * 
+ * @cname("__pyx_convert_vector_from_py_std_3a__3a_string")
+ * cdef vector[X] __pyx_convert_vector_from_py_std_3a__3a_string(object o) except *:             # <<<<<<<<<<<<<<
+ *     cdef vector[X] v
+ *     for item in o:
+ */
+
+static std::vector<std::string>  __pyx_convert_vector_from_py_std_3a__3a_string(PyObject *__pyx_v_o) {
+  std::vector<std::string>  __pyx_v_v;
+  PyObject *__pyx_v_item = NULL;
+  std::vector<std::string>  __pyx_r;
+  __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
+  Py_ssize_t __pyx_t_2;
+  PyObject *(*__pyx_t_3)(PyObject *);
+  PyObject *__pyx_t_4 = NULL;
+  std::string __pyx_t_5;
+  int __pyx_lineno = 0;
+  const char *__pyx_filename = NULL;
+  int __pyx_clineno = 0;
+  __Pyx_RefNannySetupContext("__pyx_convert_vector_from_py_std_3a__3a_string", 0);
+
+  /* "vector.from_py":52
+ * cdef vector[X] __pyx_convert_vector_from_py_std_3a__3a_string(object o) except *:
+ *     cdef vector[X] v
+ *     for item in o:             # <<<<<<<<<<<<<<
+ *         v.push_back(X_from_py(item))
+ *     return v
+ */
+  if (likely(PyList_CheckExact(__pyx_v_o)) || PyTuple_CheckExact(__pyx_v_o)) {
+    __pyx_t_1 = __pyx_v_o; __Pyx_INCREF(__pyx_t_1); __pyx_t_2 = 0;
+    __pyx_t_3 = NULL;
+  } else {
+    __pyx_t_2 = -1; __pyx_t_1 = PyObject_GetIter(__pyx_v_o); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[1]; __pyx_lineno = 52; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __Pyx_GOTREF(__pyx_t_1);
+    __pyx_t_3 = Py_TYPE(__pyx_t_1)->tp_iternext; if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[1]; __pyx_lineno = 52; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  }
+  for (;;) {
+    if (likely(!__pyx_t_3)) {
+      if (likely(PyList_CheckExact(__pyx_t_1))) {
+        if (__pyx_t_2 >= PyList_GET_SIZE(__pyx_t_1)) break;
+        #if CYTHON_COMPILING_IN_CPYTHON
+        __pyx_t_4 = PyList_GET_ITEM(__pyx_t_1, __pyx_t_2); __Pyx_INCREF(__pyx_t_4); __pyx_t_2++; if (unlikely(0 < 0)) {__pyx_filename = __pyx_f[1]; __pyx_lineno = 52; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        #else
+        __pyx_t_4 = PySequence_ITEM(__pyx_t_1, __pyx_t_2); __pyx_t_2++; if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[1]; __pyx_lineno = 52; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        __Pyx_GOTREF(__pyx_t_4);
+        #endif
+      } else {
+        if (__pyx_t_2 >= PyTuple_GET_SIZE(__pyx_t_1)) break;
+        #if CYTHON_COMPILING_IN_CPYTHON
+        __pyx_t_4 = PyTuple_GET_ITEM(__pyx_t_1, __pyx_t_2); __Pyx_INCREF(__pyx_t_4); __pyx_t_2++; if (unlikely(0 < 0)) {__pyx_filename = __pyx_f[1]; __pyx_lineno = 52; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        #else
+        __pyx_t_4 = PySequence_ITEM(__pyx_t_1, __pyx_t_2); __pyx_t_2++; if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[1]; __pyx_lineno = 52; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        __Pyx_GOTREF(__pyx_t_4);
+        #endif
+      }
+    } else {
+      __pyx_t_4 = __pyx_t_3(__pyx_t_1);
+      if (unlikely(!__pyx_t_4)) {
+        PyObject* exc_type = PyErr_Occurred();
+        if (exc_type) {
+          if (likely(exc_type == PyExc_StopIteration || PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) PyErr_Clear();
+          else {__pyx_filename = __pyx_f[1]; __pyx_lineno = 52; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        }
+        break;
+      }
+      __Pyx_GOTREF(__pyx_t_4);
+    }
+    __Pyx_XDECREF_SET(__pyx_v_item, __pyx_t_4);
+    __pyx_t_4 = 0;
+
+    /* "vector.from_py":53
+ *     cdef vector[X] v
+ *     for item in o:
+ *         v.push_back(X_from_py(item))             # <<<<<<<<<<<<<<
+ *     return v
+ * 
+ */
+    __pyx_t_5 = __pyx_convert_string_from_py_std__in_string(__pyx_v_item); if (unlikely(PyErr_Occurred())) {__pyx_filename = __pyx_f[1]; __pyx_lineno = 53; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_v_v.push_back(__pyx_t_5);
+
+    /* "vector.from_py":52
+ * cdef vector[X] __pyx_convert_vector_from_py_std_3a__3a_string(object o) except *:
+ *     cdef vector[X] v
+ *     for item in o:             # <<<<<<<<<<<<<<
+ *         v.push_back(X_from_py(item))
+ *     return v
+ */
+  }
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+
+  /* "vector.from_py":54
+ *     for item in o:
+ *         v.push_back(X_from_py(item))
+ *     return v             # <<<<<<<<<<<<<<
+ * 
+ * 
+ */
+  __pyx_r = __pyx_v_v;
+  goto __pyx_L0;
+
+  /* "vector.from_py":50
+ * 
+ * @cname("__pyx_convert_vector_from_py_std_3a__3a_string")
+ * cdef vector[X] __pyx_convert_vector_from_py_std_3a__3a_string(object o) except *:             # <<<<<<<<<<<<<<
+ *     cdef vector[X] v
+ *     for item in o:
+ */
+
+  /* function exit code */
+  __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
+  __Pyx_XDECREF(__pyx_t_4);
+  __Pyx_AddTraceback("vector.from_py.__pyx_convert_vector_from_py_std_3a__3a_string", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __pyx_L0:;
+  __Pyx_XDECREF(__pyx_v_item);
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
@@ -4205,6 +6649,7 @@ static void __pyx_tp_dealloc_16py_stringsimjoin_8apply_rf_10tokenizers_QgramToke
 }
 
 static PyMethodDef __pyx_methods_16py_stringsimjoin_8apply_rf_10tokenizers_QgramTokenizer[] = {
+  {"tokenize", (PyCFunction)__pyx_pw_16py_stringsimjoin_8apply_rf_10tokenizers_14QgramTokenizer_3tokenize, METH_O, 0},
   {0, 0, 0, 0}
 };
 
@@ -4267,6 +6712,7 @@ static PyTypeObject __pyx_type_16py_stringsimjoin_8apply_rf_10tokenizers_QgramTo
 };
 
 static PyMethodDef __pyx_methods[] = {
+  {"tokenize", (PyCFunction)__pyx_pw_16py_stringsimjoin_8apply_rf_10tokenizers_7tokenize, METH_VARARGS|METH_KEYWORDS, 0},
   {0, 0, 0, 0}
 };
 
@@ -4289,6 +6735,7 @@ static struct PyModuleDef __pyx_moduledef = {
 #endif
 
 static __Pyx_StringTabEntry __pyx_string_tab[] = {
+  {&__pyx_kp_b_, __pyx_k_, sizeof(__pyx_k_), 0, 0, 0, 0},
   {&__pyx_kp_s_0_9, __pyx_k_0_9, sizeof(__pyx_k_0_9), 0, 0, 1, 0},
   {&__pyx_n_s_AlphabeticTokenizer, __pyx_k_AlphabeticTokenizer, sizeof(__pyx_k_AlphabeticTokenizer), 0, 0, 1, 1},
   {&__pyx_n_s_AlphabeticTokenizer___init, __pyx_k_AlphabeticTokenizer___init, sizeof(__pyx_k_AlphabeticTokenizer___init), 0, 0, 1, 1},
@@ -4299,50 +6746,89 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_NumericTokenizer, __pyx_k_NumericTokenizer, sizeof(__pyx_k_NumericTokenizer), 0, 0, 1, 1},
   {&__pyx_n_s_NumericTokenizer___init, __pyx_k_NumericTokenizer___init, sizeof(__pyx_k_NumericTokenizer___init), 0, 0, 1, 1},
   {&__pyx_n_s_NumericTokenizer_tokenize, __pyx_k_NumericTokenizer_tokenize, sizeof(__pyx_k_NumericTokenizer_tokenize), 0, 0, 1, 1},
+  {&__pyx_kp_b__12, __pyx_k__12, sizeof(__pyx_k__12), 0, 0, 0, 0},
+  {&__pyx_kp_s__13, __pyx_k__13, sizeof(__pyx_k__13), 0, 0, 1, 0},
   {&__pyx_kp_s_a_zA_Z, __pyx_k_a_zA_Z, sizeof(__pyx_k_a_zA_Z), 0, 0, 1, 0},
   {&__pyx_kp_s_a_zA_Z0_9, __pyx_k_a_zA_Z0_9, sizeof(__pyx_k_a_zA_Z0_9), 0, 0, 1, 0},
   {&__pyx_kp_s_afs_cs_wisc_edu_u_p_a_paulgc_gi, __pyx_k_afs_cs_wisc_edu_u_p_a_paulgc_gi, sizeof(__pyx_k_afs_cs_wisc_edu_u_p_a_paulgc_gi), 0, 0, 1, 0},
+  {&__pyx_n_b_alph, __pyx_k_alph, sizeof(__pyx_k_alph), 0, 0, 0, 1},
+  {&__pyx_n_b_alph_num, __pyx_k_alph_num, sizeof(__pyx_k_alph_num), 0, 0, 0, 1},
   {&__pyx_n_s_attr, __pyx_k_attr, sizeof(__pyx_k_attr), 0, 0, 1, 1},
+  {&__pyx_n_s_attr1, __pyx_k_attr1, sizeof(__pyx_k_attr1), 0, 0, 1, 1},
+  {&__pyx_n_s_attr2, __pyx_k_attr2, sizeof(__pyx_k_attr2), 0, 0, 1, 1},
+  {&__pyx_n_s_close, __pyx_k_close, sizeof(__pyx_k_close), 0, 0, 1, 1},
   {&__pyx_n_s_compile, __pyx_k_compile, sizeof(__pyx_k_compile), 0, 0, 1, 1},
   {&__pyx_n_s_df, __pyx_k_df, sizeof(__pyx_k_df), 0, 0, 1, 1},
+  {&__pyx_n_s_df1, __pyx_k_df1, sizeof(__pyx_k_df1), 0, 0, 1, 1},
+  {&__pyx_n_s_df2, __pyx_k_df2, sizeof(__pyx_k_df2), 0, 0, 1, 1},
   {&__pyx_n_s_doc, __pyx_k_doc, sizeof(__pyx_k_doc), 0, 0, 1, 1},
   {&__pyx_n_s_end, __pyx_k_end, sizeof(__pyx_k_end), 0, 0, 1, 1},
   {&__pyx_n_s_file, __pyx_k_file, sizeof(__pyx_k_file), 0, 0, 1, 1},
   {&__pyx_n_s_findall, __pyx_k_findall, sizeof(__pyx_k_findall), 0, 0, 1, 1},
+  {&__pyx_n_s_fp, __pyx_k_fp, sizeof(__pyx_k_fp), 0, 0, 1, 1},
+  {&__pyx_n_b_gh, __pyx_k_gh, sizeof(__pyx_k_gh), 0, 0, 0, 1},
   {&__pyx_n_s_import, __pyx_k_import, sizeof(__pyx_k_import), 0, 0, 1, 1},
   {&__pyx_n_s_init, __pyx_k_init, sizeof(__pyx_k_init), 0, 0, 1, 1},
   {&__pyx_n_s_inp_string, __pyx_k_inp_string, sizeof(__pyx_k_inp_string), 0, 0, 1, 1},
+  {&__pyx_n_s_itemgetter, __pyx_k_itemgetter, sizeof(__pyx_k_itemgetter), 0, 0, 1, 1},
+  {&__pyx_n_s_key, __pyx_k_key, sizeof(__pyx_k_key), 0, 0, 1, 1},
+  {&__pyx_n_s_line, __pyx_k_line, sizeof(__pyx_k_line), 0, 0, 1, 1},
+  {&__pyx_n_s_load_tok, __pyx_k_load_tok, sizeof(__pyx_k_load_tok), 0, 0, 1, 1},
+  {&__pyx_n_s_lstrings, __pyx_k_lstrings, sizeof(__pyx_k_lstrings), 0, 0, 1, 1},
+  {&__pyx_kp_s_ltable, __pyx_k_ltable, sizeof(__pyx_k_ltable), 0, 0, 1, 0},
+  {&__pyx_n_s_ltokens, __pyx_k_ltokens, sizeof(__pyx_k_ltokens), 0, 0, 1, 1},
   {&__pyx_n_s_main, __pyx_k_main, sizeof(__pyx_k_main), 0, 0, 1, 1},
   {&__pyx_n_s_metaclass, __pyx_k_metaclass, sizeof(__pyx_k_metaclass), 0, 0, 1, 1},
   {&__pyx_n_s_module, __pyx_k_module, sizeof(__pyx_k_module), 0, 0, 1, 1},
+  {&__pyx_n_b_num, __pyx_k_num, sizeof(__pyx_k_num), 0, 0, 0, 1},
+  {&__pyx_n_s_open, __pyx_k_open, sizeof(__pyx_k_open), 0, 0, 1, 1},
+  {&__pyx_n_s_operator, __pyx_k_operator, sizeof(__pyx_k_operator), 0, 0, 1, 1},
   {&__pyx_n_s_out_tokens, __pyx_k_out_tokens, sizeof(__pyx_k_out_tokens), 0, 0, 1, 1},
   {&__pyx_n_s_padding, __pyx_k_padding, sizeof(__pyx_k_padding), 0, 0, 1, 1},
+  {&__pyx_n_s_path, __pyx_k_path, sizeof(__pyx_k_path), 0, 0, 1, 1},
   {&__pyx_n_s_prefix_pad, __pyx_k_prefix_pad, sizeof(__pyx_k_prefix_pad), 0, 0, 1, 1},
   {&__pyx_n_s_prepare, __pyx_k_prepare, sizeof(__pyx_k_prepare), 0, 0, 1, 1},
   {&__pyx_n_s_print, __pyx_k_print, sizeof(__pyx_k_print), 0, 0, 1, 1},
   {&__pyx_n_s_py_stringsimjoin_apply_rf_tokeni, __pyx_k_py_stringsimjoin_apply_rf_tokeni, sizeof(__pyx_k_py_stringsimjoin_apply_rf_tokeni), 0, 0, 1, 1},
   {&__pyx_n_s_pyx_vtable, __pyx_k_pyx_vtable, sizeof(__pyx_k_pyx_vtable), 0, 0, 1, 1},
   {&__pyx_n_s_q, __pyx_k_q, sizeof(__pyx_k_q), 0, 0, 1, 1},
+  {&__pyx_n_b_qg2, __pyx_k_qg2, sizeof(__pyx_k_qg2), 0, 0, 0, 1},
+  {&__pyx_n_b_qg3, __pyx_k_qg3, sizeof(__pyx_k_qg3), 0, 0, 0, 1},
   {&__pyx_n_s_qualname, __pyx_k_qualname, sizeof(__pyx_k_qualname), 0, 0, 1, 1},
   {&__pyx_n_s_qval, __pyx_k_qval, sizeof(__pyx_k_qval), 0, 0, 1, 1},
   {&__pyx_n_s_range, __pyx_k_range, sizeof(__pyx_k_range), 0, 0, 1, 1},
   {&__pyx_n_s_re2, __pyx_k_re2, sizeof(__pyx_k_re2), 0, 0, 1, 1},
   {&__pyx_n_s_regex, __pyx_k_regex, sizeof(__pyx_k_regex), 0, 0, 1, 1},
   {&__pyx_n_s_return_set, __pyx_k_return_set, sizeof(__pyx_k_return_set), 0, 0, 1, 1},
+  {&__pyx_n_s_rstrings, __pyx_k_rstrings, sizeof(__pyx_k_rstrings), 0, 0, 1, 1},
+  {&__pyx_kp_s_rtable, __pyx_k_rtable, sizeof(__pyx_k_rtable), 0, 0, 1, 0},
+  {&__pyx_n_s_rtokens, __pyx_k_rtokens, sizeof(__pyx_k_rtokens), 0, 0, 1, 1},
   {&__pyx_n_s_s, __pyx_k_s, sizeof(__pyx_k_s), 0, 0, 1, 1},
   {&__pyx_n_s_self, __pyx_k_self, sizeof(__pyx_k_self), 0, 0, 1, 1},
+  {&__pyx_n_s_sorted, __pyx_k_sorted, sizeof(__pyx_k_sorted), 0, 0, 1, 1},
+  {&__pyx_n_s_st, __pyx_k_st, sizeof(__pyx_k_st), 0, 0, 1, 1},
   {&__pyx_n_s_strings, __pyx_k_strings, sizeof(__pyx_k_strings), 0, 0, 1, 1},
   {&__pyx_n_s_suffix_pad, __pyx_k_suffix_pad, sizeof(__pyx_k_suffix_pad), 0, 0, 1, 1},
   {&__pyx_n_s_t, __pyx_k_t, sizeof(__pyx_k_t), 0, 0, 1, 1},
   {&__pyx_n_s_test, __pyx_k_test, sizeof(__pyx_k_test), 0, 0, 1, 1},
   {&__pyx_n_s_test_tok, __pyx_k_test_tok, sizeof(__pyx_k_test_tok), 0, 0, 1, 1},
+  {&__pyx_n_s_test_tok2, __pyx_k_test_tok2, sizeof(__pyx_k_test_tok2), 0, 0, 1, 1},
+  {&__pyx_n_s_time, __pyx_k_time, sizeof(__pyx_k_time), 0, 0, 1, 1},
+  {&__pyx_kp_s_time_2, __pyx_k_time_2, sizeof(__pyx_k_time_2), 0, 0, 1, 0},
+  {&__pyx_n_s_tok_type, __pyx_k_tok_type, sizeof(__pyx_k_tok_type), 0, 0, 1, 1},
   {&__pyx_n_s_tokenize, __pyx_k_tokenize, sizeof(__pyx_k_tokenize), 0, 0, 1, 1},
   {&__pyx_n_s_tokens, __pyx_k_tokens, sizeof(__pyx_k_tokens), 0, 0, 1, 1},
+  {&__pyx_n_s_w, __pyx_k_w, sizeof(__pyx_k_w), 0, 0, 1, 1},
+  {&__pyx_n_s_working_dir, __pyx_k_working_dir, sizeof(__pyx_k_working_dir), 0, 0, 1, 1},
+  {&__pyx_n_s_write, __pyx_k_write, sizeof(__pyx_k_write), 0, 0, 1, 1},
+  {&__pyx_n_b_ws, __pyx_k_ws, sizeof(__pyx_k_ws), 0, 0, 0, 1},
   {&__pyx_n_s_ws, __pyx_k_ws, sizeof(__pyx_k_ws), 0, 0, 1, 1},
   {0, 0, 0, 0, 0, 0, 0}
 };
 static int __Pyx_InitCachedBuiltins(void) {
-  __pyx_builtin_range = __Pyx_GetBuiltinName(__pyx_n_s_range); if (!__pyx_builtin_range) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 51; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_builtin_range = __Pyx_GetBuiltinName(__pyx_n_s_range); if (!__pyx_builtin_range) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 65; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_builtin_open = __Pyx_GetBuiltinName(__pyx_n_s_open); if (!__pyx_builtin_open) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 159; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_builtin_sorted = __Pyx_GetBuiltinName(__pyx_n_s_sorted); if (!__pyx_builtin_sorted) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 213; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   return 0;
   __pyx_L1_error:;
   return -1;
@@ -4352,122 +6838,223 @@ static int __Pyx_InitCachedConstants(void) {
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__Pyx_InitCachedConstants", 0);
 
-  /* "py_stringsimjoin/apply_rf/tokenizers.pyx":62
+  /* "py_stringsimjoin/apply_rf/tokenizers.pyx":76
  * class AlphabeticTokenizer:
  *     def __init__(self, return_set):
  *         self.regex = re2.compile('[a-zA-Z]+')             # <<<<<<<<<<<<<<
  *         self.return_set = return_set
  * 
  */
-  __pyx_tuple__2 = PyTuple_Pack(1, __pyx_kp_s_a_zA_Z); if (unlikely(!__pyx_tuple__2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 62; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_tuple__2 = PyTuple_Pack(1, __pyx_kp_s_a_zA_Z); if (unlikely(!__pyx_tuple__2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 76; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_tuple__2);
   __Pyx_GIVEREF(__pyx_tuple__2);
 
-  /* "py_stringsimjoin/apply_rf/tokenizers.pyx":80
+  /* "py_stringsimjoin/apply_rf/tokenizers.pyx":94
  * class AlphanumericTokenizer:
  *     def __init__(self, return_set):
  *         self.regex = re2.compile('[a-zA-Z0-9]+')             # <<<<<<<<<<<<<<
  *         self.return_set = return_set
  * 
  */
-  __pyx_tuple__3 = PyTuple_Pack(1, __pyx_kp_s_a_zA_Z0_9); if (unlikely(!__pyx_tuple__3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 80; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_tuple__3 = PyTuple_Pack(1, __pyx_kp_s_a_zA_Z0_9); if (unlikely(!__pyx_tuple__3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 94; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_tuple__3);
   __Pyx_GIVEREF(__pyx_tuple__3);
 
-  /* "py_stringsimjoin/apply_rf/tokenizers.pyx":98
+  /* "py_stringsimjoin/apply_rf/tokenizers.pyx":112
  * class NumericTokenizer:
  *     def __init__(self, return_set):
  *         self.regex = re2.compile('[0-9]+')             # <<<<<<<<<<<<<<
  *         self.return_set = return_set
  * 
  */
-  __pyx_tuple__4 = PyTuple_Pack(1, __pyx_kp_s_0_9); if (unlikely(!__pyx_tuple__4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 98; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_tuple__4 = PyTuple_Pack(1, __pyx_kp_s_0_9); if (unlikely(!__pyx_tuple__4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 112; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_tuple__4);
   __Pyx_GIVEREF(__pyx_tuple__4);
 
-  /* "py_stringsimjoin/apply_rf/tokenizers.pyx":61
+  /* "py_stringsimjoin/apply_rf/tokenizers.pyx":177
+ *     cdef object tok
+ *     if tok_type.compare('ws') == 0:
+ *         tok = WhitespaceTokenizer(True)             # <<<<<<<<<<<<<<
+ *     elif tok_type.compare('alph') == 0:
+ *         tok = AlphabeticTokenizer(True)
+ */
+  __pyx_tuple__5 = PyTuple_Pack(1, Py_True); if (unlikely(!__pyx_tuple__5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 177; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_tuple__5);
+  __Pyx_GIVEREF(__pyx_tuple__5);
+
+  /* "py_stringsimjoin/apply_rf/tokenizers.pyx":179
+ *         tok = WhitespaceTokenizer(True)
+ *     elif tok_type.compare('alph') == 0:
+ *         tok = AlphabeticTokenizer(True)             # <<<<<<<<<<<<<<
+ *     elif tok_type.compare('alph_num') == 0:
+ *         tok = AlphanumericTokenizer(True)
+ */
+  __pyx_tuple__6 = PyTuple_Pack(1, Py_True); if (unlikely(!__pyx_tuple__6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 179; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_tuple__6);
+  __Pyx_GIVEREF(__pyx_tuple__6);
+
+  /* "py_stringsimjoin/apply_rf/tokenizers.pyx":181
+ *         tok = AlphabeticTokenizer(True)
+ *     elif tok_type.compare('alph_num') == 0:
+ *         tok = AlphanumericTokenizer(True)             # <<<<<<<<<<<<<<
+ *     elif tok_type.compare('num') == 0:
+ *         tok = NumericTokenizer(True)
+ */
+  __pyx_tuple__7 = PyTuple_Pack(1, Py_True); if (unlikely(!__pyx_tuple__7)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 181; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_tuple__7);
+  __Pyx_GIVEREF(__pyx_tuple__7);
+
+  /* "py_stringsimjoin/apply_rf/tokenizers.pyx":183
+ *         tok = AlphanumericTokenizer(True)
+ *     elif tok_type.compare('num') == 0:
+ *         tok = NumericTokenizer(True)             # <<<<<<<<<<<<<<
+ *     elif tok_type.compare('qg2') == 0:
+ *         tok = QgramTokenizer(2, True, ord('#'), ord('$'), True)
+ */
+  __pyx_tuple__8 = PyTuple_Pack(1, Py_True); if (unlikely(!__pyx_tuple__8)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 183; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_tuple__8);
+  __Pyx_GIVEREF(__pyx_tuple__8);
+
+  /* "py_stringsimjoin/apply_rf/tokenizers.pyx":185
+ *         tok = NumericTokenizer(True)
+ *     elif tok_type.compare('qg2') == 0:
+ *         tok = QgramTokenizer(2, True, ord('#'), ord('$'), True)             # <<<<<<<<<<<<<<
+ *     elif tok_type.compare('qg3') == 0:
+ *         tok = QgramTokenizer(3, True, ord('#'), ord('$'), True)
+ */
+  __pyx_tuple__9 = PyTuple_Pack(5, __pyx_int_2, Py_True, __pyx_int_35, __pyx_int_36, Py_True); if (unlikely(!__pyx_tuple__9)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 185; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_tuple__9);
+  __Pyx_GIVEREF(__pyx_tuple__9);
+
+  /* "py_stringsimjoin/apply_rf/tokenizers.pyx":187
+ *         tok = QgramTokenizer(2, True, ord('#'), ord('$'), True)
+ *     elif tok_type.compare('qg3') == 0:
+ *         tok = QgramTokenizer(3, True, ord('#'), ord('$'), True)             # <<<<<<<<<<<<<<
+ * 
+ *     cdef string s, token
+ */
+  __pyx_tuple__10 = PyTuple_Pack(5, __pyx_int_3, Py_True, __pyx_int_35, __pyx_int_36, Py_True); if (unlikely(!__pyx_tuple__10)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 187; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_tuple__10);
+  __Pyx_GIVEREF(__pyx_tuple__10);
+
+  /* "py_stringsimjoin/apply_rf/tokenizers.pyx":213
+ * 
+ *     cdef int order_idx = 1
+ *     for token_freq_tuple in sorted(ordered_tokens, key=itemgetter(1)):             # <<<<<<<<<<<<<<
+ *         token_ordering[token_freq_tuple[0]] = order_idx
+ *         order_idx += 1
+ */
+  __pyx_tuple__11 = PyTuple_Pack(1, __pyx_int_1); if (unlikely(!__pyx_tuple__11)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 213; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_tuple__11);
+  __Pyx_GIVEREF(__pyx_tuple__11);
+
+  /* "py_stringsimjoin/apply_rf/tokenizers.pyx":75
  * 
  * class AlphabeticTokenizer:
  *     def __init__(self, return_set):             # <<<<<<<<<<<<<<
  *         self.regex = re2.compile('[a-zA-Z]+')
  *         self.return_set = return_set
  */
-  __pyx_tuple__5 = PyTuple_Pack(2, __pyx_n_s_self, __pyx_n_s_return_set); if (unlikely(!__pyx_tuple__5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 61; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_GOTREF(__pyx_tuple__5);
-  __Pyx_GIVEREF(__pyx_tuple__5);
-  __pyx_codeobj__6 = (PyObject*)__Pyx_PyCode_New(2, 0, 2, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__5, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_afs_cs_wisc_edu_u_p_a_paulgc_gi, __pyx_n_s_init, 61, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 61; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_tuple__14 = PyTuple_Pack(2, __pyx_n_s_self, __pyx_n_s_return_set); if (unlikely(!__pyx_tuple__14)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 75; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_tuple__14);
+  __Pyx_GIVEREF(__pyx_tuple__14);
+  __pyx_codeobj__15 = (PyObject*)__Pyx_PyCode_New(2, 0, 2, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__14, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_afs_cs_wisc_edu_u_p_a_paulgc_gi, __pyx_n_s_init, 75, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__15)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 75; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
 
-  /* "py_stringsimjoin/apply_rf/tokenizers.pyx":65
+  /* "py_stringsimjoin/apply_rf/tokenizers.pyx":79
  *         self.return_set = return_set
  * 
  *     def tokenize(self, const string& inp_string):             # <<<<<<<<<<<<<<
  *         cdef oset[string] tokens
  *         cdef vector[string] out_tokens
  */
-  __pyx_tuple__7 = PyTuple_Pack(5, __pyx_n_s_self, __pyx_n_s_inp_string, __pyx_n_s_tokens, __pyx_n_s_out_tokens, __pyx_n_s_s); if (unlikely(!__pyx_tuple__7)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 65; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_GOTREF(__pyx_tuple__7);
-  __Pyx_GIVEREF(__pyx_tuple__7);
-  __pyx_codeobj__8 = (PyObject*)__Pyx_PyCode_New(2, 0, 5, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__7, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_afs_cs_wisc_edu_u_p_a_paulgc_gi, __pyx_n_s_tokenize, 65, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__8)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 65; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_tuple__16 = PyTuple_Pack(5, __pyx_n_s_self, __pyx_n_s_inp_string, __pyx_n_s_tokens, __pyx_n_s_out_tokens, __pyx_n_s_s); if (unlikely(!__pyx_tuple__16)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 79; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_tuple__16);
+  __Pyx_GIVEREF(__pyx_tuple__16);
+  __pyx_codeobj__17 = (PyObject*)__Pyx_PyCode_New(2, 0, 5, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__16, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_afs_cs_wisc_edu_u_p_a_paulgc_gi, __pyx_n_s_tokenize, 79, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__17)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 79; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
 
-  /* "py_stringsimjoin/apply_rf/tokenizers.pyx":79
+  /* "py_stringsimjoin/apply_rf/tokenizers.pyx":93
  * 
  * class AlphanumericTokenizer:
  *     def __init__(self, return_set):             # <<<<<<<<<<<<<<
  *         self.regex = re2.compile('[a-zA-Z0-9]+')
  *         self.return_set = return_set
  */
-  __pyx_tuple__9 = PyTuple_Pack(2, __pyx_n_s_self, __pyx_n_s_return_set); if (unlikely(!__pyx_tuple__9)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 79; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_GOTREF(__pyx_tuple__9);
-  __Pyx_GIVEREF(__pyx_tuple__9);
-  __pyx_codeobj__10 = (PyObject*)__Pyx_PyCode_New(2, 0, 2, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__9, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_afs_cs_wisc_edu_u_p_a_paulgc_gi, __pyx_n_s_init, 79, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__10)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 79; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_tuple__18 = PyTuple_Pack(2, __pyx_n_s_self, __pyx_n_s_return_set); if (unlikely(!__pyx_tuple__18)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 93; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_tuple__18);
+  __Pyx_GIVEREF(__pyx_tuple__18);
+  __pyx_codeobj__19 = (PyObject*)__Pyx_PyCode_New(2, 0, 2, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__18, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_afs_cs_wisc_edu_u_p_a_paulgc_gi, __pyx_n_s_init, 93, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__19)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 93; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
 
-  /* "py_stringsimjoin/apply_rf/tokenizers.pyx":83
+  /* "py_stringsimjoin/apply_rf/tokenizers.pyx":97
  *         self.return_set = return_set
  * 
  *     def tokenize(self, const string& inp_string):             # <<<<<<<<<<<<<<
  *         cdef oset[string] tokens
  *         cdef vector[string] out_tokens
  */
-  __pyx_tuple__11 = PyTuple_Pack(5, __pyx_n_s_self, __pyx_n_s_inp_string, __pyx_n_s_tokens, __pyx_n_s_out_tokens, __pyx_n_s_s); if (unlikely(!__pyx_tuple__11)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 83; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_GOTREF(__pyx_tuple__11);
-  __Pyx_GIVEREF(__pyx_tuple__11);
-  __pyx_codeobj__12 = (PyObject*)__Pyx_PyCode_New(2, 0, 5, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__11, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_afs_cs_wisc_edu_u_p_a_paulgc_gi, __pyx_n_s_tokenize, 83, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__12)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 83; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_tuple__20 = PyTuple_Pack(5, __pyx_n_s_self, __pyx_n_s_inp_string, __pyx_n_s_tokens, __pyx_n_s_out_tokens, __pyx_n_s_s); if (unlikely(!__pyx_tuple__20)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 97; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_tuple__20);
+  __Pyx_GIVEREF(__pyx_tuple__20);
+  __pyx_codeobj__21 = (PyObject*)__Pyx_PyCode_New(2, 0, 5, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__20, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_afs_cs_wisc_edu_u_p_a_paulgc_gi, __pyx_n_s_tokenize, 97, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__21)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 97; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
 
-  /* "py_stringsimjoin/apply_rf/tokenizers.pyx":97
+  /* "py_stringsimjoin/apply_rf/tokenizers.pyx":111
  * 
  * class NumericTokenizer:
  *     def __init__(self, return_set):             # <<<<<<<<<<<<<<
  *         self.regex = re2.compile('[0-9]+')
  *         self.return_set = return_set
  */
-  __pyx_tuple__13 = PyTuple_Pack(2, __pyx_n_s_self, __pyx_n_s_return_set); if (unlikely(!__pyx_tuple__13)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 97; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_GOTREF(__pyx_tuple__13);
-  __Pyx_GIVEREF(__pyx_tuple__13);
-  __pyx_codeobj__14 = (PyObject*)__Pyx_PyCode_New(2, 0, 2, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__13, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_afs_cs_wisc_edu_u_p_a_paulgc_gi, __pyx_n_s_init, 97, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__14)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 97; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_tuple__22 = PyTuple_Pack(2, __pyx_n_s_self, __pyx_n_s_return_set); if (unlikely(!__pyx_tuple__22)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 111; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_tuple__22);
+  __Pyx_GIVEREF(__pyx_tuple__22);
+  __pyx_codeobj__23 = (PyObject*)__Pyx_PyCode_New(2, 0, 2, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__22, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_afs_cs_wisc_edu_u_p_a_paulgc_gi, __pyx_n_s_init, 111, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__23)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 111; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
 
-  /* "py_stringsimjoin/apply_rf/tokenizers.pyx":101
+  /* "py_stringsimjoin/apply_rf/tokenizers.pyx":115
  *         self.return_set = return_set
  * 
  *     def tokenize(self, const string& inp_string):             # <<<<<<<<<<<<<<
  *         cdef oset[string] tokens
  *         cdef vector[string] out_tokens
  */
-  __pyx_tuple__15 = PyTuple_Pack(5, __pyx_n_s_self, __pyx_n_s_inp_string, __pyx_n_s_tokens, __pyx_n_s_out_tokens, __pyx_n_s_s); if (unlikely(!__pyx_tuple__15)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 101; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_GOTREF(__pyx_tuple__15);
-  __Pyx_GIVEREF(__pyx_tuple__15);
-  __pyx_codeobj__16 = (PyObject*)__Pyx_PyCode_New(2, 0, 5, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__15, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_afs_cs_wisc_edu_u_p_a_paulgc_gi, __pyx_n_s_tokenize, 101, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__16)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 101; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_tuple__24 = PyTuple_Pack(5, __pyx_n_s_self, __pyx_n_s_inp_string, __pyx_n_s_tokens, __pyx_n_s_out_tokens, __pyx_n_s_s); if (unlikely(!__pyx_tuple__24)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 115; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_tuple__24);
+  __Pyx_GIVEREF(__pyx_tuple__24);
+  __pyx_codeobj__25 = (PyObject*)__Pyx_PyCode_New(2, 0, 5, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__24, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_afs_cs_wisc_edu_u_p_a_paulgc_gi, __pyx_n_s_tokenize, 115, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__25)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 115; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
 
-  /* "py_stringsimjoin/apply_rf/tokenizers.pyx":114
+  /* "py_stringsimjoin/apply_rf/tokenizers.pyx":128
  *         return out_tokens
  * 
  * def test_tok(df, attr):             # <<<<<<<<<<<<<<
  *     cdef int q=3
  *     ws = QgramTokenizer(q, True, ord('#'), ord('$'), True)
  */
-  __pyx_tuple__17 = PyTuple_Pack(7, __pyx_n_s_df, __pyx_n_s_attr, __pyx_n_s_q, __pyx_n_s_ws, __pyx_n_s_strings, __pyx_n_s_t, __pyx_n_s_s); if (unlikely(!__pyx_tuple__17)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 114; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_GOTREF(__pyx_tuple__17);
-  __Pyx_GIVEREF(__pyx_tuple__17);
-  __pyx_codeobj__18 = (PyObject*)__Pyx_PyCode_New(2, 0, 7, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__17, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_afs_cs_wisc_edu_u_p_a_paulgc_gi, __pyx_n_s_test_tok, 114, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__18)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 114; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_tuple__26 = PyTuple_Pack(7, __pyx_n_s_df, __pyx_n_s_attr, __pyx_n_s_q, __pyx_n_s_ws, __pyx_n_s_strings, __pyx_n_s_t, __pyx_n_s_s); if (unlikely(!__pyx_tuple__26)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 128; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_tuple__26);
+  __Pyx_GIVEREF(__pyx_tuple__26);
+  __pyx_codeobj__27 = (PyObject*)__Pyx_PyCode_New(2, 0, 7, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__26, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_afs_cs_wisc_edu_u_p_a_paulgc_gi, __pyx_n_s_test_tok, 128, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__27)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 128; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+
+  /* "py_stringsimjoin/apply_rf/tokenizers.pyx":139
+ *         print t
+ * 
+ * def test_tok2(df1, attr1, df2, attr2):             # <<<<<<<<<<<<<<
+ *     cdef vector[string] lstrings, rstrings
+ *     convert_to_vector(df1[attr1], lstrings)
+ */
+  __pyx_tuple__28 = PyTuple_Pack(7, __pyx_n_s_df1, __pyx_n_s_attr1, __pyx_n_s_df2, __pyx_n_s_attr2, __pyx_n_s_lstrings, __pyx_n_s_rstrings, __pyx_n_s_st); if (unlikely(!__pyx_tuple__28)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 139; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_tuple__28);
+  __Pyx_GIVEREF(__pyx_tuple__28);
+  __pyx_codeobj__29 = (PyObject*)__Pyx_PyCode_New(4, 0, 7, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__28, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_afs_cs_wisc_edu_u_p_a_paulgc_gi, __pyx_n_s_test_tok2, 139, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__29)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 139; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+
+  /* "py_stringsimjoin/apply_rf/tokenizers.pyx":156
+ *     return out_tokens
+ * 
+ * def load_tok(tok_type, path):             # <<<<<<<<<<<<<<
+ *     cdef vector[vector[int]] ltokens, rtokens
+ *     st =time.time()
+ */
+  __pyx_tuple__30 = PyTuple_Pack(7, __pyx_n_s_tok_type, __pyx_n_s_path, __pyx_n_s_ltokens, __pyx_n_s_rtokens, __pyx_n_s_st, __pyx_n_s_fp, __pyx_n_s_line); if (unlikely(!__pyx_tuple__30)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 156; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_tuple__30);
+  __Pyx_GIVEREF(__pyx_tuple__30);
+  __pyx_codeobj__31 = (PyObject*)__Pyx_PyCode_New(2, 0, 7, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__30, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_afs_cs_wisc_edu_u_p_a_paulgc_gi, __pyx_n_s_load_tok, 156, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__31)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 156; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_RefNannyFinishContext();
   return 0;
   __pyx_L1_error:;
@@ -4476,7 +7063,17 @@ static int __Pyx_InitCachedConstants(void) {
 }
 
 static int __Pyx_InitGlobals(void) {
+  /* InitThreads.init */
+  #ifdef WITH_THREAD
+PyEval_InitThreads();
+#endif
+
+if (unlikely(PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 2; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+
   if (__Pyx_InitStrings(__pyx_string_tab) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 2; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
+  __pyx_int_1 = PyInt_FromLong(1); if (unlikely(!__pyx_int_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 2; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_int_2 = PyInt_FromLong(2); if (unlikely(!__pyx_int_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 2; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_int_3 = PyInt_FromLong(3); if (unlikely(!__pyx_int_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 2; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_int_35 = PyInt_FromLong(35); if (unlikely(!__pyx_int_35)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 2; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_int_36 = PyInt_FromLong(36); if (unlikely(!__pyx_int_36)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 2; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   return 0;
@@ -4573,17 +7170,17 @@ PyMODINIT_FUNC PyInit_tokenizers(void)
   /*--- Type init code ---*/
   __pyx_vtabptr_16py_stringsimjoin_8apply_rf_10tokenizers_WhitespaceTokenizer = &__pyx_vtable_16py_stringsimjoin_8apply_rf_10tokenizers_WhitespaceTokenizer;
   __pyx_vtable_16py_stringsimjoin_8apply_rf_10tokenizers_WhitespaceTokenizer.tokenize = (std::vector<std::string>  (*)(struct __pyx_obj_16py_stringsimjoin_8apply_rf_10tokenizers_WhitespaceTokenizer *, std::string const &))__pyx_f_16py_stringsimjoin_8apply_rf_10tokenizers_19WhitespaceTokenizer_tokenize;
-  if (PyType_Ready(&__pyx_type_16py_stringsimjoin_8apply_rf_10tokenizers_WhitespaceTokenizer) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 12; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (PyType_Ready(&__pyx_type_16py_stringsimjoin_8apply_rf_10tokenizers_WhitespaceTokenizer) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 21; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_type_16py_stringsimjoin_8apply_rf_10tokenizers_WhitespaceTokenizer.tp_print = 0;
-  if (__Pyx_SetVtable(__pyx_type_16py_stringsimjoin_8apply_rf_10tokenizers_WhitespaceTokenizer.tp_dict, __pyx_vtabptr_16py_stringsimjoin_8apply_rf_10tokenizers_WhitespaceTokenizer) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 12; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  if (PyObject_SetAttrString(__pyx_m, "WhitespaceTokenizer", (PyObject *)&__pyx_type_16py_stringsimjoin_8apply_rf_10tokenizers_WhitespaceTokenizer) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 12; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (__Pyx_SetVtable(__pyx_type_16py_stringsimjoin_8apply_rf_10tokenizers_WhitespaceTokenizer.tp_dict, __pyx_vtabptr_16py_stringsimjoin_8apply_rf_10tokenizers_WhitespaceTokenizer) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 21; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (PyObject_SetAttrString(__pyx_m, "WhitespaceTokenizer", (PyObject *)&__pyx_type_16py_stringsimjoin_8apply_rf_10tokenizers_WhitespaceTokenizer) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 21; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_ptype_16py_stringsimjoin_8apply_rf_10tokenizers_WhitespaceTokenizer = &__pyx_type_16py_stringsimjoin_8apply_rf_10tokenizers_WhitespaceTokenizer;
   __pyx_vtabptr_16py_stringsimjoin_8apply_rf_10tokenizers_QgramTokenizer = &__pyx_vtable_16py_stringsimjoin_8apply_rf_10tokenizers_QgramTokenizer;
-  __pyx_vtable_16py_stringsimjoin_8apply_rf_10tokenizers_QgramTokenizer.tokenize = (std::vector<std::string>  (*)(struct __pyx_obj_16py_stringsimjoin_8apply_rf_10tokenizers_QgramTokenizer *, std::string const &))__pyx_f_16py_stringsimjoin_8apply_rf_10tokenizers_14QgramTokenizer_tokenize;
-  if (PyType_Ready(&__pyx_type_16py_stringsimjoin_8apply_rf_10tokenizers_QgramTokenizer) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 34; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_vtable_16py_stringsimjoin_8apply_rf_10tokenizers_QgramTokenizer.tokenize = (std::vector<std::string>  (*)(struct __pyx_obj_16py_stringsimjoin_8apply_rf_10tokenizers_QgramTokenizer *, std::string const &, int __pyx_skip_dispatch))__pyx_f_16py_stringsimjoin_8apply_rf_10tokenizers_14QgramTokenizer_tokenize;
+  if (PyType_Ready(&__pyx_type_16py_stringsimjoin_8apply_rf_10tokenizers_QgramTokenizer) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 44; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_type_16py_stringsimjoin_8apply_rf_10tokenizers_QgramTokenizer.tp_print = 0;
-  if (__Pyx_SetVtable(__pyx_type_16py_stringsimjoin_8apply_rf_10tokenizers_QgramTokenizer.tp_dict, __pyx_vtabptr_16py_stringsimjoin_8apply_rf_10tokenizers_QgramTokenizer) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 34; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  if (PyObject_SetAttrString(__pyx_m, "QgramTokenizer", (PyObject *)&__pyx_type_16py_stringsimjoin_8apply_rf_10tokenizers_QgramTokenizer) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 34; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (__Pyx_SetVtable(__pyx_type_16py_stringsimjoin_8apply_rf_10tokenizers_QgramTokenizer.tp_dict, __pyx_vtabptr_16py_stringsimjoin_8apply_rf_10tokenizers_QgramTokenizer) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 44; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (PyObject_SetAttrString(__pyx_m, "QgramTokenizer", (PyObject *)&__pyx_type_16py_stringsimjoin_8apply_rf_10tokenizers_QgramTokenizer) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 44; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_ptype_16py_stringsimjoin_8apply_rf_10tokenizers_QgramTokenizer = &__pyx_type_16py_stringsimjoin_8apply_rf_10tokenizers_QgramTokenizer;
   /*--- Type import code ---*/
   /*--- Variable import code ---*/
@@ -4593,181 +7190,237 @@ PyMODINIT_FUNC PyInit_tokenizers(void)
   if (__Pyx_patch_abc() < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 2; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   #endif
 
-  /* "py_stringsimjoin/apply_rf/tokenizers.pyx":7
- * from libcpp cimport bool
+  /* "py_stringsimjoin/apply_rf/tokenizers.pyx":2
+ * 
+ * import time             # <<<<<<<<<<<<<<
+ * from operator import itemgetter
+ * 
+ */
+  __pyx_t_1 = __Pyx_Import(__pyx_n_s_time, 0, -1); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 2; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_1);
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_time, __pyx_t_1) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 2; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+
+  /* "py_stringsimjoin/apply_rf/tokenizers.pyx":3
+ * 
+ * import time
+ * from operator import itemgetter             # <<<<<<<<<<<<<<
+ * 
+ * from cython.parallel import prange
+ */
+  __pyx_t_1 = PyList_New(1); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 3; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_1);
+  __Pyx_INCREF(__pyx_n_s_itemgetter);
+  __Pyx_GIVEREF(__pyx_n_s_itemgetter);
+  PyList_SET_ITEM(__pyx_t_1, 0, __pyx_n_s_itemgetter);
+  __pyx_t_2 = __Pyx_Import(__pyx_n_s_operator, __pyx_t_1, -1); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 3; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_2);
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  __pyx_t_1 = __Pyx_ImportFrom(__pyx_t_2, __pyx_n_s_itemgetter); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 3; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_1);
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_itemgetter, __pyx_t_1) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 3; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+
+  /* "py_stringsimjoin/apply_rf/tokenizers.pyx":16
+ * from libc.stdio cimport printf, fprintf, fopen, fclose, FILE, sprintf
  * 
  * import re2             # <<<<<<<<<<<<<<
  * 
- * cdef extern from "string.h":
+ * cdef extern from "string.h" nogil:
  */
-  __pyx_t_1 = __Pyx_Import(__pyx_n_s_re2, 0, -1); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 7; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_GOTREF(__pyx_t_1);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_re2, __pyx_t_1) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 7; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  __pyx_t_2 = __Pyx_Import(__pyx_n_s_re2, 0, -1); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 16; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_2);
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_re2, __pyx_t_2) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 16; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "py_stringsimjoin/apply_rf/tokenizers.pyx":60
+  /* "py_stringsimjoin/apply_rf/tokenizers.pyx":74
  *         return out_tokens
  * 
  * class AlphabeticTokenizer:             # <<<<<<<<<<<<<<
  *     def __init__(self, return_set):
  *         self.regex = re2.compile('[a-zA-Z]+')
  */
-  __pyx_t_1 = __Pyx_Py3MetaclassPrepare((PyObject *) NULL, __pyx_empty_tuple, __pyx_n_s_AlphabeticTokenizer, __pyx_n_s_AlphabeticTokenizer, (PyObject *) NULL, __pyx_n_s_py_stringsimjoin_apply_rf_tokeni, (PyObject *) NULL); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 60; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_GOTREF(__pyx_t_1);
+  __pyx_t_2 = __Pyx_Py3MetaclassPrepare((PyObject *) NULL, __pyx_empty_tuple, __pyx_n_s_AlphabeticTokenizer, __pyx_n_s_AlphabeticTokenizer, (PyObject *) NULL, __pyx_n_s_py_stringsimjoin_apply_rf_tokeni, (PyObject *) NULL); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 74; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_2);
 
-  /* "py_stringsimjoin/apply_rf/tokenizers.pyx":61
+  /* "py_stringsimjoin/apply_rf/tokenizers.pyx":75
  * 
  * class AlphabeticTokenizer:
  *     def __init__(self, return_set):             # <<<<<<<<<<<<<<
  *         self.regex = re2.compile('[a-zA-Z]+')
  *         self.return_set = return_set
  */
-  __pyx_t_2 = __Pyx_CyFunction_NewEx(&__pyx_mdef_16py_stringsimjoin_8apply_rf_10tokenizers_19AlphabeticTokenizer_1__init__, 0, __pyx_n_s_AlphabeticTokenizer___init, NULL, __pyx_n_s_py_stringsimjoin_apply_rf_tokeni, __pyx_d, ((PyObject *)__pyx_codeobj__6)); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 61; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_GOTREF(__pyx_t_2);
-  if (PyObject_SetItem(__pyx_t_1, __pyx_n_s_init, __pyx_t_2) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 61; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  __pyx_t_1 = __Pyx_CyFunction_NewEx(&__pyx_mdef_16py_stringsimjoin_8apply_rf_10tokenizers_19AlphabeticTokenizer_1__init__, 0, __pyx_n_s_AlphabeticTokenizer___init, NULL, __pyx_n_s_py_stringsimjoin_apply_rf_tokeni, __pyx_d, ((PyObject *)__pyx_codeobj__15)); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 75; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_1);
+  if (PyObject_SetItem(__pyx_t_2, __pyx_n_s_init, __pyx_t_1) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 75; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "py_stringsimjoin/apply_rf/tokenizers.pyx":65
+  /* "py_stringsimjoin/apply_rf/tokenizers.pyx":79
  *         self.return_set = return_set
  * 
  *     def tokenize(self, const string& inp_string):             # <<<<<<<<<<<<<<
  *         cdef oset[string] tokens
  *         cdef vector[string] out_tokens
  */
-  __pyx_t_2 = __Pyx_CyFunction_NewEx(&__pyx_mdef_16py_stringsimjoin_8apply_rf_10tokenizers_19AlphabeticTokenizer_3tokenize, 0, __pyx_n_s_AlphabeticTokenizer_tokenize, NULL, __pyx_n_s_py_stringsimjoin_apply_rf_tokeni, __pyx_d, ((PyObject *)__pyx_codeobj__8)); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 65; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_GOTREF(__pyx_t_2);
-  if (PyObject_SetItem(__pyx_t_1, __pyx_n_s_tokenize, __pyx_t_2) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 65; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  __pyx_t_1 = __Pyx_CyFunction_NewEx(&__pyx_mdef_16py_stringsimjoin_8apply_rf_10tokenizers_19AlphabeticTokenizer_3tokenize, 0, __pyx_n_s_AlphabeticTokenizer_tokenize, NULL, __pyx_n_s_py_stringsimjoin_apply_rf_tokeni, __pyx_d, ((PyObject *)__pyx_codeobj__17)); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 79; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_1);
+  if (PyObject_SetItem(__pyx_t_2, __pyx_n_s_tokenize, __pyx_t_1) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 79; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "py_stringsimjoin/apply_rf/tokenizers.pyx":60
+  /* "py_stringsimjoin/apply_rf/tokenizers.pyx":74
  *         return out_tokens
  * 
  * class AlphabeticTokenizer:             # <<<<<<<<<<<<<<
  *     def __init__(self, return_set):
  *         self.regex = re2.compile('[a-zA-Z]+')
  */
-  __pyx_t_2 = __Pyx_Py3ClassCreate(((PyObject*)&__Pyx_DefaultClassType), __pyx_n_s_AlphabeticTokenizer, __pyx_empty_tuple, __pyx_t_1, NULL, 0, 1); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 60; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_GOTREF(__pyx_t_2);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_AlphabeticTokenizer, __pyx_t_2) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 60; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  __pyx_t_1 = __Pyx_Py3ClassCreate(((PyObject*)&__Pyx_DefaultClassType), __pyx_n_s_AlphabeticTokenizer, __pyx_empty_tuple, __pyx_t_2, NULL, 0, 1); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 74; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_1);
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_AlphabeticTokenizer, __pyx_t_1) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 74; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "py_stringsimjoin/apply_rf/tokenizers.pyx":78
+  /* "py_stringsimjoin/apply_rf/tokenizers.pyx":92
  *         return out_tokens
  * 
  * class AlphanumericTokenizer:             # <<<<<<<<<<<<<<
  *     def __init__(self, return_set):
  *         self.regex = re2.compile('[a-zA-Z0-9]+')
  */
-  __pyx_t_1 = __Pyx_Py3MetaclassPrepare((PyObject *) NULL, __pyx_empty_tuple, __pyx_n_s_AlphanumericTokenizer, __pyx_n_s_AlphanumericTokenizer, (PyObject *) NULL, __pyx_n_s_py_stringsimjoin_apply_rf_tokeni, (PyObject *) NULL); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 78; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_GOTREF(__pyx_t_1);
+  __pyx_t_2 = __Pyx_Py3MetaclassPrepare((PyObject *) NULL, __pyx_empty_tuple, __pyx_n_s_AlphanumericTokenizer, __pyx_n_s_AlphanumericTokenizer, (PyObject *) NULL, __pyx_n_s_py_stringsimjoin_apply_rf_tokeni, (PyObject *) NULL); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 92; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_2);
 
-  /* "py_stringsimjoin/apply_rf/tokenizers.pyx":79
+  /* "py_stringsimjoin/apply_rf/tokenizers.pyx":93
  * 
  * class AlphanumericTokenizer:
  *     def __init__(self, return_set):             # <<<<<<<<<<<<<<
  *         self.regex = re2.compile('[a-zA-Z0-9]+')
  *         self.return_set = return_set
  */
-  __pyx_t_2 = __Pyx_CyFunction_NewEx(&__pyx_mdef_16py_stringsimjoin_8apply_rf_10tokenizers_21AlphanumericTokenizer_1__init__, 0, __pyx_n_s_AlphanumericTokenizer___init, NULL, __pyx_n_s_py_stringsimjoin_apply_rf_tokeni, __pyx_d, ((PyObject *)__pyx_codeobj__10)); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 79; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_GOTREF(__pyx_t_2);
-  if (PyObject_SetItem(__pyx_t_1, __pyx_n_s_init, __pyx_t_2) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 79; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  __pyx_t_1 = __Pyx_CyFunction_NewEx(&__pyx_mdef_16py_stringsimjoin_8apply_rf_10tokenizers_21AlphanumericTokenizer_1__init__, 0, __pyx_n_s_AlphanumericTokenizer___init, NULL, __pyx_n_s_py_stringsimjoin_apply_rf_tokeni, __pyx_d, ((PyObject *)__pyx_codeobj__19)); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 93; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_1);
+  if (PyObject_SetItem(__pyx_t_2, __pyx_n_s_init, __pyx_t_1) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 93; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "py_stringsimjoin/apply_rf/tokenizers.pyx":83
+  /* "py_stringsimjoin/apply_rf/tokenizers.pyx":97
  *         self.return_set = return_set
  * 
  *     def tokenize(self, const string& inp_string):             # <<<<<<<<<<<<<<
  *         cdef oset[string] tokens
  *         cdef vector[string] out_tokens
  */
-  __pyx_t_2 = __Pyx_CyFunction_NewEx(&__pyx_mdef_16py_stringsimjoin_8apply_rf_10tokenizers_21AlphanumericTokenizer_3tokenize, 0, __pyx_n_s_AlphanumericTokenizer_tokenize, NULL, __pyx_n_s_py_stringsimjoin_apply_rf_tokeni, __pyx_d, ((PyObject *)__pyx_codeobj__12)); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 83; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_GOTREF(__pyx_t_2);
-  if (PyObject_SetItem(__pyx_t_1, __pyx_n_s_tokenize, __pyx_t_2) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 83; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  __pyx_t_1 = __Pyx_CyFunction_NewEx(&__pyx_mdef_16py_stringsimjoin_8apply_rf_10tokenizers_21AlphanumericTokenizer_3tokenize, 0, __pyx_n_s_AlphanumericTokenizer_tokenize, NULL, __pyx_n_s_py_stringsimjoin_apply_rf_tokeni, __pyx_d, ((PyObject *)__pyx_codeobj__21)); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 97; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_1);
+  if (PyObject_SetItem(__pyx_t_2, __pyx_n_s_tokenize, __pyx_t_1) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 97; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "py_stringsimjoin/apply_rf/tokenizers.pyx":78
+  /* "py_stringsimjoin/apply_rf/tokenizers.pyx":92
  *         return out_tokens
  * 
  * class AlphanumericTokenizer:             # <<<<<<<<<<<<<<
  *     def __init__(self, return_set):
  *         self.regex = re2.compile('[a-zA-Z0-9]+')
  */
-  __pyx_t_2 = __Pyx_Py3ClassCreate(((PyObject*)&__Pyx_DefaultClassType), __pyx_n_s_AlphanumericTokenizer, __pyx_empty_tuple, __pyx_t_1, NULL, 0, 1); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 78; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_GOTREF(__pyx_t_2);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_AlphanumericTokenizer, __pyx_t_2) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 78; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  __pyx_t_1 = __Pyx_Py3ClassCreate(((PyObject*)&__Pyx_DefaultClassType), __pyx_n_s_AlphanumericTokenizer, __pyx_empty_tuple, __pyx_t_2, NULL, 0, 1); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 92; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_1);
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_AlphanumericTokenizer, __pyx_t_1) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 92; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "py_stringsimjoin/apply_rf/tokenizers.pyx":96
+  /* "py_stringsimjoin/apply_rf/tokenizers.pyx":110
  *         return out_tokens
  * 
  * class NumericTokenizer:             # <<<<<<<<<<<<<<
  *     def __init__(self, return_set):
  *         self.regex = re2.compile('[0-9]+')
  */
-  __pyx_t_1 = __Pyx_Py3MetaclassPrepare((PyObject *) NULL, __pyx_empty_tuple, __pyx_n_s_NumericTokenizer, __pyx_n_s_NumericTokenizer, (PyObject *) NULL, __pyx_n_s_py_stringsimjoin_apply_rf_tokeni, (PyObject *) NULL); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 96; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_GOTREF(__pyx_t_1);
+  __pyx_t_2 = __Pyx_Py3MetaclassPrepare((PyObject *) NULL, __pyx_empty_tuple, __pyx_n_s_NumericTokenizer, __pyx_n_s_NumericTokenizer, (PyObject *) NULL, __pyx_n_s_py_stringsimjoin_apply_rf_tokeni, (PyObject *) NULL); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 110; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_2);
 
-  /* "py_stringsimjoin/apply_rf/tokenizers.pyx":97
+  /* "py_stringsimjoin/apply_rf/tokenizers.pyx":111
  * 
  * class NumericTokenizer:
  *     def __init__(self, return_set):             # <<<<<<<<<<<<<<
  *         self.regex = re2.compile('[0-9]+')
  *         self.return_set = return_set
  */
-  __pyx_t_2 = __Pyx_CyFunction_NewEx(&__pyx_mdef_16py_stringsimjoin_8apply_rf_10tokenizers_16NumericTokenizer_1__init__, 0, __pyx_n_s_NumericTokenizer___init, NULL, __pyx_n_s_py_stringsimjoin_apply_rf_tokeni, __pyx_d, ((PyObject *)__pyx_codeobj__14)); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 97; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_GOTREF(__pyx_t_2);
-  if (PyObject_SetItem(__pyx_t_1, __pyx_n_s_init, __pyx_t_2) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 97; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  __pyx_t_1 = __Pyx_CyFunction_NewEx(&__pyx_mdef_16py_stringsimjoin_8apply_rf_10tokenizers_16NumericTokenizer_1__init__, 0, __pyx_n_s_NumericTokenizer___init, NULL, __pyx_n_s_py_stringsimjoin_apply_rf_tokeni, __pyx_d, ((PyObject *)__pyx_codeobj__23)); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 111; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_1);
+  if (PyObject_SetItem(__pyx_t_2, __pyx_n_s_init, __pyx_t_1) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 111; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "py_stringsimjoin/apply_rf/tokenizers.pyx":101
+  /* "py_stringsimjoin/apply_rf/tokenizers.pyx":115
  *         self.return_set = return_set
  * 
  *     def tokenize(self, const string& inp_string):             # <<<<<<<<<<<<<<
  *         cdef oset[string] tokens
  *         cdef vector[string] out_tokens
  */
-  __pyx_t_2 = __Pyx_CyFunction_NewEx(&__pyx_mdef_16py_stringsimjoin_8apply_rf_10tokenizers_16NumericTokenizer_3tokenize, 0, __pyx_n_s_NumericTokenizer_tokenize, NULL, __pyx_n_s_py_stringsimjoin_apply_rf_tokeni, __pyx_d, ((PyObject *)__pyx_codeobj__16)); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 101; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_GOTREF(__pyx_t_2);
-  if (PyObject_SetItem(__pyx_t_1, __pyx_n_s_tokenize, __pyx_t_2) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 101; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  __pyx_t_1 = __Pyx_CyFunction_NewEx(&__pyx_mdef_16py_stringsimjoin_8apply_rf_10tokenizers_16NumericTokenizer_3tokenize, 0, __pyx_n_s_NumericTokenizer_tokenize, NULL, __pyx_n_s_py_stringsimjoin_apply_rf_tokeni, __pyx_d, ((PyObject *)__pyx_codeobj__25)); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 115; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_1);
+  if (PyObject_SetItem(__pyx_t_2, __pyx_n_s_tokenize, __pyx_t_1) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 115; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "py_stringsimjoin/apply_rf/tokenizers.pyx":96
+  /* "py_stringsimjoin/apply_rf/tokenizers.pyx":110
  *         return out_tokens
  * 
  * class NumericTokenizer:             # <<<<<<<<<<<<<<
  *     def __init__(self, return_set):
  *         self.regex = re2.compile('[0-9]+')
  */
-  __pyx_t_2 = __Pyx_Py3ClassCreate(((PyObject*)&__Pyx_DefaultClassType), __pyx_n_s_NumericTokenizer, __pyx_empty_tuple, __pyx_t_1, NULL, 0, 1); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 96; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_GOTREF(__pyx_t_2);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_NumericTokenizer, __pyx_t_2) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 96; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  __pyx_t_1 = __Pyx_Py3ClassCreate(((PyObject*)&__Pyx_DefaultClassType), __pyx_n_s_NumericTokenizer, __pyx_empty_tuple, __pyx_t_2, NULL, 0, 1); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 110; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_1);
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_NumericTokenizer, __pyx_t_1) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 110; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "py_stringsimjoin/apply_rf/tokenizers.pyx":114
+  /* "py_stringsimjoin/apply_rf/tokenizers.pyx":128
  *         return out_tokens
  * 
  * def test_tok(df, attr):             # <<<<<<<<<<<<<<
  *     cdef int q=3
  *     ws = QgramTokenizer(q, True, ord('#'), ord('$'), True)
  */
-  __pyx_t_1 = PyCFunction_NewEx(&__pyx_mdef_16py_stringsimjoin_8apply_rf_10tokenizers_1test_tok, NULL, __pyx_n_s_py_stringsimjoin_apply_rf_tokeni); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 114; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_GOTREF(__pyx_t_1);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_test_tok, __pyx_t_1) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 114; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  __pyx_t_2 = PyCFunction_NewEx(&__pyx_mdef_16py_stringsimjoin_8apply_rf_10tokenizers_1test_tok, NULL, __pyx_n_s_py_stringsimjoin_apply_rf_tokeni); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 128; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_2);
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_test_tok, __pyx_t_2) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 128; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+
+  /* "py_stringsimjoin/apply_rf/tokenizers.pyx":139
+ *         print t
+ * 
+ * def test_tok2(df1, attr1, df2, attr2):             # <<<<<<<<<<<<<<
+ *     cdef vector[string] lstrings, rstrings
+ *     convert_to_vector(df1[attr1], lstrings)
+ */
+  __pyx_t_2 = PyCFunction_NewEx(&__pyx_mdef_16py_stringsimjoin_8apply_rf_10tokenizers_3test_tok2, NULL, __pyx_n_s_py_stringsimjoin_apply_rf_tokeni); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 139; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_2);
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_test_tok2, __pyx_t_2) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 139; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+
+  /* "py_stringsimjoin/apply_rf/tokenizers.pyx":156
+ *     return out_tokens
+ * 
+ * def load_tok(tok_type, path):             # <<<<<<<<<<<<<<
+ *     cdef vector[vector[int]] ltokens, rtokens
+ *     st =time.time()
+ */
+  __pyx_t_2 = PyCFunction_NewEx(&__pyx_mdef_16py_stringsimjoin_8apply_rf_10tokenizers_5load_tok, NULL, __pyx_n_s_py_stringsimjoin_apply_rf_tokeni); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 156; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_2);
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_load_tok, __pyx_t_2) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 156; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
   /* "py_stringsimjoin/apply_rf/tokenizers.pyx":2
  * 
- * from libcpp.vector cimport vector             # <<<<<<<<<<<<<<
- * from libcpp.set cimport set as oset
- * from libcpp.string cimport string
+ * import time             # <<<<<<<<<<<<<<
+ * from operator import itemgetter
+ * 
  */
-  __pyx_t_1 = PyDict_New(); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 2; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_GOTREF(__pyx_t_1);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_test, __pyx_t_1) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 2; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  __pyx_t_2 = PyDict_New(); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 2; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_2);
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_test, __pyx_t_2) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 2; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
   /* "vector.to_py":67
  * 
@@ -5036,23 +7689,6 @@ static void __Pyx_WriteUnraisable(const char *name, CYTHON_UNUSED int clineno,
 #endif
 }
 
-static CYTHON_INLINE PyObject *__Pyx_GetModuleGlobalName(PyObject *name) {
-    PyObject *result;
-#if CYTHON_COMPILING_IN_CPYTHON
-    result = PyDict_GetItem(__pyx_d, name);
-    if (likely(result)) {
-        Py_INCREF(result);
-    } else {
-#else
-    result = PyObject_GetItem(__pyx_d, name);
-    if (!result) {
-        PyErr_Clear();
-#endif
-        result = __Pyx_GetBuiltinName(name);
-    }
-    return result;
-}
-
 #if CYTHON_COMPILING_IN_CPYTHON
 static CYTHON_INLINE PyObject* __Pyx_PyObject_Call(PyObject *func, PyObject *arg, PyObject *kw) {
     PyObject *result;
@@ -5124,6 +7760,123 @@ static CYTHON_INLINE PyObject* __Pyx_PyObject_CallOneArg(PyObject *func, PyObjec
     return result;
 }
 #endif
+
+static CYTHON_INLINE PyObject *__Pyx_GetModuleGlobalName(PyObject *name) {
+    PyObject *result;
+#if CYTHON_COMPILING_IN_CPYTHON
+    result = PyDict_GetItem(__pyx_d, name);
+    if (likely(result)) {
+        Py_INCREF(result);
+    } else {
+#else
+    result = PyObject_GetItem(__pyx_d, name);
+    if (!result) {
+        PyErr_Clear();
+#endif
+        result = __Pyx_GetBuiltinName(name);
+    }
+    return result;
+}
+
+#if CYTHON_COMPILING_IN_CPYTHON
+static CYTHON_INLINE PyObject* __Pyx_PyObject_CallNoArg(PyObject *func) {
+#ifdef __Pyx_CyFunction_USED
+    if (likely(PyCFunction_Check(func) || PyObject_TypeCheck(func, __pyx_CyFunctionType))) {
+#else
+    if (likely(PyCFunction_Check(func))) {
+#endif
+        if (likely(PyCFunction_GET_FLAGS(func) & METH_NOARGS)) {
+            return __Pyx_PyObject_CallMethO(func, NULL);
+        }
+    }
+    return __Pyx_PyObject_Call(func, __pyx_empty_tuple, NULL);
+}
+#endif
+
+static CYTHON_INLINE void __Pyx_RaiseUnboundLocalError(const char *varname) {
+    PyErr_Format(PyExc_UnboundLocalError, "local variable '%s' referenced before assignment", varname);
+}
+
+static CYTHON_INLINE PyObject *__Pyx_GetItemInt_Generic(PyObject *o, PyObject* j) {
+    PyObject *r;
+    if (!j) return NULL;
+    r = PyObject_GetItem(o, j);
+    Py_DECREF(j);
+    return r;
+}
+static CYTHON_INLINE PyObject *__Pyx_GetItemInt_List_Fast(PyObject *o, Py_ssize_t i,
+                                                              CYTHON_NCP_UNUSED int wraparound,
+                                                              CYTHON_NCP_UNUSED int boundscheck) {
+#if CYTHON_COMPILING_IN_CPYTHON
+    if (wraparound & unlikely(i < 0)) i += PyList_GET_SIZE(o);
+    if ((!boundscheck) || likely((0 <= i) & (i < PyList_GET_SIZE(o)))) {
+        PyObject *r = PyList_GET_ITEM(o, i);
+        Py_INCREF(r);
+        return r;
+    }
+    return __Pyx_GetItemInt_Generic(o, PyInt_FromSsize_t(i));
+#else
+    return PySequence_GetItem(o, i);
+#endif
+}
+static CYTHON_INLINE PyObject *__Pyx_GetItemInt_Tuple_Fast(PyObject *o, Py_ssize_t i,
+                                                              CYTHON_NCP_UNUSED int wraparound,
+                                                              CYTHON_NCP_UNUSED int boundscheck) {
+#if CYTHON_COMPILING_IN_CPYTHON
+    if (wraparound & unlikely(i < 0)) i += PyTuple_GET_SIZE(o);
+    if ((!boundscheck) || likely((0 <= i) & (i < PyTuple_GET_SIZE(o)))) {
+        PyObject *r = PyTuple_GET_ITEM(o, i);
+        Py_INCREF(r);
+        return r;
+    }
+    return __Pyx_GetItemInt_Generic(o, PyInt_FromSsize_t(i));
+#else
+    return PySequence_GetItem(o, i);
+#endif
+}
+static CYTHON_INLINE PyObject *__Pyx_GetItemInt_Fast(PyObject *o, Py_ssize_t i, int is_list,
+                                                     CYTHON_NCP_UNUSED int wraparound,
+                                                     CYTHON_NCP_UNUSED int boundscheck) {
+#if CYTHON_COMPILING_IN_CPYTHON
+    if (is_list || PyList_CheckExact(o)) {
+        Py_ssize_t n = ((!wraparound) | likely(i >= 0)) ? i : i + PyList_GET_SIZE(o);
+        if ((!boundscheck) || (likely((n >= 0) & (n < PyList_GET_SIZE(o))))) {
+            PyObject *r = PyList_GET_ITEM(o, n);
+            Py_INCREF(r);
+            return r;
+        }
+    }
+    else if (PyTuple_CheckExact(o)) {
+        Py_ssize_t n = ((!wraparound) | likely(i >= 0)) ? i : i + PyTuple_GET_SIZE(o);
+        if ((!boundscheck) || likely((n >= 0) & (n < PyTuple_GET_SIZE(o)))) {
+            PyObject *r = PyTuple_GET_ITEM(o, n);
+            Py_INCREF(r);
+            return r;
+        }
+    } else {
+        PySequenceMethods *m = Py_TYPE(o)->tp_as_sequence;
+        if (likely(m && m->sq_item)) {
+            if (wraparound && unlikely(i < 0) && likely(m->sq_length)) {
+                Py_ssize_t l = m->sq_length(o);
+                if (likely(l >= 0)) {
+                    i += l;
+                } else {
+                    if (PyErr_ExceptionMatches(PyExc_OverflowError))
+                        PyErr_Clear();
+                    else
+                        return NULL;
+                }
+            }
+            return m->sq_item(o, i);
+        }
+    }
+#else
+    if (is_list || PySequence_Check(o)) {
+        return PySequence_GetItem(o, i);
+    }
+#endif
+    return __Pyx_GetItemInt_Generic(o, PyInt_FromSsize_t(i));
+}
 
 static int __Pyx_SetVtable(PyObject *dict, void *vtable) {
 #if PY_VERSION_HEX >= 0x02070000
@@ -5213,6 +7966,19 @@ bad:
     Py_XDECREF(empty_list);
     Py_XDECREF(empty_dict);
     return module;
+}
+
+static PyObject* __Pyx_ImportFrom(PyObject* module, PyObject* name) {
+    PyObject* value = __Pyx_PyObject_GetAttrStr(module, name);
+    if (unlikely(!value) && PyErr_ExceptionMatches(PyExc_AttributeError)) {
+        PyErr_Format(PyExc_ImportError,
+        #if PY_MAJOR_VERSION < 3
+            "cannot import name %.230s", PyString_AS_STRING(name));
+        #else
+            "cannot import name %S", name);
+        #endif
+    }
+    return value;
 }
 
 static PyTypeObject* __Pyx_FetchCommonType(PyTypeObject* type) {
@@ -6475,6 +9241,216 @@ raise_neg_overflow:
     return (char) -1;
 }
 
+static CYTHON_INLINE PyObject* __Pyx_PyInt_From_unsigned_int(unsigned int value) {
+    const unsigned int neg_one = (unsigned int) -1, const_zero = (unsigned int) 0;
+    const int is_unsigned = neg_one > const_zero;
+    if (is_unsigned) {
+        if (sizeof(unsigned int) < sizeof(long)) {
+            return PyInt_FromLong((long) value);
+        } else if (sizeof(unsigned int) <= sizeof(unsigned long)) {
+            return PyLong_FromUnsignedLong((unsigned long) value);
+        } else if (sizeof(unsigned int) <= sizeof(unsigned PY_LONG_LONG)) {
+            return PyLong_FromUnsignedLongLong((unsigned PY_LONG_LONG) value);
+        }
+    } else {
+        if (sizeof(unsigned int) <= sizeof(long)) {
+            return PyInt_FromLong((long) value);
+        } else if (sizeof(unsigned int) <= sizeof(PY_LONG_LONG)) {
+            return PyLong_FromLongLong((PY_LONG_LONG) value);
+        }
+    }
+    {
+        int one = 1; int little = (int)*(unsigned char *)&one;
+        unsigned char *bytes = (unsigned char *)&value;
+        return _PyLong_FromByteArray(bytes, sizeof(unsigned int),
+                                     little, !is_unsigned);
+    }
+}
+
+static CYTHON_INLINE unsigned int __Pyx_PyInt_As_unsigned_int(PyObject *x) {
+    const unsigned int neg_one = (unsigned int) -1, const_zero = (unsigned int) 0;
+    const int is_unsigned = neg_one > const_zero;
+#if PY_MAJOR_VERSION < 3
+    if (likely(PyInt_Check(x))) {
+        if (sizeof(unsigned int) < sizeof(long)) {
+            __PYX_VERIFY_RETURN_INT(unsigned int, long, PyInt_AS_LONG(x))
+        } else {
+            long val = PyInt_AS_LONG(x);
+            if (is_unsigned && unlikely(val < 0)) {
+                goto raise_neg_overflow;
+            }
+            return (unsigned int) val;
+        }
+    } else
+#endif
+    if (likely(PyLong_Check(x))) {
+        if (is_unsigned) {
+#if CYTHON_USE_PYLONG_INTERNALS
+            const digit* digits = ((PyLongObject*)x)->ob_digit;
+            switch (Py_SIZE(x)) {
+                case  0: return (unsigned int) 0;
+                case  1: __PYX_VERIFY_RETURN_INT(unsigned int, digit, digits[0])
+                case 2:
+                    if (8 * sizeof(unsigned int) > 1 * PyLong_SHIFT) {
+                        if (8 * sizeof(unsigned long) > 2 * PyLong_SHIFT) {
+                            __PYX_VERIFY_RETURN_INT(unsigned int, unsigned long, (((((unsigned long)digits[1]) << PyLong_SHIFT) | (unsigned long)digits[0])))
+                        } else if (8 * sizeof(unsigned int) >= 2 * PyLong_SHIFT) {
+                            return (unsigned int) (((((unsigned int)digits[1]) << PyLong_SHIFT) | (unsigned int)digits[0]));
+                        }
+                    }
+                    break;
+                case 3:
+                    if (8 * sizeof(unsigned int) > 2 * PyLong_SHIFT) {
+                        if (8 * sizeof(unsigned long) > 3 * PyLong_SHIFT) {
+                            __PYX_VERIFY_RETURN_INT(unsigned int, unsigned long, (((((((unsigned long)digits[2]) << PyLong_SHIFT) | (unsigned long)digits[1]) << PyLong_SHIFT) | (unsigned long)digits[0])))
+                        } else if (8 * sizeof(unsigned int) >= 3 * PyLong_SHIFT) {
+                            return (unsigned int) (((((((unsigned int)digits[2]) << PyLong_SHIFT) | (unsigned int)digits[1]) << PyLong_SHIFT) | (unsigned int)digits[0]));
+                        }
+                    }
+                    break;
+                case 4:
+                    if (8 * sizeof(unsigned int) > 3 * PyLong_SHIFT) {
+                        if (8 * sizeof(unsigned long) > 4 * PyLong_SHIFT) {
+                            __PYX_VERIFY_RETURN_INT(unsigned int, unsigned long, (((((((((unsigned long)digits[3]) << PyLong_SHIFT) | (unsigned long)digits[2]) << PyLong_SHIFT) | (unsigned long)digits[1]) << PyLong_SHIFT) | (unsigned long)digits[0])))
+                        } else if (8 * sizeof(unsigned int) >= 4 * PyLong_SHIFT) {
+                            return (unsigned int) (((((((((unsigned int)digits[3]) << PyLong_SHIFT) | (unsigned int)digits[2]) << PyLong_SHIFT) | (unsigned int)digits[1]) << PyLong_SHIFT) | (unsigned int)digits[0]));
+                        }
+                    }
+                    break;
+            }
+#endif
+#if CYTHON_COMPILING_IN_CPYTHON
+            if (unlikely(Py_SIZE(x) < 0)) {
+                goto raise_neg_overflow;
+            }
+#else
+            {
+                int result = PyObject_RichCompareBool(x, Py_False, Py_LT);
+                if (unlikely(result < 0))
+                    return (unsigned int) -1;
+                if (unlikely(result == 1))
+                    goto raise_neg_overflow;
+            }
+#endif
+            if (sizeof(unsigned int) <= sizeof(unsigned long)) {
+                __PYX_VERIFY_RETURN_INT_EXC(unsigned int, unsigned long, PyLong_AsUnsignedLong(x))
+            } else if (sizeof(unsigned int) <= sizeof(unsigned PY_LONG_LONG)) {
+                __PYX_VERIFY_RETURN_INT_EXC(unsigned int, unsigned PY_LONG_LONG, PyLong_AsUnsignedLongLong(x))
+            }
+        } else {
+#if CYTHON_USE_PYLONG_INTERNALS
+            const digit* digits = ((PyLongObject*)x)->ob_digit;
+            switch (Py_SIZE(x)) {
+                case  0: return (unsigned int) 0;
+                case -1: __PYX_VERIFY_RETURN_INT(unsigned int, sdigit, -(sdigit) digits[0])
+                case  1: __PYX_VERIFY_RETURN_INT(unsigned int,  digit, +digits[0])
+                case -2:
+                    if (8 * sizeof(unsigned int) - 1 > 1 * PyLong_SHIFT) {
+                        if (8 * sizeof(unsigned long) > 2 * PyLong_SHIFT) {
+                            __PYX_VERIFY_RETURN_INT(unsigned int, long, -(long) (((((unsigned long)digits[1]) << PyLong_SHIFT) | (unsigned long)digits[0])))
+                        } else if (8 * sizeof(unsigned int) - 1 > 2 * PyLong_SHIFT) {
+                            return (unsigned int) (((unsigned int)-1)*(((((unsigned int)digits[1]) << PyLong_SHIFT) | (unsigned int)digits[0])));
+                        }
+                    }
+                    break;
+                case 2:
+                    if (8 * sizeof(unsigned int) > 1 * PyLong_SHIFT) {
+                        if (8 * sizeof(unsigned long) > 2 * PyLong_SHIFT) {
+                            __PYX_VERIFY_RETURN_INT(unsigned int, unsigned long, (((((unsigned long)digits[1]) << PyLong_SHIFT) | (unsigned long)digits[0])))
+                        } else if (8 * sizeof(unsigned int) - 1 > 2 * PyLong_SHIFT) {
+                            return (unsigned int) ((((((unsigned int)digits[1]) << PyLong_SHIFT) | (unsigned int)digits[0])));
+                        }
+                    }
+                    break;
+                case -3:
+                    if (8 * sizeof(unsigned int) - 1 > 2 * PyLong_SHIFT) {
+                        if (8 * sizeof(unsigned long) > 3 * PyLong_SHIFT) {
+                            __PYX_VERIFY_RETURN_INT(unsigned int, long, -(long) (((((((unsigned long)digits[2]) << PyLong_SHIFT) | (unsigned long)digits[1]) << PyLong_SHIFT) | (unsigned long)digits[0])))
+                        } else if (8 * sizeof(unsigned int) - 1 > 3 * PyLong_SHIFT) {
+                            return (unsigned int) (((unsigned int)-1)*(((((((unsigned int)digits[2]) << PyLong_SHIFT) | (unsigned int)digits[1]) << PyLong_SHIFT) | (unsigned int)digits[0])));
+                        }
+                    }
+                    break;
+                case 3:
+                    if (8 * sizeof(unsigned int) > 2 * PyLong_SHIFT) {
+                        if (8 * sizeof(unsigned long) > 3 * PyLong_SHIFT) {
+                            __PYX_VERIFY_RETURN_INT(unsigned int, unsigned long, (((((((unsigned long)digits[2]) << PyLong_SHIFT) | (unsigned long)digits[1]) << PyLong_SHIFT) | (unsigned long)digits[0])))
+                        } else if (8 * sizeof(unsigned int) - 1 > 3 * PyLong_SHIFT) {
+                            return (unsigned int) ((((((((unsigned int)digits[2]) << PyLong_SHIFT) | (unsigned int)digits[1]) << PyLong_SHIFT) | (unsigned int)digits[0])));
+                        }
+                    }
+                    break;
+                case -4:
+                    if (8 * sizeof(unsigned int) - 1 > 3 * PyLong_SHIFT) {
+                        if (8 * sizeof(unsigned long) > 4 * PyLong_SHIFT) {
+                            __PYX_VERIFY_RETURN_INT(unsigned int, long, -(long) (((((((((unsigned long)digits[3]) << PyLong_SHIFT) | (unsigned long)digits[2]) << PyLong_SHIFT) | (unsigned long)digits[1]) << PyLong_SHIFT) | (unsigned long)digits[0])))
+                        } else if (8 * sizeof(unsigned int) - 1 > 4 * PyLong_SHIFT) {
+                            return (unsigned int) (((unsigned int)-1)*(((((((((unsigned int)digits[3]) << PyLong_SHIFT) | (unsigned int)digits[2]) << PyLong_SHIFT) | (unsigned int)digits[1]) << PyLong_SHIFT) | (unsigned int)digits[0])));
+                        }
+                    }
+                    break;
+                case 4:
+                    if (8 * sizeof(unsigned int) > 3 * PyLong_SHIFT) {
+                        if (8 * sizeof(unsigned long) > 4 * PyLong_SHIFT) {
+                            __PYX_VERIFY_RETURN_INT(unsigned int, unsigned long, (((((((((unsigned long)digits[3]) << PyLong_SHIFT) | (unsigned long)digits[2]) << PyLong_SHIFT) | (unsigned long)digits[1]) << PyLong_SHIFT) | (unsigned long)digits[0])))
+                        } else if (8 * sizeof(unsigned int) - 1 > 4 * PyLong_SHIFT) {
+                            return (unsigned int) ((((((((((unsigned int)digits[3]) << PyLong_SHIFT) | (unsigned int)digits[2]) << PyLong_SHIFT) | (unsigned int)digits[1]) << PyLong_SHIFT) | (unsigned int)digits[0])));
+                        }
+                    }
+                    break;
+            }
+#endif
+            if (sizeof(unsigned int) <= sizeof(long)) {
+                __PYX_VERIFY_RETURN_INT_EXC(unsigned int, long, PyLong_AsLong(x))
+            } else if (sizeof(unsigned int) <= sizeof(PY_LONG_LONG)) {
+                __PYX_VERIFY_RETURN_INT_EXC(unsigned int, PY_LONG_LONG, PyLong_AsLongLong(x))
+            }
+        }
+        {
+#if CYTHON_COMPILING_IN_PYPY && !defined(_PyLong_AsByteArray)
+            PyErr_SetString(PyExc_RuntimeError,
+                            "_PyLong_AsByteArray() not available in PyPy, cannot convert large numbers");
+#else
+            unsigned int val;
+            PyObject *v = __Pyx_PyNumber_Int(x);
+ #if PY_MAJOR_VERSION < 3
+            if (likely(v) && !PyLong_Check(v)) {
+                PyObject *tmp = v;
+                v = PyNumber_Long(tmp);
+                Py_DECREF(tmp);
+            }
+ #endif
+            if (likely(v)) {
+                int one = 1; int is_little = (int)*(unsigned char *)&one;
+                unsigned char *bytes = (unsigned char *)&val;
+                int ret = _PyLong_AsByteArray((PyLongObject *)v,
+                                              bytes, sizeof(val),
+                                              is_little, !is_unsigned);
+                Py_DECREF(v);
+                if (likely(!ret))
+                    return val;
+            }
+#endif
+            return (unsigned int) -1;
+        }
+    } else {
+        unsigned int val;
+        PyObject *tmp = __Pyx_PyNumber_Int(x);
+        if (!tmp) return (unsigned int) -1;
+        val = __Pyx_PyInt_As_unsigned_int(tmp);
+        Py_DECREF(tmp);
+        return val;
+    }
+raise_overflow:
+    PyErr_SetString(PyExc_OverflowError,
+        "value too large to convert to unsigned int");
+    return (unsigned int) -1;
+raise_neg_overflow:
+    PyErr_SetString(PyExc_OverflowError,
+        "can't convert negative value to unsigned int");
+    return (unsigned int) -1;
+}
+
 static CYTHON_INLINE PyObject* __Pyx_PyInt_From_int(int value) {
     const int neg_one = (int) -1, const_zero = (int) 0;
     const int is_unsigned = neg_one > const_zero;
@@ -6641,6 +9617,32 @@ static int __Pyx_PrintOne(PyObject* stream, PyObject *o) {
     return res;
 }
 #endif
+
+static CYTHON_INLINE PyObject* __Pyx_PyInt_From_long(long value) {
+    const long neg_one = (long) -1, const_zero = (long) 0;
+    const int is_unsigned = neg_one > const_zero;
+    if (is_unsigned) {
+        if (sizeof(long) < sizeof(long)) {
+            return PyInt_FromLong((long) value);
+        } else if (sizeof(long) <= sizeof(unsigned long)) {
+            return PyLong_FromUnsignedLong((unsigned long) value);
+        } else if (sizeof(long) <= sizeof(unsigned PY_LONG_LONG)) {
+            return PyLong_FromUnsignedLongLong((unsigned PY_LONG_LONG) value);
+        }
+    } else {
+        if (sizeof(long) <= sizeof(long)) {
+            return PyInt_FromLong((long) value);
+        } else if (sizeof(long) <= sizeof(PY_LONG_LONG)) {
+            return PyLong_FromLongLong((PY_LONG_LONG) value);
+        }
+    }
+    {
+        int one = 1; int little = (int)*(unsigned char *)&one;
+        unsigned char *bytes = (unsigned char *)&value;
+        return _PyLong_FromByteArray(bytes, sizeof(long),
+                                     little, !is_unsigned);
+    }
+}
 
 static CYTHON_INLINE size_t __Pyx_PyInt_As_size_t(PyObject *x) {
     const size_t neg_one = (size_t) -1, const_zero = (size_t) 0;
@@ -6824,32 +9826,6 @@ raise_neg_overflow:
     PyErr_SetString(PyExc_OverflowError,
         "can't convert negative value to size_t");
     return (size_t) -1;
-}
-
-static CYTHON_INLINE PyObject* __Pyx_PyInt_From_long(long value) {
-    const long neg_one = (long) -1, const_zero = (long) 0;
-    const int is_unsigned = neg_one > const_zero;
-    if (is_unsigned) {
-        if (sizeof(long) < sizeof(long)) {
-            return PyInt_FromLong((long) value);
-        } else if (sizeof(long) <= sizeof(unsigned long)) {
-            return PyLong_FromUnsignedLong((unsigned long) value);
-        } else if (sizeof(long) <= sizeof(unsigned PY_LONG_LONG)) {
-            return PyLong_FromUnsignedLongLong((unsigned PY_LONG_LONG) value);
-        }
-    } else {
-        if (sizeof(long) <= sizeof(long)) {
-            return PyInt_FromLong((long) value);
-        } else if (sizeof(long) <= sizeof(PY_LONG_LONG)) {
-            return PyLong_FromLongLong((PY_LONG_LONG) value);
-        }
-    }
-    {
-        int one = 1; int little = (int)*(unsigned char *)&one;
-        unsigned char *bytes = (unsigned char *)&value;
-        return _PyLong_FromByteArray(bytes, sizeof(long),
-                                     little, !is_unsigned);
-    }
 }
 
 static CYTHON_INLINE long __Pyx_PyInt_As_long(PyObject *x) {
