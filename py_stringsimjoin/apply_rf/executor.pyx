@@ -7,7 +7,8 @@ from libcpp.map cimport map as omap
 from libc.stdio cimport printf, fprintf, fopen, fclose, FILE, sprintf
 
 from py_stringsimjoin.apply_rf.execution_plan import get_predicate_dict
-from py_stringsimjoin.apply_rf.tokenizers import tokenize
+from py_stringsimjoin.apply_rf.tokenizers import tokenize, load_tok
+from py_stringsimjoin.apply_rf.jaccard_join import jaccard_join
 #from py_stringsimjoin.apply_rf import tokenizers
 
 #cdef extern from "<algorithm>" namespace "std":
@@ -49,7 +50,7 @@ def test_tok1(df1, attr1, df2, attr2):
     convert_to_vector1(df1[attr1], lstrings)
     convert_to_vector1(df2[attr2], rstrings)
     tokenize(lstrings, rstrings, 'ws', 'gh')                       
-
+  
 cdef void convert_to_vector1(string_col, vector[string]& string_vector):         
     for val in string_col:                                                      
         string_vector.push_back(val)   
@@ -73,4 +74,10 @@ cdef vector[string] infer_tokenizers(plan, rule_sets):
             continue
         queue.extend(curr_node.children)
     return tokenizers
+
+def test_jac(df1, attr1, df2, attr2):
+    test_tok1(df1, attr1, df2, attr2)
+    cdef vector[vector[int]] ltokens, rtokens
+    load_tok('ws', 'gh', ltokens, rtokens)
+    jaccard_join(ltokens, rtokens, 0.8)
 

@@ -153,19 +153,16 @@ cdef vector[int] split(string inp_string):
         pch = strtok (NULL, " ")                                        
     return out_tokens  
 
-def load_tok(tok_type, path):
-    cdef vector[vector[int]] ltokens, rtokens
-    st =time.time()
-    fp = open(path+"/ltable_"+tok_type)
-    for line in fp:
-        ltokens.push_back(split(line)) 
-    fp.close()    
+cdef load_tok(tok_type, path, vector[vector[int]] ltokens, vector[vector[int]] rtokens):
+    st =time.time()                                                             
+    fp = open(path+"/ltable_"+tok_type)                                         
+    for line in fp:                                                             
+        ltokens.push_back(split(line))                                          
+    fp.close()                                                                  
     fp = open(path+"/rtable_"+tok_type)                                         
     for line in fp:                                                             
         rtokens.push_back(split(line))                                          
-    fp.close()   
-    print 'time : ', time.time()
-    print ltokens.size(), rtokens.size()
+    fp.close() 
 
 cdef bool mycomp(pair[string, int] i, pair[string, int] j):
     return (i.second < j.second)
