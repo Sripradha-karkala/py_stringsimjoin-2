@@ -3,11 +3,17 @@
 /* BEGIN: Cython Metadata
 {
     "distutils": {
-        "depends": [], 
+        "depends": [
+            "PositionIndex.h"
+        ], 
         "extra_compile_args": [
             "-O3", 
             "-ffast-math", 
-            "-march=native"
+            "-march=native", 
+            "-fopenmp"
+        ], 
+        "extra_link_args": [
+            "-fopenmp"
         ], 
         "language": "c++"
     }
@@ -259,17 +265,18 @@ static CYTHON_INLINE float __PYX_NAN() {
 
 #define __PYX_HAVE__py_stringsimjoin__apply_rf__jaccard_join
 #define __PYX_HAVE_API__py_stringsimjoin__apply_rf__jaccard_join
-#include "math.h"
 #include <vector>
 #include "ios"
 #include "new"
 #include "stdexcept"
 #include "typeinfo"
 #include <utility>
+#include "math.h"
 #include <set>
 #include "string.h"
 #include <string>
 #include <map>
+#include "PositionIndex.h"
 #ifdef _OPENMP
 #include <omp.h>
 #endif /* _OPENMP */
@@ -483,16 +490,16 @@ static const char *__pyx_f[] = {
 };
 
 /*--- Type declarations ---*/
-struct __pyx_obj_16py_stringsimjoin_8apply_rf_12jaccard_join_PositionIndex;
+struct __pyx_obj_16py_stringsimjoin_8apply_rf_12jaccard_join_PpositionIndex1;
 
-/* "py_stringsimjoin/apply_rf/jaccard_join.pyx":66
+/* "py_stringsimjoin/apply_rf/jaccard_join.pyx":145
+ *         double threshold
  * 
- * 
- * cdef class PositionIndex:             # <<<<<<<<<<<<<<
+ * cdef class PpositionIndex1:             # <<<<<<<<<<<<<<
  *     cdef readonly omap[int, vector[pair[int, int]]] index
  *     cdef readonly int min_len, max_len
  */
-struct __pyx_obj_16py_stringsimjoin_8apply_rf_12jaccard_join_PositionIndex {
+struct __pyx_obj_16py_stringsimjoin_8apply_rf_12jaccard_join_PpositionIndex1 {
   PyObject_HEAD
   std::map<int,std::vector<std::pair<int,int> > >  index;
   int min_len;
@@ -582,10 +589,8 @@ static CYTHON_INLINE PyObject* __Pyx_PyObject_GetAttrStr(PyObject* obj, PyObject
 
 static PyObject *__Pyx_GetBuiltinName(PyObject *name);
 
-#if CYTHON_COMPILING_IN_CPYTHON
-static CYTHON_INLINE PyObject* __Pyx_PyObject_Call(PyObject *func, PyObject *arg, PyObject *kw);
-#else
-#define __Pyx_PyObject_Call(func, arg, kw) PyObject_Call(func, arg, kw)
+#ifndef __PYX_FORCE_INIT_THREADS
+  #define __PYX_FORCE_INIT_THREADS 0
 #endif
 
 static CYTHON_INLINE void __Pyx_ErrRestore(PyObject *type, PyObject *value, PyObject *tb);
@@ -643,6 +648,12 @@ static CYTHON_INLINE PyObject* __Pyx_PyInt_From_int(int value);
 
 static CYTHON_INLINE int __Pyx_PyInt_As_int(PyObject *);
 
+static int __Pyx_Print(PyObject*, PyObject *, int);
+#if CYTHON_COMPILING_IN_PYPY || PY_MAJOR_VERSION >= 3
+static PyObject* __pyx_print = 0;
+static PyObject* __pyx_print_kwargs = 0;
+#endif
+
 static CYTHON_INLINE PyObject* __Pyx_PyInt_From_long(long value);
 
 #ifndef __Pyx_CppExn2PyErr
@@ -690,14 +701,18 @@ static CYTHON_INLINE long __Pyx_PyInt_As_long(PyObject *);
 
 static int __Pyx_check_binary_version(void);
 
+static int __Pyx_ExportFunction(const char *name, void (*f)(void), const char *sig);
+
 static int __Pyx_InitStrings(__Pyx_StringTabEntry *t);
 
-
-/* Module declarations from 'libc.math' */
 
 /* Module declarations from 'libcpp.vector' */
 
 /* Module declarations from 'libcpp.utility' */
+
+/* Module declarations from 'libcpp.pair' */
+
+/* Module declarations from 'libc.math' */
 
 /* Module declarations from 'libcpp.set' */
 
@@ -709,11 +724,11 @@ static int __Pyx_InitStrings(__Pyx_StringTabEntry *t);
 
 /* Module declarations from 'libcpp.map' */
 
-/* Module declarations from 'libcpp.pair' */
-
 /* Module declarations from 'py_stringsimjoin.apply_rf.jaccard_join' */
-static PyTypeObject *__pyx_ptype_16py_stringsimjoin_8apply_rf_12jaccard_join_PositionIndex = 0;
-static std::vector<std::pair<int,int> >  __pyx_f_16py_stringsimjoin_8apply_rf_12jaccard_join_jaccard_join(std::vector<std::vector<int> >  const &, std::vector<std::vector<int> >  const &, double, int __pyx_skip_dispatch); /*proto*/
+static PyTypeObject *__pyx_ptype_16py_stringsimjoin_8apply_rf_12jaccard_join_PpositionIndex1 = 0;
+static std::vector<std::pair<int,int> >  __pyx_f_16py_stringsimjoin_8apply_rf_12jaccard_join_jaccard_join(std::vector<std::vector<int> >  &, std::vector<std::vector<int> >  &, double, int __pyx_skip_dispatch); /*proto*/
+static std::vector<std::pair<int,int> >  __pyx_f_16py_stringsimjoin_8apply_rf_12jaccard_join_jjaccard_join1(std::vector<std::vector<int> >  &, std::vector<std::vector<int> >  const &, double, int __pyx_skip_dispatch); /*proto*/
+static void __pyx_f_16py_stringsimjoin_8apply_rf_12jaccard_join_fun(std::vector<std::vector<int> >  &, std::vector<int>  &, double, PositionIndex &); /*proto*/
 static double __pyx_f_16py_stringsimjoin_8apply_rf_12jaccard_join_jaccard(std::vector<int>  const &, std::vector<int>  const &); /*proto*/
 static PyObject *__pyx_convert_pair_to_py_int____int(std::pair<int,int>  const &); /*proto*/
 static PyObject *__pyx_convert_vector_to_py_std_3a__3a_pair_3c_int_2c_int_3e___(const std::vector<std::pair<int,int> >  &); /*proto*/
@@ -721,54 +736,68 @@ static PyObject *__pyx_convert_map_to_py_int____std_3a__3a_vector_3c_std_3a__3a_
 static PyObject *__pyx_convert_vector_to_py_int(const std::vector<int>  &); /*proto*/
 static std::vector<int>  __pyx_convert_vector_from_py_int(PyObject *); /*proto*/
 static std::vector<std::vector<int> >  __pyx_convert_vector_from_py_std_3a__3a_vector_3c_int_3e___(PyObject *); /*proto*/
-static PyObject *__pyx_convert_vector_to_py_std_3a__3a_vector_3c_int_3e___(const std::vector<std::vector<int> >  &); /*proto*/
 #define __Pyx_MODULE_NAME "py_stringsimjoin.apply_rf.jaccard_join"
 int __pyx_module_is_main_py_stringsimjoin__apply_rf__jaccard_join = 0;
 
 /* Implementation of 'py_stringsimjoin.apply_rf.jaccard_join' */
 static PyObject *__pyx_builtin_range;
+static char __pyx_k_k[] = "k : ";
+static char __pyx_k_end[] = "end";
+static char __pyx_k_file[] = "file";
 static char __pyx_k_main[] = "__main__";
 static char __pyx_k_test[] = "__test__";
+static char __pyx_k_print[] = "print";
 static char __pyx_k_range[] = "range";
+static char __pyx_k_l_size[] = "l size. : ";
+static char __pyx_k_r_size[] = " , r size : ";
 static char __pyx_k_ltokens[] = "ltokens";
 static char __pyx_k_rtokens[] = "rtokens";
 static char __pyx_k_threshold[] = "threshold";
 static char __pyx_k_token_vectors[] = "token_vectors";
+static PyObject *__pyx_n_s_end;
+static PyObject *__pyx_n_s_file;
+static PyObject *__pyx_kp_s_k;
+static PyObject *__pyx_kp_s_l_size;
 static PyObject *__pyx_n_s_ltokens;
 static PyObject *__pyx_n_s_main;
+static PyObject *__pyx_n_s_print;
+static PyObject *__pyx_kp_s_r_size;
 static PyObject *__pyx_n_s_range;
 static PyObject *__pyx_n_s_rtokens;
 static PyObject *__pyx_n_s_test;
 static PyObject *__pyx_n_s_threshold;
 static PyObject *__pyx_n_s_token_vectors;
-static PyObject *__pyx_pf_16py_stringsimjoin_8apply_rf_12jaccard_join_jaccard_join(CYTHON_UNUSED PyObject *__pyx_self, std::vector<std::vector<int> >  __pyx_v_ltokens, std::vector<std::vector<int> >  __pyx_v_rtokens, double __pyx_v_threshold); /* proto */
-static int __pyx_pf_16py_stringsimjoin_8apply_rf_12jaccard_join_13PositionIndex___init__(struct __pyx_obj_16py_stringsimjoin_8apply_rf_12jaccard_join_PositionIndex *__pyx_v_self, std::vector<std::vector<int> >  __pyx_v_token_vectors, double __pyx_v_threshold); /* proto */
-static PyObject *__pyx_pf_16py_stringsimjoin_8apply_rf_12jaccard_join_13PositionIndex_5index___get__(struct __pyx_obj_16py_stringsimjoin_8apply_rf_12jaccard_join_PositionIndex *__pyx_v_self); /* proto */
-static PyObject *__pyx_pf_16py_stringsimjoin_8apply_rf_12jaccard_join_13PositionIndex_7min_len___get__(struct __pyx_obj_16py_stringsimjoin_8apply_rf_12jaccard_join_PositionIndex *__pyx_v_self); /* proto */
-static PyObject *__pyx_pf_16py_stringsimjoin_8apply_rf_12jaccard_join_13PositionIndex_7max_len___get__(struct __pyx_obj_16py_stringsimjoin_8apply_rf_12jaccard_join_PositionIndex *__pyx_v_self); /* proto */
-static PyObject *__pyx_pf_16py_stringsimjoin_8apply_rf_12jaccard_join_13PositionIndex_11size_vector___get__(struct __pyx_obj_16py_stringsimjoin_8apply_rf_12jaccard_join_PositionIndex *__pyx_v_self); /* proto */
-static PyObject *__pyx_pf_16py_stringsimjoin_8apply_rf_12jaccard_join_13PositionIndex_9threshold___get__(struct __pyx_obj_16py_stringsimjoin_8apply_rf_12jaccard_join_PositionIndex *__pyx_v_self); /* proto */
-static PyObject *__pyx_tp_new_16py_stringsimjoin_8apply_rf_12jaccard_join_PositionIndex(PyTypeObject *t, PyObject *a, PyObject *k); /*proto*/
+static PyObject *__pyx_pf_16py_stringsimjoin_8apply_rf_12jaccard_join_jjaccard_join1(CYTHON_UNUSED PyObject *__pyx_self, std::vector<std::vector<int> >  __pyx_v_ltokens, std::vector<std::vector<int> >  __pyx_v_rtokens, double __pyx_v_threshold); /* proto */
+static PyObject *__pyx_pf_16py_stringsimjoin_8apply_rf_12jaccard_join_2jaccard_join(CYTHON_UNUSED PyObject *__pyx_self, std::vector<std::vector<int> >  __pyx_v_ltokens, std::vector<std::vector<int> >  __pyx_v_rtokens, double __pyx_v_threshold); /* proto */
+static int __pyx_pf_16py_stringsimjoin_8apply_rf_12jaccard_join_15PpositionIndex1___init__(struct __pyx_obj_16py_stringsimjoin_8apply_rf_12jaccard_join_PpositionIndex1 *__pyx_v_self, std::vector<std::vector<int> >  __pyx_v_token_vectors, double __pyx_v_threshold); /* proto */
+static PyObject *__pyx_pf_16py_stringsimjoin_8apply_rf_12jaccard_join_15PpositionIndex1_5index___get__(struct __pyx_obj_16py_stringsimjoin_8apply_rf_12jaccard_join_PpositionIndex1 *__pyx_v_self); /* proto */
+static PyObject *__pyx_pf_16py_stringsimjoin_8apply_rf_12jaccard_join_15PpositionIndex1_7min_len___get__(struct __pyx_obj_16py_stringsimjoin_8apply_rf_12jaccard_join_PpositionIndex1 *__pyx_v_self); /* proto */
+static PyObject *__pyx_pf_16py_stringsimjoin_8apply_rf_12jaccard_join_15PpositionIndex1_7max_len___get__(struct __pyx_obj_16py_stringsimjoin_8apply_rf_12jaccard_join_PpositionIndex1 *__pyx_v_self); /* proto */
+static PyObject *__pyx_pf_16py_stringsimjoin_8apply_rf_12jaccard_join_15PpositionIndex1_11size_vector___get__(struct __pyx_obj_16py_stringsimjoin_8apply_rf_12jaccard_join_PpositionIndex1 *__pyx_v_self); /* proto */
+static PyObject *__pyx_pf_16py_stringsimjoin_8apply_rf_12jaccard_join_15PpositionIndex1_9threshold___get__(struct __pyx_obj_16py_stringsimjoin_8apply_rf_12jaccard_join_PpositionIndex1 *__pyx_v_self); /* proto */
+static PyObject *__pyx_tp_new_16py_stringsimjoin_8apply_rf_12jaccard_join_PpositionIndex1(PyTypeObject *t, PyObject *a, PyObject *k); /*proto*/
 
-/* "py_stringsimjoin/apply_rf/jaccard_join.pyx":11
+/* "py_stringsimjoin/apply_rf/jaccard_join.pyx":13
  * 
  * 
- * cpdef vector[pair[int, int]] jaccard_join(const vector[vector[int]]& ltokens, const vector[vector[int]]& rtokens,             # <<<<<<<<<<<<<<
+ * cpdef vector[pair[int, int]] jjaccard_join1(vector[vector[int]]& ltokens, const vector[vector[int]]& rtokens,             # <<<<<<<<<<<<<<
  *                    double threshold):
- *     cdef vector[pair[int, int]] output_pairs
+ *     print 'l size. : ', ltokens.size(), ' , r size : ', rtokens.size()
  */
 
-static PyObject *__pyx_pw_16py_stringsimjoin_8apply_rf_12jaccard_join_1jaccard_join(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static std::vector<std::pair<int,int> >  __pyx_f_16py_stringsimjoin_8apply_rf_12jaccard_join_jaccard_join(std::vector<std::vector<int> >  const &__pyx_v_ltokens, std::vector<std::vector<int> >  const &__pyx_v_rtokens, double __pyx_v_threshold, CYTHON_UNUSED int __pyx_skip_dispatch) {
+static PyObject *__pyx_pw_16py_stringsimjoin_8apply_rf_12jaccard_join_1jjaccard_join1(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static std::vector<std::pair<int,int> >  __pyx_f_16py_stringsimjoin_8apply_rf_12jaccard_join_jjaccard_join1(std::vector<std::vector<int> >  &__pyx_v_ltokens, std::vector<std::vector<int> >  const &__pyx_v_rtokens, double __pyx_v_threshold, CYTHON_UNUSED int __pyx_skip_dispatch) {
   std::vector<std::pair<int,int> >  __pyx_v_output_pairs;
   std::map<int,int>  __pyx_v_candidate_overlap;
   std::map<int,int>  __pyx_v_overlap_threshold_cache;
   std::vector<std::pair<int,int> >  __pyx_v_candidates;
   std::pair<int,int>  __pyx_v_cand;
+  std::pair<int,int>  __pyx_v_entry;
+  int __pyx_v_k;
   int __pyx_v_i;
   int __pyx_v_j;
   int __pyx_v_m;
-  int __pyx_v_n;
+  CYTHON_UNUSED int __pyx_v_n;
   int __pyx_v_prefix_length;
   int __pyx_v_cand_num_tokens;
   int __pyx_v_current_overlap;
@@ -777,8 +806,7 @@ static std::vector<std::pair<int,int> >  __pyx_f_16py_stringsimjoin_8apply_rf_12
   int __pyx_v_size_lower_bound;
   int __pyx_v_size_upper_bound;
   std::vector<int>  __pyx_v_tokens;
-  struct __pyx_obj_16py_stringsimjoin_8apply_rf_12jaccard_join_PositionIndex *__pyx_v_index = 0;
-  std::pair<int,int>  __pyx_v_entry;
+  PositionIndex __pyx_v_index;
   double __pyx_v_sim_score;
   std::vector<std::pair<int,int> >  __pyx_r;
   __Pyx_RefNannyDeclarations
@@ -787,451 +815,989 @@ static std::vector<std::pair<int,int> >  __pyx_f_16py_stringsimjoin_8apply_rf_12
   PyObject *__pyx_t_3 = NULL;
   int __pyx_t_4;
   int __pyx_t_5;
-  long __pyx_t_6;
-  int __pyx_t_7;
-  double __pyx_t_8;
-  int __pyx_t_9;
-  std::vector<std::pair<int,int> > ::iterator __pyx_t_10;
-  std::pair<int,int>  __pyx_t_11;
-  int __pyx_t_12;
+  int __pyx_t_6;
+  long __pyx_t_7;
+  int __pyx_t_8;
+  double __pyx_t_9;
+  int __pyx_t_10;
+  std::vector<std::pair<int,int> > ::iterator __pyx_t_11;
+  std::pair<int,int>  __pyx_t_12;
   int __pyx_t_13;
-  std::map<int,int> ::iterator __pyx_t_14;
-  std::pair<int,int>  __pyx_t_15;
+  int __pyx_t_14;
+  std::map<int,int> ::iterator __pyx_t_15;
+  std::pair<int,int>  __pyx_t_16;
   int __pyx_lineno = 0;
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
-  __Pyx_RefNannySetupContext("jaccard_join", 0);
+  __Pyx_RefNannySetupContext("jjaccard_join1", 0);
 
-  /* "py_stringsimjoin/apply_rf/jaccard_join.pyx":17
+  /* "py_stringsimjoin/apply_rf/jaccard_join.pyx":15
+ * cpdef vector[pair[int, int]] jjaccard_join1(vector[vector[int]]& ltokens, const vector[vector[int]]& rtokens,
+ *                    double threshold):
+ *     print 'l size. : ', ltokens.size(), ' , r size : ', rtokens.size()             # <<<<<<<<<<<<<<
+ *     cdef vector[pair[int, int]] output_pairs
+ *     cdef omap[int, int] candidate_overlap, overlap_threshold_cache
+ */
+  __pyx_t_1 = __Pyx_PyInt_FromSize_t(__pyx_v_ltokens.size()); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 15; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_1);
+  __pyx_t_2 = __Pyx_PyInt_FromSize_t(__pyx_v_rtokens.size()); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 15; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_2);
+  __pyx_t_3 = PyTuple_New(4); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 15; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_3);
+  __Pyx_INCREF(__pyx_kp_s_l_size);
+  __Pyx_GIVEREF(__pyx_kp_s_l_size);
+  PyTuple_SET_ITEM(__pyx_t_3, 0, __pyx_kp_s_l_size);
+  __Pyx_GIVEREF(__pyx_t_1);
+  PyTuple_SET_ITEM(__pyx_t_3, 1, __pyx_t_1);
+  __Pyx_INCREF(__pyx_kp_s_r_size);
+  __Pyx_GIVEREF(__pyx_kp_s_r_size);
+  PyTuple_SET_ITEM(__pyx_t_3, 2, __pyx_kp_s_r_size);
+  __Pyx_GIVEREF(__pyx_t_2);
+  PyTuple_SET_ITEM(__pyx_t_3, 3, __pyx_t_2);
+  __pyx_t_1 = 0;
+  __pyx_t_2 = 0;
+  if (__Pyx_Print(0, __pyx_t_3, 1) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 15; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+
+  /* "py_stringsimjoin/apply_rf/jaccard_join.pyx":20
  *     cdef vector[pair[int, int]] candidates
- *     cdef pair[int, int] cand
- *     cdef int i, j, m, n=rtokens.size(), prefix_length, cand_num_tokens, current_overlap, overlap_upper_bound             # <<<<<<<<<<<<<<
+ *     cdef pair[int, int] cand, entry
+ *     cdef int k=0, i, j, m, n=rtokens.size(), prefix_length, cand_num_tokens, current_overlap, overlap_upper_bound             # <<<<<<<<<<<<<<
  *     cdef int size, size_lower_bound, size_upper_bound
  *     cdef vector[int] tokens
  */
+  __pyx_v_k = 0;
   __pyx_v_n = __pyx_v_rtokens.size();
 
-  /* "py_stringsimjoin/apply_rf/jaccard_join.pyx":21
- *     cdef vector[int] tokens
+  /* "py_stringsimjoin/apply_rf/jaccard_join.pyx":25
  *     cdef PositionIndex index
+ *     cdef double sim_score
  *     index = PositionIndex(ltokens, threshold)             # <<<<<<<<<<<<<<
  * 
- *     for i in range(n):
+ *     for i in prange(n, nogil=True):
  */
-  __pyx_t_1 = __pyx_convert_vector_to_py_std_3a__3a_vector_3c_int_3e___(__pyx_v_ltokens); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 21; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = PyFloat_FromDouble(__pyx_v_threshold); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 21; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_3 = PyTuple_New(2); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 21; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_GOTREF(__pyx_t_3);
-  __Pyx_GIVEREF(__pyx_t_1);
-  PyTuple_SET_ITEM(__pyx_t_3, 0, __pyx_t_1);
-  __Pyx_GIVEREF(__pyx_t_2);
-  PyTuple_SET_ITEM(__pyx_t_3, 1, __pyx_t_2);
-  __pyx_t_1 = 0;
-  __pyx_t_2 = 0;
-  __pyx_t_2 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_16py_stringsimjoin_8apply_rf_12jaccard_join_PositionIndex), __pyx_t_3, NULL); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 21; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_GOTREF(__pyx_t_2);
-  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  __pyx_v_index = ((struct __pyx_obj_16py_stringsimjoin_8apply_rf_12jaccard_join_PositionIndex *)__pyx_t_2);
-  __pyx_t_2 = 0;
+  __pyx_v_index = PositionIndex(__pyx_v_ltokens, __pyx_v_threshold);
 
-  /* "py_stringsimjoin/apply_rf/jaccard_join.pyx":23
+  /* "py_stringsimjoin/apply_rf/jaccard_join.pyx":27
  *     index = PositionIndex(ltokens, threshold)
  * 
- *     for i in range(n):             # <<<<<<<<<<<<<<
+ *     for i in prange(n, nogil=True):             # <<<<<<<<<<<<<<
  *         tokens = rtokens[i]
  *         m = tokens.size()
  */
-  __pyx_t_4 = __pyx_v_n;
-  for (__pyx_t_5 = 0; __pyx_t_5 < __pyx_t_4; __pyx_t_5+=1) {
-    __pyx_v_i = __pyx_t_5;
+  {
+      #ifdef WITH_THREAD
+      PyThreadState *_save;
+      Py_UNBLOCK_THREADS
+      #endif
+      /*try:*/ {
+        __pyx_t_4 = __pyx_v_n;
+        if (1 == 0) abort();
+        {
+            int __pyx_parallel_temp0 = 0xbad0bad0;
+            std::pair<int,int>  __pyx_parallel_temp1;
+            int __pyx_parallel_temp2 = 0xbad0bad0;
+            int __pyx_parallel_temp3 = 0xbad0bad0;
+            std::vector<int>  __pyx_parallel_temp4;
+            int __pyx_parallel_temp5 = 0xbad0bad0;
+            double __pyx_parallel_temp6 = __PYX_NAN();
+            std::vector<std::pair<int,int> >  __pyx_parallel_temp7;
+            int __pyx_parallel_temp8 = 0xbad0bad0;
+            int __pyx_parallel_temp9 = 0xbad0bad0;
+            int __pyx_parallel_temp10 = 0xbad0bad0;
+            int __pyx_parallel_temp11 = 0xbad0bad0;
+            int __pyx_parallel_temp12 = 0xbad0bad0;
+            int __pyx_parallel_temp13 = 0xbad0bad0;
+            int __pyx_parallel_temp14 = 0xbad0bad0;
+            std::pair<int,int>  __pyx_parallel_temp15;
+            const char *__pyx_parallel_filename = NULL; int __pyx_parallel_lineno = 0, __pyx_parallel_clineno = 0;
+            PyObject *__pyx_parallel_exc_type = NULL, *__pyx_parallel_exc_value = NULL, *__pyx_parallel_exc_tb = NULL;
+            int __pyx_parallel_why;
+            __pyx_parallel_why = 0;
+            #if ((defined(__APPLE__) || defined(__OSX__)) && (defined(__GNUC__) && (__GNUC__ > 2 || (__GNUC__ == 2 && (__GNUC_MINOR__ > 95)))))
+                #undef likely
+                #undef unlikely
+                #define likely(x)   (x)
+                #define unlikely(x) (x)
+            #endif
+            __pyx_t_6 = (__pyx_t_4 - 0) / 1;
+            if (__pyx_t_6 > 0)
+            {
+                #ifdef _OPENMP
+                #pragma omp parallel private(__pyx_t_16, __pyx_t_7, __pyx_t_10, __pyx_t_13, __pyx_t_8, __pyx_t_15, __pyx_t_9, __pyx_t_12, __pyx_t_14, __pyx_t_11) private(__pyx_filename, __pyx_lineno, __pyx_clineno) shared(__pyx_parallel_why, __pyx_parallel_exc_type, __pyx_parallel_exc_value, __pyx_parallel_exc_tb)
+                #endif /* _OPENMP */
+                {
+                    #ifdef _OPENMP
+                    #ifdef WITH_THREAD
+                    PyGILState_STATE __pyx_gilstate_save = PyGILState_Ensure();
+                    #endif
+                    Py_BEGIN_ALLOW_THREADS
+                    #endif /* _OPENMP */
+                    #ifdef _OPENMP
+                    #pragma omp for lastprivate(__pyx_v_size_upper_bound) lastprivate(__pyx_v_cand) lastprivate(__pyx_v_size) lastprivate(__pyx_v_j) lastprivate(__pyx_v_tokens) lastprivate(__pyx_v_prefix_length) lastprivate(__pyx_v_sim_score) lastprivate(__pyx_v_candidates) lastprivate(__pyx_v_size_lower_bound) lastprivate(__pyx_v_cand_num_tokens) lastprivate(__pyx_v_current_overlap) lastprivate(__pyx_v_overlap_upper_bound) lastprivate(__pyx_v_k) firstprivate(__pyx_v_i) lastprivate(__pyx_v_i) lastprivate(__pyx_v_m) lastprivate(__pyx_v_entry)
+                    #endif /* _OPENMP */
+                    for (__pyx_t_5 = 0; __pyx_t_5 < __pyx_t_6; __pyx_t_5++){
+                        if (__pyx_parallel_why < 2)
+                        {
+                            __pyx_v_i = 0 + 1 * __pyx_t_5;
+                            /* Initialize private variables to invalid values */
+                            __pyx_v_size_upper_bound = ((int)0xbad0bad0);
+                            __pyx_v_size = ((int)0xbad0bad0);
+                            __pyx_v_j = ((int)0xbad0bad0);
+                            __pyx_v_prefix_length = ((int)0xbad0bad0);
+                            __pyx_v_sim_score = ((double)__PYX_NAN());
+                            __pyx_v_size_lower_bound = ((int)0xbad0bad0);
+                            __pyx_v_cand_num_tokens = ((int)0xbad0bad0);
+                            __pyx_v_current_overlap = ((int)0xbad0bad0);
+                            __pyx_v_overlap_upper_bound = ((int)0xbad0bad0);
+                            __pyx_v_k = ((int)0xbad0bad0);
+                            __pyx_v_m = ((int)0xbad0bad0);
 
-    /* "py_stringsimjoin/apply_rf/jaccard_join.pyx":24
+                            /* "py_stringsimjoin/apply_rf/jaccard_join.pyx":28
  * 
- *     for i in range(n):
+ *     for i in prange(n, nogil=True):
  *         tokens = rtokens[i]             # <<<<<<<<<<<<<<
  *         m = tokens.size()
  *         prefix_length = <int>(m - ceil(threshold * m) + 1.0)
  */
-    __pyx_v_tokens = (__pyx_v_rtokens[__pyx_v_i]);
+                            __pyx_v_tokens = (__pyx_v_rtokens[__pyx_v_i]);
 
-    /* "py_stringsimjoin/apply_rf/jaccard_join.pyx":25
- *     for i in range(n):
+                            /* "py_stringsimjoin/apply_rf/jaccard_join.pyx":29
+ *     for i in prange(n, nogil=True):
  *         tokens = rtokens[i]
  *         m = tokens.size()             # <<<<<<<<<<<<<<
  *         prefix_length = <int>(m - ceil(threshold * m) + 1.0)
  *         size_lower_bound = <int>ceil(threshold * m)
  */
-    __pyx_v_m = __pyx_v_tokens.size();
+                            __pyx_v_m = __pyx_v_tokens.size();
 
-    /* "py_stringsimjoin/apply_rf/jaccard_join.pyx":26
+                            /* "py_stringsimjoin/apply_rf/jaccard_join.pyx":30
  *         tokens = rtokens[i]
  *         m = tokens.size()
  *         prefix_length = <int>(m - ceil(threshold * m) + 1.0)             # <<<<<<<<<<<<<<
  *         size_lower_bound = <int>ceil(threshold * m)
  *         size_upper_bound = <int>floor(m / threshold)
  */
-    __pyx_v_prefix_length = ((int)((__pyx_v_m - ceil((__pyx_v_threshold * __pyx_v_m))) + 1.0));
+                            __pyx_v_prefix_length = ((int)((__pyx_v_m - ceil((__pyx_v_threshold * __pyx_v_m))) + 1.0));
 
-    /* "py_stringsimjoin/apply_rf/jaccard_join.pyx":27
+                            /* "py_stringsimjoin/apply_rf/jaccard_join.pyx":31
  *         m = tokens.size()
  *         prefix_length = <int>(m - ceil(threshold * m) + 1.0)
  *         size_lower_bound = <int>ceil(threshold * m)             # <<<<<<<<<<<<<<
  *         size_upper_bound = <int>floor(m / threshold)
  * 
  */
-    __pyx_v_size_lower_bound = ((int)ceil((__pyx_v_threshold * __pyx_v_m)));
+                            __pyx_v_size_lower_bound = ((int)ceil((__pyx_v_threshold * __pyx_v_m)));
 
-    /* "py_stringsimjoin/apply_rf/jaccard_join.pyx":28
+                            /* "py_stringsimjoin/apply_rf/jaccard_join.pyx":32
  *         prefix_length = <int>(m - ceil(threshold * m) + 1.0)
  *         size_lower_bound = <int>ceil(threshold * m)
  *         size_upper_bound = <int>floor(m / threshold)             # <<<<<<<<<<<<<<
  * 
  *         for size in range(size_lower_bound, size_upper_bound + 1):
  */
-    if (unlikely(__pyx_v_threshold == 0)) {
-      PyErr_SetString(PyExc_ZeroDivisionError, "float division");
-      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 28; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-    }
-    __pyx_v_size_upper_bound = ((int)floor((__pyx_v_m / __pyx_v_threshold)));
+                            if (unlikely(__pyx_v_threshold == 0)) {
+                              #ifdef WITH_THREAD
+                              PyGILState_STATE __pyx_gilstate_save = PyGILState_Ensure();
+                              #endif
+                              PyErr_SetString(PyExc_ZeroDivisionError, "float division");
+                              #ifdef WITH_THREAD
+                              PyGILState_Release(__pyx_gilstate_save);
+                              #endif
+                              {__pyx_filename = __pyx_f[0]; __pyx_lineno = 32; __pyx_clineno = __LINE__; goto __pyx_L8_error;}
+                            }
+                            __pyx_v_size_upper_bound = ((int)floor((__pyx_v_m / __pyx_v_threshold)));
 
-    /* "py_stringsimjoin/apply_rf/jaccard_join.pyx":30
+                            /* "py_stringsimjoin/apply_rf/jaccard_join.pyx":34
  *         size_upper_bound = <int>floor(m / threshold)
  * 
  *         for size in range(size_lower_bound, size_upper_bound + 1):             # <<<<<<<<<<<<<<
  *             overlap_threshold_cache[size] = <int>ceil((threshold / (1 + threshold)) * (size + m))
  * 
  */
-    __pyx_t_6 = (__pyx_v_size_upper_bound + 1);
-    for (__pyx_t_7 = __pyx_v_size_lower_bound; __pyx_t_7 < __pyx_t_6; __pyx_t_7+=1) {
-      __pyx_v_size = __pyx_t_7;
+                            __pyx_t_7 = (__pyx_v_size_upper_bound + 1);
+                            for (__pyx_t_8 = __pyx_v_size_lower_bound; __pyx_t_8 < __pyx_t_7; __pyx_t_8+=1) {
+                              __pyx_v_size = __pyx_t_8;
 
-      /* "py_stringsimjoin/apply_rf/jaccard_join.pyx":31
+                              /* "py_stringsimjoin/apply_rf/jaccard_join.pyx":35
  * 
  *         for size in range(size_lower_bound, size_upper_bound + 1):
  *             overlap_threshold_cache[size] = <int>ceil((threshold / (1 + threshold)) * (size + m))             # <<<<<<<<<<<<<<
  * 
  *         for j in range(prefix_length):
  */
-      __pyx_t_8 = (1.0 + __pyx_v_threshold);
-      if (unlikely(__pyx_t_8 == 0)) {
-        PyErr_SetString(PyExc_ZeroDivisionError, "float division");
-        {__pyx_filename = __pyx_f[0]; __pyx_lineno = 31; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-      }
-      (__pyx_v_overlap_threshold_cache[__pyx_v_size]) = ((int)ceil(((__pyx_v_threshold / __pyx_t_8) * (__pyx_v_size + __pyx_v_m))));
-    }
+                              __pyx_t_9 = (1.0 + __pyx_v_threshold);
+                              if (unlikely(__pyx_t_9 == 0)) {
+                                #ifdef WITH_THREAD
+                                PyGILState_STATE __pyx_gilstate_save = PyGILState_Ensure();
+                                #endif
+                                PyErr_SetString(PyExc_ZeroDivisionError, "float division");
+                                #ifdef WITH_THREAD
+                                PyGILState_Release(__pyx_gilstate_save);
+                                #endif
+                                {__pyx_filename = __pyx_f[0]; __pyx_lineno = 35; __pyx_clineno = __LINE__; goto __pyx_L8_error;}
+                              }
+                              (__pyx_v_overlap_threshold_cache[__pyx_v_size]) = ((int)ceil(((__pyx_v_threshold / __pyx_t_9) * (__pyx_v_size + __pyx_v_m))));
+                            }
 
-    /* "py_stringsimjoin/apply_rf/jaccard_join.pyx":33
+                            /* "py_stringsimjoin/apply_rf/jaccard_join.pyx":37
  *             overlap_threshold_cache[size] = <int>ceil((threshold / (1 + threshold)) * (size + m))
  * 
  *         for j in range(prefix_length):             # <<<<<<<<<<<<<<
- *             candidates = index.index[tokens[i]]
+ *             candidates = index.index[tokens[j]]
  *             for cand in candidates:
  */
-    __pyx_t_7 = __pyx_v_prefix_length;
-    for (__pyx_t_9 = 0; __pyx_t_9 < __pyx_t_7; __pyx_t_9+=1) {
-      __pyx_v_j = __pyx_t_9;
+                            __pyx_t_8 = __pyx_v_prefix_length;
+                            for (__pyx_t_10 = 0; __pyx_t_10 < __pyx_t_8; __pyx_t_10+=1) {
+                              __pyx_v_j = __pyx_t_10;
 
-      /* "py_stringsimjoin/apply_rf/jaccard_join.pyx":34
+                              /* "py_stringsimjoin/apply_rf/jaccard_join.pyx":38
  * 
  *         for j in range(prefix_length):
- *             candidates = index.index[tokens[i]]             # <<<<<<<<<<<<<<
+ *             candidates = index.index[tokens[j]]             # <<<<<<<<<<<<<<
  *             for cand in candidates:
  *                 current_overlap = candidate_overlap[cand.first]
  */
-      __pyx_v_candidates = (__pyx_v_index->index[(__pyx_v_tokens[__pyx_v_i])]);
+                              __pyx_v_candidates = (__pyx_v_index.index[(__pyx_v_tokens[__pyx_v_j])]);
 
-      /* "py_stringsimjoin/apply_rf/jaccard_join.pyx":35
+                              /* "py_stringsimjoin/apply_rf/jaccard_join.pyx":39
  *         for j in range(prefix_length):
- *             candidates = index.index[tokens[i]]
+ *             candidates = index.index[tokens[j]]
  *             for cand in candidates:             # <<<<<<<<<<<<<<
  *                 current_overlap = candidate_overlap[cand.first]
  *                 if current_overlap != -1:
  */
-      __pyx_t_10 = __pyx_v_candidates.begin();
-      for (;;) {
-        if (!(__pyx_t_10 != __pyx_v_candidates.end())) break;
-        __pyx_t_11 = *__pyx_t_10;
-        ++__pyx_t_10;
-        __pyx_v_cand = __pyx_t_11;
+                              __pyx_t_11 = __pyx_v_candidates.begin();
+                              for (;;) {
+                                if (!(__pyx_t_11 != __pyx_v_candidates.end())) break;
+                                __pyx_t_12 = *__pyx_t_11;
+                                ++__pyx_t_11;
+                                __pyx_v_cand = __pyx_t_12;
 
-        /* "py_stringsimjoin/apply_rf/jaccard_join.pyx":36
- *             candidates = index.index[tokens[i]]
+                                /* "py_stringsimjoin/apply_rf/jaccard_join.pyx":40
+ *             candidates = index.index[tokens[j]]
  *             for cand in candidates:
  *                 current_overlap = candidate_overlap[cand.first]             # <<<<<<<<<<<<<<
  *                 if current_overlap != -1:
  *                     cand_num_tokens = index.size_vector[cand.first]
  */
-        __pyx_v_current_overlap = (__pyx_v_candidate_overlap[__pyx_v_cand.first]);
+                                __pyx_v_current_overlap = (__pyx_v_candidate_overlap[__pyx_v_cand.first]);
 
-        /* "py_stringsimjoin/apply_rf/jaccard_join.pyx":37
+                                /* "py_stringsimjoin/apply_rf/jaccard_join.pyx":41
  *             for cand in candidates:
  *                 current_overlap = candidate_overlap[cand.first]
  *                 if current_overlap != -1:             # <<<<<<<<<<<<<<
  *                     cand_num_tokens = index.size_vector[cand.first]
  * 
  */
-        __pyx_t_12 = ((__pyx_v_current_overlap != -1L) != 0);
-        if (__pyx_t_12) {
+                                __pyx_t_13 = ((__pyx_v_current_overlap != -1L) != 0);
+                                if (__pyx_t_13) {
 
-          /* "py_stringsimjoin/apply_rf/jaccard_join.pyx":38
+                                  /* "py_stringsimjoin/apply_rf/jaccard_join.pyx":42
  *                 current_overlap = candidate_overlap[cand.first]
  *                 if current_overlap != -1:
  *                     cand_num_tokens = index.size_vector[cand.first]             # <<<<<<<<<<<<<<
  * 
  *                     # only consider candidates satisfying the size filter
  */
-          __pyx_v_cand_num_tokens = (__pyx_v_index->size_vector[__pyx_v_cand.first]);
+                                  __pyx_v_cand_num_tokens = (__pyx_v_index.size_vector[__pyx_v_cand.first]);
 
-          /* "py_stringsimjoin/apply_rf/jaccard_join.pyx":42
+                                  /* "py_stringsimjoin/apply_rf/jaccard_join.pyx":46
  *                     # only consider candidates satisfying the size filter
  *                     # condition.
  *                     if size_lower_bound <= cand_num_tokens <= size_upper_bound:             # <<<<<<<<<<<<<<
  * 
  *                         if m - j <= cand_num_tokens - cand.second:
  */
-          __pyx_t_12 = (__pyx_v_size_lower_bound <= __pyx_v_cand_num_tokens);
-          if (__pyx_t_12) {
-            __pyx_t_12 = (__pyx_v_cand_num_tokens <= __pyx_v_size_upper_bound);
-          }
-          __pyx_t_13 = (__pyx_t_12 != 0);
-          if (__pyx_t_13) {
+                                  __pyx_t_13 = (__pyx_v_size_lower_bound <= __pyx_v_cand_num_tokens);
+                                  if (__pyx_t_13) {
+                                    __pyx_t_13 = (__pyx_v_cand_num_tokens <= __pyx_v_size_upper_bound);
+                                  }
+                                  __pyx_t_14 = (__pyx_t_13 != 0);
+                                  if (__pyx_t_14) {
 
-            /* "py_stringsimjoin/apply_rf/jaccard_join.pyx":44
+                                    /* "py_stringsimjoin/apply_rf/jaccard_join.pyx":48
  *                     if size_lower_bound <= cand_num_tokens <= size_upper_bound:
  * 
  *                         if m - j <= cand_num_tokens - cand.second:             # <<<<<<<<<<<<<<
  *                             overlap_upper_bound = m - j
  *                         else:
  */
-            __pyx_t_13 = (((__pyx_v_m - __pyx_v_j) <= (__pyx_v_cand_num_tokens - __pyx_v_cand.second)) != 0);
-            if (__pyx_t_13) {
+                                    __pyx_t_14 = (((__pyx_v_m - __pyx_v_j) <= (__pyx_v_cand_num_tokens - __pyx_v_cand.second)) != 0);
+                                    if (__pyx_t_14) {
 
-              /* "py_stringsimjoin/apply_rf/jaccard_join.pyx":45
+                                      /* "py_stringsimjoin/apply_rf/jaccard_join.pyx":49
  * 
  *                         if m - j <= cand_num_tokens - cand.second:
  *                             overlap_upper_bound = m - j             # <<<<<<<<<<<<<<
  *                         else:
  *                             overlap_upper_bound = cand_num_tokens - cand.second
  */
-              __pyx_v_overlap_upper_bound = (__pyx_v_m - __pyx_v_j);
+                                      __pyx_v_overlap_upper_bound = (__pyx_v_m - __pyx_v_j);
 
-              /* "py_stringsimjoin/apply_rf/jaccard_join.pyx":44
+                                      /* "py_stringsimjoin/apply_rf/jaccard_join.pyx":48
  *                     if size_lower_bound <= cand_num_tokens <= size_upper_bound:
  * 
  *                         if m - j <= cand_num_tokens - cand.second:             # <<<<<<<<<<<<<<
  *                             overlap_upper_bound = m - j
  *                         else:
  */
-              goto __pyx_L13;
-            }
+                                      goto __pyx_L18;
+                                    }
 
-            /* "py_stringsimjoin/apply_rf/jaccard_join.pyx":47
+                                    /* "py_stringsimjoin/apply_rf/jaccard_join.pyx":51
  *                             overlap_upper_bound = m - j
  *                         else:
  *                             overlap_upper_bound = cand_num_tokens - cand.second             # <<<<<<<<<<<<<<
  * 
  *                         # only consider candidates for which the overlap upper
  */
-            /*else*/ {
-              __pyx_v_overlap_upper_bound = (__pyx_v_cand_num_tokens - __pyx_v_cand.second);
-            }
-            __pyx_L13:;
+                                    /*else*/ {
+                                      __pyx_v_overlap_upper_bound = (__pyx_v_cand_num_tokens - __pyx_v_cand.second);
+                                    }
+                                    __pyx_L18:;
 
-            /* "py_stringsimjoin/apply_rf/jaccard_join.pyx":51
+                                    /* "py_stringsimjoin/apply_rf/jaccard_join.pyx":55
  *                         # only consider candidates for which the overlap upper
  *                         # bound is at least the required overlap.
  *                         if (current_overlap + overlap_upper_bound >=             # <<<<<<<<<<<<<<
  *                                 overlap_threshold_cache[cand_num_tokens]):
  *                             candidate_overlap[cand.first] = current_overlap + 1
  */
-            __pyx_t_13 = (((__pyx_v_current_overlap + __pyx_v_overlap_upper_bound) >= (__pyx_v_overlap_threshold_cache[__pyx_v_cand_num_tokens])) != 0);
-            if (__pyx_t_13) {
+                                    __pyx_t_14 = (((__pyx_v_current_overlap + __pyx_v_overlap_upper_bound) >= (__pyx_v_overlap_threshold_cache[__pyx_v_cand_num_tokens])) != 0);
+                                    if (__pyx_t_14) {
 
-              /* "py_stringsimjoin/apply_rf/jaccard_join.pyx":53
+                                      /* "py_stringsimjoin/apply_rf/jaccard_join.pyx":57
  *                         if (current_overlap + overlap_upper_bound >=
  *                                 overlap_threshold_cache[cand_num_tokens]):
  *                             candidate_overlap[cand.first] = current_overlap + 1             # <<<<<<<<<<<<<<
  *                         else:
  *                             candidate_overlap[cand.first] = -1
  */
-              (__pyx_v_candidate_overlap[__pyx_v_cand.first]) = (__pyx_v_current_overlap + 1);
+                                      (__pyx_v_candidate_overlap[__pyx_v_cand.first]) = (__pyx_v_current_overlap + 1);
 
-              /* "py_stringsimjoin/apply_rf/jaccard_join.pyx":51
+                                      /* "py_stringsimjoin/apply_rf/jaccard_join.pyx":55
  *                         # only consider candidates for which the overlap upper
  *                         # bound is at least the required overlap.
  *                         if (current_overlap + overlap_upper_bound >=             # <<<<<<<<<<<<<<
  *                                 overlap_threshold_cache[cand_num_tokens]):
  *                             candidate_overlap[cand.first] = current_overlap + 1
  */
-              goto __pyx_L14;
-            }
+                                      goto __pyx_L19;
+                                    }
 
-            /* "py_stringsimjoin/apply_rf/jaccard_join.pyx":55
+                                    /* "py_stringsimjoin/apply_rf/jaccard_join.pyx":59
  *                             candidate_overlap[cand.first] = current_overlap + 1
  *                         else:
  *                             candidate_overlap[cand.first] = -1             # <<<<<<<<<<<<<<
- * 
+ * #        print i, candidate_overlap.size()
  *         for entry in candidate_overlap:
  */
-            /*else*/ {
-              (__pyx_v_candidate_overlap[__pyx_v_cand.first]) = -1;
-            }
-            __pyx_L14:;
+                                    /*else*/ {
+                                      (__pyx_v_candidate_overlap[__pyx_v_cand.first]) = -1;
+                                    }
+                                    __pyx_L19:;
 
-            /* "py_stringsimjoin/apply_rf/jaccard_join.pyx":42
+                                    /* "py_stringsimjoin/apply_rf/jaccard_join.pyx":46
  *                     # only consider candidates satisfying the size filter
  *                     # condition.
  *                     if size_lower_bound <= cand_num_tokens <= size_upper_bound:             # <<<<<<<<<<<<<<
  * 
  *                         if m - j <= cand_num_tokens - cand.second:
  */
-          }
+                                  }
 
-          /* "py_stringsimjoin/apply_rf/jaccard_join.pyx":37
+                                  /* "py_stringsimjoin/apply_rf/jaccard_join.pyx":41
  *             for cand in candidates:
  *                 current_overlap = candidate_overlap[cand.first]
  *                 if current_overlap != -1:             # <<<<<<<<<<<<<<
  *                     cand_num_tokens = index.size_vector[cand.first]
  * 
  */
-        }
+                                }
 
-        /* "py_stringsimjoin/apply_rf/jaccard_join.pyx":35
+                                /* "py_stringsimjoin/apply_rf/jaccard_join.pyx":39
  *         for j in range(prefix_length):
- *             candidates = index.index[tokens[i]]
+ *             candidates = index.index[tokens[j]]
  *             for cand in candidates:             # <<<<<<<<<<<<<<
  *                 current_overlap = candidate_overlap[cand.first]
  *                 if current_overlap != -1:
  */
-      }
-    }
+                              }
+                            }
 
-    /* "py_stringsimjoin/apply_rf/jaccard_join.pyx":57
+                            /* "py_stringsimjoin/apply_rf/jaccard_join.pyx":61
  *                             candidate_overlap[cand.first] = -1
- * 
+ * #        print i, candidate_overlap.size()
  *         for entry in candidate_overlap:             # <<<<<<<<<<<<<<
  *             if entry.second > 0:
- *                 sim_score = jaccard(ltokens[entry.first], rtokens[i])
+ *                 k += 1
  */
-    __pyx_t_14 = __pyx_v_candidate_overlap.begin();
-    for (;;) {
-      if (!(__pyx_t_14 != __pyx_v_candidate_overlap.end())) break;
-      __pyx_t_15 = *__pyx_t_14;
-      ++__pyx_t_14;
-      __pyx_v_entry = __pyx_t_15;
+                            __pyx_t_15 = __pyx_v_candidate_overlap.begin();
+                            for (;;) {
+                              if (!(__pyx_t_15 != __pyx_v_candidate_overlap.end())) break;
+                              __pyx_t_16 = *__pyx_t_15;
+                              ++__pyx_t_15;
+                              __pyx_v_entry = __pyx_t_16;
 
-      /* "py_stringsimjoin/apply_rf/jaccard_join.pyx":58
- * 
+                              /* "py_stringsimjoin/apply_rf/jaccard_join.pyx":62
+ * #        print i, candidate_overlap.size()
  *         for entry in candidate_overlap:
  *             if entry.second > 0:             # <<<<<<<<<<<<<<
+ *                 k += 1
  *                 sim_score = jaccard(ltokens[entry.first], rtokens[i])
- *                 if sim_score > threshold:
  */
-      __pyx_t_13 = ((__pyx_v_entry.second > 0) != 0);
-      if (__pyx_t_13) {
+                              __pyx_t_14 = ((__pyx_v_entry.second > 0) != 0);
+                              if (__pyx_t_14) {
 
-        /* "py_stringsimjoin/apply_rf/jaccard_join.pyx":59
+                                /* "py_stringsimjoin/apply_rf/jaccard_join.pyx":63
  *         for entry in candidate_overlap:
  *             if entry.second > 0:
+ *                 k += 1             # <<<<<<<<<<<<<<
+ *                 sim_score = jaccard(ltokens[entry.first], rtokens[i])
+ *                 #print ltokens[entry.first], rtokens[i], entry.second, sim_score
+ */
+                                __pyx_v_k = (__pyx_v_k + 1);
+
+                                /* "py_stringsimjoin/apply_rf/jaccard_join.pyx":64
+ *             if entry.second > 0:
+ *                 k += 1
  *                 sim_score = jaccard(ltokens[entry.first], rtokens[i])             # <<<<<<<<<<<<<<
+ *                 #print ltokens[entry.first], rtokens[i], entry.second, sim_score
  *                 if sim_score > threshold:
- *                     output_pairs.push_back(pair[int, int](entry.first, i))
  */
-        __pyx_v_sim_score = __pyx_f_16py_stringsimjoin_8apply_rf_12jaccard_join_jaccard((__pyx_v_ltokens[__pyx_v_entry.first]), (__pyx_v_rtokens[__pyx_v_i]));
+                                __pyx_v_sim_score = __pyx_f_16py_stringsimjoin_8apply_rf_12jaccard_join_jaccard((__pyx_v_ltokens[__pyx_v_entry.first]), (__pyx_v_rtokens[__pyx_v_i]));
 
-        /* "py_stringsimjoin/apply_rf/jaccard_join.pyx":60
- *             if entry.second > 0:
+                                /* "py_stringsimjoin/apply_rf/jaccard_join.pyx":66
  *                 sim_score = jaccard(ltokens[entry.first], rtokens[i])
+ *                 #print ltokens[entry.first], rtokens[i], entry.second, sim_score
  *                 if sim_score > threshold:             # <<<<<<<<<<<<<<
- *                     output_pairs.push_back(pair[int, int](entry.first, i))
- * 
+ *                     k = k - 1 + 1
+ * #                    output_pairs.push_back(pair[int, int](entry.first, i))
  */
-        __pyx_t_13 = ((__pyx_v_sim_score > __pyx_v_threshold) != 0);
-        if (__pyx_t_13) {
+                                __pyx_t_14 = ((__pyx_v_sim_score > __pyx_v_threshold) != 0);
+                                if (__pyx_t_14) {
 
-          /* "py_stringsimjoin/apply_rf/jaccard_join.pyx":61
- *                 sim_score = jaccard(ltokens[entry.first], rtokens[i])
+                                  /* "py_stringsimjoin/apply_rf/jaccard_join.pyx":67
+ *                 #print ltokens[entry.first], rtokens[i], entry.second, sim_score
  *                 if sim_score > threshold:
- *                     output_pairs.push_back(pair[int, int](entry.first, i))             # <<<<<<<<<<<<<<
+ *                     k = k - 1 + 1             # <<<<<<<<<<<<<<
+ * #                    output_pairs.push_back(pair[int, int](entry.first, i))
  * 
- *         candidate_overlap.clear()
  */
-          try {
-            __pyx_t_11 = std::pair<int,int> (__pyx_v_entry.first, __pyx_v_i);
-          } catch(...) {
-            __Pyx_CppExn2PyErr();
-            {__pyx_filename = __pyx_f[0]; __pyx_lineno = 61; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-          }
-          try {
-            __pyx_v_output_pairs.push_back(__pyx_t_11);
-          } catch(...) {
-            __Pyx_CppExn2PyErr();
-            {__pyx_filename = __pyx_f[0]; __pyx_lineno = 61; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-          }
+                                  __pyx_v_k = ((__pyx_v_k - 1) + 1);
 
-          /* "py_stringsimjoin/apply_rf/jaccard_join.pyx":60
- *             if entry.second > 0:
+                                  /* "py_stringsimjoin/apply_rf/jaccard_join.pyx":66
  *                 sim_score = jaccard(ltokens[entry.first], rtokens[i])
+ *                 #print ltokens[entry.first], rtokens[i], entry.second, sim_score
  *                 if sim_score > threshold:             # <<<<<<<<<<<<<<
- *                     output_pairs.push_back(pair[int, int](entry.first, i))
- * 
+ *                     k = k - 1 + 1
+ * #                    output_pairs.push_back(pair[int, int](entry.first, i))
  */
-        }
+                                }
 
-        /* "py_stringsimjoin/apply_rf/jaccard_join.pyx":58
- * 
+                                /* "py_stringsimjoin/apply_rf/jaccard_join.pyx":62
+ * #        print i, candidate_overlap.size()
  *         for entry in candidate_overlap:
  *             if entry.second > 0:             # <<<<<<<<<<<<<<
+ *                 k += 1
  *                 sim_score = jaccard(ltokens[entry.first], rtokens[i])
- *                 if sim_score > threshold:
  */
-      }
+                              }
 
-      /* "py_stringsimjoin/apply_rf/jaccard_join.pyx":57
+                              /* "py_stringsimjoin/apply_rf/jaccard_join.pyx":61
  *                             candidate_overlap[cand.first] = -1
- * 
+ * #        print i, candidate_overlap.size()
  *         for entry in candidate_overlap:             # <<<<<<<<<<<<<<
  *             if entry.second > 0:
- *                 sim_score = jaccard(ltokens[entry.first], rtokens[i])
+ *                 k += 1
  */
-    }
+                            }
 
-    /* "py_stringsimjoin/apply_rf/jaccard_join.pyx":63
- *                     output_pairs.push_back(pair[int, int](entry.first, i))
+                            /* "py_stringsimjoin/apply_rf/jaccard_join.pyx":70
+ * #                    output_pairs.push_back(pair[int, int](entry.first, i))
  * 
  *         candidate_overlap.clear()             # <<<<<<<<<<<<<<
- * 
- * 
+ *         overlap_threshold_cache.clear()
+ *     print 'k : ', k
  */
-    __pyx_v_candidate_overlap.clear();
+                            __pyx_v_candidate_overlap.clear();
+
+                            /* "py_stringsimjoin/apply_rf/jaccard_join.pyx":71
+ * 
+ *         candidate_overlap.clear()
+ *         overlap_threshold_cache.clear()             # <<<<<<<<<<<<<<
+ *     print 'k : ', k
+ *     return output_pairs
+ */
+                            __pyx_v_overlap_threshold_cache.clear();
+                            goto __pyx_L25;
+                            __pyx_L8_error:;
+                            {
+                                #ifdef WITH_THREAD
+                                PyGILState_STATE __pyx_gilstate_save = PyGILState_Ensure();
+                                #endif
+                                #ifdef _OPENMP
+                                #pragma omp flush(__pyx_parallel_exc_type)
+                                #endif /* _OPENMP */
+                                if (!__pyx_parallel_exc_type) {
+                                  __Pyx_ErrFetch(&__pyx_parallel_exc_type, &__pyx_parallel_exc_value, &__pyx_parallel_exc_tb);
+                                  __pyx_parallel_filename = __pyx_filename; __pyx_parallel_lineno = __pyx_lineno; __pyx_parallel_clineno = __pyx_clineno;
+                                  __Pyx_GOTREF(__pyx_parallel_exc_type);
+                                }
+                                #ifdef WITH_THREAD
+                                PyGILState_Release(__pyx_gilstate_save);
+                                #endif
+                            }
+                            __pyx_parallel_why = 4;
+                            goto __pyx_L24;
+                            __pyx_L24:;
+                            #ifdef _OPENMP
+                            #pragma omp critical(__pyx_parallel_lastprivates0)
+                            #endif /* _OPENMP */
+                            {
+                                __pyx_parallel_temp0 = __pyx_v_size_upper_bound;
+                                __pyx_parallel_temp1 = __pyx_v_cand;
+                                __pyx_parallel_temp2 = __pyx_v_size;
+                                __pyx_parallel_temp3 = __pyx_v_j;
+                                __pyx_parallel_temp4 = __pyx_v_tokens;
+                                __pyx_parallel_temp5 = __pyx_v_prefix_length;
+                                __pyx_parallel_temp6 = __pyx_v_sim_score;
+                                __pyx_parallel_temp7 = __pyx_v_candidates;
+                                __pyx_parallel_temp8 = __pyx_v_size_lower_bound;
+                                __pyx_parallel_temp9 = __pyx_v_cand_num_tokens;
+                                __pyx_parallel_temp10 = __pyx_v_current_overlap;
+                                __pyx_parallel_temp11 = __pyx_v_overlap_upper_bound;
+                                __pyx_parallel_temp12 = __pyx_v_k;
+                                __pyx_parallel_temp13 = __pyx_v_i;
+                                __pyx_parallel_temp14 = __pyx_v_m;
+                                __pyx_parallel_temp15 = __pyx_v_entry;
+                            }
+                            __pyx_L25:;
+                            #ifdef _OPENMP
+                            #pragma omp flush(__pyx_parallel_why)
+                            #endif /* _OPENMP */
+                        }
+                    }
+                    #ifdef _OPENMP
+                    Py_END_ALLOW_THREADS
+                    #else
+{
+#ifdef WITH_THREAD
+                    PyGILState_STATE __pyx_gilstate_save = PyGILState_Ensure();
+                    #endif
+                    #endif /* _OPENMP */
+                    /* Clean up any temporaries */
+                    #ifdef WITH_THREAD
+                    PyGILState_Release(__pyx_gilstate_save);
+                    #endif
+                    #ifndef _OPENMP
+}
+#endif /* _OPENMP */
+                }
+            }
+            if (__pyx_parallel_exc_type) {
+              /* This may have been overridden by a continue, break or return in another thread. Prefer the error. */
+              __pyx_parallel_why = 4;
+            }
+            if (__pyx_parallel_why) {
+              __pyx_v_size_upper_bound = __pyx_parallel_temp0;
+              __pyx_v_cand = __pyx_parallel_temp1;
+              __pyx_v_size = __pyx_parallel_temp2;
+              __pyx_v_j = __pyx_parallel_temp3;
+              __pyx_v_tokens = __pyx_parallel_temp4;
+              __pyx_v_prefix_length = __pyx_parallel_temp5;
+              __pyx_v_sim_score = __pyx_parallel_temp6;
+              __pyx_v_candidates = __pyx_parallel_temp7;
+              __pyx_v_size_lower_bound = __pyx_parallel_temp8;
+              __pyx_v_cand_num_tokens = __pyx_parallel_temp9;
+              __pyx_v_current_overlap = __pyx_parallel_temp10;
+              __pyx_v_overlap_upper_bound = __pyx_parallel_temp11;
+              __pyx_v_k = __pyx_parallel_temp12;
+              __pyx_v_i = __pyx_parallel_temp13;
+              __pyx_v_m = __pyx_parallel_temp14;
+              __pyx_v_entry = __pyx_parallel_temp15;
+              switch (__pyx_parallel_why) {
+                    case 3: goto __pyx_L3_return;
+                    case 4:
+                {
+                    #ifdef WITH_THREAD
+                    PyGILState_STATE __pyx_gilstate_save = PyGILState_Ensure();
+                    #endif
+                    __Pyx_GIVEREF(__pyx_parallel_exc_type);
+                    __Pyx_ErrRestore(__pyx_parallel_exc_type, __pyx_parallel_exc_value, __pyx_parallel_exc_tb);
+                    __pyx_filename = __pyx_parallel_filename; __pyx_lineno = __pyx_parallel_lineno; __pyx_clineno = __pyx_parallel_clineno;
+                    #ifdef WITH_THREAD
+                    PyGILState_Release(__pyx_gilstate_save);
+                    #endif
+                }
+                goto __pyx_L4_error;
+              }
+            }
+        }
+        #if ((defined(__APPLE__) || defined(__OSX__)) && (defined(__GNUC__) && (__GNUC__ > 2 || (__GNUC__ == 2 && (__GNUC_MINOR__ > 95)))))
+            #undef likely
+            #undef unlikely
+            #define likely(x)   __builtin_expect(!!(x), 1)
+            #define unlikely(x) __builtin_expect(!!(x), 0)
+        #endif
+      }
+
+      /* "py_stringsimjoin/apply_rf/jaccard_join.pyx":27
+ *     index = PositionIndex(ltokens, threshold)
+ * 
+ *     for i in prange(n, nogil=True):             # <<<<<<<<<<<<<<
+ *         tokens = rtokens[i]
+ *         m = tokens.size()
+ */
+      /*finally:*/ {
+        /*normal exit:*/{
+          #ifdef WITH_THREAD
+          Py_BLOCK_THREADS
+          #endif
+          goto __pyx_L5;
+        }
+        __pyx_L3_return: {
+          #ifdef WITH_THREAD
+          Py_BLOCK_THREADS
+          #endif
+          goto __pyx_L0;
+        }
+        __pyx_L4_error: {
+          #ifdef WITH_THREAD
+          Py_BLOCK_THREADS
+          #endif
+          goto __pyx_L1_error;
+        }
+        __pyx_L5:;
+      }
   }
 
-  /* "py_stringsimjoin/apply_rf/jaccard_join.pyx":11
+  /* "py_stringsimjoin/apply_rf/jaccard_join.pyx":72
+ *         candidate_overlap.clear()
+ *         overlap_threshold_cache.clear()
+ *     print 'k : ', k             # <<<<<<<<<<<<<<
+ *     return output_pairs
+ * 
+ */
+  __pyx_t_3 = __Pyx_PyInt_From_int(__pyx_v_k); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 72; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_3);
+  __pyx_t_2 = PyTuple_New(2); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 72; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_2);
+  __Pyx_INCREF(__pyx_kp_s_k);
+  __Pyx_GIVEREF(__pyx_kp_s_k);
+  PyTuple_SET_ITEM(__pyx_t_2, 0, __pyx_kp_s_k);
+  __Pyx_GIVEREF(__pyx_t_3);
+  PyTuple_SET_ITEM(__pyx_t_2, 1, __pyx_t_3);
+  __pyx_t_3 = 0;
+  if (__Pyx_Print(0, __pyx_t_2, 1) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 72; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+
+  /* "py_stringsimjoin/apply_rf/jaccard_join.pyx":73
+ *         overlap_threshold_cache.clear()
+ *     print 'k : ', k
+ *     return output_pairs             # <<<<<<<<<<<<<<
+ * 
+ * cpdef vector[pair[int, int]] jaccard_join(vector[vector[int]]& ltokens, vector[vector[int]]& rtokens,
+ */
+  __pyx_r = __pyx_v_output_pairs;
+  goto __pyx_L0;
+
+  /* "py_stringsimjoin/apply_rf/jaccard_join.pyx":13
  * 
  * 
- * cpdef vector[pair[int, int]] jaccard_join(const vector[vector[int]]& ltokens, const vector[vector[int]]& rtokens,             # <<<<<<<<<<<<<<
+ * cpdef vector[pair[int, int]] jjaccard_join1(vector[vector[int]]& ltokens, const vector[vector[int]]& rtokens,             # <<<<<<<<<<<<<<
  *                    double threshold):
- *     cdef vector[pair[int, int]] output_pairs
+ *     print 'l size. : ', ltokens.size(), ' , r size : ', rtokens.size()
  */
 
   /* function exit code */
+  __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
+  __Pyx_XDECREF(__pyx_t_2);
+  __Pyx_XDECREF(__pyx_t_3);
+  __Pyx_WriteUnraisable("py_stringsimjoin.apply_rf.jaccard_join.jjaccard_join1", __pyx_clineno, __pyx_lineno, __pyx_filename, 0, 0);
+  __pyx_L0:;
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+/* Python wrapper */
+static PyObject *__pyx_pw_16py_stringsimjoin_8apply_rf_12jaccard_join_1jjaccard_join1(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static PyObject *__pyx_pw_16py_stringsimjoin_8apply_rf_12jaccard_join_1jjaccard_join1(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+  std::vector<std::vector<int> >  __pyx_v_ltokens;
+  std::vector<std::vector<int> >  __pyx_v_rtokens;
+  double __pyx_v_threshold;
+  int __pyx_lineno = 0;
+  const char *__pyx_filename = NULL;
+  int __pyx_clineno = 0;
+  PyObject *__pyx_r = 0;
+  __Pyx_RefNannyDeclarations
+  __Pyx_RefNannySetupContext("jjaccard_join1 (wrapper)", 0);
+  {
+    static PyObject **__pyx_pyargnames[] = {&__pyx_n_s_ltokens,&__pyx_n_s_rtokens,&__pyx_n_s_threshold,0};
+    PyObject* values[3] = {0,0,0};
+    if (unlikely(__pyx_kwds)) {
+      Py_ssize_t kw_args;
+      const Py_ssize_t pos_args = PyTuple_GET_SIZE(__pyx_args);
+      switch (pos_args) {
+        case  3: values[2] = PyTuple_GET_ITEM(__pyx_args, 2);
+        case  2: values[1] = PyTuple_GET_ITEM(__pyx_args, 1);
+        case  1: values[0] = PyTuple_GET_ITEM(__pyx_args, 0);
+        case  0: break;
+        default: goto __pyx_L5_argtuple_error;
+      }
+      kw_args = PyDict_Size(__pyx_kwds);
+      switch (pos_args) {
+        case  0:
+        if (likely((values[0] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_ltokens)) != 0)) kw_args--;
+        else goto __pyx_L5_argtuple_error;
+        case  1:
+        if (likely((values[1] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_rtokens)) != 0)) kw_args--;
+        else {
+          __Pyx_RaiseArgtupleInvalid("jjaccard_join1", 1, 3, 3, 1); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 13; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+        }
+        case  2:
+        if (likely((values[2] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_threshold)) != 0)) kw_args--;
+        else {
+          __Pyx_RaiseArgtupleInvalid("jjaccard_join1", 1, 3, 3, 2); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 13; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+        }
+      }
+      if (unlikely(kw_args > 0)) {
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "jjaccard_join1") < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 13; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+      }
+    } else if (PyTuple_GET_SIZE(__pyx_args) != 3) {
+      goto __pyx_L5_argtuple_error;
+    } else {
+      values[0] = PyTuple_GET_ITEM(__pyx_args, 0);
+      values[1] = PyTuple_GET_ITEM(__pyx_args, 1);
+      values[2] = PyTuple_GET_ITEM(__pyx_args, 2);
+    }
+    __pyx_v_ltokens = __pyx_convert_vector_from_py_std_3a__3a_vector_3c_int_3e___(values[0]); if (unlikely(PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 13; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+    __pyx_v_rtokens = __pyx_convert_vector_from_py_std_3a__3a_vector_3c_int_3e___(values[1]); if (unlikely(PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 13; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+    __pyx_v_threshold = __pyx_PyFloat_AsDouble(values[2]); if (unlikely((__pyx_v_threshold == (double)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 14; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+  }
+  goto __pyx_L4_argument_unpacking_done;
+  __pyx_L5_argtuple_error:;
+  __Pyx_RaiseArgtupleInvalid("jjaccard_join1", 1, 3, 3, PyTuple_GET_SIZE(__pyx_args)); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 13; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+  __pyx_L3_error:;
+  __Pyx_AddTraceback("py_stringsimjoin.apply_rf.jaccard_join.jjaccard_join1", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_RefNannyFinishContext();
+  return NULL;
+  __pyx_L4_argument_unpacking_done:;
+  __pyx_r = __pyx_pf_16py_stringsimjoin_8apply_rf_12jaccard_join_jjaccard_join1(__pyx_self, __pyx_v_ltokens, __pyx_v_rtokens, __pyx_v_threshold);
+
+  /* function exit code */
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+static PyObject *__pyx_pf_16py_stringsimjoin_8apply_rf_12jaccard_join_jjaccard_join1(CYTHON_UNUSED PyObject *__pyx_self, std::vector<std::vector<int> >  __pyx_v_ltokens, std::vector<std::vector<int> >  __pyx_v_rtokens, double __pyx_v_threshold) {
+  PyObject *__pyx_r = NULL;
+  __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
+  int __pyx_lineno = 0;
+  const char *__pyx_filename = NULL;
+  int __pyx_clineno = 0;
+  __Pyx_RefNannySetupContext("jjaccard_join1", 0);
+  __Pyx_XDECREF(__pyx_r);
+  __pyx_t_1 = __pyx_convert_vector_to_py_std_3a__3a_pair_3c_int_2c_int_3e___(__pyx_f_16py_stringsimjoin_8apply_rf_12jaccard_join_jjaccard_join1(__pyx_v_ltokens, __pyx_v_rtokens, __pyx_v_threshold, 0)); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 13; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_1);
+  __pyx_r = __pyx_t_1;
+  __pyx_t_1 = 0;
   goto __pyx_L0;
+
+  /* function exit code */
+  __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
+  __Pyx_AddTraceback("py_stringsimjoin.apply_rf.jaccard_join.jjaccard_join1", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __pyx_r = NULL;
+  __pyx_L0:;
+  __Pyx_XGIVEREF(__pyx_r);
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+/* "py_stringsimjoin/apply_rf/jaccard_join.pyx":75
+ *     return output_pairs
+ * 
+ * cpdef vector[pair[int, int]] jaccard_join(vector[vector[int]]& ltokens, vector[vector[int]]& rtokens,             # <<<<<<<<<<<<<<
+ *                    double threshold):
+ *     print 'l size. : ', ltokens.size(), ' , r size : ', rtokens.size()
+ */
+
+static PyObject *__pyx_pw_16py_stringsimjoin_8apply_rf_12jaccard_join_3jaccard_join(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static std::vector<std::pair<int,int> >  __pyx_f_16py_stringsimjoin_8apply_rf_12jaccard_join_jaccard_join(std::vector<std::vector<int> >  &__pyx_v_ltokens, std::vector<std::vector<int> >  &__pyx_v_rtokens, double __pyx_v_threshold, CYTHON_UNUSED int __pyx_skip_dispatch) {
+  std::vector<std::pair<int,int> >  __pyx_v_output_pairs;
+  int __pyx_v_i;
+  CYTHON_UNUSED int __pyx_v_n;
+  PositionIndex __pyx_v_index;
+  std::vector<std::pair<int,int> >  __pyx_r;
+  __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
+  PyObject *__pyx_t_2 = NULL;
+  PyObject *__pyx_t_3 = NULL;
+  int __pyx_t_4;
+  int __pyx_t_5;
+  int __pyx_t_6;
+  int __pyx_lineno = 0;
+  const char *__pyx_filename = NULL;
+  int __pyx_clineno = 0;
+  __Pyx_RefNannySetupContext("jaccard_join", 0);
+
+  /* "py_stringsimjoin/apply_rf/jaccard_join.pyx":77
+ * cpdef vector[pair[int, int]] jaccard_join(vector[vector[int]]& ltokens, vector[vector[int]]& rtokens,
+ *                    double threshold):
+ *     print 'l size. : ', ltokens.size(), ' , r size : ', rtokens.size()             # <<<<<<<<<<<<<<
+ *     cdef vector[pair[int, int]] output_pairs
+ *     cdef int i, n=rtokens.size()
+ */
+  __pyx_t_1 = __Pyx_PyInt_FromSize_t(__pyx_v_ltokens.size()); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 77; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_1);
+  __pyx_t_2 = __Pyx_PyInt_FromSize_t(__pyx_v_rtokens.size()); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 77; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_2);
+  __pyx_t_3 = PyTuple_New(4); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 77; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_3);
+  __Pyx_INCREF(__pyx_kp_s_l_size);
+  __Pyx_GIVEREF(__pyx_kp_s_l_size);
+  PyTuple_SET_ITEM(__pyx_t_3, 0, __pyx_kp_s_l_size);
+  __Pyx_GIVEREF(__pyx_t_1);
+  PyTuple_SET_ITEM(__pyx_t_3, 1, __pyx_t_1);
+  __Pyx_INCREF(__pyx_kp_s_r_size);
+  __Pyx_GIVEREF(__pyx_kp_s_r_size);
+  PyTuple_SET_ITEM(__pyx_t_3, 2, __pyx_kp_s_r_size);
+  __Pyx_GIVEREF(__pyx_t_2);
+  PyTuple_SET_ITEM(__pyx_t_3, 3, __pyx_t_2);
+  __pyx_t_1 = 0;
+  __pyx_t_2 = 0;
+  if (__Pyx_Print(0, __pyx_t_3, 1) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 77; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+
+  /* "py_stringsimjoin/apply_rf/jaccard_join.pyx":79
+ *     print 'l size. : ', ltokens.size(), ' , r size : ', rtokens.size()
+ *     cdef vector[pair[int, int]] output_pairs
+ *     cdef int i, n=rtokens.size()             # <<<<<<<<<<<<<<
+ *     cdef PositionIndex index
+ *     index = PositionIndex(ltokens, threshold)
+ */
+  __pyx_v_n = __pyx_v_rtokens.size();
+
+  /* "py_stringsimjoin/apply_rf/jaccard_join.pyx":81
+ *     cdef int i, n=rtokens.size()
+ *     cdef PositionIndex index
+ *     index = PositionIndex(ltokens, threshold)             # <<<<<<<<<<<<<<
+ * 
+ *     for i in prange(n, nogil=True):
+ */
+  __pyx_v_index = PositionIndex(__pyx_v_ltokens, __pyx_v_threshold);
+
+  /* "py_stringsimjoin/apply_rf/jaccard_join.pyx":83
+ *     index = PositionIndex(ltokens, threshold)
+ * 
+ *     for i in prange(n, nogil=True):             # <<<<<<<<<<<<<<
+ *         fun(ltokens, rtokens[i], threshold, index)
+ *     return output_pairs
+ */
+  {
+      #ifdef WITH_THREAD
+      PyThreadState *_save;
+      Py_UNBLOCK_THREADS
+      #endif
+      /*try:*/ {
+        __pyx_t_4 = __pyx_v_n;
+        if (1 == 0) abort();
+        {
+            #if ((defined(__APPLE__) || defined(__OSX__)) && (defined(__GNUC__) && (__GNUC__ > 2 || (__GNUC__ == 2 && (__GNUC_MINOR__ > 95)))))
+                #undef likely
+                #undef unlikely
+                #define likely(x)   (x)
+                #define unlikely(x) (x)
+            #endif
+            __pyx_t_6 = (__pyx_t_4 - 0) / 1;
+            if (__pyx_t_6 > 0)
+            {
+                #ifdef _OPENMP
+                #pragma omp parallel
+                #endif /* _OPENMP */
+                {
+                    #ifdef _OPENMP
+                    #pragma omp for firstprivate(__pyx_v_i) lastprivate(__pyx_v_i)
+                    #endif /* _OPENMP */
+                    for (__pyx_t_5 = 0; __pyx_t_5 < __pyx_t_6; __pyx_t_5++){
+                        {
+                            __pyx_v_i = 0 + 1 * __pyx_t_5;
+
+                            /* "py_stringsimjoin/apply_rf/jaccard_join.pyx":84
+ * 
+ *     for i in prange(n, nogil=True):
+ *         fun(ltokens, rtokens[i], threshold, index)             # <<<<<<<<<<<<<<
+ *     return output_pairs
+ * 
+ */
+                            __pyx_f_16py_stringsimjoin_8apply_rf_12jaccard_join_fun(__pyx_v_ltokens, (__pyx_v_rtokens[__pyx_v_i]), __pyx_v_threshold, __pyx_v_index);
+                        }
+                    }
+                }
+            }
+        }
+        #if ((defined(__APPLE__) || defined(__OSX__)) && (defined(__GNUC__) && (__GNUC__ > 2 || (__GNUC__ == 2 && (__GNUC_MINOR__ > 95)))))
+            #undef likely
+            #undef unlikely
+            #define likely(x)   __builtin_expect(!!(x), 1)
+            #define unlikely(x) __builtin_expect(!!(x), 0)
+        #endif
+      }
+
+      /* "py_stringsimjoin/apply_rf/jaccard_join.pyx":83
+ *     index = PositionIndex(ltokens, threshold)
+ * 
+ *     for i in prange(n, nogil=True):             # <<<<<<<<<<<<<<
+ *         fun(ltokens, rtokens[i], threshold, index)
+ *     return output_pairs
+ */
+      /*finally:*/ {
+        /*normal exit:*/{
+          #ifdef WITH_THREAD
+          Py_BLOCK_THREADS
+          #endif
+          goto __pyx_L5;
+        }
+        __pyx_L5:;
+      }
+  }
+
+  /* "py_stringsimjoin/apply_rf/jaccard_join.pyx":85
+ *     for i in prange(n, nogil=True):
+ *         fun(ltokens, rtokens[i], threshold, index)
+ *     return output_pairs             # <<<<<<<<<<<<<<
+ * 
+ * cdef void fun(vector[vector[int]]& ltokens, vector[int]& tokens, double threshold, PositionIndex& index) nogil:
+ */
+  __pyx_r = __pyx_v_output_pairs;
+  goto __pyx_L0;
+
+  /* "py_stringsimjoin/apply_rf/jaccard_join.pyx":75
+ *     return output_pairs
+ * 
+ * cpdef vector[pair[int, int]] jaccard_join(vector[vector[int]]& ltokens, vector[vector[int]]& rtokens,             # <<<<<<<<<<<<<<
+ *                    double threshold):
+ *     print 'l size. : ', ltokens.size(), ' , r size : ', rtokens.size()
+ */
+
+  /* function exit code */
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
   __Pyx_XDECREF(__pyx_t_2);
   __Pyx_XDECREF(__pyx_t_3);
   __Pyx_WriteUnraisable("py_stringsimjoin.apply_rf.jaccard_join.jaccard_join", __pyx_clineno, __pyx_lineno, __pyx_filename, 0, 0);
   __pyx_L0:;
-  __Pyx_XDECREF((PyObject *)__pyx_v_index);
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
 /* Python wrapper */
-static PyObject *__pyx_pw_16py_stringsimjoin_8apply_rf_12jaccard_join_1jaccard_join(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static PyObject *__pyx_pw_16py_stringsimjoin_8apply_rf_12jaccard_join_1jaccard_join(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+static PyObject *__pyx_pw_16py_stringsimjoin_8apply_rf_12jaccard_join_3jaccard_join(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static PyObject *__pyx_pw_16py_stringsimjoin_8apply_rf_12jaccard_join_3jaccard_join(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   std::vector<std::vector<int> >  __pyx_v_ltokens;
   std::vector<std::vector<int> >  __pyx_v_rtokens;
   double __pyx_v_threshold;
@@ -1262,16 +1828,16 @@ static PyObject *__pyx_pw_16py_stringsimjoin_8apply_rf_12jaccard_join_1jaccard_j
         case  1:
         if (likely((values[1] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_rtokens)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("jaccard_join", 1, 3, 3, 1); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 11; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+          __Pyx_RaiseArgtupleInvalid("jaccard_join", 1, 3, 3, 1); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 75; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
         }
         case  2:
         if (likely((values[2] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_threshold)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("jaccard_join", 1, 3, 3, 2); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 11; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+          __Pyx_RaiseArgtupleInvalid("jaccard_join", 1, 3, 3, 2); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 75; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "jaccard_join") < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 11; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "jaccard_join") < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 75; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 3) {
       goto __pyx_L5_argtuple_error;
@@ -1280,26 +1846,26 @@ static PyObject *__pyx_pw_16py_stringsimjoin_8apply_rf_12jaccard_join_1jaccard_j
       values[1] = PyTuple_GET_ITEM(__pyx_args, 1);
       values[2] = PyTuple_GET_ITEM(__pyx_args, 2);
     }
-    __pyx_v_ltokens = __pyx_convert_vector_from_py_std_3a__3a_vector_3c_int_3e___(values[0]); if (unlikely(PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 11; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
-    __pyx_v_rtokens = __pyx_convert_vector_from_py_std_3a__3a_vector_3c_int_3e___(values[1]); if (unlikely(PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 11; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
-    __pyx_v_threshold = __pyx_PyFloat_AsDouble(values[2]); if (unlikely((__pyx_v_threshold == (double)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 12; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+    __pyx_v_ltokens = __pyx_convert_vector_from_py_std_3a__3a_vector_3c_int_3e___(values[0]); if (unlikely(PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 75; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+    __pyx_v_rtokens = __pyx_convert_vector_from_py_std_3a__3a_vector_3c_int_3e___(values[1]); if (unlikely(PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 75; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+    __pyx_v_threshold = __pyx_PyFloat_AsDouble(values[2]); if (unlikely((__pyx_v_threshold == (double)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 76; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("jaccard_join", 1, 3, 3, PyTuple_GET_SIZE(__pyx_args)); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 11; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+  __Pyx_RaiseArgtupleInvalid("jaccard_join", 1, 3, 3, PyTuple_GET_SIZE(__pyx_args)); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 75; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
   __pyx_L3_error:;
   __Pyx_AddTraceback("py_stringsimjoin.apply_rf.jaccard_join.jaccard_join", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  __pyx_r = __pyx_pf_16py_stringsimjoin_8apply_rf_12jaccard_join_jaccard_join(__pyx_self, __pyx_v_ltokens, __pyx_v_rtokens, __pyx_v_threshold);
+  __pyx_r = __pyx_pf_16py_stringsimjoin_8apply_rf_12jaccard_join_2jaccard_join(__pyx_self, __pyx_v_ltokens, __pyx_v_rtokens, __pyx_v_threshold);
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_16py_stringsimjoin_8apply_rf_12jaccard_join_jaccard_join(CYTHON_UNUSED PyObject *__pyx_self, std::vector<std::vector<int> >  __pyx_v_ltokens, std::vector<std::vector<int> >  __pyx_v_rtokens, double __pyx_v_threshold) {
+static PyObject *__pyx_pf_16py_stringsimjoin_8apply_rf_12jaccard_join_2jaccard_join(CYTHON_UNUSED PyObject *__pyx_self, std::vector<std::vector<int> >  __pyx_v_ltokens, std::vector<std::vector<int> >  __pyx_v_rtokens, double __pyx_v_threshold) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -1308,7 +1874,7 @@ static PyObject *__pyx_pf_16py_stringsimjoin_8apply_rf_12jaccard_join_jaccard_jo
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("jaccard_join", 0);
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __pyx_convert_vector_to_py_std_3a__3a_pair_3c_int_2c_int_3e___(__pyx_f_16py_stringsimjoin_8apply_rf_12jaccard_join_jaccard_join(__pyx_v_ltokens, __pyx_v_rtokens, __pyx_v_threshold, 0)); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 11; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = __pyx_convert_vector_to_py_std_3a__3a_pair_3c_int_2c_int_3e___(__pyx_f_16py_stringsimjoin_8apply_rf_12jaccard_join_jaccard_join(__pyx_v_ltokens, __pyx_v_rtokens, __pyx_v_threshold, 0)); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 75; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
@@ -1325,7 +1891,423 @@ static PyObject *__pyx_pf_16py_stringsimjoin_8apply_rf_12jaccard_join_jaccard_jo
   return __pyx_r;
 }
 
-/* "py_stringsimjoin/apply_rf/jaccard_join.pyx":72
+/* "py_stringsimjoin/apply_rf/jaccard_join.pyx":87
+ *     return output_pairs
+ * 
+ * cdef void fun(vector[vector[int]]& ltokens, vector[int]& tokens, double threshold, PositionIndex& index) nogil:             # <<<<<<<<<<<<<<
+ *     cdef omap[int, int] candidate_overlap, overlap_threshold_cache
+ *     cdef vector[pair[int, int]] candidates
+ */
+
+static void __pyx_f_16py_stringsimjoin_8apply_rf_12jaccard_join_fun(std::vector<std::vector<int> >  &__pyx_v_ltokens, std::vector<int>  &__pyx_v_tokens, double __pyx_v_threshold, PositionIndex &__pyx_v_index) {
+  std::map<int,int>  __pyx_v_candidate_overlap;
+  std::map<int,int>  __pyx_v_overlap_threshold_cache;
+  std::vector<std::pair<int,int> >  __pyx_v_candidates;
+  std::pair<int,int>  __pyx_v_cand;
+  std::pair<int,int>  __pyx_v_entry;
+  int __pyx_v_k;
+  int __pyx_v_j;
+  int __pyx_v_m;
+  int __pyx_v_prefix_length;
+  int __pyx_v_cand_num_tokens;
+  int __pyx_v_current_overlap;
+  int __pyx_v_overlap_upper_bound;
+  int __pyx_v_size;
+  int __pyx_v_size_lower_bound;
+  int __pyx_v_size_upper_bound;
+  double __pyx_v_sim_score;
+  long __pyx_t_1;
+  int __pyx_t_2;
+  double __pyx_t_3;
+  int __pyx_t_4;
+  std::vector<std::pair<int,int> > ::iterator __pyx_t_5;
+  std::pair<int,int>  __pyx_t_6;
+  int __pyx_t_7;
+  int __pyx_t_8;
+  std::map<int,int> ::iterator __pyx_t_9;
+  std::pair<int,int>  __pyx_t_10;
+  int __pyx_lineno = 0;
+  const char *__pyx_filename = NULL;
+  int __pyx_clineno = 0;
+
+  /* "py_stringsimjoin/apply_rf/jaccard_join.pyx":91
+ *     cdef vector[pair[int, int]] candidates
+ *     cdef pair[int, int] cand, entry
+ *     cdef int k=0, j=0, m, prefix_length, cand_num_tokens, current_overlap, overlap_upper_bound             # <<<<<<<<<<<<<<
+ *     cdef int size, size_lower_bound, size_upper_bound
+ *     cdef double sim_score
+ */
+  __pyx_v_k = 0;
+  __pyx_v_j = 0;
+
+  /* "py_stringsimjoin/apply_rf/jaccard_join.pyx":94
+ *     cdef int size, size_lower_bound, size_upper_bound
+ *     cdef double sim_score
+ *     m = tokens.size()             # <<<<<<<<<<<<<<
+ *     prefix_length = <int>(m - ceil(threshold * m) + 1.0)
+ *     size_lower_bound = <int>ceil(threshold * m)
+ */
+  __pyx_v_m = __pyx_v_tokens.size();
+
+  /* "py_stringsimjoin/apply_rf/jaccard_join.pyx":95
+ *     cdef double sim_score
+ *     m = tokens.size()
+ *     prefix_length = <int>(m - ceil(threshold * m) + 1.0)             # <<<<<<<<<<<<<<
+ *     size_lower_bound = <int>ceil(threshold * m)
+ *     size_upper_bound = <int>floor(m / threshold)
+ */
+  __pyx_v_prefix_length = ((int)((__pyx_v_m - ceil((__pyx_v_threshold * __pyx_v_m))) + 1.0));
+
+  /* "py_stringsimjoin/apply_rf/jaccard_join.pyx":96
+ *     m = tokens.size()
+ *     prefix_length = <int>(m - ceil(threshold * m) + 1.0)
+ *     size_lower_bound = <int>ceil(threshold * m)             # <<<<<<<<<<<<<<
+ *     size_upper_bound = <int>floor(m / threshold)
+ * 
+ */
+  __pyx_v_size_lower_bound = ((int)ceil((__pyx_v_threshold * __pyx_v_m)));
+
+  /* "py_stringsimjoin/apply_rf/jaccard_join.pyx":97
+ *     prefix_length = <int>(m - ceil(threshold * m) + 1.0)
+ *     size_lower_bound = <int>ceil(threshold * m)
+ *     size_upper_bound = <int>floor(m / threshold)             # <<<<<<<<<<<<<<
+ * 
+ *     for size in range(size_lower_bound, size_upper_bound + 1):
+ */
+  if (unlikely(__pyx_v_threshold == 0)) {
+    #ifdef WITH_THREAD
+    PyGILState_STATE __pyx_gilstate_save = PyGILState_Ensure();
+    #endif
+    PyErr_SetString(PyExc_ZeroDivisionError, "float division");
+    #ifdef WITH_THREAD
+    PyGILState_Release(__pyx_gilstate_save);
+    #endif
+    {__pyx_filename = __pyx_f[0]; __pyx_lineno = 97; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  }
+  __pyx_v_size_upper_bound = ((int)floor((__pyx_v_m / __pyx_v_threshold)));
+
+  /* "py_stringsimjoin/apply_rf/jaccard_join.pyx":99
+ *     size_upper_bound = <int>floor(m / threshold)
+ * 
+ *     for size in range(size_lower_bound, size_upper_bound + 1):             # <<<<<<<<<<<<<<
+ *         overlap_threshold_cache[size] = <int>ceil((threshold / (1 + threshold)) * (size + m))
+ * 
+ */
+  __pyx_t_1 = (__pyx_v_size_upper_bound + 1);
+  for (__pyx_t_2 = __pyx_v_size_lower_bound; __pyx_t_2 < __pyx_t_1; __pyx_t_2+=1) {
+    __pyx_v_size = __pyx_t_2;
+
+    /* "py_stringsimjoin/apply_rf/jaccard_join.pyx":100
+ * 
+ *     for size in range(size_lower_bound, size_upper_bound + 1):
+ *         overlap_threshold_cache[size] = <int>ceil((threshold / (1 + threshold)) * (size + m))             # <<<<<<<<<<<<<<
+ * 
+ *     for j in range(prefix_length):
+ */
+    __pyx_t_3 = (1.0 + __pyx_v_threshold);
+    if (unlikely(__pyx_t_3 == 0)) {
+      #ifdef WITH_THREAD
+      PyGILState_STATE __pyx_gilstate_save = PyGILState_Ensure();
+      #endif
+      PyErr_SetString(PyExc_ZeroDivisionError, "float division");
+      #ifdef WITH_THREAD
+      PyGILState_Release(__pyx_gilstate_save);
+      #endif
+      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 100; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    }
+    (__pyx_v_overlap_threshold_cache[__pyx_v_size]) = ((int)ceil(((__pyx_v_threshold / __pyx_t_3) * (__pyx_v_size + __pyx_v_m))));
+  }
+
+  /* "py_stringsimjoin/apply_rf/jaccard_join.pyx":102
+ *         overlap_threshold_cache[size] = <int>ceil((threshold / (1 + threshold)) * (size + m))
+ * 
+ *     for j in range(prefix_length):             # <<<<<<<<<<<<<<
+ *         candidates = index.index[tokens[j]]
+ *         for cand in candidates:
+ */
+  __pyx_t_2 = __pyx_v_prefix_length;
+  for (__pyx_t_4 = 0; __pyx_t_4 < __pyx_t_2; __pyx_t_4+=1) {
+    __pyx_v_j = __pyx_t_4;
+
+    /* "py_stringsimjoin/apply_rf/jaccard_join.pyx":103
+ * 
+ *     for j in range(prefix_length):
+ *         candidates = index.index[tokens[j]]             # <<<<<<<<<<<<<<
+ *         for cand in candidates:
+ *             current_overlap = candidate_overlap[cand.first]
+ */
+    __pyx_v_candidates = (__pyx_v_index.index[(__pyx_v_tokens[__pyx_v_j])]);
+
+    /* "py_stringsimjoin/apply_rf/jaccard_join.pyx":104
+ *     for j in range(prefix_length):
+ *         candidates = index.index[tokens[j]]
+ *         for cand in candidates:             # <<<<<<<<<<<<<<
+ *             current_overlap = candidate_overlap[cand.first]
+ *             if current_overlap != -1:
+ */
+    __pyx_t_5 = __pyx_v_candidates.begin();
+    for (;;) {
+      if (!(__pyx_t_5 != __pyx_v_candidates.end())) break;
+      __pyx_t_6 = *__pyx_t_5;
+      ++__pyx_t_5;
+      __pyx_v_cand = __pyx_t_6;
+
+      /* "py_stringsimjoin/apply_rf/jaccard_join.pyx":105
+ *         candidates = index.index[tokens[j]]
+ *         for cand in candidates:
+ *             current_overlap = candidate_overlap[cand.first]             # <<<<<<<<<<<<<<
+ *             if current_overlap != -1:
+ *                 cand_num_tokens = index.size_vector[cand.first]
+ */
+      __pyx_v_current_overlap = (__pyx_v_candidate_overlap[__pyx_v_cand.first]);
+
+      /* "py_stringsimjoin/apply_rf/jaccard_join.pyx":106
+ *         for cand in candidates:
+ *             current_overlap = candidate_overlap[cand.first]
+ *             if current_overlap != -1:             # <<<<<<<<<<<<<<
+ *                 cand_num_tokens = index.size_vector[cand.first]
+ * 
+ */
+      __pyx_t_7 = ((__pyx_v_current_overlap != -1L) != 0);
+      if (__pyx_t_7) {
+
+        /* "py_stringsimjoin/apply_rf/jaccard_join.pyx":107
+ *             current_overlap = candidate_overlap[cand.first]
+ *             if current_overlap != -1:
+ *                 cand_num_tokens = index.size_vector[cand.first]             # <<<<<<<<<<<<<<
+ * 
+ *                 # only consider candidates satisfying the size filter
+ */
+        __pyx_v_cand_num_tokens = (__pyx_v_index.size_vector[__pyx_v_cand.first]);
+
+        /* "py_stringsimjoin/apply_rf/jaccard_join.pyx":111
+ *                 # only consider candidates satisfying the size filter
+ *                 # condition.
+ *                 if size_lower_bound <= cand_num_tokens <= size_upper_bound:             # <<<<<<<<<<<<<<
+ * 
+ *                     if m - j <= cand_num_tokens - cand.second:
+ */
+        __pyx_t_7 = (__pyx_v_size_lower_bound <= __pyx_v_cand_num_tokens);
+        if (__pyx_t_7) {
+          __pyx_t_7 = (__pyx_v_cand_num_tokens <= __pyx_v_size_upper_bound);
+        }
+        __pyx_t_8 = (__pyx_t_7 != 0);
+        if (__pyx_t_8) {
+
+          /* "py_stringsimjoin/apply_rf/jaccard_join.pyx":113
+ *                 if size_lower_bound <= cand_num_tokens <= size_upper_bound:
+ * 
+ *                     if m - j <= cand_num_tokens - cand.second:             # <<<<<<<<<<<<<<
+ *                         overlap_upper_bound = m - j
+ *                     else:
+ */
+          __pyx_t_8 = (((__pyx_v_m - __pyx_v_j) <= (__pyx_v_cand_num_tokens - __pyx_v_cand.second)) != 0);
+          if (__pyx_t_8) {
+
+            /* "py_stringsimjoin/apply_rf/jaccard_join.pyx":114
+ * 
+ *                     if m - j <= cand_num_tokens - cand.second:
+ *                         overlap_upper_bound = m - j             # <<<<<<<<<<<<<<
+ *                     else:
+ *                         overlap_upper_bound = cand_num_tokens - cand.second
+ */
+            __pyx_v_overlap_upper_bound = (__pyx_v_m - __pyx_v_j);
+
+            /* "py_stringsimjoin/apply_rf/jaccard_join.pyx":113
+ *                 if size_lower_bound <= cand_num_tokens <= size_upper_bound:
+ * 
+ *                     if m - j <= cand_num_tokens - cand.second:             # <<<<<<<<<<<<<<
+ *                         overlap_upper_bound = m - j
+ *                     else:
+ */
+            goto __pyx_L11;
+          }
+
+          /* "py_stringsimjoin/apply_rf/jaccard_join.pyx":116
+ *                         overlap_upper_bound = m - j
+ *                     else:
+ *                         overlap_upper_bound = cand_num_tokens - cand.second             # <<<<<<<<<<<<<<
+ * 
+ *                     # only consider candidates for which the overlap upper
+ */
+          /*else*/ {
+            __pyx_v_overlap_upper_bound = (__pyx_v_cand_num_tokens - __pyx_v_cand.second);
+          }
+          __pyx_L11:;
+
+          /* "py_stringsimjoin/apply_rf/jaccard_join.pyx":120
+ *                     # only consider candidates for which the overlap upper
+ *                     # bound is at least the required overlap.
+ *                     if (current_overlap + overlap_upper_bound >=             # <<<<<<<<<<<<<<
+ *                                 overlap_threshold_cache[cand_num_tokens]):
+ *                         candidate_overlap[cand.first] = current_overlap + 1
+ */
+          __pyx_t_8 = (((__pyx_v_current_overlap + __pyx_v_overlap_upper_bound) >= (__pyx_v_overlap_threshold_cache[__pyx_v_cand_num_tokens])) != 0);
+          if (__pyx_t_8) {
+
+            /* "py_stringsimjoin/apply_rf/jaccard_join.pyx":122
+ *                     if (current_overlap + overlap_upper_bound >=
+ *                                 overlap_threshold_cache[cand_num_tokens]):
+ *                         candidate_overlap[cand.first] = current_overlap + 1             # <<<<<<<<<<<<<<
+ *                     else:
+ *                         candidate_overlap[cand.first] = -1
+ */
+            (__pyx_v_candidate_overlap[__pyx_v_cand.first]) = (__pyx_v_current_overlap + 1);
+
+            /* "py_stringsimjoin/apply_rf/jaccard_join.pyx":120
+ *                     # only consider candidates for which the overlap upper
+ *                     # bound is at least the required overlap.
+ *                     if (current_overlap + overlap_upper_bound >=             # <<<<<<<<<<<<<<
+ *                                 overlap_threshold_cache[cand_num_tokens]):
+ *                         candidate_overlap[cand.first] = current_overlap + 1
+ */
+            goto __pyx_L12;
+          }
+
+          /* "py_stringsimjoin/apply_rf/jaccard_join.pyx":124
+ *                         candidate_overlap[cand.first] = current_overlap + 1
+ *                     else:
+ *                         candidate_overlap[cand.first] = -1             # <<<<<<<<<<<<<<
+ * #        print i, candidate_overlap.size()
+ *     for entry in candidate_overlap:
+ */
+          /*else*/ {
+            (__pyx_v_candidate_overlap[__pyx_v_cand.first]) = -1;
+          }
+          __pyx_L12:;
+
+          /* "py_stringsimjoin/apply_rf/jaccard_join.pyx":111
+ *                 # only consider candidates satisfying the size filter
+ *                 # condition.
+ *                 if size_lower_bound <= cand_num_tokens <= size_upper_bound:             # <<<<<<<<<<<<<<
+ * 
+ *                     if m - j <= cand_num_tokens - cand.second:
+ */
+        }
+
+        /* "py_stringsimjoin/apply_rf/jaccard_join.pyx":106
+ *         for cand in candidates:
+ *             current_overlap = candidate_overlap[cand.first]
+ *             if current_overlap != -1:             # <<<<<<<<<<<<<<
+ *                 cand_num_tokens = index.size_vector[cand.first]
+ * 
+ */
+      }
+
+      /* "py_stringsimjoin/apply_rf/jaccard_join.pyx":104
+ *     for j in range(prefix_length):
+ *         candidates = index.index[tokens[j]]
+ *         for cand in candidates:             # <<<<<<<<<<<<<<
+ *             current_overlap = candidate_overlap[cand.first]
+ *             if current_overlap != -1:
+ */
+    }
+  }
+
+  /* "py_stringsimjoin/apply_rf/jaccard_join.pyx":126
+ *                         candidate_overlap[cand.first] = -1
+ * #        print i, candidate_overlap.size()
+ *     for entry in candidate_overlap:             # <<<<<<<<<<<<<<
+ *         if entry.second > 0:
+ *             k += 1
+ */
+  __pyx_t_9 = __pyx_v_candidate_overlap.begin();
+  for (;;) {
+    if (!(__pyx_t_9 != __pyx_v_candidate_overlap.end())) break;
+    __pyx_t_10 = *__pyx_t_9;
+    ++__pyx_t_9;
+    __pyx_v_entry = __pyx_t_10;
+
+    /* "py_stringsimjoin/apply_rf/jaccard_join.pyx":127
+ * #        print i, candidate_overlap.size()
+ *     for entry in candidate_overlap:
+ *         if entry.second > 0:             # <<<<<<<<<<<<<<
+ *             k += 1
+ *             sim_score = jaccard(ltokens[entry.first], tokens)
+ */
+    __pyx_t_8 = ((__pyx_v_entry.second > 0) != 0);
+    if (__pyx_t_8) {
+
+      /* "py_stringsimjoin/apply_rf/jaccard_join.pyx":128
+ *     for entry in candidate_overlap:
+ *         if entry.second > 0:
+ *             k += 1             # <<<<<<<<<<<<<<
+ *             sim_score = jaccard(ltokens[entry.first], tokens)
+ *             #print ltokens[entry.first], rtokens[i], entry.second, sim_score
+ */
+      __pyx_v_k = (__pyx_v_k + 1);
+
+      /* "py_stringsimjoin/apply_rf/jaccard_join.pyx":129
+ *         if entry.second > 0:
+ *             k += 1
+ *             sim_score = jaccard(ltokens[entry.first], tokens)             # <<<<<<<<<<<<<<
+ *             #print ltokens[entry.first], rtokens[i], entry.second, sim_score
+ *             if sim_score > threshold:
+ */
+      __pyx_v_sim_score = __pyx_f_16py_stringsimjoin_8apply_rf_12jaccard_join_jaccard((__pyx_v_ltokens[__pyx_v_entry.first]), __pyx_v_tokens);
+
+      /* "py_stringsimjoin/apply_rf/jaccard_join.pyx":131
+ *             sim_score = jaccard(ltokens[entry.first], tokens)
+ *             #print ltokens[entry.first], rtokens[i], entry.second, sim_score
+ *             if sim_score > threshold:             # <<<<<<<<<<<<<<
+ *                 k = k - 1 + 1
+ * #                    output_pairs.push_back(pair[int, int](entry.first, i))
+ */
+      __pyx_t_8 = ((__pyx_v_sim_score > __pyx_v_threshold) != 0);
+      if (__pyx_t_8) {
+
+        /* "py_stringsimjoin/apply_rf/jaccard_join.pyx":132
+ *             #print ltokens[entry.first], rtokens[i], entry.second, sim_score
+ *             if sim_score > threshold:
+ *                 k = k - 1 + 1             # <<<<<<<<<<<<<<
+ * #                    output_pairs.push_back(pair[int, int](entry.first, i))
+ * 
+ */
+        __pyx_v_k = ((__pyx_v_k - 1) + 1);
+
+        /* "py_stringsimjoin/apply_rf/jaccard_join.pyx":131
+ *             sim_score = jaccard(ltokens[entry.first], tokens)
+ *             #print ltokens[entry.first], rtokens[i], entry.second, sim_score
+ *             if sim_score > threshold:             # <<<<<<<<<<<<<<
+ *                 k = k - 1 + 1
+ * #                    output_pairs.push_back(pair[int, int](entry.first, i))
+ */
+      }
+
+      /* "py_stringsimjoin/apply_rf/jaccard_join.pyx":127
+ * #        print i, candidate_overlap.size()
+ *     for entry in candidate_overlap:
+ *         if entry.second > 0:             # <<<<<<<<<<<<<<
+ *             k += 1
+ *             sim_score = jaccard(ltokens[entry.first], tokens)
+ */
+    }
+
+    /* "py_stringsimjoin/apply_rf/jaccard_join.pyx":126
+ *                         candidate_overlap[cand.first] = -1
+ * #        print i, candidate_overlap.size()
+ *     for entry in candidate_overlap:             # <<<<<<<<<<<<<<
+ *         if entry.second > 0:
+ *             k += 1
+ */
+  }
+
+  /* "py_stringsimjoin/apply_rf/jaccard_join.pyx":87
+ *     return output_pairs
+ * 
+ * cdef void fun(vector[vector[int]]& ltokens, vector[int]& tokens, double threshold, PositionIndex& index) nogil:             # <<<<<<<<<<<<<<
+ *     cdef omap[int, int] candidate_overlap, overlap_threshold_cache
+ *     cdef vector[pair[int, int]] candidates
+ */
+
+  /* function exit code */
+  goto __pyx_L0;
+  __pyx_L1_error:;
+  __Pyx_WriteUnraisable("py_stringsimjoin.apply_rf.jaccard_join.fun", __pyx_clineno, __pyx_lineno, __pyx_filename, 0, 1);
+  __pyx_L0:;
+}
+
+/* "py_stringsimjoin/apply_rf/jaccard_join.pyx":151
  *     cdef readonly double threshold
  * 
  *     def __init__(self, const vector[vector[int]]& token_vectors, double threshold):             # <<<<<<<<<<<<<<
@@ -1334,8 +2316,8 @@ static PyObject *__pyx_pf_16py_stringsimjoin_8apply_rf_12jaccard_join_jaccard_jo
  */
 
 /* Python wrapper */
-static int __pyx_pw_16py_stringsimjoin_8apply_rf_12jaccard_join_13PositionIndex_1__init__(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static int __pyx_pw_16py_stringsimjoin_8apply_rf_12jaccard_join_13PositionIndex_1__init__(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+static int __pyx_pw_16py_stringsimjoin_8apply_rf_12jaccard_join_15PpositionIndex1_1__init__(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static int __pyx_pw_16py_stringsimjoin_8apply_rf_12jaccard_join_15PpositionIndex1_1__init__(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   std::vector<std::vector<int> >  __pyx_v_token_vectors;
   double __pyx_v_threshold;
   int __pyx_lineno = 0;
@@ -1364,11 +2346,11 @@ static int __pyx_pw_16py_stringsimjoin_8apply_rf_12jaccard_join_13PositionIndex_
         case  1:
         if (likely((values[1] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_threshold)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("__init__", 1, 2, 2, 1); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 72; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+          __Pyx_RaiseArgtupleInvalid("__init__", 1, 2, 2, 1); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 151; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "__init__") < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 72; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "__init__") < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 151; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 2) {
       goto __pyx_L5_argtuple_error;
@@ -1376,25 +2358,25 @@ static int __pyx_pw_16py_stringsimjoin_8apply_rf_12jaccard_join_13PositionIndex_
       values[0] = PyTuple_GET_ITEM(__pyx_args, 0);
       values[1] = PyTuple_GET_ITEM(__pyx_args, 1);
     }
-    __pyx_v_token_vectors = __pyx_convert_vector_from_py_std_3a__3a_vector_3c_int_3e___(values[0]); if (unlikely(PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 72; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
-    __pyx_v_threshold = __pyx_PyFloat_AsDouble(values[1]); if (unlikely((__pyx_v_threshold == (double)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 72; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+    __pyx_v_token_vectors = __pyx_convert_vector_from_py_std_3a__3a_vector_3c_int_3e___(values[0]); if (unlikely(PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 151; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+    __pyx_v_threshold = __pyx_PyFloat_AsDouble(values[1]); if (unlikely((__pyx_v_threshold == (double)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 151; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("__init__", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 72; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+  __Pyx_RaiseArgtupleInvalid("__init__", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 151; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
   __pyx_L3_error:;
-  __Pyx_AddTraceback("py_stringsimjoin.apply_rf.jaccard_join.PositionIndex.__init__", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("py_stringsimjoin.apply_rf.jaccard_join.PpositionIndex1.__init__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return -1;
   __pyx_L4_argument_unpacking_done:;
-  __pyx_r = __pyx_pf_16py_stringsimjoin_8apply_rf_12jaccard_join_13PositionIndex___init__(((struct __pyx_obj_16py_stringsimjoin_8apply_rf_12jaccard_join_PositionIndex *)__pyx_v_self), __pyx_v_token_vectors, __pyx_v_threshold);
+  __pyx_r = __pyx_pf_16py_stringsimjoin_8apply_rf_12jaccard_join_15PpositionIndex1___init__(((struct __pyx_obj_16py_stringsimjoin_8apply_rf_12jaccard_join_PpositionIndex1 *)__pyx_v_self), __pyx_v_token_vectors, __pyx_v_threshold);
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static int __pyx_pf_16py_stringsimjoin_8apply_rf_12jaccard_join_13PositionIndex___init__(struct __pyx_obj_16py_stringsimjoin_8apply_rf_12jaccard_join_PositionIndex *__pyx_v_self, std::vector<std::vector<int> >  __pyx_v_token_vectors, double __pyx_v_threshold) {
+static int __pyx_pf_16py_stringsimjoin_8apply_rf_12jaccard_join_15PpositionIndex1___init__(struct __pyx_obj_16py_stringsimjoin_8apply_rf_12jaccard_join_PpositionIndex1 *__pyx_v_self, std::vector<std::vector<int> >  __pyx_v_token_vectors, double __pyx_v_threshold) {
   std::vector<int>  __pyx_v_tokens;
   int __pyx_v_prefix_length;
   int __pyx_v_i;
@@ -1416,7 +2398,7 @@ static int __pyx_pf_16py_stringsimjoin_8apply_rf_12jaccard_join_13PositionIndex_
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__init__", 0);
 
-  /* "py_stringsimjoin/apply_rf/jaccard_join.pyx":74
+  /* "py_stringsimjoin/apply_rf/jaccard_join.pyx":153
  *     def __init__(self, const vector[vector[int]]& token_vectors, double threshold):
  *         cdef vector[int] tokens
  *         cdef int prefix_length, token, i, j, m, n=token_vectors.size(), min_len=100000, max_len=0             # <<<<<<<<<<<<<<
@@ -1427,7 +2409,7 @@ static int __pyx_pf_16py_stringsimjoin_8apply_rf_12jaccard_join_13PositionIndex_
   __pyx_v_min_len = 0x186A0;
   __pyx_v_max_len = 0;
 
-  /* "py_stringsimjoin/apply_rf/jaccard_join.pyx":75
+  /* "py_stringsimjoin/apply_rf/jaccard_join.pyx":154
  *         cdef vector[int] tokens
  *         cdef int prefix_length, token, i, j, m, n=token_vectors.size(), min_len=100000, max_len=0
  *         for i in range(n):             # <<<<<<<<<<<<<<
@@ -1438,7 +2420,7 @@ static int __pyx_pf_16py_stringsimjoin_8apply_rf_12jaccard_join_13PositionIndex_
   for (__pyx_t_2 = 0; __pyx_t_2 < __pyx_t_1; __pyx_t_2+=1) {
     __pyx_v_i = __pyx_t_2;
 
-    /* "py_stringsimjoin/apply_rf/jaccard_join.pyx":76
+    /* "py_stringsimjoin/apply_rf/jaccard_join.pyx":155
  *         cdef int prefix_length, token, i, j, m, n=token_vectors.size(), min_len=100000, max_len=0
  *         for i in range(n):
  *             tokens = token_vectors[i]             # <<<<<<<<<<<<<<
@@ -1447,7 +2429,7 @@ static int __pyx_pf_16py_stringsimjoin_8apply_rf_12jaccard_join_13PositionIndex_
  */
     __pyx_v_tokens = (__pyx_v_token_vectors[__pyx_v_i]);
 
-    /* "py_stringsimjoin/apply_rf/jaccard_join.pyx":77
+    /* "py_stringsimjoin/apply_rf/jaccard_join.pyx":156
  *         for i in range(n):
  *             tokens = token_vectors[i]
  *             m = tokens.size()             # <<<<<<<<<<<<<<
@@ -1456,7 +2438,7 @@ static int __pyx_pf_16py_stringsimjoin_8apply_rf_12jaccard_join_13PositionIndex_
  */
     __pyx_v_m = __pyx_v_tokens.size();
 
-    /* "py_stringsimjoin/apply_rf/jaccard_join.pyx":78
+    /* "py_stringsimjoin/apply_rf/jaccard_join.pyx":157
  *             tokens = token_vectors[i]
  *             m = tokens.size()
  *             self.size_vector.push_back(m)             # <<<<<<<<<<<<<<
@@ -1467,10 +2449,10 @@ static int __pyx_pf_16py_stringsimjoin_8apply_rf_12jaccard_join_13PositionIndex_
       __pyx_v_self->size_vector.push_back(__pyx_v_m);
     } catch(...) {
       __Pyx_CppExn2PyErr();
-      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 78; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 157; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     }
 
-    /* "py_stringsimjoin/apply_rf/jaccard_join.pyx":79
+    /* "py_stringsimjoin/apply_rf/jaccard_join.pyx":158
  *             m = tokens.size()
  *             self.size_vector.push_back(m)
  *             prefix_length = int(m - ceil(threshold * m) + 1.0)             # <<<<<<<<<<<<<<
@@ -1479,7 +2461,7 @@ static int __pyx_pf_16py_stringsimjoin_8apply_rf_12jaccard_join_13PositionIndex_
  */
     __pyx_v_prefix_length = ((int)((__pyx_v_m - ceil((__pyx_v_threshold * __pyx_v_m))) + 1.0));
 
-    /* "py_stringsimjoin/apply_rf/jaccard_join.pyx":80
+    /* "py_stringsimjoin/apply_rf/jaccard_join.pyx":159
  *             self.size_vector.push_back(m)
  *             prefix_length = int(m - ceil(threshold * m) + 1.0)
  *             for j in range(prefix_length):             # <<<<<<<<<<<<<<
@@ -1490,7 +2472,7 @@ static int __pyx_pf_16py_stringsimjoin_8apply_rf_12jaccard_join_13PositionIndex_
     for (__pyx_t_4 = 0; __pyx_t_4 < __pyx_t_3; __pyx_t_4+=1) {
       __pyx_v_j = __pyx_t_4;
 
-      /* "py_stringsimjoin/apply_rf/jaccard_join.pyx":81
+      /* "py_stringsimjoin/apply_rf/jaccard_join.pyx":160
  *             prefix_length = int(m - ceil(threshold * m) + 1.0)
  *             for j in range(prefix_length):
  *                 self.index[tokens[j]].push_back(pair[int, int](i, j))             # <<<<<<<<<<<<<<
@@ -1501,17 +2483,17 @@ static int __pyx_pf_16py_stringsimjoin_8apply_rf_12jaccard_join_13PositionIndex_
         __pyx_t_5 = std::pair<int,int> (__pyx_v_i, __pyx_v_j);
       } catch(...) {
         __Pyx_CppExn2PyErr();
-        {__pyx_filename = __pyx_f[0]; __pyx_lineno = 81; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        {__pyx_filename = __pyx_f[0]; __pyx_lineno = 160; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       }
       try {
         (__pyx_v_self->index[(__pyx_v_tokens[__pyx_v_j])]).push_back(__pyx_t_5);
       } catch(...) {
         __Pyx_CppExn2PyErr();
-        {__pyx_filename = __pyx_f[0]; __pyx_lineno = 81; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        {__pyx_filename = __pyx_f[0]; __pyx_lineno = 160; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       }
     }
 
-    /* "py_stringsimjoin/apply_rf/jaccard_join.pyx":82
+    /* "py_stringsimjoin/apply_rf/jaccard_join.pyx":161
  *             for j in range(prefix_length):
  *                 self.index[tokens[j]].push_back(pair[int, int](i, j))
  *             if m > max_len:             # <<<<<<<<<<<<<<
@@ -1521,7 +2503,7 @@ static int __pyx_pf_16py_stringsimjoin_8apply_rf_12jaccard_join_13PositionIndex_
     __pyx_t_6 = ((__pyx_v_m > __pyx_v_max_len) != 0);
     if (__pyx_t_6) {
 
-      /* "py_stringsimjoin/apply_rf/jaccard_join.pyx":83
+      /* "py_stringsimjoin/apply_rf/jaccard_join.pyx":162
  *                 self.index[tokens[j]].push_back(pair[int, int](i, j))
  *             if m > max_len:
  *                 max_len = m             # <<<<<<<<<<<<<<
@@ -1530,7 +2512,7 @@ static int __pyx_pf_16py_stringsimjoin_8apply_rf_12jaccard_join_13PositionIndex_
  */
       __pyx_v_max_len = __pyx_v_m;
 
-      /* "py_stringsimjoin/apply_rf/jaccard_join.pyx":82
+      /* "py_stringsimjoin/apply_rf/jaccard_join.pyx":161
  *             for j in range(prefix_length):
  *                 self.index[tokens[j]].push_back(pair[int, int](i, j))
  *             if m > max_len:             # <<<<<<<<<<<<<<
@@ -1539,7 +2521,7 @@ static int __pyx_pf_16py_stringsimjoin_8apply_rf_12jaccard_join_13PositionIndex_
  */
     }
 
-    /* "py_stringsimjoin/apply_rf/jaccard_join.pyx":84
+    /* "py_stringsimjoin/apply_rf/jaccard_join.pyx":163
  *             if m > max_len:
  *                 max_len = m
  *             if m < min_len:             # <<<<<<<<<<<<<<
@@ -1549,7 +2531,7 @@ static int __pyx_pf_16py_stringsimjoin_8apply_rf_12jaccard_join_13PositionIndex_
     __pyx_t_6 = ((__pyx_v_m < __pyx_v_min_len) != 0);
     if (__pyx_t_6) {
 
-      /* "py_stringsimjoin/apply_rf/jaccard_join.pyx":85
+      /* "py_stringsimjoin/apply_rf/jaccard_join.pyx":164
  *                 max_len = m
  *             if m < min_len:
  *                 min_len = m             # <<<<<<<<<<<<<<
@@ -1558,7 +2540,7 @@ static int __pyx_pf_16py_stringsimjoin_8apply_rf_12jaccard_join_13PositionIndex_
  */
       __pyx_v_min_len = __pyx_v_m;
 
-      /* "py_stringsimjoin/apply_rf/jaccard_join.pyx":84
+      /* "py_stringsimjoin/apply_rf/jaccard_join.pyx":163
  *             if m > max_len:
  *                 max_len = m
  *             if m < min_len:             # <<<<<<<<<<<<<<
@@ -1568,7 +2550,7 @@ static int __pyx_pf_16py_stringsimjoin_8apply_rf_12jaccard_join_13PositionIndex_
     }
   }
 
-  /* "py_stringsimjoin/apply_rf/jaccard_join.pyx":86
+  /* "py_stringsimjoin/apply_rf/jaccard_join.pyx":165
  *             if m < min_len:
  *                 min_len = m
  *         self.threshold = threshold             # <<<<<<<<<<<<<<
@@ -1577,7 +2559,7 @@ static int __pyx_pf_16py_stringsimjoin_8apply_rf_12jaccard_join_13PositionIndex_
  */
   __pyx_v_self->threshold = __pyx_v_threshold;
 
-  /* "py_stringsimjoin/apply_rf/jaccard_join.pyx":87
+  /* "py_stringsimjoin/apply_rf/jaccard_join.pyx":166
  *                 min_len = m
  *         self.threshold = threshold
  *         self.min_len = min_len             # <<<<<<<<<<<<<<
@@ -1586,16 +2568,16 @@ static int __pyx_pf_16py_stringsimjoin_8apply_rf_12jaccard_join_13PositionIndex_
  */
   __pyx_v_self->min_len = __pyx_v_min_len;
 
-  /* "py_stringsimjoin/apply_rf/jaccard_join.pyx":88
+  /* "py_stringsimjoin/apply_rf/jaccard_join.pyx":167
  *         self.threshold = threshold
  *         self.min_len = min_len
  *         self.max_len = max_len             # <<<<<<<<<<<<<<
  * 
- * cdef double jaccard(const vector[int]& tokens1, const vector[int]& tokens2):
+ * cdef double jaccard(const vector[int]& tokens1, const vector[int]& tokens2) nogil:
  */
   __pyx_v_self->max_len = __pyx_v_max_len;
 
-  /* "py_stringsimjoin/apply_rf/jaccard_join.pyx":72
+  /* "py_stringsimjoin/apply_rf/jaccard_join.pyx":151
  *     cdef readonly double threshold
  * 
  *     def __init__(self, const vector[vector[int]]& token_vectors, double threshold):             # <<<<<<<<<<<<<<
@@ -1607,35 +2589,35 @@ static int __pyx_pf_16py_stringsimjoin_8apply_rf_12jaccard_join_13PositionIndex_
   __pyx_r = 0;
   goto __pyx_L0;
   __pyx_L1_error:;
-  __Pyx_AddTraceback("py_stringsimjoin.apply_rf.jaccard_join.PositionIndex.__init__", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("py_stringsimjoin.apply_rf.jaccard_join.PpositionIndex1.__init__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = -1;
   __pyx_L0:;
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-/* "py_stringsimjoin/apply_rf/jaccard_join.pyx":67
+/* "py_stringsimjoin/apply_rf/jaccard_join.pyx":146
  * 
- * cdef class PositionIndex:
+ * cdef class PpositionIndex1:
  *     cdef readonly omap[int, vector[pair[int, int]]] index             # <<<<<<<<<<<<<<
  *     cdef readonly int min_len, max_len
  *     cdef readonly vector[int] size_vector
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_16py_stringsimjoin_8apply_rf_12jaccard_join_13PositionIndex_5index_1__get__(PyObject *__pyx_v_self); /*proto*/
-static PyObject *__pyx_pw_16py_stringsimjoin_8apply_rf_12jaccard_join_13PositionIndex_5index_1__get__(PyObject *__pyx_v_self) {
+static PyObject *__pyx_pw_16py_stringsimjoin_8apply_rf_12jaccard_join_15PpositionIndex1_5index_1__get__(PyObject *__pyx_v_self); /*proto*/
+static PyObject *__pyx_pw_16py_stringsimjoin_8apply_rf_12jaccard_join_15PpositionIndex1_5index_1__get__(PyObject *__pyx_v_self) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__get__ (wrapper)", 0);
-  __pyx_r = __pyx_pf_16py_stringsimjoin_8apply_rf_12jaccard_join_13PositionIndex_5index___get__(((struct __pyx_obj_16py_stringsimjoin_8apply_rf_12jaccard_join_PositionIndex *)__pyx_v_self));
+  __pyx_r = __pyx_pf_16py_stringsimjoin_8apply_rf_12jaccard_join_15PpositionIndex1_5index___get__(((struct __pyx_obj_16py_stringsimjoin_8apply_rf_12jaccard_join_PpositionIndex1 *)__pyx_v_self));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_16py_stringsimjoin_8apply_rf_12jaccard_join_13PositionIndex_5index___get__(struct __pyx_obj_16py_stringsimjoin_8apply_rf_12jaccard_join_PositionIndex *__pyx_v_self) {
+static PyObject *__pyx_pf_16py_stringsimjoin_8apply_rf_12jaccard_join_15PpositionIndex1_5index___get__(struct __pyx_obj_16py_stringsimjoin_8apply_rf_12jaccard_join_PpositionIndex1 *__pyx_v_self) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -1644,7 +2626,7 @@ static PyObject *__pyx_pf_16py_stringsimjoin_8apply_rf_12jaccard_join_13Position
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__get__", 0);
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __pyx_convert_map_to_py_int____std_3a__3a_vector_3c_std_3a__3a_pair_3c_int_2c_int_3e____3e___(__pyx_v_self->index); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 67; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = __pyx_convert_map_to_py_int____std_3a__3a_vector_3c_std_3a__3a_pair_3c_int_2c_int_3e____3e___(__pyx_v_self->index); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 146; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
@@ -1653,7 +2635,7 @@ static PyObject *__pyx_pf_16py_stringsimjoin_8apply_rf_12jaccard_join_13Position
   /* function exit code */
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
-  __Pyx_AddTraceback("py_stringsimjoin.apply_rf.jaccard_join.PositionIndex.index.__get__", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("py_stringsimjoin.apply_rf.jaccard_join.PpositionIndex1.index.__get__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XGIVEREF(__pyx_r);
@@ -1661,8 +2643,8 @@ static PyObject *__pyx_pf_16py_stringsimjoin_8apply_rf_12jaccard_join_13Position
   return __pyx_r;
 }
 
-/* "py_stringsimjoin/apply_rf/jaccard_join.pyx":68
- * cdef class PositionIndex:
+/* "py_stringsimjoin/apply_rf/jaccard_join.pyx":147
+ * cdef class PpositionIndex1:
  *     cdef readonly omap[int, vector[pair[int, int]]] index
  *     cdef readonly int min_len, max_len             # <<<<<<<<<<<<<<
  *     cdef readonly vector[int] size_vector
@@ -1670,19 +2652,19 @@ static PyObject *__pyx_pf_16py_stringsimjoin_8apply_rf_12jaccard_join_13Position
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_16py_stringsimjoin_8apply_rf_12jaccard_join_13PositionIndex_7min_len_1__get__(PyObject *__pyx_v_self); /*proto*/
-static PyObject *__pyx_pw_16py_stringsimjoin_8apply_rf_12jaccard_join_13PositionIndex_7min_len_1__get__(PyObject *__pyx_v_self) {
+static PyObject *__pyx_pw_16py_stringsimjoin_8apply_rf_12jaccard_join_15PpositionIndex1_7min_len_1__get__(PyObject *__pyx_v_self); /*proto*/
+static PyObject *__pyx_pw_16py_stringsimjoin_8apply_rf_12jaccard_join_15PpositionIndex1_7min_len_1__get__(PyObject *__pyx_v_self) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__get__ (wrapper)", 0);
-  __pyx_r = __pyx_pf_16py_stringsimjoin_8apply_rf_12jaccard_join_13PositionIndex_7min_len___get__(((struct __pyx_obj_16py_stringsimjoin_8apply_rf_12jaccard_join_PositionIndex *)__pyx_v_self));
+  __pyx_r = __pyx_pf_16py_stringsimjoin_8apply_rf_12jaccard_join_15PpositionIndex1_7min_len___get__(((struct __pyx_obj_16py_stringsimjoin_8apply_rf_12jaccard_join_PpositionIndex1 *)__pyx_v_self));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_16py_stringsimjoin_8apply_rf_12jaccard_join_13PositionIndex_7min_len___get__(struct __pyx_obj_16py_stringsimjoin_8apply_rf_12jaccard_join_PositionIndex *__pyx_v_self) {
+static PyObject *__pyx_pf_16py_stringsimjoin_8apply_rf_12jaccard_join_15PpositionIndex1_7min_len___get__(struct __pyx_obj_16py_stringsimjoin_8apply_rf_12jaccard_join_PpositionIndex1 *__pyx_v_self) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -1691,7 +2673,7 @@ static PyObject *__pyx_pf_16py_stringsimjoin_8apply_rf_12jaccard_join_13Position
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__get__", 0);
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_v_self->min_len); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 68; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_v_self->min_len); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 147; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
@@ -1700,7 +2682,7 @@ static PyObject *__pyx_pf_16py_stringsimjoin_8apply_rf_12jaccard_join_13Position
   /* function exit code */
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
-  __Pyx_AddTraceback("py_stringsimjoin.apply_rf.jaccard_join.PositionIndex.min_len.__get__", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("py_stringsimjoin.apply_rf.jaccard_join.PpositionIndex1.min_len.__get__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XGIVEREF(__pyx_r);
@@ -1709,19 +2691,19 @@ static PyObject *__pyx_pf_16py_stringsimjoin_8apply_rf_12jaccard_join_13Position
 }
 
 /* Python wrapper */
-static PyObject *__pyx_pw_16py_stringsimjoin_8apply_rf_12jaccard_join_13PositionIndex_7max_len_1__get__(PyObject *__pyx_v_self); /*proto*/
-static PyObject *__pyx_pw_16py_stringsimjoin_8apply_rf_12jaccard_join_13PositionIndex_7max_len_1__get__(PyObject *__pyx_v_self) {
+static PyObject *__pyx_pw_16py_stringsimjoin_8apply_rf_12jaccard_join_15PpositionIndex1_7max_len_1__get__(PyObject *__pyx_v_self); /*proto*/
+static PyObject *__pyx_pw_16py_stringsimjoin_8apply_rf_12jaccard_join_15PpositionIndex1_7max_len_1__get__(PyObject *__pyx_v_self) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__get__ (wrapper)", 0);
-  __pyx_r = __pyx_pf_16py_stringsimjoin_8apply_rf_12jaccard_join_13PositionIndex_7max_len___get__(((struct __pyx_obj_16py_stringsimjoin_8apply_rf_12jaccard_join_PositionIndex *)__pyx_v_self));
+  __pyx_r = __pyx_pf_16py_stringsimjoin_8apply_rf_12jaccard_join_15PpositionIndex1_7max_len___get__(((struct __pyx_obj_16py_stringsimjoin_8apply_rf_12jaccard_join_PpositionIndex1 *)__pyx_v_self));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_16py_stringsimjoin_8apply_rf_12jaccard_join_13PositionIndex_7max_len___get__(struct __pyx_obj_16py_stringsimjoin_8apply_rf_12jaccard_join_PositionIndex *__pyx_v_self) {
+static PyObject *__pyx_pf_16py_stringsimjoin_8apply_rf_12jaccard_join_15PpositionIndex1_7max_len___get__(struct __pyx_obj_16py_stringsimjoin_8apply_rf_12jaccard_join_PpositionIndex1 *__pyx_v_self) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -1730,7 +2712,7 @@ static PyObject *__pyx_pf_16py_stringsimjoin_8apply_rf_12jaccard_join_13Position
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__get__", 0);
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_v_self->max_len); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 68; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_v_self->max_len); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 147; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
@@ -1739,7 +2721,7 @@ static PyObject *__pyx_pf_16py_stringsimjoin_8apply_rf_12jaccard_join_13Position
   /* function exit code */
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
-  __Pyx_AddTraceback("py_stringsimjoin.apply_rf.jaccard_join.PositionIndex.max_len.__get__", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("py_stringsimjoin.apply_rf.jaccard_join.PpositionIndex1.max_len.__get__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XGIVEREF(__pyx_r);
@@ -1747,7 +2729,7 @@ static PyObject *__pyx_pf_16py_stringsimjoin_8apply_rf_12jaccard_join_13Position
   return __pyx_r;
 }
 
-/* "py_stringsimjoin/apply_rf/jaccard_join.pyx":69
+/* "py_stringsimjoin/apply_rf/jaccard_join.pyx":148
  *     cdef readonly omap[int, vector[pair[int, int]]] index
  *     cdef readonly int min_len, max_len
  *     cdef readonly vector[int] size_vector             # <<<<<<<<<<<<<<
@@ -1756,19 +2738,19 @@ static PyObject *__pyx_pf_16py_stringsimjoin_8apply_rf_12jaccard_join_13Position
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_16py_stringsimjoin_8apply_rf_12jaccard_join_13PositionIndex_11size_vector_1__get__(PyObject *__pyx_v_self); /*proto*/
-static PyObject *__pyx_pw_16py_stringsimjoin_8apply_rf_12jaccard_join_13PositionIndex_11size_vector_1__get__(PyObject *__pyx_v_self) {
+static PyObject *__pyx_pw_16py_stringsimjoin_8apply_rf_12jaccard_join_15PpositionIndex1_11size_vector_1__get__(PyObject *__pyx_v_self); /*proto*/
+static PyObject *__pyx_pw_16py_stringsimjoin_8apply_rf_12jaccard_join_15PpositionIndex1_11size_vector_1__get__(PyObject *__pyx_v_self) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__get__ (wrapper)", 0);
-  __pyx_r = __pyx_pf_16py_stringsimjoin_8apply_rf_12jaccard_join_13PositionIndex_11size_vector___get__(((struct __pyx_obj_16py_stringsimjoin_8apply_rf_12jaccard_join_PositionIndex *)__pyx_v_self));
+  __pyx_r = __pyx_pf_16py_stringsimjoin_8apply_rf_12jaccard_join_15PpositionIndex1_11size_vector___get__(((struct __pyx_obj_16py_stringsimjoin_8apply_rf_12jaccard_join_PpositionIndex1 *)__pyx_v_self));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_16py_stringsimjoin_8apply_rf_12jaccard_join_13PositionIndex_11size_vector___get__(struct __pyx_obj_16py_stringsimjoin_8apply_rf_12jaccard_join_PositionIndex *__pyx_v_self) {
+static PyObject *__pyx_pf_16py_stringsimjoin_8apply_rf_12jaccard_join_15PpositionIndex1_11size_vector___get__(struct __pyx_obj_16py_stringsimjoin_8apply_rf_12jaccard_join_PpositionIndex1 *__pyx_v_self) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -1777,7 +2759,7 @@ static PyObject *__pyx_pf_16py_stringsimjoin_8apply_rf_12jaccard_join_13Position
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__get__", 0);
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __pyx_convert_vector_to_py_int(__pyx_v_self->size_vector); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 69; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = __pyx_convert_vector_to_py_int(__pyx_v_self->size_vector); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 148; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
@@ -1786,7 +2768,7 @@ static PyObject *__pyx_pf_16py_stringsimjoin_8apply_rf_12jaccard_join_13Position
   /* function exit code */
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
-  __Pyx_AddTraceback("py_stringsimjoin.apply_rf.jaccard_join.PositionIndex.size_vector.__get__", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("py_stringsimjoin.apply_rf.jaccard_join.PpositionIndex1.size_vector.__get__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XGIVEREF(__pyx_r);
@@ -1794,7 +2776,7 @@ static PyObject *__pyx_pf_16py_stringsimjoin_8apply_rf_12jaccard_join_13Position
   return __pyx_r;
 }
 
-/* "py_stringsimjoin/apply_rf/jaccard_join.pyx":70
+/* "py_stringsimjoin/apply_rf/jaccard_join.pyx":149
  *     cdef readonly int min_len, max_len
  *     cdef readonly vector[int] size_vector
  *     cdef readonly double threshold             # <<<<<<<<<<<<<<
@@ -1803,19 +2785,19 @@ static PyObject *__pyx_pf_16py_stringsimjoin_8apply_rf_12jaccard_join_13Position
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_16py_stringsimjoin_8apply_rf_12jaccard_join_13PositionIndex_9threshold_1__get__(PyObject *__pyx_v_self); /*proto*/
-static PyObject *__pyx_pw_16py_stringsimjoin_8apply_rf_12jaccard_join_13PositionIndex_9threshold_1__get__(PyObject *__pyx_v_self) {
+static PyObject *__pyx_pw_16py_stringsimjoin_8apply_rf_12jaccard_join_15PpositionIndex1_9threshold_1__get__(PyObject *__pyx_v_self); /*proto*/
+static PyObject *__pyx_pw_16py_stringsimjoin_8apply_rf_12jaccard_join_15PpositionIndex1_9threshold_1__get__(PyObject *__pyx_v_self) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__get__ (wrapper)", 0);
-  __pyx_r = __pyx_pf_16py_stringsimjoin_8apply_rf_12jaccard_join_13PositionIndex_9threshold___get__(((struct __pyx_obj_16py_stringsimjoin_8apply_rf_12jaccard_join_PositionIndex *)__pyx_v_self));
+  __pyx_r = __pyx_pf_16py_stringsimjoin_8apply_rf_12jaccard_join_15PpositionIndex1_9threshold___get__(((struct __pyx_obj_16py_stringsimjoin_8apply_rf_12jaccard_join_PpositionIndex1 *)__pyx_v_self));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_16py_stringsimjoin_8apply_rf_12jaccard_join_13PositionIndex_9threshold___get__(struct __pyx_obj_16py_stringsimjoin_8apply_rf_12jaccard_join_PositionIndex *__pyx_v_self) {
+static PyObject *__pyx_pf_16py_stringsimjoin_8apply_rf_12jaccard_join_15PpositionIndex1_9threshold___get__(struct __pyx_obj_16py_stringsimjoin_8apply_rf_12jaccard_join_PpositionIndex1 *__pyx_v_self) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -1824,7 +2806,7 @@ static PyObject *__pyx_pf_16py_stringsimjoin_8apply_rf_12jaccard_join_13Position
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__get__", 0);
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = PyFloat_FromDouble(__pyx_v_self->threshold); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 70; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = PyFloat_FromDouble(__pyx_v_self->threshold); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 149; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
@@ -1833,7 +2815,7 @@ static PyObject *__pyx_pf_16py_stringsimjoin_8apply_rf_12jaccard_join_13Position
   /* function exit code */
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
-  __Pyx_AddTraceback("py_stringsimjoin.apply_rf.jaccard_join.PositionIndex.threshold.__get__", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("py_stringsimjoin.apply_rf.jaccard_join.PpositionIndex1.threshold.__get__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XGIVEREF(__pyx_r);
@@ -1841,10 +2823,10 @@ static PyObject *__pyx_pf_16py_stringsimjoin_8apply_rf_12jaccard_join_13Position
   return __pyx_r;
 }
 
-/* "py_stringsimjoin/apply_rf/jaccard_join.pyx":90
+/* "py_stringsimjoin/apply_rf/jaccard_join.pyx":169
  *         self.max_len = max_len
  * 
- * cdef double jaccard(const vector[int]& tokens1, const vector[int]& tokens2):             # <<<<<<<<<<<<<<
+ * cdef double jaccard(const vector[int]& tokens1, const vector[int]& tokens2) nogil:             # <<<<<<<<<<<<<<
  *     cdef int i=0, j=0, size1 = tokens1.size(), size2 = tokens2.size()
  *     cdef int sum_of_size = size1 + size2
  */
@@ -1857,7 +2839,6 @@ static double __pyx_f_16py_stringsimjoin_8apply_rf_12jaccard_join_jaccard(std::v
   int __pyx_v_sum_of_size;
   int __pyx_v_overlap;
   double __pyx_r;
-  __Pyx_RefNannyDeclarations
   int __pyx_t_1;
   int __pyx_t_2;
   double __pyx_t_3;
@@ -1865,11 +2846,10 @@ static double __pyx_f_16py_stringsimjoin_8apply_rf_12jaccard_join_jaccard(std::v
   int __pyx_lineno = 0;
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
-  __Pyx_RefNannySetupContext("jaccard", 0);
 
-  /* "py_stringsimjoin/apply_rf/jaccard_join.pyx":91
+  /* "py_stringsimjoin/apply_rf/jaccard_join.pyx":170
  * 
- * cdef double jaccard(const vector[int]& tokens1, const vector[int]& tokens2):
+ * cdef double jaccard(const vector[int]& tokens1, const vector[int]& tokens2) nogil:
  *     cdef int i=0, j=0, size1 = tokens1.size(), size2 = tokens2.size()             # <<<<<<<<<<<<<<
  *     cdef int sum_of_size = size1 + size2
  *     if sum_of_size == 0:
@@ -1879,8 +2859,8 @@ static double __pyx_f_16py_stringsimjoin_8apply_rf_12jaccard_join_jaccard(std::v
   __pyx_v_size1 = __pyx_v_tokens1.size();
   __pyx_v_size2 = __pyx_v_tokens2.size();
 
-  /* "py_stringsimjoin/apply_rf/jaccard_join.pyx":92
- * cdef double jaccard(const vector[int]& tokens1, const vector[int]& tokens2):
+  /* "py_stringsimjoin/apply_rf/jaccard_join.pyx":171
+ * cdef double jaccard(const vector[int]& tokens1, const vector[int]& tokens2) nogil:
  *     cdef int i=0, j=0, size1 = tokens1.size(), size2 = tokens2.size()
  *     cdef int sum_of_size = size1 + size2             # <<<<<<<<<<<<<<
  *     if sum_of_size == 0:
@@ -1888,7 +2868,7 @@ static double __pyx_f_16py_stringsimjoin_8apply_rf_12jaccard_join_jaccard(std::v
  */
   __pyx_v_sum_of_size = (__pyx_v_size1 + __pyx_v_size2);
 
-  /* "py_stringsimjoin/apply_rf/jaccard_join.pyx":93
+  /* "py_stringsimjoin/apply_rf/jaccard_join.pyx":172
  *     cdef int i=0, j=0, size1 = tokens1.size(), size2 = tokens2.size()
  *     cdef int sum_of_size = size1 + size2
  *     if sum_of_size == 0:             # <<<<<<<<<<<<<<
@@ -1898,7 +2878,7 @@ static double __pyx_f_16py_stringsimjoin_8apply_rf_12jaccard_join_jaccard(std::v
   __pyx_t_1 = ((__pyx_v_sum_of_size == 0) != 0);
   if (__pyx_t_1) {
 
-    /* "py_stringsimjoin/apply_rf/jaccard_join.pyx":94
+    /* "py_stringsimjoin/apply_rf/jaccard_join.pyx":173
  *     cdef int sum_of_size = size1 + size2
  *     if sum_of_size == 0:
  *         return 1.0             # <<<<<<<<<<<<<<
@@ -1908,7 +2888,7 @@ static double __pyx_f_16py_stringsimjoin_8apply_rf_12jaccard_join_jaccard(std::v
     __pyx_r = 1.0;
     goto __pyx_L0;
 
-    /* "py_stringsimjoin/apply_rf/jaccard_join.pyx":93
+    /* "py_stringsimjoin/apply_rf/jaccard_join.pyx":172
  *     cdef int i=0, j=0, size1 = tokens1.size(), size2 = tokens2.size()
  *     cdef int sum_of_size = size1 + size2
  *     if sum_of_size == 0:             # <<<<<<<<<<<<<<
@@ -1917,7 +2897,7 @@ static double __pyx_f_16py_stringsimjoin_8apply_rf_12jaccard_join_jaccard(std::v
  */
   }
 
-  /* "py_stringsimjoin/apply_rf/jaccard_join.pyx":95
+  /* "py_stringsimjoin/apply_rf/jaccard_join.pyx":174
  *     if sum_of_size == 0:
  *         return 1.0
  *     if size1 == 0 or size2 == 0:             # <<<<<<<<<<<<<<
@@ -1935,7 +2915,7 @@ static double __pyx_f_16py_stringsimjoin_8apply_rf_12jaccard_join_jaccard(std::v
   __pyx_L5_bool_binop_done:;
   if (__pyx_t_1) {
 
-    /* "py_stringsimjoin/apply_rf/jaccard_join.pyx":96
+    /* "py_stringsimjoin/apply_rf/jaccard_join.pyx":175
  *         return 1.0
  *     if size1 == 0 or size2 == 0:
  *         return 0.0             # <<<<<<<<<<<<<<
@@ -1945,7 +2925,7 @@ static double __pyx_f_16py_stringsimjoin_8apply_rf_12jaccard_join_jaccard(std::v
     __pyx_r = 0.0;
     goto __pyx_L0;
 
-    /* "py_stringsimjoin/apply_rf/jaccard_join.pyx":95
+    /* "py_stringsimjoin/apply_rf/jaccard_join.pyx":174
  *     if sum_of_size == 0:
  *         return 1.0
  *     if size1 == 0 or size2 == 0:             # <<<<<<<<<<<<<<
@@ -1954,7 +2934,7 @@ static double __pyx_f_16py_stringsimjoin_8apply_rf_12jaccard_join_jaccard(std::v
  */
   }
 
-  /* "py_stringsimjoin/apply_rf/jaccard_join.pyx":97
+  /* "py_stringsimjoin/apply_rf/jaccard_join.pyx":176
  *     if size1 == 0 or size2 == 0:
  *         return 0.0
  *     cdef int overlap = 0             # <<<<<<<<<<<<<<
@@ -1963,7 +2943,7 @@ static double __pyx_f_16py_stringsimjoin_8apply_rf_12jaccard_join_jaccard(std::v
  */
   __pyx_v_overlap = 0;
 
-  /* "py_stringsimjoin/apply_rf/jaccard_join.pyx":98
+  /* "py_stringsimjoin/apply_rf/jaccard_join.pyx":177
  *         return 0.0
  *     cdef int overlap = 0
  *     while i < size1 and j < size2:             # <<<<<<<<<<<<<<
@@ -1982,7 +2962,7 @@ static double __pyx_f_16py_stringsimjoin_8apply_rf_12jaccard_join_jaccard(std::v
     __pyx_L9_bool_binop_done:;
     if (!__pyx_t_1) break;
 
-    /* "py_stringsimjoin/apply_rf/jaccard_join.pyx":99
+    /* "py_stringsimjoin/apply_rf/jaccard_join.pyx":178
  *     cdef int overlap = 0
  *     while i < size1 and j < size2:
  *         if tokens1[i] == tokens2[j]:             # <<<<<<<<<<<<<<
@@ -1992,7 +2972,7 @@ static double __pyx_f_16py_stringsimjoin_8apply_rf_12jaccard_join_jaccard(std::v
     __pyx_t_1 = (((__pyx_v_tokens1[__pyx_v_i]) == (__pyx_v_tokens2[__pyx_v_j])) != 0);
     if (__pyx_t_1) {
 
-      /* "py_stringsimjoin/apply_rf/jaccard_join.pyx":100
+      /* "py_stringsimjoin/apply_rf/jaccard_join.pyx":179
  *     while i < size1 and j < size2:
  *         if tokens1[i] == tokens2[j]:
  *             overlap += 1             # <<<<<<<<<<<<<<
@@ -2001,7 +2981,7 @@ static double __pyx_f_16py_stringsimjoin_8apply_rf_12jaccard_join_jaccard(std::v
  */
       __pyx_v_overlap = (__pyx_v_overlap + 1);
 
-      /* "py_stringsimjoin/apply_rf/jaccard_join.pyx":101
+      /* "py_stringsimjoin/apply_rf/jaccard_join.pyx":180
  *         if tokens1[i] == tokens2[j]:
  *             overlap += 1
  *             i += 1             # <<<<<<<<<<<<<<
@@ -2010,7 +2990,7 @@ static double __pyx_f_16py_stringsimjoin_8apply_rf_12jaccard_join_jaccard(std::v
  */
       __pyx_v_i = (__pyx_v_i + 1);
 
-      /* "py_stringsimjoin/apply_rf/jaccard_join.pyx":102
+      /* "py_stringsimjoin/apply_rf/jaccard_join.pyx":181
  *             overlap += 1
  *             i += 1
  *             j += 1             # <<<<<<<<<<<<<<
@@ -2019,7 +2999,7 @@ static double __pyx_f_16py_stringsimjoin_8apply_rf_12jaccard_join_jaccard(std::v
  */
       __pyx_v_j = (__pyx_v_j + 1);
 
-      /* "py_stringsimjoin/apply_rf/jaccard_join.pyx":99
+      /* "py_stringsimjoin/apply_rf/jaccard_join.pyx":178
  *     cdef int overlap = 0
  *     while i < size1 and j < size2:
  *         if tokens1[i] == tokens2[j]:             # <<<<<<<<<<<<<<
@@ -2029,7 +3009,7 @@ static double __pyx_f_16py_stringsimjoin_8apply_rf_12jaccard_join_jaccard(std::v
       goto __pyx_L11;
     }
 
-    /* "py_stringsimjoin/apply_rf/jaccard_join.pyx":103
+    /* "py_stringsimjoin/apply_rf/jaccard_join.pyx":182
  *             i += 1
  *             j += 1
  *         elif tokens1[i] < tokens2[j]:             # <<<<<<<<<<<<<<
@@ -2039,7 +3019,7 @@ static double __pyx_f_16py_stringsimjoin_8apply_rf_12jaccard_join_jaccard(std::v
     __pyx_t_1 = (((__pyx_v_tokens1[__pyx_v_i]) < (__pyx_v_tokens2[__pyx_v_j])) != 0);
     if (__pyx_t_1) {
 
-      /* "py_stringsimjoin/apply_rf/jaccard_join.pyx":104
+      /* "py_stringsimjoin/apply_rf/jaccard_join.pyx":183
  *             j += 1
  *         elif tokens1[i] < tokens2[j]:
  *             i += 1             # <<<<<<<<<<<<<<
@@ -2048,7 +3028,7 @@ static double __pyx_f_16py_stringsimjoin_8apply_rf_12jaccard_join_jaccard(std::v
  */
       __pyx_v_i = (__pyx_v_i + 1);
 
-      /* "py_stringsimjoin/apply_rf/jaccard_join.pyx":103
+      /* "py_stringsimjoin/apply_rf/jaccard_join.pyx":182
  *             i += 1
  *             j += 1
  *         elif tokens1[i] < tokens2[j]:             # <<<<<<<<<<<<<<
@@ -2058,7 +3038,7 @@ static double __pyx_f_16py_stringsimjoin_8apply_rf_12jaccard_join_jaccard(std::v
       goto __pyx_L11;
     }
 
-    /* "py_stringsimjoin/apply_rf/jaccard_join.pyx":106
+    /* "py_stringsimjoin/apply_rf/jaccard_join.pyx":185
  *             i += 1
  *         else:
  *             j += 1             # <<<<<<<<<<<<<<
@@ -2070,7 +3050,7 @@ static double __pyx_f_16py_stringsimjoin_8apply_rf_12jaccard_join_jaccard(std::v
     __pyx_L11:;
   }
 
-  /* "py_stringsimjoin/apply_rf/jaccard_join.pyx":107
+  /* "py_stringsimjoin/apply_rf/jaccard_join.pyx":186
  *         else:
  *             j += 1
  *     return (overlap * 1.0) / (sum_of_size - overlap)             # <<<<<<<<<<<<<<
@@ -2078,26 +3058,31 @@ static double __pyx_f_16py_stringsimjoin_8apply_rf_12jaccard_join_jaccard(std::v
   __pyx_t_3 = (__pyx_v_overlap * 1.0);
   __pyx_t_4 = (__pyx_v_sum_of_size - __pyx_v_overlap);
   if (unlikely(__pyx_t_4 == 0)) {
+    #ifdef WITH_THREAD
+    PyGILState_STATE __pyx_gilstate_save = PyGILState_Ensure();
+    #endif
     PyErr_SetString(PyExc_ZeroDivisionError, "float division");
-    {__pyx_filename = __pyx_f[0]; __pyx_lineno = 107; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    #ifdef WITH_THREAD
+    PyGILState_Release(__pyx_gilstate_save);
+    #endif
+    {__pyx_filename = __pyx_f[0]; __pyx_lineno = 186; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   }
   __pyx_r = (__pyx_t_3 / __pyx_t_4);
   goto __pyx_L0;
 
-  /* "py_stringsimjoin/apply_rf/jaccard_join.pyx":90
+  /* "py_stringsimjoin/apply_rf/jaccard_join.pyx":169
  *         self.max_len = max_len
  * 
- * cdef double jaccard(const vector[int]& tokens1, const vector[int]& tokens2):             # <<<<<<<<<<<<<<
+ * cdef double jaccard(const vector[int]& tokens1, const vector[int]& tokens2) nogil:             # <<<<<<<<<<<<<<
  *     cdef int i=0, j=0, size1 = tokens1.size(), size2 = tokens2.size()
  *     cdef int sum_of_size = size1 + size2
  */
 
   /* function exit code */
   __pyx_L1_error:;
-  __Pyx_WriteUnraisable("py_stringsimjoin.apply_rf.jaccard_join.jaccard", __pyx_clineno, __pyx_lineno, __pyx_filename, 0, 0);
+  __Pyx_WriteUnraisable("py_stringsimjoin.apply_rf.jaccard_join.jaccard", __pyx_clineno, __pyx_lineno, __pyx_filename, 0, 1);
   __pyx_r = 0;
   __pyx_L0:;
-  __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
@@ -2651,71 +3636,8 @@ static std::vector<std::vector<int> >  __pyx_convert_vector_from_py_std_3a__3a_v
   return __pyx_r;
 }
 
-/* "vector.to_py":67
- * 
- * @cname("__pyx_convert_vector_to_py_std_3a__3a_vector_3c_int_3e___")
- * cdef object __pyx_convert_vector_to_py_std_3a__3a_vector_3c_int_3e___(vector[X]& v):             # <<<<<<<<<<<<<<
- *     return [X_to_py(v[i]) for i in range(v.size())]
- * 
- */
-
-static PyObject *__pyx_convert_vector_to_py_std_3a__3a_vector_3c_int_3e___(const std::vector<std::vector<int> >  &__pyx_v_v) {
-  size_t __pyx_v_i;
-  PyObject *__pyx_r = NULL;
-  __Pyx_RefNannyDeclarations
-  PyObject *__pyx_t_1 = NULL;
-  size_t __pyx_t_2;
-  size_t __pyx_t_3;
-  PyObject *__pyx_t_4 = NULL;
-  int __pyx_lineno = 0;
-  const char *__pyx_filename = NULL;
-  int __pyx_clineno = 0;
-  __Pyx_RefNannySetupContext("__pyx_convert_vector_to_py_std_3a__3a_vector_3c_int_3e___", 0);
-
-  /* "vector.to_py":68
- * @cname("__pyx_convert_vector_to_py_std_3a__3a_vector_3c_int_3e___")
- * cdef object __pyx_convert_vector_to_py_std_3a__3a_vector_3c_int_3e___(vector[X]& v):
- *     return [X_to_py(v[i]) for i in range(v.size())]             # <<<<<<<<<<<<<<
- * 
- * 
- */
-  __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = PyList_New(0); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[1]; __pyx_lineno = 68; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = __pyx_v_v.size();
-  for (__pyx_t_3 = 0; __pyx_t_3 < __pyx_t_2; __pyx_t_3+=1) {
-    __pyx_v_i = __pyx_t_3;
-    __pyx_t_4 = __pyx_convert_vector_to_py_int((__pyx_v_v[__pyx_v_i])); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[1]; __pyx_lineno = 68; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-    __Pyx_GOTREF(__pyx_t_4);
-    if (unlikely(__Pyx_ListComp_Append(__pyx_t_1, (PyObject*)__pyx_t_4))) {__pyx_filename = __pyx_f[1]; __pyx_lineno = 68; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-    __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-  }
-  __pyx_r = __pyx_t_1;
-  __pyx_t_1 = 0;
-  goto __pyx_L0;
-
-  /* "vector.to_py":67
- * 
- * @cname("__pyx_convert_vector_to_py_std_3a__3a_vector_3c_int_3e___")
- * cdef object __pyx_convert_vector_to_py_std_3a__3a_vector_3c_int_3e___(vector[X]& v):             # <<<<<<<<<<<<<<
- *     return [X_to_py(v[i]) for i in range(v.size())]
- * 
- */
-
-  /* function exit code */
-  __pyx_L1_error:;
-  __Pyx_XDECREF(__pyx_t_1);
-  __Pyx_XDECREF(__pyx_t_4);
-  __Pyx_AddTraceback("vector.to_py.__pyx_convert_vector_to_py_std_3a__3a_vector_3c_int_3e___", __pyx_clineno, __pyx_lineno, __pyx_filename);
-  __pyx_r = 0;
-  __pyx_L0:;
-  __Pyx_XGIVEREF(__pyx_r);
-  __Pyx_RefNannyFinishContext();
-  return __pyx_r;
-}
-
-static PyObject *__pyx_tp_new_16py_stringsimjoin_8apply_rf_12jaccard_join_PositionIndex(PyTypeObject *t, CYTHON_UNUSED PyObject *a, CYTHON_UNUSED PyObject *k) {
-  struct __pyx_obj_16py_stringsimjoin_8apply_rf_12jaccard_join_PositionIndex *p;
+static PyObject *__pyx_tp_new_16py_stringsimjoin_8apply_rf_12jaccard_join_PpositionIndex1(PyTypeObject *t, CYTHON_UNUSED PyObject *a, CYTHON_UNUSED PyObject *k) {
+  struct __pyx_obj_16py_stringsimjoin_8apply_rf_12jaccard_join_PpositionIndex1 *p;
   PyObject *o;
   if (likely((t->tp_flags & Py_TPFLAGS_IS_ABSTRACT) == 0)) {
     o = (*t->tp_alloc)(t, 0);
@@ -2723,14 +3645,14 @@ static PyObject *__pyx_tp_new_16py_stringsimjoin_8apply_rf_12jaccard_join_Positi
     o = (PyObject *) PyBaseObject_Type.tp_new(t, __pyx_empty_tuple, 0);
   }
   if (unlikely(!o)) return 0;
-  p = ((struct __pyx_obj_16py_stringsimjoin_8apply_rf_12jaccard_join_PositionIndex *)o);
+  p = ((struct __pyx_obj_16py_stringsimjoin_8apply_rf_12jaccard_join_PpositionIndex1 *)o);
   new((void*)&(p->index)) std::map<int,std::vector<std::pair<int,int> > > ();
   new((void*)&(p->size_vector)) std::vector<int> ();
   return o;
 }
 
-static void __pyx_tp_dealloc_16py_stringsimjoin_8apply_rf_12jaccard_join_PositionIndex(PyObject *o) {
-  struct __pyx_obj_16py_stringsimjoin_8apply_rf_12jaccard_join_PositionIndex *p = (struct __pyx_obj_16py_stringsimjoin_8apply_rf_12jaccard_join_PositionIndex *)o;
+static void __pyx_tp_dealloc_16py_stringsimjoin_8apply_rf_12jaccard_join_PpositionIndex1(PyObject *o) {
+  struct __pyx_obj_16py_stringsimjoin_8apply_rf_12jaccard_join_PpositionIndex1 *p = (struct __pyx_obj_16py_stringsimjoin_8apply_rf_12jaccard_join_PpositionIndex1 *)o;
   #if PY_VERSION_HEX >= 0x030400a1
   if (unlikely(Py_TYPE(o)->tp_finalize) && (!PyType_IS_GC(Py_TYPE(o)) || !_PyGC_FINALIZED(o))) {
     if (PyObject_CallFinalizerFromDealloc(o)) return;
@@ -2741,45 +3663,45 @@ static void __pyx_tp_dealloc_16py_stringsimjoin_8apply_rf_12jaccard_join_Positio
   (*Py_TYPE(o)->tp_free)(o);
 }
 
-static PyObject *__pyx_getprop_16py_stringsimjoin_8apply_rf_12jaccard_join_13PositionIndex_index(PyObject *o, CYTHON_UNUSED void *x) {
-  return __pyx_pw_16py_stringsimjoin_8apply_rf_12jaccard_join_13PositionIndex_5index_1__get__(o);
+static PyObject *__pyx_getprop_16py_stringsimjoin_8apply_rf_12jaccard_join_15PpositionIndex1_index(PyObject *o, CYTHON_UNUSED void *x) {
+  return __pyx_pw_16py_stringsimjoin_8apply_rf_12jaccard_join_15PpositionIndex1_5index_1__get__(o);
 }
 
-static PyObject *__pyx_getprop_16py_stringsimjoin_8apply_rf_12jaccard_join_13PositionIndex_min_len(PyObject *o, CYTHON_UNUSED void *x) {
-  return __pyx_pw_16py_stringsimjoin_8apply_rf_12jaccard_join_13PositionIndex_7min_len_1__get__(o);
+static PyObject *__pyx_getprop_16py_stringsimjoin_8apply_rf_12jaccard_join_15PpositionIndex1_min_len(PyObject *o, CYTHON_UNUSED void *x) {
+  return __pyx_pw_16py_stringsimjoin_8apply_rf_12jaccard_join_15PpositionIndex1_7min_len_1__get__(o);
 }
 
-static PyObject *__pyx_getprop_16py_stringsimjoin_8apply_rf_12jaccard_join_13PositionIndex_max_len(PyObject *o, CYTHON_UNUSED void *x) {
-  return __pyx_pw_16py_stringsimjoin_8apply_rf_12jaccard_join_13PositionIndex_7max_len_1__get__(o);
+static PyObject *__pyx_getprop_16py_stringsimjoin_8apply_rf_12jaccard_join_15PpositionIndex1_max_len(PyObject *o, CYTHON_UNUSED void *x) {
+  return __pyx_pw_16py_stringsimjoin_8apply_rf_12jaccard_join_15PpositionIndex1_7max_len_1__get__(o);
 }
 
-static PyObject *__pyx_getprop_16py_stringsimjoin_8apply_rf_12jaccard_join_13PositionIndex_size_vector(PyObject *o, CYTHON_UNUSED void *x) {
-  return __pyx_pw_16py_stringsimjoin_8apply_rf_12jaccard_join_13PositionIndex_11size_vector_1__get__(o);
+static PyObject *__pyx_getprop_16py_stringsimjoin_8apply_rf_12jaccard_join_15PpositionIndex1_size_vector(PyObject *o, CYTHON_UNUSED void *x) {
+  return __pyx_pw_16py_stringsimjoin_8apply_rf_12jaccard_join_15PpositionIndex1_11size_vector_1__get__(o);
 }
 
-static PyObject *__pyx_getprop_16py_stringsimjoin_8apply_rf_12jaccard_join_13PositionIndex_threshold(PyObject *o, CYTHON_UNUSED void *x) {
-  return __pyx_pw_16py_stringsimjoin_8apply_rf_12jaccard_join_13PositionIndex_9threshold_1__get__(o);
+static PyObject *__pyx_getprop_16py_stringsimjoin_8apply_rf_12jaccard_join_15PpositionIndex1_threshold(PyObject *o, CYTHON_UNUSED void *x) {
+  return __pyx_pw_16py_stringsimjoin_8apply_rf_12jaccard_join_15PpositionIndex1_9threshold_1__get__(o);
 }
 
-static PyMethodDef __pyx_methods_16py_stringsimjoin_8apply_rf_12jaccard_join_PositionIndex[] = {
+static PyMethodDef __pyx_methods_16py_stringsimjoin_8apply_rf_12jaccard_join_PpositionIndex1[] = {
   {0, 0, 0, 0}
 };
 
-static struct PyGetSetDef __pyx_getsets_16py_stringsimjoin_8apply_rf_12jaccard_join_PositionIndex[] = {
-  {(char *)"index", __pyx_getprop_16py_stringsimjoin_8apply_rf_12jaccard_join_13PositionIndex_index, 0, 0, 0},
-  {(char *)"min_len", __pyx_getprop_16py_stringsimjoin_8apply_rf_12jaccard_join_13PositionIndex_min_len, 0, 0, 0},
-  {(char *)"max_len", __pyx_getprop_16py_stringsimjoin_8apply_rf_12jaccard_join_13PositionIndex_max_len, 0, 0, 0},
-  {(char *)"size_vector", __pyx_getprop_16py_stringsimjoin_8apply_rf_12jaccard_join_13PositionIndex_size_vector, 0, 0, 0},
-  {(char *)"threshold", __pyx_getprop_16py_stringsimjoin_8apply_rf_12jaccard_join_13PositionIndex_threshold, 0, 0, 0},
+static struct PyGetSetDef __pyx_getsets_16py_stringsimjoin_8apply_rf_12jaccard_join_PpositionIndex1[] = {
+  {(char *)"index", __pyx_getprop_16py_stringsimjoin_8apply_rf_12jaccard_join_15PpositionIndex1_index, 0, 0, 0},
+  {(char *)"min_len", __pyx_getprop_16py_stringsimjoin_8apply_rf_12jaccard_join_15PpositionIndex1_min_len, 0, 0, 0},
+  {(char *)"max_len", __pyx_getprop_16py_stringsimjoin_8apply_rf_12jaccard_join_15PpositionIndex1_max_len, 0, 0, 0},
+  {(char *)"size_vector", __pyx_getprop_16py_stringsimjoin_8apply_rf_12jaccard_join_15PpositionIndex1_size_vector, 0, 0, 0},
+  {(char *)"threshold", __pyx_getprop_16py_stringsimjoin_8apply_rf_12jaccard_join_15PpositionIndex1_threshold, 0, 0, 0},
   {0, 0, 0, 0, 0}
 };
 
-static PyTypeObject __pyx_type_16py_stringsimjoin_8apply_rf_12jaccard_join_PositionIndex = {
+static PyTypeObject __pyx_type_16py_stringsimjoin_8apply_rf_12jaccard_join_PpositionIndex1 = {
   PyVarObject_HEAD_INIT(0, 0)
-  "py_stringsimjoin.apply_rf.jaccard_join.PositionIndex", /*tp_name*/
-  sizeof(struct __pyx_obj_16py_stringsimjoin_8apply_rf_12jaccard_join_PositionIndex), /*tp_basicsize*/
+  "py_stringsimjoin.apply_rf.jaccard_join.PpositionIndex1", /*tp_name*/
+  sizeof(struct __pyx_obj_16py_stringsimjoin_8apply_rf_12jaccard_join_PpositionIndex1), /*tp_basicsize*/
   0, /*tp_itemsize*/
-  __pyx_tp_dealloc_16py_stringsimjoin_8apply_rf_12jaccard_join_PositionIndex, /*tp_dealloc*/
+  __pyx_tp_dealloc_16py_stringsimjoin_8apply_rf_12jaccard_join_PpositionIndex1, /*tp_dealloc*/
   0, /*tp_print*/
   0, /*tp_getattr*/
   0, /*tp_setattr*/
@@ -2807,17 +3729,17 @@ static PyTypeObject __pyx_type_16py_stringsimjoin_8apply_rf_12jaccard_join_Posit
   0, /*tp_weaklistoffset*/
   0, /*tp_iter*/
   0, /*tp_iternext*/
-  __pyx_methods_16py_stringsimjoin_8apply_rf_12jaccard_join_PositionIndex, /*tp_methods*/
+  __pyx_methods_16py_stringsimjoin_8apply_rf_12jaccard_join_PpositionIndex1, /*tp_methods*/
   0, /*tp_members*/
-  __pyx_getsets_16py_stringsimjoin_8apply_rf_12jaccard_join_PositionIndex, /*tp_getset*/
+  __pyx_getsets_16py_stringsimjoin_8apply_rf_12jaccard_join_PpositionIndex1, /*tp_getset*/
   0, /*tp_base*/
   0, /*tp_dict*/
   0, /*tp_descr_get*/
   0, /*tp_descr_set*/
   0, /*tp_dictoffset*/
-  __pyx_pw_16py_stringsimjoin_8apply_rf_12jaccard_join_13PositionIndex_1__init__, /*tp_init*/
+  __pyx_pw_16py_stringsimjoin_8apply_rf_12jaccard_join_15PpositionIndex1_1__init__, /*tp_init*/
   0, /*tp_alloc*/
-  __pyx_tp_new_16py_stringsimjoin_8apply_rf_12jaccard_join_PositionIndex, /*tp_new*/
+  __pyx_tp_new_16py_stringsimjoin_8apply_rf_12jaccard_join_PpositionIndex1, /*tp_new*/
   0, /*tp_free*/
   0, /*tp_is_gc*/
   0, /*tp_bases*/
@@ -2833,7 +3755,8 @@ static PyTypeObject __pyx_type_16py_stringsimjoin_8apply_rf_12jaccard_join_Posit
 };
 
 static PyMethodDef __pyx_methods[] = {
-  {"jaccard_join", (PyCFunction)__pyx_pw_16py_stringsimjoin_8apply_rf_12jaccard_join_1jaccard_join, METH_VARARGS|METH_KEYWORDS, 0},
+  {"jjaccard_join1", (PyCFunction)__pyx_pw_16py_stringsimjoin_8apply_rf_12jaccard_join_1jjaccard_join1, METH_VARARGS|METH_KEYWORDS, 0},
+  {"jaccard_join", (PyCFunction)__pyx_pw_16py_stringsimjoin_8apply_rf_12jaccard_join_3jaccard_join, METH_VARARGS|METH_KEYWORDS, 0},
   {0, 0, 0, 0}
 };
 
@@ -2856,8 +3779,14 @@ static struct PyModuleDef __pyx_moduledef = {
 #endif
 
 static __Pyx_StringTabEntry __pyx_string_tab[] = {
+  {&__pyx_n_s_end, __pyx_k_end, sizeof(__pyx_k_end), 0, 0, 1, 1},
+  {&__pyx_n_s_file, __pyx_k_file, sizeof(__pyx_k_file), 0, 0, 1, 1},
+  {&__pyx_kp_s_k, __pyx_k_k, sizeof(__pyx_k_k), 0, 0, 1, 0},
+  {&__pyx_kp_s_l_size, __pyx_k_l_size, sizeof(__pyx_k_l_size), 0, 0, 1, 0},
   {&__pyx_n_s_ltokens, __pyx_k_ltokens, sizeof(__pyx_k_ltokens), 0, 0, 1, 1},
   {&__pyx_n_s_main, __pyx_k_main, sizeof(__pyx_k_main), 0, 0, 1, 1},
+  {&__pyx_n_s_print, __pyx_k_print, sizeof(__pyx_k_print), 0, 0, 1, 1},
+  {&__pyx_kp_s_r_size, __pyx_k_r_size, sizeof(__pyx_k_r_size), 0, 0, 1, 0},
   {&__pyx_n_s_range, __pyx_k_range, sizeof(__pyx_k_range), 0, 0, 1, 1},
   {&__pyx_n_s_rtokens, __pyx_k_rtokens, sizeof(__pyx_k_rtokens), 0, 0, 1, 1},
   {&__pyx_n_s_test, __pyx_k_test, sizeof(__pyx_k_test), 0, 0, 1, 1},
@@ -2866,7 +3795,7 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {0, 0, 0, 0, 0, 0, 0}
 };
 static int __Pyx_InitCachedBuiltins(void) {
-  __pyx_builtin_range = __Pyx_GetBuiltinName(__pyx_n_s_range); if (!__pyx_builtin_range) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 23; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_builtin_range = __Pyx_GetBuiltinName(__pyx_n_s_range); if (!__pyx_builtin_range) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 34; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   return 0;
   __pyx_L1_error:;
   return -1;
@@ -2880,6 +3809,13 @@ static int __Pyx_InitCachedConstants(void) {
 }
 
 static int __Pyx_InitGlobals(void) {
+  /* InitThreads.init */
+  #ifdef WITH_THREAD
+PyEval_InitThreads();
+#endif
+
+if (unlikely(PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 2; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+
   if (__Pyx_InitStrings(__pyx_string_tab) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 2; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
   return 0;
   __pyx_L1_error:;
@@ -2971,11 +3907,12 @@ PyMODINIT_FUNC PyInit_jaccard_join(void)
   /*--- Global init code ---*/
   /*--- Variable export code ---*/
   /*--- Function export code ---*/
+  if (__Pyx_ExportFunction("jaccard_join", (void (*)(void))__pyx_f_16py_stringsimjoin_8apply_rf_12jaccard_join_jaccard_join, "std::vector<std::pair<int,int> >  (std::vector<std::vector<int> >  &, std::vector<std::vector<int> >  &, double, int __pyx_skip_dispatch)") < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 2; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   /*--- Type init code ---*/
-  if (PyType_Ready(&__pyx_type_16py_stringsimjoin_8apply_rf_12jaccard_join_PositionIndex) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 66; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __pyx_type_16py_stringsimjoin_8apply_rf_12jaccard_join_PositionIndex.tp_print = 0;
-  if (PyObject_SetAttrString(__pyx_m, "PositionIndex", (PyObject *)&__pyx_type_16py_stringsimjoin_8apply_rf_12jaccard_join_PositionIndex) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 66; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __pyx_ptype_16py_stringsimjoin_8apply_rf_12jaccard_join_PositionIndex = &__pyx_type_16py_stringsimjoin_8apply_rf_12jaccard_join_PositionIndex;
+  if (PyType_Ready(&__pyx_type_16py_stringsimjoin_8apply_rf_12jaccard_join_PpositionIndex1) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 145; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_type_16py_stringsimjoin_8apply_rf_12jaccard_join_PpositionIndex1.tp_print = 0;
+  if (PyObject_SetAttrString(__pyx_m, "PpositionIndex1", (PyObject *)&__pyx_type_16py_stringsimjoin_8apply_rf_12jaccard_join_PpositionIndex1) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 145; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_ptype_16py_stringsimjoin_8apply_rf_12jaccard_join_PpositionIndex1 = &__pyx_type_16py_stringsimjoin_8apply_rf_12jaccard_join_PpositionIndex1;
   /*--- Type import code ---*/
   /*--- Variable import code ---*/
   /*--- Function import code ---*/
@@ -2986,21 +3923,21 @@ PyMODINIT_FUNC PyInit_jaccard_join(void)
 
   /* "py_stringsimjoin/apply_rf/jaccard_join.pyx":2
  * 
- * from libc.math cimport ceil, floor, round             # <<<<<<<<<<<<<<
- * from libcpp.vector cimport vector
- * from libcpp.set cimport set as oset
+ * from cython.parallel import prange             # <<<<<<<<<<<<<<
+ * 
+ * from libc.math cimport ceil, floor, round
  */
   __pyx_t_1 = PyDict_New(); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 2; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
   if (PyDict_SetItem(__pyx_d, __pyx_n_s_test, __pyx_t_1) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 2; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "vector.to_py":67
+  /* "vector.from_py":50
  * 
- * @cname("__pyx_convert_vector_to_py_std_3a__3a_vector_3c_int_3e___")
- * cdef object __pyx_convert_vector_to_py_std_3a__3a_vector_3c_int_3e___(vector[X]& v):             # <<<<<<<<<<<<<<
- *     return [X_to_py(v[i]) for i in range(v.size())]
- * 
+ * @cname("__pyx_convert_vector_from_py_std_3a__3a_vector_3c_int_3e___")
+ * cdef vector[X] __pyx_convert_vector_from_py_std_3a__3a_vector_3c_int_3e___(object o) except *:             # <<<<<<<<<<<<<<
+ *     cdef vector[X] v
+ *     for item in o:
  */
 
   /*--- Wrapped vars code ---*/
@@ -3054,25 +3991,6 @@ static PyObject *__Pyx_GetBuiltinName(PyObject *name) {
     }
     return result;
 }
-
-#if CYTHON_COMPILING_IN_CPYTHON
-static CYTHON_INLINE PyObject* __Pyx_PyObject_Call(PyObject *func, PyObject *arg, PyObject *kw) {
-    PyObject *result;
-    ternaryfunc call = func->ob_type->tp_call;
-    if (unlikely(!call))
-        return PyObject_Call(func, arg, kw);
-    if (unlikely(Py_EnterRecursiveCall((char*)" while calling a Python object")))
-        return NULL;
-    result = (*call)(func, arg, kw);
-    Py_LeaveRecursiveCall();
-    if (unlikely(!result) && unlikely(!PyErr_Occurred())) {
-        PyErr_SetString(
-            PyExc_SystemError,
-            "NULL result without error in PyObject_Call");
-    }
-    return result;
-}
-#endif
 
 static CYTHON_INLINE void __Pyx_ErrRestore(PyObject *type, PyObject *value, PyObject *tb) {
 #if CYTHON_COMPILING_IN_CPYTHON
@@ -3674,6 +4592,111 @@ raise_neg_overflow:
     return (int) -1;
 }
 
+#if !CYTHON_COMPILING_IN_PYPY && PY_MAJOR_VERSION < 3
+static PyObject *__Pyx_GetStdout(void) {
+    PyObject *f = PySys_GetObject((char *)"stdout");
+    if (!f) {
+        PyErr_SetString(PyExc_RuntimeError, "lost sys.stdout");
+    }
+    return f;
+}
+static int __Pyx_Print(PyObject* f, PyObject *arg_tuple, int newline) {
+    int i;
+    if (!f) {
+        if (!(f = __Pyx_GetStdout()))
+            return -1;
+    }
+    Py_INCREF(f);
+    for (i=0; i < PyTuple_GET_SIZE(arg_tuple); i++) {
+        PyObject* v;
+        if (PyFile_SoftSpace(f, 1)) {
+            if (PyFile_WriteString(" ", f) < 0)
+                goto error;
+        }
+        v = PyTuple_GET_ITEM(arg_tuple, i);
+        if (PyFile_WriteObject(v, f, Py_PRINT_RAW) < 0)
+            goto error;
+        if (PyString_Check(v)) {
+            char *s = PyString_AsString(v);
+            Py_ssize_t len = PyString_Size(v);
+            if (len > 0) {
+                switch (s[len-1]) {
+                    case ' ': break;
+                    case '\f': case '\r': case '\n': case '\t': case '\v':
+                        PyFile_SoftSpace(f, 0);
+                        break;
+                    default:  break;
+                }
+            }
+        }
+    }
+    if (newline) {
+        if (PyFile_WriteString("\n", f) < 0)
+            goto error;
+        PyFile_SoftSpace(f, 0);
+    }
+    Py_DECREF(f);
+    return 0;
+error:
+    Py_DECREF(f);
+    return -1;
+}
+#else
+static int __Pyx_Print(PyObject* stream, PyObject *arg_tuple, int newline) {
+    PyObject* kwargs = 0;
+    PyObject* result = 0;
+    PyObject* end_string;
+    if (unlikely(!__pyx_print)) {
+        __pyx_print = PyObject_GetAttr(__pyx_b, __pyx_n_s_print);
+        if (!__pyx_print)
+            return -1;
+    }
+    if (stream) {
+        kwargs = PyDict_New();
+        if (unlikely(!kwargs))
+            return -1;
+        if (unlikely(PyDict_SetItem(kwargs, __pyx_n_s_file, stream) < 0))
+            goto bad;
+        if (!newline) {
+            end_string = PyUnicode_FromStringAndSize(" ", 1);
+            if (unlikely(!end_string))
+                goto bad;
+            if (PyDict_SetItem(kwargs, __pyx_n_s_end, end_string) < 0) {
+                Py_DECREF(end_string);
+                goto bad;
+            }
+            Py_DECREF(end_string);
+        }
+    } else if (!newline) {
+        if (unlikely(!__pyx_print_kwargs)) {
+            __pyx_print_kwargs = PyDict_New();
+            if (unlikely(!__pyx_print_kwargs))
+                return -1;
+            end_string = PyUnicode_FromStringAndSize(" ", 1);
+            if (unlikely(!end_string))
+                return -1;
+            if (PyDict_SetItem(__pyx_print_kwargs, __pyx_n_s_end, end_string) < 0) {
+                Py_DECREF(end_string);
+                return -1;
+            }
+            Py_DECREF(end_string);
+        }
+        kwargs = __pyx_print_kwargs;
+    }
+    result = PyObject_Call(__pyx_print, arg_tuple, kwargs);
+    if (unlikely(kwargs) && (kwargs != __pyx_print_kwargs))
+        Py_DECREF(kwargs);
+    if (!result)
+        return -1;
+    Py_DECREF(result);
+    return 0;
+bad:
+    if (kwargs != __pyx_print_kwargs)
+        Py_XDECREF(kwargs);
+    return -1;
+}
+#endif
+
 static CYTHON_INLINE PyObject* __Pyx_PyInt_From_long(long value) {
     const long neg_one = (long) -1, const_zero = (long) 0;
     const int is_unsigned = neg_one > const_zero;
@@ -4081,6 +5104,42 @@ static int __Pyx_check_binary_version(void) {
         return PyErr_WarnEx(NULL, message, 1);
     }
     return 0;
+}
+
+static int __Pyx_ExportFunction(const char *name, void (*f)(void), const char *sig) {
+    PyObject *d = 0;
+    PyObject *cobj = 0;
+    union {
+        void (*fp)(void);
+        void *p;
+    } tmp;
+    d = PyObject_GetAttrString(__pyx_m, (char *)"__pyx_capi__");
+    if (!d) {
+        PyErr_Clear();
+        d = PyDict_New();
+        if (!d)
+            goto bad;
+        Py_INCREF(d);
+        if (PyModule_AddObject(__pyx_m, (char *)"__pyx_capi__", d) < 0)
+            goto bad;
+    }
+    tmp.fp = f;
+#if PY_VERSION_HEX >= 0x02070000
+    cobj = PyCapsule_New(tmp.p, sig, 0);
+#else
+    cobj = PyCObject_FromVoidPtrAndDesc(tmp.p, (void *)sig, 0);
+#endif
+    if (!cobj)
+        goto bad;
+    if (PyDict_SetItemString(d, name, cobj) < 0)
+        goto bad;
+    Py_DECREF(cobj);
+    Py_DECREF(d);
+    return 0;
+bad:
+    Py_XDECREF(cobj);
+    Py_XDECREF(d);
+    return -1;
 }
 
 static int __Pyx_InitStrings(__Pyx_StringTabEntry *t) {

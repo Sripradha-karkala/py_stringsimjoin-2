@@ -1,4 +1,6 @@
 
+import time
+
 from libcpp.vector cimport vector
 from libcpp.set cimport set as oset
 from libcpp.string cimport string
@@ -7,8 +9,8 @@ from libcpp.map cimport map as omap
 from libc.stdio cimport printf, fprintf, fopen, fclose, FILE, sprintf
 
 from py_stringsimjoin.apply_rf.execution_plan import get_predicate_dict
-from py_stringsimjoin.apply_rf.tokenizers import tokenize, load_tok
-from py_stringsimjoin.apply_rf.jaccard_join import jaccard_join
+from py_stringsimjoin.apply_rf.tokenizers cimport tokenize, load_tok
+from py_stringsimjoin.apply_rf.jaccard_join cimport jaccard_join
 #from py_stringsimjoin.apply_rf import tokenizers
 
 #cdef extern from "<algorithm>" namespace "std":
@@ -75,9 +77,15 @@ cdef vector[string] infer_tokenizers(plan, rule_sets):
         queue.extend(curr_node.children)
     return tokenizers
 
-def test_jac(df1, attr1, df2, attr2):
-    test_tok1(df1, attr1, df2, attr2)
+def test_jac(df1, attr1, df2, attr2, threshold):
+    st = time.time()
+    print 'tokenizing'
+    #test_tok1(df1, attr1, df2, attr2)
+    print 'tokenizing done.'
     cdef vector[vector[int]] ltokens, rtokens
+    cdef vector[pair[int, int]] output
     load_tok('ws', 'gh', ltokens, rtokens)
-    jaccard_join(ltokens, rtokens, 0.8)
-
+    print 'loaded tok'
+    output = jaccard_join(ltokens, rtokens, threshold)
+    print 'output size : ', output.size()
+    print 'time : ', time.time() - st

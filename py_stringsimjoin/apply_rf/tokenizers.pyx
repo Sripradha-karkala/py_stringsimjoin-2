@@ -24,7 +24,7 @@ cdef class WhitespaceTokenizer:
     def __init__(self, bool return_set):
         self.return_set = return_set
 
-    cdef vector[string] tokenize(self, const string& inp_string) nogil:
+    cpdef vector[string] tokenize(self, const string& inp_string):
         cdef char* pch                                                              
         pch = strtok (<char*> inp_string.c_str(), " ") 
         cdef oset[string] tokens                                            
@@ -153,7 +153,7 @@ cdef vector[int] split(string inp_string):
         pch = strtok (NULL, " ")                                        
     return out_tokens  
 
-cdef load_tok(tok_type, path, vector[vector[int]] ltokens, vector[vector[int]] rtokens):
+cpdef void load_tok(tok_type, path, vector[vector[int]] &ltokens, vector[vector[int]] &rtokens):
     st =time.time()                                                             
     fp = open(path+"/ltable_"+tok_type)                                         
     for line in fp:                                                             
@@ -215,26 +215,29 @@ cpdef void tokenize(vector[string]& lstrings, vector[string]& rstrings,
     cdef char buf[10]
     cdef string space = " "
     for tokens in ltokens:
-        s = ""
-        n = tokens.size() - 1
+        otokens = []
+        n = tokens.size()
         for j in range(n):
-            sprintf(buf, '%d', token_ordering[tokens[j]])
-            s += string(buf) + space
-        sprintf(buf, '%d', token_ordering[tokens[n]])                       
-        s += string(buf)
-        fp.write(s+'\n')
+            otokens.append(token_ordering[tokens[j]])
+        otokens.sort()
+#        s = ""
+#        n = tokens.size() - 1
+#        for j in range(n):
+#            sprintf(buf, '%d', token_ordering[tokens[j]])
+#            s += string(buf) + space
+#        sprintf(buf, '%d', token_ordering[tokens[n]])                       
+#        s += string(buf)
+        fp.write(' '.join(map(str, otokens)) + '\n')
     fp.close()
 
     fp = open(working_dir + "/rtable_" + tok_type, 'w')                         
     for tokens in rtokens:                                                      
-        s = ""
-        n = tokens.size() - 1                                                                 
-        for j in range(n):                                      
-            sprintf(buf, '%d', token_ordering[tokens[j]])                       
-            s += string(buf) + space
-        sprintf(buf, '%d', token_ordering[tokens[n]])           
-        s += string(buf)        
-        fp.write(s+'\n')                                                       
+        otokens = []                                                            
+        n = tokens.size()                                                       
+        for j in range(n):                                                      
+            otokens.append(token_ordering[tokens[j]])                           
+        otokens.sort()         
+        fp.write(' '.join(map(str, otokens)) + '\n')                            
     fp.close()      
 
 cdef void convert_to_vector(string_col, vector[string]& string_vector):         
