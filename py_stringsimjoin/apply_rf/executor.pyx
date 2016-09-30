@@ -10,7 +10,10 @@ from libc.stdio cimport printf, fprintf, fopen, fclose, FILE, sprintf
 
 from py_stringsimjoin.apply_rf.execution_plan import get_predicate_dict
 from py_stringsimjoin.apply_rf.tokenizers cimport tokenize, load_tok
-from py_stringsimjoin.apply_rf.jaccard_join cimport jaccard_join
+from py_stringsimjoin.apply_rf.set_sim_join cimport set_sim_join
+from py_stringsimjoin.apply_rf.overlap_coefficient_join cimport ov_coeff_join                
+from py_stringsimjoin.apply_rf.edit_distance_join cimport ed_join   
+
 #from py_stringsimjoin.apply_rf import tokenizers
 
 #cdef extern from "<algorithm>" namespace "std":
@@ -77,7 +80,7 @@ cdef vector[string] infer_tokenizers(plan, rule_sets):
         queue.extend(curr_node.children)
     return tokenizers
 
-def test_jac(df1, attr1, df2, attr2, threshold):
+def test_jac(df1, attr1, df2, attr2, sim_type, threshold):
     st = time.time()
     print 'tokenizing'
     #test_tok1(df1, attr1, df2, attr2)
@@ -86,6 +89,26 @@ def test_jac(df1, attr1, df2, attr2, threshold):
     cdef vector[pair[int, int]] output
     load_tok('ws', 'gh', ltokens, rtokens)
     print 'loaded tok'
-    output = jaccard_join(ltokens, rtokens, threshold)
+    if sim_type == 3:
+        output = ov_coeff_join(ltokens, rtokens, threshold)             
+    else:
+        output = set_sim_join(ltokens, rtokens, sim_type, threshold)
     print 'output size : ', output.size()
     print 'time : ', time.time() - st
+
+def test_ed(df1, attr1, df2, attr2, threshold):                      
+    st = time.time()                                                            
+    print 'tokenizing'                                                          
+    cdef vector[string] lstrings, rstrings                                      
+    convert_to_vector1(df1[attr1], lstrings)                                    
+    convert_to_vector1(df2[attr2], rstrings)  
+    tokenize(lstrings, rstrings, 'qg2', 'gh1')                                    
+    print 'tokenizing done.'                                                    
+    cdef vector[vector[int]] ltokens, rtokens                                   
+    cdef vector[pair[int, int]] output                                          
+    load_tok('qg2', 'gh1', ltokens, rtokens)                                      
+    print 'loaded tok'                                                          
+    output = ed_join(ltokens, rtokens, 2, threshold, lstrings, rstrings)            
+    print 'output size : ', output.size()                                       
+    print 'time : ', time.time() - st                                           
+                                        

@@ -18,6 +18,14 @@ import re2
 cdef extern from "string.h" nogil:                                                    
     char *strtok (char *inp_str, const char *delimiters)  
 
+#cdef extern from "whitespace_tokenizer.h" nogil:                                      
+#    cdef cppclass WhitespaceTokenizer nogil:                                          
+#        WhitespaceTokenizer()                                                         
+#        WhitespaceTokenizer(bool return_set)
+#        bool return_set
+#        vector[string] tokenize(const string&)
+   
+
 cdef class WhitespaceTokenizer:
     cdef bool return_set
 
@@ -141,7 +149,7 @@ def test_tok2(df1, attr1, df2, attr2):
     convert_to_vector(df1[attr1], lstrings)                                    
     convert_to_vector(df2[attr2], rstrings)                                    
     st = time.time()
-    tokenize(lstrings, rstrings, 'ws', 'gh') 
+    tokenize(lstrings, rstrings, 'ws', 'gh1') 
     print 'time : ', time.time() - st
 
 cdef vector[int] split(string inp_string):
@@ -179,10 +187,12 @@ cpdef void tokenize(vector[string]& lstrings, vector[string]& rstrings,
     elif tok_type.compare('num') == 0:                                          
         tok = NumericTokenizer(True)                                 
     elif tok_type.compare('qg2') == 0:                                          
-        tok = QgramTokenizer(2, True, ord('#'), ord('$'), True)      
+        tok = QgramTokenizer(2, True, ord('#'), ord('$'), False)      
     elif tok_type.compare('qg3') == 0:                                          
         tok = QgramTokenizer(3, True, ord('#'), ord('$'), True)      
-                                                                                
+
+    #cdef AlphabeticTokenizer tok
+#    tok = AlphabeticTokenizer(True)                                                                                
     cdef string s, token                                                        
     cdef vector[string] tokens                                                  
     cdef omap[string, int] token_freq, token_ordering                           
