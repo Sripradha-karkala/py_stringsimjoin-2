@@ -88,6 +88,7 @@ def merge_plans(plan1, plan2, predicate_dict):
                         plan2_node.node_type = 'SELECT'
                         plan2_node.parent = sibling_node
                         sibling_node.add_child(plan2_node)
+                        no_common_join_predicate = False
 
                     elif ((pred1.threshold > pred2.threshold) or
                           (pred1.threshold == pred2.threshold and    
@@ -98,7 +99,8 @@ def merge_plans(plan1, plan2, predicate_dict):
                         plan2_node.parent = sibling_node.parent
                         sibling_node.parent.add_child(plan2_node)
                         sibling_node.parent.remove_child(sibling_node)
-                        sibling_node.parent = plan2_node                           
+                        sibling_node.parent = plan2_node
+                        no_common_join_predicate = False                           
 
                     elif pred1.threshold == pred2.threshold:
                         print 't4'
@@ -107,15 +109,16 @@ def merge_plans(plan1, plan2, predicate_dict):
                         plan2_node = plan2_node.children[0]                                           
                         sibling_node.add_child(plan2_node.children[0])
                         continue_merge = True
+                        no_common_join_predicate = False                                
  
-                elif (plan2_node.node_type == 'SELECT' and 
-                      pred1.threshold == pred2.threshold):
-                    plan2_node.parent.remove_child(plan2_node)                
-                    plan2_node.children[0].parent = sibling_node  
-                    sibling_nodes_to_check = sibling_node.children              
-                    plan2_node = plan2_node.children[0]     
-                    sibling_node.add_child(plan2_node.children[0])
-                    continue_merge = True
+#                elif (plan2_node.node_type == 'SELECT' and 
+#                      pred1.threshold == pred2.threshold):
+#                    plan2_node.parent.remove_child(plan2_node)                
+#                    plan2_node.children[0].parent = sibling_node  
+#                    sibling_nodes_to_check = sibling_node.children              
+#                    plan2_node = plan2_node.children[0]     
+#                    sibling_node.add_child(plan2_node.children[0])
+#                    continue_merge = True
 
                 elif plan2_node.node_type == 'FILTER':
                     plan2_node.node_type = 'SELECT'
@@ -124,15 +127,13 @@ def merge_plans(plan1, plan2, predicate_dict):
                                     sibling_node.parent)
                     parent_node = sibling_node.parent
                     parent_node.remove_child(sibling_node)
-                    parent_node.remove_child(plan2_node)
                     new_node.add_child(sibling_node)
                     new_node.add_child(plan2_node)
                     sibling_node.parent = new_node
                     plan2_node.parent = new_node
                     parent_node.add_child(new_node)
-                    new_node.parent = parent_node
 
-                no_common_join_predicate = False
+                #no_common_join_predicate = False
                 break
 
         if no_common_join_predicate:
@@ -173,6 +174,20 @@ def generate_execution_plan(rule_sets):
     for i in range(1, len(plans)):                                              
         merge_plans(curr_plan, copy.deepcopy(plans[i]), predicate_dict)         
     return curr_plan             
+
+def get_ind_opt_plans(rule_sets):
+    plans = []                                                                  
+    for rule_set in rule_sets:                                                  
+        for rule in rule_set.rules:                                             
+            plans.append(get_optimal_plan_for_rule(rule))     
+    return plans
+
+def generate_execution_plan1(plans, rule_sets):                                         
+    predicate_dict = get_predicate_dict(rule_sets)                              
+    curr_plan = copy.deepcopy(plans[0])                                         
+    for i in range(1, len(plans)):                                              
+        merge_plans(curr_plan, copy.deepcopy(plans[i]), predicate_dict)         
+    return curr_plan       
 
 def get_optimal_plan_for_rule(rule):
     optimal_predicate_seq = get_optimal_predicate_seq(rule.predicates)
