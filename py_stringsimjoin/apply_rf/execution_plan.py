@@ -1,6 +1,7 @@
 
 import copy
 import networkx as nx
+import itertools
 
 class Node:
     def __init__(self, node_type, predicate, parent=None):
@@ -8,6 +9,7 @@ class Node:
         self.predicate = predicate
         self.parent = parent
         self.children = []
+        self.predicates = []
 
     def add_child(self, child_node):
         self.children.append(child_node)
@@ -68,6 +70,84 @@ def get_predicate_dict(rule_sets):
     return predicate_dict
 
 def merge_plans(plan1, plan2, predicate_dict):
+    existing_join_nodes = plan1.root.children
+    plan2_node = plan2.root.children[0]
+
+    if plan2_node.node_type != 'JOIN':
+        print 'INVALID PLAN'
+        return
+
+    plan2_node_pred = predicate_dict[plan2_node.predicate]
+    plan1_node_to_be_merged = None
+    for join_node in existing_join_nodes:
+        plan1_node_pred = predicate_dict[join_node.predicate]
+        if plan1_node_pred.feat_name != plan2_node_pred.feat_name:
+            continue
+        plan1_node_to_be_merged = join_node
+
+    if plan1_node_to_be_merged is None:
+        plan1.root.add_child(plan2.root.children[0])                            
+        return
+     
+    plan1_node_pred = predicate_dict[plan1_node_to_be_merged.predicate]
+
+    if ((plan1_node_pred.threshold < plan2_node_pred.threshold) or                  
+        (plan1_node_pred.threshold == plan2_node_pred.threshold and                 
+         plan1_node_pred.comp_op == '>=' and plan2_node_pred.comp_op == '>')):      
+        plan2_node.node_type = 'SELECT'                         
+        plan2_node.parent = plan1_node_to_be_merged                        
+        plan1_node_to_be_merged.add_child(plan2_node)                      
+                                                                                
+    elif ((plan1_node_pred.threshold > plan2_node_pred.threshold) or                
+          (plan1_node_pred.threshold == plan2_node_pred.threshold and               
+           plan1_node_pred.comp_op == '>' and plan2_node_pred.comp_op == '>=')):    
+        plan1_node_to_be_merged.node_type = 'SELECT'                       
+        plan2_node.add_child(plan1_node_to_be_merged)                      
+        plan2_node.parent = plan1.root                 
+        plan1.root.add_child(plan2_node)               
+        plan1.root.remove_child(plan1_node_to_be_merged)          
+        plan1_node_to_be_merged.parent = plan2_node                        
+                                                                                
+    elif plan1_node_pred.threshold == plan2_node_pred.threshold:                    
+        plan2_node.children[0].parent = plan1_node_to_be_merged            
+        plan2_node = plan2_node.children[0]                     
+        plan1_node_to_be_merged.add_child(plan2_node.children[0])   
+
+def merge_filter_nodes(plan):
+    output_nodes = []
+
+    queue = []
+    for node in plan.root.children:
+        queue.append(node)
+
+    while len(queue) > 0:
+        node = queue.pop(0)
+        if node.node_type == 'OUTPUT':
+            output_nodes.append(node)
+            continue
+        for child_node in node.children:
+            queue.append(child_node)
+
+    print 'num output nodes : ', len(output_nodes)
+    
+    for node in output_nodes:
+
+        nodes_to_merge = []        
+        curr = node.parent
+        while curr.node_type == 'FILTER':
+            nodes_to_merge.append(curr)
+            curr = curr.parent
+
+        new_node = Node('FILTER', None, curr)
+        for i in xrange(len(nodes_to_merge)-1, -1, -1):
+            new_node.predicates.append(nodes_to_merge[i].predicate)
+        new_node.add_child(node)
+
+        curr.remove_child(nodes_to_merge[-1])
+        curr.add_child(new_node)
+        node.parent = new_node         
+
+def merge_plans1(plan1, plan2, predicate_dict):
     sibling_nodes_in_plan1 = plan1.root.children
     plan2_node = plan2.root.children[0]
     no_common_join_predicate = True                                         
@@ -213,7 +293,8 @@ def get_optimal_predicate_seq(predicates):
     invalid_predicates = []                                                     
     for predicate in predicates:                                           
         if predicate.is_valid_join_predicate():                                 
-            valid_predicates.append(predicate)                                  
+            valid_predicates.append(predicate)
+            print predicate.feat_name                                  
         else:                                                                   
             invalid_predicates.append(predicate)  
     if len(valid_predicates) == 0:
@@ -225,7 +306,7 @@ def get_optimal_predicate_seq(predicates):
     prev_coverage = None                                                        
     for i in range(len(valid_predicates)):                                      
         pred_score = (1.0 - (sum(valid_predicates[i].coverage) /                
-            len(valid_predicates[i].coverage))) / valid_predicates[i].cost      
+             len(valid_predicates[i].coverage))) / valid_predicates[i].cost      
                                                                                 
         if pred_score > max_score:                                              
             max_score = pred_score                                              
@@ -277,6 +358,28 @@ def select_optimal_set_of_trees(rule_sets):
             trees_to_apply_over_candset.append(rule_sets[i])
     return (trees_to_apply_over_join, trees_to_apply_over_candset)
 
+def foo(rule_sets, plans):
+    num_trees = len(rule_sets)
+    min_trees_to_apply = (num_trees / 2) + 1                                    
+    start = 0
+    ind_plans_per_tree = {}
+
+    for i in xrange(num_trees):
+        num_rules = len(rule_sets[i].rules)
+        ind_plans_per_tree[i] = plans[start:start+num_rules]
+        start = start + num_rules
+
+    predicate_dict = get_predicate_dict(rule_sets)                              
+    for comb in itertools.combinations(range(num_trees), min_trees_to_apply):
+        print comb
+        ind_plans = []
+        for i in comb:
+            ind_plans.extend(ind_plans_per_tree[i])
+        pl = generate_execution_plan1(ind_plans, rule_sets)
+        print comb, compute_plan_cost(pl.root, None, predicate_dict) 
+
+
+
 def compute_score_for_trees(rule_sets):
     return
 
@@ -308,29 +411,32 @@ def generate_greedy_execution_plan(rule_sets):
                    
         
 
-def compute_plan_cost(plan_node, coverage):
+def compute_plan_cost(plan_node, coverage, predicate_dict):
     if  plan_node.node_type == 'OUTPUT':
         return 0
 
     if plan_node.node_type == 'ROOT':
        cost = 0
        for child_node in plan_node.children:
-           cost += compute_plan_cost(child_node, coverage)
+           cost += compute_plan_cost(child_node, coverage, predicate_dict)
        return cost       
 
-    curr_coverage = plan_node.predicate.coverage
+    if plan_node.node_type == 'SELECT':
+        return 0
+
+    curr_coverage = predicate_dict[plan_node.predicate].coverage
     if plan_node.parent.node_type != 'ROOT':
         curr_coverage = curr_coverage & coverage
 
     child_nodes_cost = 0
     for child_node in plan_node.children:
-        child_nodes_cost += compute_plan_cost(child_node, curr_coverage)
+        child_nodes_cost += compute_plan_cost(child_node, curr_coverage, predicate_dict)
 
     if plan_node.parent.node_type == 'ROOT':
-        return plan_node.predicate.cost + child_nodes_cost
+        return predicate_dict[plan_node.predicate].cost + child_nodes_cost
     else:
         sel = sum(coverage) / len(coverage)
-        return sel * plan_node.predicate.cost + child_nodes_cost
+        return sel * predicate_dict[plan_node.predicate].cost + child_nodes_cost
 
 def recursive_merge(plan_node, index):
     if plan_node.node_type == 'ROOT':

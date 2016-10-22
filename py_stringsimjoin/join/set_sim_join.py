@@ -64,7 +64,7 @@ def set_sim_join(ltable, rtable,
 
     if show_progress:
         prog_bar = pyprind.ProgBar(len(rtable))
-
+    k = 0
     for r_row in rtable:
         r_string = r_row[r_join_attr_index]
 
@@ -102,7 +102,7 @@ def set_sim_join(ltable, rtable,
         for cand, overlap in iteritems(candidate_overlap):
             if overlap > 0:
                 l_ordered_tokens = cached_l_tokens[cand]
-
+                k += 1
                 # compute the actual similarity score
                 sim_score = sim_fn(l_ordered_tokens, r_ordered_tokens)
 
@@ -126,7 +126,7 @@ def set_sim_join(ltable, rtable,
 
         if show_progress:
             prog_bar.update()
-
+    print 'k : ', k
     output_header = get_output_header_from_tables(
                         l_key_attr, r_key_attr,
                         l_out_attrs, r_out_attrs,

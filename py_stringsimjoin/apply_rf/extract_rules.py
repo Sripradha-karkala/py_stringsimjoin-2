@@ -31,7 +31,7 @@ def extract_pos_rules_from_tree(tree, feature_table, start_rule_id, start_predic
                           feat_row['tokenizer_type'],
                           feat_row['sim_function'], 
                           feat_row['tokenizer'], '<=', threshold[node], feat_row['cost'])                                           
-            p.set_name('p'+str(curr_predicate_id))                              
+            p.set_name(features[node]+' <= '+str(threshold[node]))                              
             curr_predicate_id += 1 
             cache.insert(depth, p)   
             traverse(left[node], left, right, features, threshold, depth+1, cache, start_rule_id, curr_predicate_id)
@@ -42,7 +42,7 @@ def extract_pos_rules_from_tree(tree, feature_table, start_rule_id, start_predic
                           feat_row['tokenizer_type'],                           
                           feat_row['sim_function'],                             
                           feat_row['tokenizer'], '>', threshold[node], feat_row['cost'])                                         
-            p.set_name('p'+str(curr_predicate_id))
+            p.set_name(features[node]+' > '+str(threshold[node]))
             curr_predicate_id += 1
             cache.insert(depth, p)    
             traverse(right[node], left, right, features, threshold, depth+1, cache, start_rule_id, curr_predicate_id)
