@@ -11,7 +11,7 @@ from py_stringsimjoin.feature.autofeaturegen import *
 from py_stringsimjoin.feature.extractfeatures import *
 from py_stringsimjoin.apply_rf.apply_rf import *
 from py_stringsimjoin.apply_rf.estimate_parameters import *
-#from py_stringsimjoin.apply_rf.execution_plan import *
+from py_stringsimjoin.apply_rf.execution_plan import *
 from py_stringsimjoin.apply_rf.extract_rules import *
 from py_stringsimjoin.utils.tokenizers import *
 
@@ -55,7 +55,7 @@ c=sample_pairs(ldf,rdf,'id','id','match_col','match_col',100000,20,seed)
 labeled_c = label_table_using_gold(c, 'l_id', 'r_id', '/scratch/citgold.csv')
 print ('number of positives (after inverted_index sampling) : ', sum(labeled_c['label']))
 
-ft=get_features(['JACCARD', 'COSINE', 'DICE', 'OVERLAP_COEFFICIENT'])
+ft=get_features(['JACCARD', 'COSINE', 'DICE'])
 
 print ('Extracting feature vectors..')
 fvs = extract_feature_vecs(c, 'l_id','r_id',ldf,rdf,'id','id','match_col','match_col',ft,n_jobs=4)
@@ -76,9 +76,10 @@ for rule_set in rule_sets:
 compute_coverage(rule_sets, fvs)
 import pickle
 pickle.dump(rule_sets, open('cit_rule_sets_tree_5_leaf_3', 'w'))
-output = apply_rulesets(ldf, rdf, 'id', 'id',                            
-                        'match_col', 'match_col', rule_sets, n_jobs=4)
-print len(output)
+pickle.dump(al.matcher, open('rf_5_3', 'w'))                
+#output = apply_rulesets(ldf, rdf, 'id', 'id',                            
+#                        'match_col', 'match_col', rule_sets, n_jobs=4)
+#print len(output)
 #compute_coverage(rule_sets, fvs)
 #plan = generate_execution_plan(rule_sets)
 
