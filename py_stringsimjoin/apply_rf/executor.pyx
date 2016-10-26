@@ -26,9 +26,9 @@ from py_stringsimjoin.apply_rf.sim_functions cimport cosine, dice, jaccard
 cdef extern from "predicatecpp.h" nogil:                                      
     cdef cppclass Predicatecpp nogil:                                          
         Predicatecpp()                                                         
-        Predicatecpp(string&, string&, string&, double&)
-        string sim_measure_type, tokenizer_type, comp_op                                                  
-        double threshold
+        Predicatecpp(string&, string&, string&, string&, double&)
+        string feat_name, sim_measure_type, tokenizer_type, comp_op                                                  
+        double threshold, cost
 
 cdef extern from "node.h" nogil:                                           
     cdef cppclass Node nogil:                                              
@@ -69,7 +69,7 @@ cdef Node clone_execution_plan(plan, rule_sets):
                         new_preds.push_back(new_pred)
                 else:
                 '''
-                new_pred = Predicatecpp(predicate_dict[child_node.predicate].sim_measure_type,
+                new_pred = Predicatecpp('', predicate_dict[child_node.predicate].sim_measure_type,
                                             predicate_dict[child_node.predicate].tokenizer_type,
                                             predicate_dict[child_node.predicate].comp_op,
                                             predicate_dict[child_node.predicate].threshold)

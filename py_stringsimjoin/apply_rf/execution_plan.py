@@ -262,6 +262,77 @@ def get_ind_opt_plans(rule_sets):
             plans.append(get_optimal_plan_for_rule(rule))     
     return plans
 
+def get_ind_opt_plans1(rule_sets):                                               
+    plans = []                                                                  
+    for rule_set in rule_sets:                                                  
+        for rule in rule_set.rules:
+
+            valid_predicates = []                                                       
+            invalid_predicates = []                                                     
+            for i in xrange(len(rule.predicates)):                                                
+                if rule.predicates[i].is_valid_join_predicate():                                 
+                    valid_predicates.append(i)                                                                    
+                else:                                                                   
+                    invalid_predicates.append(i)
+
+            optimal_predicate_seq = []
+            
+            sample_size = len(rule.predicates[0].coverage)                                                  
+            selected_predicates = {}                                                    
+            max_score = 0                                                               
+            max_pred = -1                                                         
+            prev_coverage = None                                                        
+            for i in valid_predicates:                                      
+                pred_score = (1.0 - (sum(rule.predicates[i].coverage) /                
+                    sample_size)) / rule.predicates[i].cost     
+                                                                                
+                if pred_score > max_score:                                              
+                    max_score = pred_score                                              
+                    max_pred = i                                                  
+                                                                                
+            optimal_predicate_seq.append(max_pred)              
+            selected_predicates[max_pred] = True                                  
+            prev_coverage = rule.predicates[max_pred].coverage                   
+                                                                                
+            while len(optimal_predicate_seq) != len(valid_predicates):                  
+                max_score = -1                                                          
+                max_pred = -1                                                     
+                                                                                
+                for i in valid_predicates:                                  
+                    if selected_predicates.get(i) != None:                              
+                        continue                                                        
+                                                                                
+                    combined_coverage = rule.predicates[i].coverage & prev_coverage    
+                    pred_score = (1.0 - (sum(combined_coverage) /                       
+                        sample_size)) / rule.predicates[i].cost             
+                    print pred_score, max_score, sum(prev_coverage), sum(combined_coverage)
+                    if pred_score > max_score:                                          
+                        max_score = pred_score                                          
+                        max_pred = i                                              
+                                                                                
+                optimal_predicate_seq.append(max_pred)          
+                selected_predicates[max_pred] = True                              
+                prev_coverage = prev_coverage & rule.predicates[max_pred].coverage
+                                                                                
+            optimal_predicate_seq.extend(invalid_predicates)    
+                                                    
+            plan = Plan()                                                               
+            curr_node = plan.root                                                       
+            join_pred = True                                                            
+            for i in optimal_predicate_seq:                                     
+                if join_pred:                                                           
+                    new_node = Node('JOIN', rule.predicates[i].name, curr_node)                  
+                    curr_node.add_child(new_node)                                       
+                    curr_node = new_node                                                
+                    join_pred = False                                                   
+                else:                                                                   
+                    new_node = Node('FILTER', rule.predicates[i].name, curr_node)                
+                    curr_node.add_child(new_node)                                       
+                    curr_node = new_node                                                
+            curr_node.add_child(Node('OUTPUT', 'out_'+rule.name, curr_node))
+            plans.append(plan)           
+    return plans
+
 def generate_execution_plan1(plans, rule_sets):                                         
     predicate_dict = get_predicate_dict(rule_sets)                              
     curr_plan = copy.deepcopy(plans[0])                                         
@@ -299,6 +370,7 @@ def get_optimal_predicate_seq(predicates):
             invalid_predicates.append(predicate)  
     if len(valid_predicates) == 0:
         print 'invalid rf'
+
     optimal_predicate_seq = []                                                  
     selected_predicates = {}                                                    
     max_score = 0                                                               
