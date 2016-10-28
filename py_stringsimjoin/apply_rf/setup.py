@@ -18,7 +18,10 @@ setup(ext_modules = cythonize([
     Extension("executor", sources=["executor.pyx", "node.cpp", "predicatecpp.cpp"], language="c++",         
               extra_compile_args = ["-O3", "-ffast-math", "-march=native", "-fopenmp"],
               extra_link_args=['-fopenmp']),
-    Extension("ex_plan", sources=["ex_plan.pyx", "tree.cpp", "rule.cpp", "predicatecpp.cpp"], language="c++",
+    Extension("ex_plan", sources=["ex_plan.pyx", "tree.cpp", "rule.cpp", "predicatecpp.cpp", "coverage.cpp", "node.cpp"], language="c++",
               extra_compile_args = ["-O3", "-ffast-math", "-march=native", "-fopenmp"],
-              extra_link_args=['-fopenmp'])     
+              extra_link_args=['-fopenmp']),
+    Extension("utils", sources=["utils.pyx"], language="c++",
+              extra_compile_args = ["-O3", "-ffast-math", "-march=native", "-fopenmp"],
+              extra_link_args=['-fopenmp']),
  ]))

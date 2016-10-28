@@ -17,17 +17,18 @@ from py_stringsimjoin.apply_rf.set_sim_join cimport set_sim_join
 from py_stringsimjoin.apply_rf.overlap_coefficient_join cimport ov_coeff_join                
 from py_stringsimjoin.apply_rf.edit_distance_join cimport ed_join   
 from py_stringsimjoin.apply_rf.sim_functions cimport cosine, dice, jaccard      
+from py_stringsimjoin.apply_rf.utils cimport compfnptr, simfnptr, get_comp_type, get_comparison_function, get_sim_type, get_sim_function
 
 ####from py_stringsimjoin.apply_rf import tokenizers
 
 #cdef extern from "<algorithm>" namespace "std":
 #    void std_sort "std::sort" [iter](iter first, iter last)
-
 cdef extern from "predicatecpp.h" nogil:                                      
     cdef cppclass Predicatecpp nogil:                                          
         Predicatecpp()                                                         
-        Predicatecpp(string&, string&, string&, string&, double&)
-        string feat_name, sim_measure_type, tokenizer_type, comp_op                                                  
+        Predicatecpp(string&, string&, string&, string&, string&, double&)
+        void set_cost(double&)
+        string pred_name, feat_name, sim_measure_type, tokenizer_type, comp_op                                                  
         double threshold, cost
 
 cdef extern from "node.h" nogil:                                           
@@ -59,7 +60,7 @@ cdef Node clone_execution_plan(plan, rule_sets):
         for child_node in curr_node.children:
             new_preds = vector[Predicatecpp]()                              
             if child_node.node_type != 'OUTPUT':
-                '''
+                '''               
                 if len(child_node.predicates) > 0:
                     for pred in child_node.predicates:
                         new_pred = Predicatecpp(predicate_dict[pred].sim_measure_type,
@@ -68,8 +69,8 @@ cdef Node clone_execution_plan(plan, rule_sets):
                                                 predicate_dict[pred].threshold)
                         new_preds.push_back(new_pred)
                 else:
-                '''
-                new_pred = Predicatecpp('', predicate_dict[child_node.predicate].sim_measure_type,
+                '''            
+                new_pred = Predicatecpp('','', predicate_dict[child_node.predicate].sim_measure_type,
                                             predicate_dict[child_node.predicate].tokenizer_type,
                                             predicate_dict[child_node.predicate].comp_op,
                                             predicate_dict[child_node.predicate].threshold)
@@ -195,62 +196,6 @@ cdef void execute_filter_node_part(pair[int, int] partition,
         if comp_fn(sim_fn(ltokens[cand.first], rtokens[cand.second]), predicate.threshold):
             output_pairs.push_back(cand)         
  
-
-cdef bool eq_compare(double val1, double val2) nogil:
-    return val1 == val2
-
-cdef bool le_compare(double val1, double val2) nogil:
-    return val1 <= val2
-
-cdef bool lt_compare(double val1, double val2) nogil:
-    return val1 < val2
-
-cdef bool ge_compare(double val1, double val2) nogil:
-    return val1 >= val2
-
-cdef bool gt_compare(double val1, double val2) nogil: 
-    return val1 > val2
-
-ctypedef bool (*compfnptr)(double, double) nogil          
-
-cdef int get_comp_type(const string& comp_op):
-    if comp_op.compare('<') == 0:
-        return 0 
-    elif comp_op.compare('<=') == 0:
-        return 1
-    elif comp_op.compare('>') == 0:
-        return 2
-    elif comp_op.compare('>=') == 0:
-        return 3
-
-cdef compfnptr get_comparison_function(const int comp_type) nogil:            
-    if comp_type == 0:                                               
-        return lt_compare                                                       
-    elif comp_type == 1:                                            
-        return le_compare                                                       
-    elif comp_type == 2:                                             
-        return gt_compare                                                       
-    elif comp_type == 3:                                            
-        return ge_compare         
-
-ctypedef double (*simfnptr)(const vector[int]&, const vector[int]&) nogil          
-                                                                                
-cdef int get_sim_type(const string& sim_measure_type):                               
-    if sim_measure_type.compare('COSINE') == 0: # COSINE                                                  
-        return 0                                                           
-    elif sim_measure_type.compare('DICE') == 0: # DICE                                                  
-        return 1                                                            
-    elif sim_measure_type.compare("JACCARD") == 0: # JACCARD:                                              
-        return 2
-
-cdef simfnptr get_sim_function(const int sim_type) nogil:                          
-    if sim_type == 0: # COSINE                                                  
-        return cosine                                                                
-    elif sim_type == 1: # DICE                                                  
-        return dice                                                                
-    elif sim_type == 2: # JACCARD:                                              
-        return jaccard        
-
 cdef void tokenize_strings(plan, rule_sets, vector[string]& lstrings, 
                       vector[string]& rstrings, const string& working_dir):
     tokenizers = infer_tokenizers(plan, rule_sets)

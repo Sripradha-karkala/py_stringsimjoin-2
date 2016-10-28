@@ -18,6 +18,9 @@ import re2
 cdef extern from "string.h" nogil:                                                    
     char *strtok (char *inp_str, const char *delimiters)  
 
+cdef extern from "<algorithm>" namespace "std" nogil:
+    void sort(vector[int].iterator, vector[int].iterator)
+ 
 #cdef extern from "whitespace_tokenizer.h" nogil:                                      
 #    cdef cppclass WhitespaceTokenizer nogil:                                          
 #        WhitespaceTokenizer()                                                         
@@ -263,3 +266,69 @@ cdef vector[string] remove_duplicates(vector[string]& inp_vector):
             out_tokens.push_back(inp_str)                                                
             seen_tokens.insert(inp_str)                                                                                                                       
     return out_tokens
+
+cdef void tokenize_without_materializing(vector[string]& lstrings, 
+                                          vector[string]& rstrings,         
+                                          const string& tok_type,
+                                          vector[vector[int]]& l_ordered_tokens,
+                                          vector[vector[int]]& r_ordered_tokens):          
+    cdef object tok                                                             
+    if tok_type.compare('ws') == 0:                                             
+        tok = WhitespaceTokenizer(True)                                         
+    elif tok_type.compare('alph') == 0:                                         
+        tok = AlphabeticTokenizer(True)                                         
+    elif tok_type.compare('alph_num') == 0:                                     
+        tok = AlphanumericTokenizer(True)                                       
+    elif tok_type.compare('num') == 0:                                          
+        tok = NumericTokenizer(True)                                            
+    elif tok_type.compare('qg2') == 0:                                          
+        tok = QgramTokenizer(2, True, ord('#'), ord('$'), False)                
+    elif tok_type.compare('qg3') == 0:                                          
+        tok = QgramTokenizer(3, True, ord('#'), ord('$'), True)                 
+                                                                                
+    #cdef AlphabeticTokenizer tok                                               
+#    tok = AlphabeticTokenizer(True)                                                                                
+    cdef string s, token                                                        
+    cdef vector[string] tokens                                                  
+    cdef omap[string, int] token_freq, token_ordering                           
+    cdef vector[vector[string]] ltokens, rtokens                                
+    cdef int j, n=lstrings.size()                                               
+                                                                                
+    for j in range(n):                                                          
+        tokens = tok.tokenize(lstrings[j])                                      
+        ltokens.push_back(tokens)                                               
+        for token in tokens:                                                    
+            token_freq[token] += 1                                              
+                                                                                
+    n = rstrings.size()                                                         
+    for j in range(n):                                                          
+        tokens = tok.tokenize(rstrings[j])                                      
+        rtokens.push_back(tokens)                                               
+        for token in tokens:                                                    
+            token_freq[token] += 1                                              
+                                                                                
+    ordered_tokens = []                                                         
+    for entry in token_freq:                                                    
+        ordered_tokens.append((entry.first, entry.second))                      
+                                                                                
+    cdef int order_idx = 1                                                      
+    for token_freq_tuple in sorted(ordered_tokens, key=itemgetter(1)):          
+        token_ordering[token_freq_tuple[0]] = order_idx                         
+        order_idx += 1                                                          
+   
+    cdef vector[int] otokens                                                                             
+    for tokens in ltokens:                                                                                                                  
+        n = tokens.size()                                                       
+        for j in range(n):                                                      
+            otokens.push_back(token_ordering[tokens[j]])                           
+        sort(otokens.begin(), otokens.end())
+        l_ordered_tokens.push_back(otokens)
+        otokens.clear()
+
+    for tokens in rtokens:                                                                                           
+        n = tokens.size()                                                       
+        for j in range(n):                                                      
+            otokens.push_back(token_ordering[tokens[j]])                           
+        sort(otokens.begin(), otokens.end())
+        r_ordered_tokens.push_back(otokens)
+        otokens.clear()                        

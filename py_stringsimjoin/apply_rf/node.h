@@ -10,5 +10,9 @@ class Node {
     
     Node();
     Node(std::vector<Predicatecpp>&, std::string&, std::vector<Node>&);
+    Node(std::vector<Predicatecpp>&, std::string&);         
+    Node(std::string&);         
     ~Node();
+
+    void add_child(Node);
 };
