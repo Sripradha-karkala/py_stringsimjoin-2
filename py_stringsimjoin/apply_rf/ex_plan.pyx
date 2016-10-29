@@ -11,54 +11,12 @@ from libcpp.string cimport string
 from py_stringsimjoin.apply_rf.predicate import Predicate                       
 from py_stringsimjoin.apply_rf.tokenizers cimport tokenize_without_materializing
 from py_stringsimjoin.apply_rf.utils cimport compfnptr, simfnptr, get_comp_type, get_comparison_function, get_sim_type, get_sim_function
+from py_stringsimjoin.apply_rf.predicatecpp cimport Predicatecpp
+from py_stringsimjoin.apply_rf.rule cimport Rule
+from py_stringsimjoin.apply_rf.tree cimport Tree                                
+from py_stringsimjoin.apply_rf.node cimport Node
+from py_stringsimjoin.apply_rf.coverage cimport Coverage
 
-cdef extern from "predicatecpp.h" nogil:                                        
-    cdef cppclass Predicatecpp nogil:                                           
-        Predicatecpp()                                                          
-        Predicatecpp(string&, string&, string&, string&, string&, double&)                        
-        void set_cost(double&)
-        bool is_join_predicate()                                                  
-        string pred_name, feat_name, sim_measure_type, tokenizer_type, comp_op                        
-        double threshold, cost    
-
-cdef extern from "rule.h" nogil:                                                
-    cdef cppclass Rule nogil:                                                   
-        Rule()                                                                  
-        Rule(vector[Predicatecpp]&)                     
-        vector[Predicatecpp] predicates 
-
-cdef extern from "tree.h" nogil:                                                
-    cdef cppclass Tree nogil:                                                   
-        Tree()                                                                  
-        Tree(vector[Rule]&)                                             
-        vector[Rule] rules
-
-cdef extern from "node.h" nogil:                                                
-    cdef cppclass Node nogil:                                                   
-        Node()                                                                  
-        Node(vector[Predicatecpp]&, string&, vector[Node]&)                     
-        Node(vector[Predicatecpp]&, string&)
-        Node(string&)
-        void add_child(Node)
-        vector[Predicatecpp] predicates                                         
-        string node_type                                                        
-        vector[Node] children     
-
-#cdef extern from "optimizer.h" nogil:                                                
-#    cdef cppclass Optimizer nogil:                                                   
-#        Optimizer()                                                                  
-#        Optimizer(vector[Tree]&, omap[string, vector[bool]]&)                                                     
-
-cdef extern from "coverage.h" nogil:                                           
-    cdef cppclass Coverage nogil:                                              
-        Coverage()                                                             
-        Coverage(vector[bool]&)
-        int and_sum(const Coverage&)
-        void or_coverage(const Coverage&)
-        void and_coverage(const Coverage&)
-        int count    
-    
-#cdef pair[double, double] compute_feature_with_cost(string& str1, string& str2, string& sim_type, string& tok_type):
 
 cdef void foo(vector[string]& lstrings, vector[string]& rstrings, vector[Tree]& trees, omap[string, Coverage]& coverage):
     cdef omap[string, vector[double]] features
@@ -127,10 +85,11 @@ cdef void generate_local_optimal_plans(vector[Tree]& trees, omap[string, Coverag
     cdef vector[Node] nodes
     cdef Node root, new_node, curr_node
     cdef string node_type
-    cdef int i
+    cdef int i, rule_id, tree_id = 0
     cdef bool join_pred
 
     for tree in trees:
+        rule_id = 0
         for rule in tree.rules:
             nodes = vector[Node]()
             optimal_seq = get_optimal_predicate_seq(rule.predicates, coverage, sample_size)
@@ -149,11 +108,16 @@ cdef void generate_local_optimal_plans(vector[Tree]& trees, omap[string, Coverag
                 nodes.push_back(new_node)
     
             node_type = "OUTPUT"
-            nodes.push_back(Node(node_type))
+            new_node = Node(node_type)
+            new_node.set_tree_id(tree_id)
+            new_node.set_rule_id(rule_id)
+            nodes.push_back(new_node)
             print 'n ', nodes.size()
             for i in xrange(nodes.size() - 2, -1, -1):
                 nodes[i].add_child(nodes[i+1])
             plans.push_back(nodes[0])
+            rule_id += 1
+        tree_id += 1
             
 cdef vector[int] get_optimal_predicate_seq(vector[Predicatecpp]& predicates,
                                            omap[string, Coverage]& coverage,
@@ -345,77 +309,84 @@ def extract_rules(rf, feature_table, l1, l2):
                 print node.node_type                 
             node = node.children[0]
         i += 1
-       
+    generate_overall_plan(plans)
 #    cdef pair[string, Coverage] entry
 #    cdef bool x
 #    for entry in coverage:
 #        print entry.first, entry.second.size()
 
-cdef void merge_plans(Node& plan1, Node& plan2):                                 
-    cdef vector[Node]& sibling_nodes_in_plan1 = plan1.children                                
-    cdef Node& plan2_node = plan2.children[0]                                         
-    cdef bool no_common_join_predicate = True, continue_merge                                             
-    cdef Node sibling_node
+cdef Node merge_plans(Node plan1, Node plan2):                                 
+    cdef Node plan2_node = plan2.children[0]                                         
+    cdef Predicatecpp pred1, pred2
+    cdef string node_type = "SELECT"
+    pred2 = plan2_node.predicates[0]
+    cdef int i
 
-    while True:                                                                 
-        continue_merge = False                                                  
-        for sibling_node in sibling_nodes_in_plan1:                             
-            print 'sib : ', sibling_node.node_type                              
-            
-            if nodes_can_be_merged(sibling_node, plan2_node, pred1, pred2):     
-                print 't1', plan2_node.node_type                                
-                if plan2_node.node_type == 'JOIN':                              
-                                                                                
-                    if ((pred1.threshold < pred2.threshold) or                  
-                        (pred1.threshold == pred2.threshold and                 
-                         pred1.comp_op == '>=' and pred2.comp_op == '>')):      
-                        print 't2'                                              
-                        plan2_node.node_type = 'SELECT'                         
-                        plan2_node.parent = sibling_node                        
-                        sibling_node.add_child(plan2_node)                      
-                        no_common_join_predicate = False                        
-                                                                                
-                    elif ((pred1.threshold > pred2.threshold) or                
-                          (pred1.threshold == pred2.threshold and               
-                           pred1.comp_op == '>' and pred2.comp_op == '>=')):    
-                        print 't3'                                              
-                        sibling_node.node_type = 'SELECT'                       
-                        plan2_node.add_child(sibling_node)                      
-                        plan2_node.parent = sibling_node.parent                 
-                        sibling_node.parent.add_child(plan2_node)               
-                        sibling_node.parent.remove_child(sibling_node)          
-                        sibling_node.parent = plan2_node                        
-                        no_common_join_predicate = False                        
-                                                                                
-                    elif pred1.threshold == pred2.threshold:                    
-                        print 't4'                                              
-                        plan2_node.children[0].parent = sibling_node            
-                        sibling_nodes_to_check = sibling_node.children          
-                        plan2_node = plan2_node.children[0]                     
-                        sibling_node.add_child(plan2_node.children[0])          
-                        continue_merge = True                                   
-                        no_common_join_predicate = False                        
-                                                                                
-                elif plan2_node.node_type == 'FILTER':                          
-                    plan2_node.node_type = 'SELECT'                             
-                    sibling_node.node_type = 'SELECT'                           
-                    new_node = Node('FEATURE', sibling_node.predicate,          
-                                    sibling_node.parent)                        
-                    parent_node = sibling_node.parent                           
-                    parent_node.remove_child(sibling_node)                      
-                    new_node.add_child(sibling_node)                            
-                    new_node.add_child(plan2_node)                              
-                    sibling_node.parent = new_node                              
-                    plan2_node.parent = new_node                                
-                    parent_node.add_child(new_node)                             
-                                                                                
-                break                                                           
-                                                                                
-        if no_common_join_predicate:                                            
-            break                                                               
+    while i < plan1.children.size():
+        print 'sib : ', plan1.children[i].node_type                              
+        if nodes_can_be_merged(plan1.children[i], plan2_node, 
+                               plan1.children[i].predicates[0], pred2):
+            break
+        i += 1     
 
-        if not continue_merge:                                                  
-            break                                                               
+    if i == plan1.children.size():
+        plan1.add_child(plan2.children[0])
+        return plan1
+ 
+    print 't1', plan2_node.node_type                                
+    if plan2_node.node_type.compare("JOIN") == 0:                              
+        pred1 = plan1.children[i].predicates[0]                                                                        
+        if ((pred1.threshold < pred2.threshold) or                  
+            (pred1.threshold == pred2.threshold and                 
+             pred1.comp_op.compare(">=") == 0 and 
+             pred2.comp_op.compare(">") == 0)):      
+            print 't2'
+            plan2_node.set_node_type(node_type)                         
+            plan1.children[i].add_child(plan2_node)                      
                                                                                 
-    if no_common_join_predicate:                                                
-        plan1.add_child(plan2.children[0])               
+        elif ((pred1.threshold > pred2.threshold) or                
+              (pred1.threshold == pred2.threshold and               
+               pred1.comp_op.compare(">") == 0 and 
+               pred2.comp_op.compare(">=") == 0)):    
+            print 't3'                                              
+            plan1.children[i].set_node_type(node_type)                      
+            plan2_node.add_child(plan1.children[i])        
+            plan1.remove_child(plan1.children[i])              
+            plan1.add_child(plan2_node)               
+                                                                                
+        elif pred1.threshold == pred2.threshold:                    
+            print 't4'                                                      
+            plan1.children[i].add_child(plan2_node.children[0])
+    else:
+        print 'invalid rf'                                                             
+
+    return plan1
+
+cdef bool nodes_can_be_merged(Node& node1, Node& node2, Predicatecpp& pred1, 
+                              Predicatecpp& pred2):                            
+    if node1.node_type.compare(node2.node_type) != 0:                                      
+        return False                                                            
+    if pred1.feat_name.compare(pred2.feat_name) != 0:                                      
+        return False                                                            
+    return are_comp_ops_compatible(pred1.comp_op, pred2.comp_op, node1.node_type)
+                                                                                
+cdef bool are_comp_ops_compatible(comp_op1, comp_op2, node_type):                     
+    if node_type == "FILTER":                                                   
+        return True                                                             
+    if node_type == "SELECT":
+        return comp_op1 == comp_op2                                
+    if comp_op1 in ['<', '<='] and comp_op2 in ['>' '>=']:                      
+        return False                                                            
+    if comp_op1 in ['>', '>='] and comp_op2 in ['<', '<=']:                     
+        return False                                                            
+    return True 
+
+cdef Node generate_overall_plan(vector[Node] plans):
+    cdef Node combined_plan = plans[0]
+    cdef int i=1
+    print 'before merge size : ', combined_plan.children.size()
+    while i < plans.size():
+        combined_plan = merge_plans(combined_plan, plans[i])
+        i += 1
+        print 'i = ', i, ' , num child nodes : ', combined_plan.children.size()
+    return combined_plan

@@ -19,9 +19,75 @@ from py_stringsimjoin.apply_rf.edit_distance_join cimport ed_join
 from py_stringsimjoin.apply_rf.sim_functions cimport cosine, dice, jaccard      
 from py_stringsimjoin.apply_rf.utils cimport compfnptr, simfnptr, get_comp_type, get_comparison_function, get_sim_type, get_sim_function
 
-from py_stringsimjoin.apply_rf.predicatecpp cimport Predicatecpp                
-from py_stringsimjoin.apply_rf.node cimport Node                                
+####from py_stringsimjoin.apply_rf import tokenizers
 
+#cdef extern from "<algorithm>" namespace "std":
+#    void std_sort "std::sort" [iter](iter first, iter last)
+cdef extern from "predicatecpp.h" nogil:                                      
+    cdef cppclass Predicatecpp nogil:                                          
+        Predicatecpp()                                                         
+        Predicatecpp(string&, string&, string&, string&, string&, double&)
+        void set_cost(double&)
+        string pred_name, feat_name, sim_measure_type, tokenizer_type, comp_op                                                  
+        double threshold, cost
+
+cdef extern from "node.h" nogil:                                           
+    cdef cppclass Node nogil:                                              
+        Node()                                                             
+        Node(vector[Predicatecpp]&, string&, vector[Node]&)                           
+        vector[Predicatecpp] predicates
+        string node_type
+        vector[Node] children
+
+cdef Node clone_execution_plan(plan, rule_sets):
+    predicate_dict = get_predicate_dict(rule_sets)
+   
+    cdef Node root = Node(vector[Predicatecpp](), 'ROOT', vector[Node]())
+    old_queue = [plan.root]
+    cdef vector[Node] new_queue
+    new_queue.push_back(root)
+    cdef int pos = 0
+    cdef Node new_child_node, new_curr_node
+    cdef Predicatecpp new_pred
+    cdef vector[Predicatecpp] new_preds
+    cdef vector[Node] new_child_nodes
+
+    children = {}
+ 
+    while len(old_queue) > 0:
+        curr_node = old_queue.pop(0)
+        children[pos] = []
+        for child_node in curr_node.children:
+            new_preds = vector[Predicatecpp]()                              
+            if child_node.node_type != 'OUTPUT':
+                '''               
+                if len(child_node.predicates) > 0:
+                    for pred in child_node.predicates:
+                        new_pred = Predicatecpp(predicate_dict[pred].sim_measure_type,
+                                                predicate_dict[pred].tokenizer_type,
+                                                predicate_dict[pred].comp_op,
+                                                predicate_dict[pred].threshold)
+                        new_preds.push_back(new_pred)
+                else:
+                '''            
+                new_pred = Predicatecpp('','', predicate_dict[child_node.predicate].sim_measure_type,
+                                            predicate_dict[child_node.predicate].tokenizer_type,
+                                            predicate_dict[child_node.predicate].comp_op,
+                                            predicate_dict[child_node.predicate].threshold)
+                new_preds.push_back(new_pred)
+            new_child_node = Node(new_preds, child_node.node_type, vector[Node]())
+            old_queue.append(child_node)
+            new_queue.push_back(new_child_node)
+            new_queue[pos].children.push_back(new_queue[new_queue.size()-1])
+            children[pos].append(new_queue.size()-1)
+        pos += 1
+    for k in range(pos-1, -1, -1):
+        new_queue[k].children = vector[Node]()
+        for v in children[k]:
+            new_queue[k].children.push_back(new_queue[v])
+
+    print new_queue[0].children.size(), new_queue[1].children.size(), new_queue[0].children[0].children.size()
+    return new_queue[0]
 
 def ex_plan(plan, rule_sets, df1, attr1, df2, attr2, working_dir, n_jobs):                                          
     cdef vector[string] lstrings, rstrings                                      
@@ -29,13 +95,17 @@ def ex_plan(plan, rule_sets, df1, attr1, df2, attr2, working_dir, n_jobs):
     convert_to_vector1(df2[attr2], rstrings)
     execute_plan(plan, rule_sets, lstrings, rstrings, working_dir, n_jobs)           
 
-cdef void execute_plan(Node& root, vector[string]& lstrings, 
+cdef void execute_plan(plan, rule_sets, vector[string]& lstrings, 
         vector[string]& rstrings, const string& working_dir, int n_jobs):
 #    tokenize_strings(plan, rule_sets, lstrings, rstrings, working_dir)
 
     cdef vector[pair[int, int]] candset, curr_candset
 #    cdef Node root
+    print 'cloning'
+    cdef Node root = clone_execution_plan(plan, rule_sets)
+    print 'clone finished'
     print root.children.size(), root.children[0].children.size()
+    print len(plan.root.children), len(plan.root.children[0].children)
 
     cdef Node join_node, child_node, curr_node
     print len(plan.root.children), root.node_type, root.predicates.size(), root.children.size()
