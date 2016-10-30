@@ -3,7 +3,7 @@ from libcpp cimport bool
 from libcpp.vector cimport vector                                               
 from libcpp.string cimport string                                              
 
-from py_stringsimjoin.apply_rf.sim_functions cimport cosine, dice, jaccard      
+from py_stringsimjoin.apply_rf.sim_functions cimport cosine, dice, jaccard, cosine_str, dice_str, jaccard_str      
  
 
 cdef int get_sim_type(const string& sim_measure_type):                          
@@ -21,6 +21,14 @@ cdef simfnptr get_sim_function(const int sim_type) nogil:
         return dice                                                             
     elif sim_type == 2: # JACCARD:                                              
         return jaccard  
+
+cdef simfnptr_str get_sim_function_str(const int sim_type) nogil:                       
+    if sim_type == 0: # COSINE                                                  
+        return cosine_str                                                           
+    elif sim_type == 1: # DICE                                                  
+        return dice_str                                                             
+    elif sim_type == 2: # JACCARD:                                              
+        return jaccard_str      
 
 cdef bool eq_compare(double val1, double val2) nogil:                           
     return val1 == val2                                                         

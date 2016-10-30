@@ -2,6 +2,7 @@
 from libc.math cimport sqrt
 from libc.stdlib cimport malloc, free
 from libcpp.vector cimport vector             
+from libcpp.set cimport set as oset                                             
                                   
 
 cdef double jaccard(const vector[int]& tokens1, const vector[int]& tokens2) nogil:
@@ -104,4 +105,55 @@ cdef double edit_distance(const string& str1, const string& str2) nogil:
                                      d_mat[i*(len_str2 + 1) + j] + (sub_cost if lchar != rchar else 0))
     edit_dist = d_mat[len_str1*(len_str2 + 1) + len_str2]
     free(d_mat)
-    return <double>edit_dist              
+    return <double>edit_dist
+
+cdef double jaccard_str(vector[string]& tokens1, vector[string]& tokens2) nogil:
+    cdef int i=0, j=0, size1 = tokens1.size(), size2 = tokens2.size()           
+    cdef int sum_of_size = size1 + size2                                        
+    if sum_of_size == 0:                                                        
+        return 1.0                                                              
+    if size1 == 0 or size2 == 0:                                                
+        return 0.0                                                              
+    cdef int overlap = 0               
+    cdef oset[string] ltokens
+    cdef string token
+    for token in tokens1:
+        ltokens.insert(token)
+    for token in tokens2:
+        if ltokens.find(token) != ltokens.end():
+            overlap += 1                                         
+    return (overlap * 1.0) / <double>(sum_of_size - overlap)
+
+cdef double dice_str(vector[string]& tokens1, vector[string]& tokens2) nogil: 
+    cdef int i=0, j=0, size1 = tokens1.size(), size2 = tokens2.size()           
+    cdef int sum_of_size = size1 + size2                                        
+    if sum_of_size == 0:                                                        
+        return 1.0                                                              
+    if size1 == 0 or size2 == 0:                                                
+        return 0.0                                                              
+    cdef int overlap = 0                                                        
+    cdef oset[string] ltokens                                                   
+    cdef string token                                                           
+    for token in tokens1:                                                       
+        ltokens.insert(token)                                                   
+    for token in tokens2:                                                       
+        if ltokens.find(token) != ltokens.end():                                
+            overlap += 1                                        
+    return (overlap * 2.0) / <double>sum_of_size                                
+                                                                                
+cdef double cosine_str(vector[string]& tokens1, vector[string]& tokens2) nogil:
+    cdef int i=0, j=0, size1 = tokens1.size(), size2 = tokens2.size()           
+    cdef int sum_of_size = size1 + size2                                        
+    if sum_of_size == 0:                                                        
+        return 1.0                                                              
+    if size1 == 0 or size2 == 0:                                                
+        return 0.0                                                              
+    cdef int overlap = 0                                                        
+    cdef oset[string] ltokens                                                   
+    cdef string token                                                           
+    for token in tokens1:                                                       
+        ltokens.insert(token)                                                   
+    for token in tokens2:                                                       
+        if ltokens.find(token) != ltokens.end():                                
+            overlap += 1                                        
+    return <double>overlap / sqrt(size1*size2)                             

@@ -18,7 +18,7 @@ from py_stringsimjoin.apply_rf.node cimport Node
 from py_stringsimjoin.apply_rf.coverage cimport Coverage
 
 
-cdef void foo(vector[string]& lstrings, vector[string]& rstrings, vector[Tree]& trees, omap[string, Coverage]& coverage):
+cdef void compute_predicate_cost_and_coverage(vector[string]& lstrings, vector[string]& rstrings, vector[Tree]& trees, omap[string, Coverage]& coverage):
     cdef omap[string, vector[double]] features
     cdef omap[string, double] cost    
     cdef int sample_size = lstrings.size()
@@ -266,51 +266,52 @@ cdef vector[Tree] extract_pos_rules_from_rf(rf, feature_table):
         trees.push_back(tree)                                                    
     return trees
 
-def extract_rules(rf, feature_table, l1, l2):
-    cdef vector[Tree] trees
-    trees = extract_pos_rules_from_rf(rf, feature_table)
-    print 'num trees : ', trees.size()
-    num_rules = 0
-    num_preds = 0
-    cdef Tree tree
-    cdef Rule rule
-    for tree in trees:
-        num_rules += tree.rules.size()
-        for rule in tree.rules:
-            num_preds += rule.predicates.size()
-    print 'num rules : ', num_rules
-    print 'num preds : ', num_preds
 
-    cdef omap[string, Coverage] coverage                                    
-    cdef vector[string] l, r                                                    
-    for s in l1:                                                                
-        l.push_back(s)                                                          
-    for s in l2:                                                                
-        r.push_back(s)                                                          
-    foo(l, r, trees, coverage)
+#def extract_rules(rf, feature_table, l1, l2):
+#    cdef vector[Tree] trees
+#    trees = extract_pos_rules_from_rf(rf, feature_table)
+#    print 'num trees : ', trees.size()
+#    num_rules = 0
+#    num_preds = 0
+#    cdef Tree tree
+#    cdef Rule rule
+#    for tree in trees:
+#        num_rules += tree.rules.size()
+#        for rule in tree.rules:
+#            num_preds += rule.predicates.size()
+#    print 'num rules : ', num_rules
+#    print 'num preds : ', num_preds
+
+#    cdef omap[string, Coverage] coverage                                    
+#    cdef vector[string] l, r                                                    
+#    for s in l1:                                                                
+#        l.push_back(s)                                                          
+#    for s in l2:                                                                
+#        r.push_back(s)                                                          
+#    compute_predicate_cost_and_coverage(l, r, trees, coverage)
 #    cdef Predicatecpp pred
 #    for pred in trees[0].rules[0].predicates:
 #        print pred.pred_name, pred.cost
-    cdef vector[Node] plans
-    generate_local_optimal_plans(trees, coverage, l.size(), plans)
-    print 'num pl : ', plans.size()
-    cdef Node node
-    cdef int i = 0
-    while i < 2:
-        node = plans[i]
-        print 'test', i, node.node_type, node.children.size()
-        while True:
-            print 'hello'
-            if node.children.size() == 0:
-                break
-            if node.predicates.size() > 0:
-                print node.predicates[0].pred_name, node.node_type
-            else:
-                print node.node_type                 
-            node = node.children[0]
-        i += 1
-    generate_overall_plan(plans)
-#    cdef pair[string, Coverage] entry
+#    cdef vector[Node] plans
+#    generate_local_optimal_plans(trees, coverage, l.size(), plans)
+#    print 'num pl : ', plans.size()
+#    cdef Node node
+#    cdef int i = 0
+#    while i < 2:
+#        node = plans[i]
+#        print 'test', i, node.node_type, node.children.size()
+#        while True:
+#            print 'hello'
+#            if node.children.size() == 0:
+#                break
+#            if node.predicates.size() > 0:
+#                print node.predicates[0].pred_name, node.node_type
+#            else:
+#                print node.node_type                 
+#            node = node.children[0]
+#        i += 1
+#    generate_overall_plan(plans)
+##    cdef pair[string, Coverage] entry
 #    cdef bool x
 #    for entry in coverage:
 #        print entry.first, entry.second.size()

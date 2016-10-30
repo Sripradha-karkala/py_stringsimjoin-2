@@ -178,6 +178,22 @@ cpdef void load_tok(tok_type, path, vector[vector[int]] &ltokens, vector[vector[
 cdef bool mycomp(pair[string, int] i, pair[string, int] j):
     return (i.second < j.second)
 
+cdef vector[string] tokenize_str(string& inp_str, const string& tok_type):          
+    cdef object tok                                                             
+    if tok_type.compare('ws') == 0:                                             
+        tok = WhitespaceTokenizer(True)                                         
+    elif tok_type.compare('alph') == 0:                                         
+        tok = AlphabeticTokenizer(True)                                         
+    elif tok_type.compare('alph_num') == 0:                                     
+        tok = AlphanumericTokenizer(True)                                       
+    elif tok_type.compare('num') == 0:                                          
+        tok = NumericTokenizer(True)                                            
+    elif tok_type.compare('qg2') == 0:                                          
+        tok = QgramTokenizer(2, True, ord('#'), ord('$'), False)                
+    elif tok_type.compare('qg3') == 0:                                          
+        tok = QgramTokenizer(3, True, ord('#'), ord('$'), True)        
+    return tok.tokenize(inp_str)
+
 cpdef void tokenize(vector[string]& lstrings, vector[string]& rstrings,          
                    const string& tok_type, const string& working_dir):          
     cdef object tok                                                               

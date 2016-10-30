@@ -15,6 +15,8 @@ cdef extern from "node.h" nogil:
         void remove_child(Node&)                                                
         void set_node_type(string&)                                             
         void set_tree_id(int)
+        void set_rule_id(int)
         vector[Predicatecpp] predicates                                         
         string node_type                                                        
-        vector[Node] children 
+        vector[Node] children
+        int tree_id, rule_id 

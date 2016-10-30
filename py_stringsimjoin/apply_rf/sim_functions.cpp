@@ -268,6 +268,8 @@ static CYTHON_INLINE float __PYX_NAN() {
 #include <vector>
 #include "math.h"
 #include "stdlib.h"
+#include <utility>
+#include <set>
 #ifdef _OPENMP
 #include <omp.h>
 #endif /* _OPENMP */
@@ -595,6 +597,45 @@ static CYTHON_INLINE int __Pyx_PyInt_As_int(PyObject *);
 
 static CYTHON_INLINE PyObject* __Pyx_PyInt_From_int(int value);
 
+#ifndef __Pyx_CppExn2PyErr
+#include <new>
+#include <typeinfo>
+#include <stdexcept>
+#include <ios>
+static void __Pyx_CppExn2PyErr() {
+  try {
+    if (PyErr_Occurred())
+      ; // let the latest Python exn pass through and ignore the current one
+    else
+      throw;
+  } catch (const std::bad_alloc& exn) {
+    PyErr_SetString(PyExc_MemoryError, exn.what());
+  } catch (const std::bad_cast& exn) {
+    PyErr_SetString(PyExc_TypeError, exn.what());
+  } catch (const std::domain_error& exn) {
+    PyErr_SetString(PyExc_ValueError, exn.what());
+  } catch (const std::invalid_argument& exn) {
+    PyErr_SetString(PyExc_ValueError, exn.what());
+  } catch (const std::ios_base::failure& exn) {
+    PyErr_SetString(PyExc_IOError, exn.what());
+  } catch (const std::out_of_range& exn) {
+    PyErr_SetString(PyExc_IndexError, exn.what());
+  } catch (const std::overflow_error& exn) {
+    PyErr_SetString(PyExc_OverflowError, exn.what());
+  } catch (const std::range_error& exn) {
+    PyErr_SetString(PyExc_ArithmeticError, exn.what());
+  } catch (const std::underflow_error& exn) {
+    PyErr_SetString(PyExc_ArithmeticError, exn.what());
+  } catch (const std::exception& exn) {
+    PyErr_SetString(PyExc_RuntimeError, exn.what());
+  }
+  catch (...)
+  {
+    PyErr_SetString(PyExc_RuntimeError, "Unknown exception");
+  }
+}
+#endif
+
 static CYTHON_INLINE long __Pyx_PyInt_As_long(PyObject *);
 
 static int __Pyx_check_binary_version(void);
@@ -614,6 +655,10 @@ static int __Pyx_InitStrings(__Pyx_StringTabEntry *t);
 
 /* Module declarations from 'libc.stdlib' */
 
+/* Module declarations from 'libcpp.utility' */
+
+/* Module declarations from 'libcpp.set' */
+
 /* Module declarations from 'py_stringsimjoin.apply_rf.sim_functions' */
 static CYTHON_INLINE int __pyx_f_16py_stringsimjoin_8apply_rf_13sim_functions_int_min(int, int, int); /*proto*/
 #define __Pyx_MODULE_NAME "py_stringsimjoin.apply_rf.sim_functions"
@@ -628,7 +673,7 @@ static PyObject *__pyx_n_s_main;
 static PyObject *__pyx_n_s_range;
 static PyObject *__pyx_n_s_test;
 
-/* "py_stringsimjoin/apply_rf/sim_functions.pyx":7
+/* "py_stringsimjoin/apply_rf/sim_functions.pyx":8
  * 
  * 
  * cdef double jaccard(const vector[int]& tokens1, const vector[int]& tokens2) nogil:             # <<<<<<<<<<<<<<
@@ -652,7 +697,7 @@ static double __pyx_f_16py_stringsimjoin_8apply_rf_13sim_functions_jaccard(std::
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
 
-  /* "py_stringsimjoin/apply_rf/sim_functions.pyx":8
+  /* "py_stringsimjoin/apply_rf/sim_functions.pyx":9
  * 
  * cdef double jaccard(const vector[int]& tokens1, const vector[int]& tokens2) nogil:
  *     cdef int i=0, j=0, size1 = tokens1.size(), size2 = tokens2.size()             # <<<<<<<<<<<<<<
@@ -664,7 +709,7 @@ static double __pyx_f_16py_stringsimjoin_8apply_rf_13sim_functions_jaccard(std::
   __pyx_v_size1 = __pyx_v_tokens1.size();
   __pyx_v_size2 = __pyx_v_tokens2.size();
 
-  /* "py_stringsimjoin/apply_rf/sim_functions.pyx":9
+  /* "py_stringsimjoin/apply_rf/sim_functions.pyx":10
  * cdef double jaccard(const vector[int]& tokens1, const vector[int]& tokens2) nogil:
  *     cdef int i=0, j=0, size1 = tokens1.size(), size2 = tokens2.size()
  *     cdef int sum_of_size = size1 + size2             # <<<<<<<<<<<<<<
@@ -673,7 +718,7 @@ static double __pyx_f_16py_stringsimjoin_8apply_rf_13sim_functions_jaccard(std::
  */
   __pyx_v_sum_of_size = (__pyx_v_size1 + __pyx_v_size2);
 
-  /* "py_stringsimjoin/apply_rf/sim_functions.pyx":10
+  /* "py_stringsimjoin/apply_rf/sim_functions.pyx":11
  *     cdef int i=0, j=0, size1 = tokens1.size(), size2 = tokens2.size()
  *     cdef int sum_of_size = size1 + size2
  *     if sum_of_size == 0:             # <<<<<<<<<<<<<<
@@ -683,7 +728,7 @@ static double __pyx_f_16py_stringsimjoin_8apply_rf_13sim_functions_jaccard(std::
   __pyx_t_1 = ((__pyx_v_sum_of_size == 0) != 0);
   if (__pyx_t_1) {
 
-    /* "py_stringsimjoin/apply_rf/sim_functions.pyx":11
+    /* "py_stringsimjoin/apply_rf/sim_functions.pyx":12
  *     cdef int sum_of_size = size1 + size2
  *     if sum_of_size == 0:
  *         return 1.0             # <<<<<<<<<<<<<<
@@ -693,7 +738,7 @@ static double __pyx_f_16py_stringsimjoin_8apply_rf_13sim_functions_jaccard(std::
     __pyx_r = 1.0;
     goto __pyx_L0;
 
-    /* "py_stringsimjoin/apply_rf/sim_functions.pyx":10
+    /* "py_stringsimjoin/apply_rf/sim_functions.pyx":11
  *     cdef int i=0, j=0, size1 = tokens1.size(), size2 = tokens2.size()
  *     cdef int sum_of_size = size1 + size2
  *     if sum_of_size == 0:             # <<<<<<<<<<<<<<
@@ -702,7 +747,7 @@ static double __pyx_f_16py_stringsimjoin_8apply_rf_13sim_functions_jaccard(std::
  */
   }
 
-  /* "py_stringsimjoin/apply_rf/sim_functions.pyx":12
+  /* "py_stringsimjoin/apply_rf/sim_functions.pyx":13
  *     if sum_of_size == 0:
  *         return 1.0
  *     if size1 == 0 or size2 == 0:             # <<<<<<<<<<<<<<
@@ -720,7 +765,7 @@ static double __pyx_f_16py_stringsimjoin_8apply_rf_13sim_functions_jaccard(std::
   __pyx_L5_bool_binop_done:;
   if (__pyx_t_1) {
 
-    /* "py_stringsimjoin/apply_rf/sim_functions.pyx":13
+    /* "py_stringsimjoin/apply_rf/sim_functions.pyx":14
  *         return 1.0
  *     if size1 == 0 or size2 == 0:
  *         return 0.0             # <<<<<<<<<<<<<<
@@ -730,7 +775,7 @@ static double __pyx_f_16py_stringsimjoin_8apply_rf_13sim_functions_jaccard(std::
     __pyx_r = 0.0;
     goto __pyx_L0;
 
-    /* "py_stringsimjoin/apply_rf/sim_functions.pyx":12
+    /* "py_stringsimjoin/apply_rf/sim_functions.pyx":13
  *     if sum_of_size == 0:
  *         return 1.0
  *     if size1 == 0 or size2 == 0:             # <<<<<<<<<<<<<<
@@ -739,7 +784,7 @@ static double __pyx_f_16py_stringsimjoin_8apply_rf_13sim_functions_jaccard(std::
  */
   }
 
-  /* "py_stringsimjoin/apply_rf/sim_functions.pyx":14
+  /* "py_stringsimjoin/apply_rf/sim_functions.pyx":15
  *     if size1 == 0 or size2 == 0:
  *         return 0.0
  *     cdef int overlap = 0             # <<<<<<<<<<<<<<
@@ -748,7 +793,7 @@ static double __pyx_f_16py_stringsimjoin_8apply_rf_13sim_functions_jaccard(std::
  */
   __pyx_v_overlap = 0;
 
-  /* "py_stringsimjoin/apply_rf/sim_functions.pyx":15
+  /* "py_stringsimjoin/apply_rf/sim_functions.pyx":16
  *         return 0.0
  *     cdef int overlap = 0
  *     while i < size1 and j < size2:             # <<<<<<<<<<<<<<
@@ -767,7 +812,7 @@ static double __pyx_f_16py_stringsimjoin_8apply_rf_13sim_functions_jaccard(std::
     __pyx_L9_bool_binop_done:;
     if (!__pyx_t_1) break;
 
-    /* "py_stringsimjoin/apply_rf/sim_functions.pyx":16
+    /* "py_stringsimjoin/apply_rf/sim_functions.pyx":17
  *     cdef int overlap = 0
  *     while i < size1 and j < size2:
  *         if tokens1[i] == tokens2[j]:             # <<<<<<<<<<<<<<
@@ -777,7 +822,7 @@ static double __pyx_f_16py_stringsimjoin_8apply_rf_13sim_functions_jaccard(std::
     __pyx_t_1 = (((__pyx_v_tokens1[__pyx_v_i]) == (__pyx_v_tokens2[__pyx_v_j])) != 0);
     if (__pyx_t_1) {
 
-      /* "py_stringsimjoin/apply_rf/sim_functions.pyx":17
+      /* "py_stringsimjoin/apply_rf/sim_functions.pyx":18
  *     while i < size1 and j < size2:
  *         if tokens1[i] == tokens2[j]:
  *             overlap += 1             # <<<<<<<<<<<<<<
@@ -786,7 +831,7 @@ static double __pyx_f_16py_stringsimjoin_8apply_rf_13sim_functions_jaccard(std::
  */
       __pyx_v_overlap = (__pyx_v_overlap + 1);
 
-      /* "py_stringsimjoin/apply_rf/sim_functions.pyx":18
+      /* "py_stringsimjoin/apply_rf/sim_functions.pyx":19
  *         if tokens1[i] == tokens2[j]:
  *             overlap += 1
  *             i += 1             # <<<<<<<<<<<<<<
@@ -795,7 +840,7 @@ static double __pyx_f_16py_stringsimjoin_8apply_rf_13sim_functions_jaccard(std::
  */
       __pyx_v_i = (__pyx_v_i + 1);
 
-      /* "py_stringsimjoin/apply_rf/sim_functions.pyx":19
+      /* "py_stringsimjoin/apply_rf/sim_functions.pyx":20
  *             overlap += 1
  *             i += 1
  *             j += 1             # <<<<<<<<<<<<<<
@@ -804,7 +849,7 @@ static double __pyx_f_16py_stringsimjoin_8apply_rf_13sim_functions_jaccard(std::
  */
       __pyx_v_j = (__pyx_v_j + 1);
 
-      /* "py_stringsimjoin/apply_rf/sim_functions.pyx":16
+      /* "py_stringsimjoin/apply_rf/sim_functions.pyx":17
  *     cdef int overlap = 0
  *     while i < size1 and j < size2:
  *         if tokens1[i] == tokens2[j]:             # <<<<<<<<<<<<<<
@@ -814,7 +859,7 @@ static double __pyx_f_16py_stringsimjoin_8apply_rf_13sim_functions_jaccard(std::
       goto __pyx_L11;
     }
 
-    /* "py_stringsimjoin/apply_rf/sim_functions.pyx":20
+    /* "py_stringsimjoin/apply_rf/sim_functions.pyx":21
  *             i += 1
  *             j += 1
  *         elif tokens1[i] < tokens2[j]:             # <<<<<<<<<<<<<<
@@ -824,7 +869,7 @@ static double __pyx_f_16py_stringsimjoin_8apply_rf_13sim_functions_jaccard(std::
     __pyx_t_1 = (((__pyx_v_tokens1[__pyx_v_i]) < (__pyx_v_tokens2[__pyx_v_j])) != 0);
     if (__pyx_t_1) {
 
-      /* "py_stringsimjoin/apply_rf/sim_functions.pyx":21
+      /* "py_stringsimjoin/apply_rf/sim_functions.pyx":22
  *             j += 1
  *         elif tokens1[i] < tokens2[j]:
  *             i += 1             # <<<<<<<<<<<<<<
@@ -833,7 +878,7 @@ static double __pyx_f_16py_stringsimjoin_8apply_rf_13sim_functions_jaccard(std::
  */
       __pyx_v_i = (__pyx_v_i + 1);
 
-      /* "py_stringsimjoin/apply_rf/sim_functions.pyx":20
+      /* "py_stringsimjoin/apply_rf/sim_functions.pyx":21
  *             i += 1
  *             j += 1
  *         elif tokens1[i] < tokens2[j]:             # <<<<<<<<<<<<<<
@@ -843,7 +888,7 @@ static double __pyx_f_16py_stringsimjoin_8apply_rf_13sim_functions_jaccard(std::
       goto __pyx_L11;
     }
 
-    /* "py_stringsimjoin/apply_rf/sim_functions.pyx":23
+    /* "py_stringsimjoin/apply_rf/sim_functions.pyx":24
  *             i += 1
  *         else:
  *             j += 1             # <<<<<<<<<<<<<<
@@ -856,7 +901,7 @@ static double __pyx_f_16py_stringsimjoin_8apply_rf_13sim_functions_jaccard(std::
     __pyx_L11:;
   }
 
-  /* "py_stringsimjoin/apply_rf/sim_functions.pyx":24
+  /* "py_stringsimjoin/apply_rf/sim_functions.pyx":25
  *         else:
  *             j += 1
  *     return (overlap * 1.0) / <double>(sum_of_size - overlap)             # <<<<<<<<<<<<<<
@@ -873,12 +918,12 @@ static double __pyx_f_16py_stringsimjoin_8apply_rf_13sim_functions_jaccard(std::
     #ifdef WITH_THREAD
     PyGILState_Release(__pyx_gilstate_save);
     #endif
-    {__pyx_filename = __pyx_f[0]; __pyx_lineno = 24; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    {__pyx_filename = __pyx_f[0]; __pyx_lineno = 25; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   }
   __pyx_r = (__pyx_t_3 / __pyx_t_4);
   goto __pyx_L0;
 
-  /* "py_stringsimjoin/apply_rf/sim_functions.pyx":7
+  /* "py_stringsimjoin/apply_rf/sim_functions.pyx":8
  * 
  * 
  * cdef double jaccard(const vector[int]& tokens1, const vector[int]& tokens2) nogil:             # <<<<<<<<<<<<<<
@@ -894,7 +939,7 @@ static double __pyx_f_16py_stringsimjoin_8apply_rf_13sim_functions_jaccard(std::
   return __pyx_r;
 }
 
-/* "py_stringsimjoin/apply_rf/sim_functions.pyx":26
+/* "py_stringsimjoin/apply_rf/sim_functions.pyx":27
  *     return (overlap * 1.0) / <double>(sum_of_size - overlap)
  * 
  * cdef double dice(const vector[int]& tokens1, const vector[int]& tokens2) nogil:             # <<<<<<<<<<<<<<
@@ -917,7 +962,7 @@ static double __pyx_f_16py_stringsimjoin_8apply_rf_13sim_functions_dice(std::vec
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
 
-  /* "py_stringsimjoin/apply_rf/sim_functions.pyx":27
+  /* "py_stringsimjoin/apply_rf/sim_functions.pyx":28
  * 
  * cdef double dice(const vector[int]& tokens1, const vector[int]& tokens2) nogil:
  *     cdef int i=0, j=0, size1 = tokens1.size(), size2 = tokens2.size()             # <<<<<<<<<<<<<<
@@ -929,7 +974,7 @@ static double __pyx_f_16py_stringsimjoin_8apply_rf_13sim_functions_dice(std::vec
   __pyx_v_size1 = __pyx_v_tokens1.size();
   __pyx_v_size2 = __pyx_v_tokens2.size();
 
-  /* "py_stringsimjoin/apply_rf/sim_functions.pyx":28
+  /* "py_stringsimjoin/apply_rf/sim_functions.pyx":29
  * cdef double dice(const vector[int]& tokens1, const vector[int]& tokens2) nogil:
  *     cdef int i=0, j=0, size1 = tokens1.size(), size2 = tokens2.size()
  *     cdef int sum_of_size = size1 + size2             # <<<<<<<<<<<<<<
@@ -938,7 +983,7 @@ static double __pyx_f_16py_stringsimjoin_8apply_rf_13sim_functions_dice(std::vec
  */
   __pyx_v_sum_of_size = (__pyx_v_size1 + __pyx_v_size2);
 
-  /* "py_stringsimjoin/apply_rf/sim_functions.pyx":29
+  /* "py_stringsimjoin/apply_rf/sim_functions.pyx":30
  *     cdef int i=0, j=0, size1 = tokens1.size(), size2 = tokens2.size()
  *     cdef int sum_of_size = size1 + size2
  *     if sum_of_size == 0:             # <<<<<<<<<<<<<<
@@ -948,7 +993,7 @@ static double __pyx_f_16py_stringsimjoin_8apply_rf_13sim_functions_dice(std::vec
   __pyx_t_1 = ((__pyx_v_sum_of_size == 0) != 0);
   if (__pyx_t_1) {
 
-    /* "py_stringsimjoin/apply_rf/sim_functions.pyx":30
+    /* "py_stringsimjoin/apply_rf/sim_functions.pyx":31
  *     cdef int sum_of_size = size1 + size2
  *     if sum_of_size == 0:
  *         return 1.0             # <<<<<<<<<<<<<<
@@ -958,7 +1003,7 @@ static double __pyx_f_16py_stringsimjoin_8apply_rf_13sim_functions_dice(std::vec
     __pyx_r = 1.0;
     goto __pyx_L0;
 
-    /* "py_stringsimjoin/apply_rf/sim_functions.pyx":29
+    /* "py_stringsimjoin/apply_rf/sim_functions.pyx":30
  *     cdef int i=0, j=0, size1 = tokens1.size(), size2 = tokens2.size()
  *     cdef int sum_of_size = size1 + size2
  *     if sum_of_size == 0:             # <<<<<<<<<<<<<<
@@ -967,7 +1012,7 @@ static double __pyx_f_16py_stringsimjoin_8apply_rf_13sim_functions_dice(std::vec
  */
   }
 
-  /* "py_stringsimjoin/apply_rf/sim_functions.pyx":31
+  /* "py_stringsimjoin/apply_rf/sim_functions.pyx":32
  *     if sum_of_size == 0:
  *         return 1.0
  *     if size1 == 0 or size2 == 0:             # <<<<<<<<<<<<<<
@@ -985,7 +1030,7 @@ static double __pyx_f_16py_stringsimjoin_8apply_rf_13sim_functions_dice(std::vec
   __pyx_L5_bool_binop_done:;
   if (__pyx_t_1) {
 
-    /* "py_stringsimjoin/apply_rf/sim_functions.pyx":32
+    /* "py_stringsimjoin/apply_rf/sim_functions.pyx":33
  *         return 1.0
  *     if size1 == 0 or size2 == 0:
  *         return 0.0             # <<<<<<<<<<<<<<
@@ -995,7 +1040,7 @@ static double __pyx_f_16py_stringsimjoin_8apply_rf_13sim_functions_dice(std::vec
     __pyx_r = 0.0;
     goto __pyx_L0;
 
-    /* "py_stringsimjoin/apply_rf/sim_functions.pyx":31
+    /* "py_stringsimjoin/apply_rf/sim_functions.pyx":32
  *     if sum_of_size == 0:
  *         return 1.0
  *     if size1 == 0 or size2 == 0:             # <<<<<<<<<<<<<<
@@ -1004,7 +1049,7 @@ static double __pyx_f_16py_stringsimjoin_8apply_rf_13sim_functions_dice(std::vec
  */
   }
 
-  /* "py_stringsimjoin/apply_rf/sim_functions.pyx":33
+  /* "py_stringsimjoin/apply_rf/sim_functions.pyx":34
  *     if size1 == 0 or size2 == 0:
  *         return 0.0
  *     cdef int overlap = 0             # <<<<<<<<<<<<<<
@@ -1013,7 +1058,7 @@ static double __pyx_f_16py_stringsimjoin_8apply_rf_13sim_functions_dice(std::vec
  */
   __pyx_v_overlap = 0;
 
-  /* "py_stringsimjoin/apply_rf/sim_functions.pyx":34
+  /* "py_stringsimjoin/apply_rf/sim_functions.pyx":35
  *         return 0.0
  *     cdef int overlap = 0
  *     while i < size1 and j < size2:             # <<<<<<<<<<<<<<
@@ -1032,7 +1077,7 @@ static double __pyx_f_16py_stringsimjoin_8apply_rf_13sim_functions_dice(std::vec
     __pyx_L9_bool_binop_done:;
     if (!__pyx_t_1) break;
 
-    /* "py_stringsimjoin/apply_rf/sim_functions.pyx":35
+    /* "py_stringsimjoin/apply_rf/sim_functions.pyx":36
  *     cdef int overlap = 0
  *     while i < size1 and j < size2:
  *         if tokens1[i] == tokens2[j]:             # <<<<<<<<<<<<<<
@@ -1042,7 +1087,7 @@ static double __pyx_f_16py_stringsimjoin_8apply_rf_13sim_functions_dice(std::vec
     __pyx_t_1 = (((__pyx_v_tokens1[__pyx_v_i]) == (__pyx_v_tokens2[__pyx_v_j])) != 0);
     if (__pyx_t_1) {
 
-      /* "py_stringsimjoin/apply_rf/sim_functions.pyx":36
+      /* "py_stringsimjoin/apply_rf/sim_functions.pyx":37
  *     while i < size1 and j < size2:
  *         if tokens1[i] == tokens2[j]:
  *             overlap += 1             # <<<<<<<<<<<<<<
@@ -1051,7 +1096,7 @@ static double __pyx_f_16py_stringsimjoin_8apply_rf_13sim_functions_dice(std::vec
  */
       __pyx_v_overlap = (__pyx_v_overlap + 1);
 
-      /* "py_stringsimjoin/apply_rf/sim_functions.pyx":37
+      /* "py_stringsimjoin/apply_rf/sim_functions.pyx":38
  *         if tokens1[i] == tokens2[j]:
  *             overlap += 1
  *             i += 1             # <<<<<<<<<<<<<<
@@ -1060,7 +1105,7 @@ static double __pyx_f_16py_stringsimjoin_8apply_rf_13sim_functions_dice(std::vec
  */
       __pyx_v_i = (__pyx_v_i + 1);
 
-      /* "py_stringsimjoin/apply_rf/sim_functions.pyx":38
+      /* "py_stringsimjoin/apply_rf/sim_functions.pyx":39
  *             overlap += 1
  *             i += 1
  *             j += 1             # <<<<<<<<<<<<<<
@@ -1069,7 +1114,7 @@ static double __pyx_f_16py_stringsimjoin_8apply_rf_13sim_functions_dice(std::vec
  */
       __pyx_v_j = (__pyx_v_j + 1);
 
-      /* "py_stringsimjoin/apply_rf/sim_functions.pyx":35
+      /* "py_stringsimjoin/apply_rf/sim_functions.pyx":36
  *     cdef int overlap = 0
  *     while i < size1 and j < size2:
  *         if tokens1[i] == tokens2[j]:             # <<<<<<<<<<<<<<
@@ -1079,7 +1124,7 @@ static double __pyx_f_16py_stringsimjoin_8apply_rf_13sim_functions_dice(std::vec
       goto __pyx_L11;
     }
 
-    /* "py_stringsimjoin/apply_rf/sim_functions.pyx":39
+    /* "py_stringsimjoin/apply_rf/sim_functions.pyx":40
  *             i += 1
  *             j += 1
  *         elif tokens1[i] < tokens2[j]:             # <<<<<<<<<<<<<<
@@ -1089,7 +1134,7 @@ static double __pyx_f_16py_stringsimjoin_8apply_rf_13sim_functions_dice(std::vec
     __pyx_t_1 = (((__pyx_v_tokens1[__pyx_v_i]) < (__pyx_v_tokens2[__pyx_v_j])) != 0);
     if (__pyx_t_1) {
 
-      /* "py_stringsimjoin/apply_rf/sim_functions.pyx":40
+      /* "py_stringsimjoin/apply_rf/sim_functions.pyx":41
  *             j += 1
  *         elif tokens1[i] < tokens2[j]:
  *             i += 1             # <<<<<<<<<<<<<<
@@ -1098,7 +1143,7 @@ static double __pyx_f_16py_stringsimjoin_8apply_rf_13sim_functions_dice(std::vec
  */
       __pyx_v_i = (__pyx_v_i + 1);
 
-      /* "py_stringsimjoin/apply_rf/sim_functions.pyx":39
+      /* "py_stringsimjoin/apply_rf/sim_functions.pyx":40
  *             i += 1
  *             j += 1
  *         elif tokens1[i] < tokens2[j]:             # <<<<<<<<<<<<<<
@@ -1108,7 +1153,7 @@ static double __pyx_f_16py_stringsimjoin_8apply_rf_13sim_functions_dice(std::vec
       goto __pyx_L11;
     }
 
-    /* "py_stringsimjoin/apply_rf/sim_functions.pyx":42
+    /* "py_stringsimjoin/apply_rf/sim_functions.pyx":43
  *             i += 1
  *         else:
  *             j += 1             # <<<<<<<<<<<<<<
@@ -1121,7 +1166,7 @@ static double __pyx_f_16py_stringsimjoin_8apply_rf_13sim_functions_dice(std::vec
     __pyx_L11:;
   }
 
-  /* "py_stringsimjoin/apply_rf/sim_functions.pyx":43
+  /* "py_stringsimjoin/apply_rf/sim_functions.pyx":44
  *         else:
  *             j += 1
  *     return (overlap * 2.0) / <double>sum_of_size             # <<<<<<<<<<<<<<
@@ -1137,12 +1182,12 @@ static double __pyx_f_16py_stringsimjoin_8apply_rf_13sim_functions_dice(std::vec
     #ifdef WITH_THREAD
     PyGILState_Release(__pyx_gilstate_save);
     #endif
-    {__pyx_filename = __pyx_f[0]; __pyx_lineno = 43; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    {__pyx_filename = __pyx_f[0]; __pyx_lineno = 44; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   }
   __pyx_r = (__pyx_t_3 / ((double)__pyx_v_sum_of_size));
   goto __pyx_L0;
 
-  /* "py_stringsimjoin/apply_rf/sim_functions.pyx":26
+  /* "py_stringsimjoin/apply_rf/sim_functions.pyx":27
  *     return (overlap * 1.0) / <double>(sum_of_size - overlap)
  * 
  * cdef double dice(const vector[int]& tokens1, const vector[int]& tokens2) nogil:             # <<<<<<<<<<<<<<
@@ -1158,7 +1203,7 @@ static double __pyx_f_16py_stringsimjoin_8apply_rf_13sim_functions_dice(std::vec
   return __pyx_r;
 }
 
-/* "py_stringsimjoin/apply_rf/sim_functions.pyx":45
+/* "py_stringsimjoin/apply_rf/sim_functions.pyx":46
  *     return (overlap * 2.0) / <double>sum_of_size
  * 
  * cdef double cosine(const vector[int]& tokens1, const vector[int]& tokens2) nogil:             # <<<<<<<<<<<<<<
@@ -1181,7 +1226,7 @@ static double __pyx_f_16py_stringsimjoin_8apply_rf_13sim_functions_cosine(std::v
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
 
-  /* "py_stringsimjoin/apply_rf/sim_functions.pyx":46
+  /* "py_stringsimjoin/apply_rf/sim_functions.pyx":47
  * 
  * cdef double cosine(const vector[int]& tokens1, const vector[int]& tokens2) nogil:
  *     cdef int i=0, j=0, size1 = tokens1.size(), size2 = tokens2.size()             # <<<<<<<<<<<<<<
@@ -1193,7 +1238,7 @@ static double __pyx_f_16py_stringsimjoin_8apply_rf_13sim_functions_cosine(std::v
   __pyx_v_size1 = __pyx_v_tokens1.size();
   __pyx_v_size2 = __pyx_v_tokens2.size();
 
-  /* "py_stringsimjoin/apply_rf/sim_functions.pyx":47
+  /* "py_stringsimjoin/apply_rf/sim_functions.pyx":48
  * cdef double cosine(const vector[int]& tokens1, const vector[int]& tokens2) nogil:
  *     cdef int i=0, j=0, size1 = tokens1.size(), size2 = tokens2.size()
  *     cdef int sum_of_size = size1 + size2             # <<<<<<<<<<<<<<
@@ -1202,7 +1247,7 @@ static double __pyx_f_16py_stringsimjoin_8apply_rf_13sim_functions_cosine(std::v
  */
   __pyx_v_sum_of_size = (__pyx_v_size1 + __pyx_v_size2);
 
-  /* "py_stringsimjoin/apply_rf/sim_functions.pyx":48
+  /* "py_stringsimjoin/apply_rf/sim_functions.pyx":49
  *     cdef int i=0, j=0, size1 = tokens1.size(), size2 = tokens2.size()
  *     cdef int sum_of_size = size1 + size2
  *     if sum_of_size == 0:             # <<<<<<<<<<<<<<
@@ -1212,7 +1257,7 @@ static double __pyx_f_16py_stringsimjoin_8apply_rf_13sim_functions_cosine(std::v
   __pyx_t_1 = ((__pyx_v_sum_of_size == 0) != 0);
   if (__pyx_t_1) {
 
-    /* "py_stringsimjoin/apply_rf/sim_functions.pyx":49
+    /* "py_stringsimjoin/apply_rf/sim_functions.pyx":50
  *     cdef int sum_of_size = size1 + size2
  *     if sum_of_size == 0:
  *         return 1.0             # <<<<<<<<<<<<<<
@@ -1222,7 +1267,7 @@ static double __pyx_f_16py_stringsimjoin_8apply_rf_13sim_functions_cosine(std::v
     __pyx_r = 1.0;
     goto __pyx_L0;
 
-    /* "py_stringsimjoin/apply_rf/sim_functions.pyx":48
+    /* "py_stringsimjoin/apply_rf/sim_functions.pyx":49
  *     cdef int i=0, j=0, size1 = tokens1.size(), size2 = tokens2.size()
  *     cdef int sum_of_size = size1 + size2
  *     if sum_of_size == 0:             # <<<<<<<<<<<<<<
@@ -1231,7 +1276,7 @@ static double __pyx_f_16py_stringsimjoin_8apply_rf_13sim_functions_cosine(std::v
  */
   }
 
-  /* "py_stringsimjoin/apply_rf/sim_functions.pyx":50
+  /* "py_stringsimjoin/apply_rf/sim_functions.pyx":51
  *     if sum_of_size == 0:
  *         return 1.0
  *     if size1 == 0 or size2 == 0:             # <<<<<<<<<<<<<<
@@ -1249,7 +1294,7 @@ static double __pyx_f_16py_stringsimjoin_8apply_rf_13sim_functions_cosine(std::v
   __pyx_L5_bool_binop_done:;
   if (__pyx_t_1) {
 
-    /* "py_stringsimjoin/apply_rf/sim_functions.pyx":51
+    /* "py_stringsimjoin/apply_rf/sim_functions.pyx":52
  *         return 1.0
  *     if size1 == 0 or size2 == 0:
  *         return 0.0             # <<<<<<<<<<<<<<
@@ -1259,7 +1304,7 @@ static double __pyx_f_16py_stringsimjoin_8apply_rf_13sim_functions_cosine(std::v
     __pyx_r = 0.0;
     goto __pyx_L0;
 
-    /* "py_stringsimjoin/apply_rf/sim_functions.pyx":50
+    /* "py_stringsimjoin/apply_rf/sim_functions.pyx":51
  *     if sum_of_size == 0:
  *         return 1.0
  *     if size1 == 0 or size2 == 0:             # <<<<<<<<<<<<<<
@@ -1268,7 +1313,7 @@ static double __pyx_f_16py_stringsimjoin_8apply_rf_13sim_functions_cosine(std::v
  */
   }
 
-  /* "py_stringsimjoin/apply_rf/sim_functions.pyx":52
+  /* "py_stringsimjoin/apply_rf/sim_functions.pyx":53
  *     if size1 == 0 or size2 == 0:
  *         return 0.0
  *     cdef int overlap = 0             # <<<<<<<<<<<<<<
@@ -1277,7 +1322,7 @@ static double __pyx_f_16py_stringsimjoin_8apply_rf_13sim_functions_cosine(std::v
  */
   __pyx_v_overlap = 0;
 
-  /* "py_stringsimjoin/apply_rf/sim_functions.pyx":53
+  /* "py_stringsimjoin/apply_rf/sim_functions.pyx":54
  *         return 0.0
  *     cdef int overlap = 0
  *     while i < size1 and j < size2:             # <<<<<<<<<<<<<<
@@ -1296,7 +1341,7 @@ static double __pyx_f_16py_stringsimjoin_8apply_rf_13sim_functions_cosine(std::v
     __pyx_L9_bool_binop_done:;
     if (!__pyx_t_1) break;
 
-    /* "py_stringsimjoin/apply_rf/sim_functions.pyx":54
+    /* "py_stringsimjoin/apply_rf/sim_functions.pyx":55
  *     cdef int overlap = 0
  *     while i < size1 and j < size2:
  *         if tokens1[i] == tokens2[j]:             # <<<<<<<<<<<<<<
@@ -1306,7 +1351,7 @@ static double __pyx_f_16py_stringsimjoin_8apply_rf_13sim_functions_cosine(std::v
     __pyx_t_1 = (((__pyx_v_tokens1[__pyx_v_i]) == (__pyx_v_tokens2[__pyx_v_j])) != 0);
     if (__pyx_t_1) {
 
-      /* "py_stringsimjoin/apply_rf/sim_functions.pyx":55
+      /* "py_stringsimjoin/apply_rf/sim_functions.pyx":56
  *     while i < size1 and j < size2:
  *         if tokens1[i] == tokens2[j]:
  *             overlap += 1             # <<<<<<<<<<<<<<
@@ -1315,7 +1360,7 @@ static double __pyx_f_16py_stringsimjoin_8apply_rf_13sim_functions_cosine(std::v
  */
       __pyx_v_overlap = (__pyx_v_overlap + 1);
 
-      /* "py_stringsimjoin/apply_rf/sim_functions.pyx":56
+      /* "py_stringsimjoin/apply_rf/sim_functions.pyx":57
  *         if tokens1[i] == tokens2[j]:
  *             overlap += 1
  *             i += 1             # <<<<<<<<<<<<<<
@@ -1324,7 +1369,7 @@ static double __pyx_f_16py_stringsimjoin_8apply_rf_13sim_functions_cosine(std::v
  */
       __pyx_v_i = (__pyx_v_i + 1);
 
-      /* "py_stringsimjoin/apply_rf/sim_functions.pyx":57
+      /* "py_stringsimjoin/apply_rf/sim_functions.pyx":58
  *             overlap += 1
  *             i += 1
  *             j += 1             # <<<<<<<<<<<<<<
@@ -1333,7 +1378,7 @@ static double __pyx_f_16py_stringsimjoin_8apply_rf_13sim_functions_cosine(std::v
  */
       __pyx_v_j = (__pyx_v_j + 1);
 
-      /* "py_stringsimjoin/apply_rf/sim_functions.pyx":54
+      /* "py_stringsimjoin/apply_rf/sim_functions.pyx":55
  *     cdef int overlap = 0
  *     while i < size1 and j < size2:
  *         if tokens1[i] == tokens2[j]:             # <<<<<<<<<<<<<<
@@ -1343,7 +1388,7 @@ static double __pyx_f_16py_stringsimjoin_8apply_rf_13sim_functions_cosine(std::v
       goto __pyx_L11;
     }
 
-    /* "py_stringsimjoin/apply_rf/sim_functions.pyx":58
+    /* "py_stringsimjoin/apply_rf/sim_functions.pyx":59
  *             i += 1
  *             j += 1
  *         elif tokens1[i] < tokens2[j]:             # <<<<<<<<<<<<<<
@@ -1353,7 +1398,7 @@ static double __pyx_f_16py_stringsimjoin_8apply_rf_13sim_functions_cosine(std::v
     __pyx_t_1 = (((__pyx_v_tokens1[__pyx_v_i]) < (__pyx_v_tokens2[__pyx_v_j])) != 0);
     if (__pyx_t_1) {
 
-      /* "py_stringsimjoin/apply_rf/sim_functions.pyx":59
+      /* "py_stringsimjoin/apply_rf/sim_functions.pyx":60
  *             j += 1
  *         elif tokens1[i] < tokens2[j]:
  *             i += 1             # <<<<<<<<<<<<<<
@@ -1362,7 +1407,7 @@ static double __pyx_f_16py_stringsimjoin_8apply_rf_13sim_functions_cosine(std::v
  */
       __pyx_v_i = (__pyx_v_i + 1);
 
-      /* "py_stringsimjoin/apply_rf/sim_functions.pyx":58
+      /* "py_stringsimjoin/apply_rf/sim_functions.pyx":59
  *             i += 1
  *             j += 1
  *         elif tokens1[i] < tokens2[j]:             # <<<<<<<<<<<<<<
@@ -1372,7 +1417,7 @@ static double __pyx_f_16py_stringsimjoin_8apply_rf_13sim_functions_cosine(std::v
       goto __pyx_L11;
     }
 
-    /* "py_stringsimjoin/apply_rf/sim_functions.pyx":61
+    /* "py_stringsimjoin/apply_rf/sim_functions.pyx":62
  *             i += 1
  *         else:
  *             j += 1             # <<<<<<<<<<<<<<
@@ -1385,7 +1430,7 @@ static double __pyx_f_16py_stringsimjoin_8apply_rf_13sim_functions_cosine(std::v
     __pyx_L11:;
   }
 
-  /* "py_stringsimjoin/apply_rf/sim_functions.pyx":62
+  /* "py_stringsimjoin/apply_rf/sim_functions.pyx":63
  *         else:
  *             j += 1
  *     return <double>overlap / sqrt(size1*size2)             # <<<<<<<<<<<<<<
@@ -1401,12 +1446,12 @@ static double __pyx_f_16py_stringsimjoin_8apply_rf_13sim_functions_cosine(std::v
     #ifdef WITH_THREAD
     PyGILState_Release(__pyx_gilstate_save);
     #endif
-    {__pyx_filename = __pyx_f[0]; __pyx_lineno = 62; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    {__pyx_filename = __pyx_f[0]; __pyx_lineno = 63; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   }
   __pyx_r = (((double)__pyx_v_overlap) / __pyx_t_3);
   goto __pyx_L0;
 
-  /* "py_stringsimjoin/apply_rf/sim_functions.pyx":45
+  /* "py_stringsimjoin/apply_rf/sim_functions.pyx":46
  *     return (overlap * 2.0) / <double>sum_of_size
  * 
  * cdef double cosine(const vector[int]& tokens1, const vector[int]& tokens2) nogil:             # <<<<<<<<<<<<<<
@@ -1422,7 +1467,7 @@ static double __pyx_f_16py_stringsimjoin_8apply_rf_13sim_functions_cosine(std::v
   return __pyx_r;
 }
 
-/* "py_stringsimjoin/apply_rf/sim_functions.pyx":64
+/* "py_stringsimjoin/apply_rf/sim_functions.pyx":65
  *     return <double>overlap / sqrt(size1*size2)
  * 
  * cdef inline int int_min(int a, int b, int c) nogil:             # <<<<<<<<<<<<<<
@@ -1435,7 +1480,7 @@ static CYTHON_INLINE int __pyx_f_16py_stringsimjoin_8apply_rf_13sim_functions_in
   int __pyx_t_1;
   int __pyx_t_2;
 
-  /* "py_stringsimjoin/apply_rf/sim_functions.pyx":65
+  /* "py_stringsimjoin/apply_rf/sim_functions.pyx":66
  * 
  * cdef inline int int_min(int a, int b, int c) nogil:
  *     if (a<=b) and (a<= c):             # <<<<<<<<<<<<<<
@@ -1453,7 +1498,7 @@ static CYTHON_INLINE int __pyx_f_16py_stringsimjoin_8apply_rf_13sim_functions_in
   __pyx_L4_bool_binop_done:;
   if (__pyx_t_1) {
 
-    /* "py_stringsimjoin/apply_rf/sim_functions.pyx":66
+    /* "py_stringsimjoin/apply_rf/sim_functions.pyx":67
  * cdef inline int int_min(int a, int b, int c) nogil:
  *     if (a<=b) and (a<= c):
  *         return a             # <<<<<<<<<<<<<<
@@ -1463,7 +1508,7 @@ static CYTHON_INLINE int __pyx_f_16py_stringsimjoin_8apply_rf_13sim_functions_in
     __pyx_r = __pyx_v_a;
     goto __pyx_L0;
 
-    /* "py_stringsimjoin/apply_rf/sim_functions.pyx":65
+    /* "py_stringsimjoin/apply_rf/sim_functions.pyx":66
  * 
  * cdef inline int int_min(int a, int b, int c) nogil:
  *     if (a<=b) and (a<= c):             # <<<<<<<<<<<<<<
@@ -1472,7 +1517,7 @@ static CYTHON_INLINE int __pyx_f_16py_stringsimjoin_8apply_rf_13sim_functions_in
  */
   }
 
-  /* "py_stringsimjoin/apply_rf/sim_functions.pyx":67
+  /* "py_stringsimjoin/apply_rf/sim_functions.pyx":68
  *     if (a<=b) and (a<= c):
  *         return a
  *     elif (b<=c):             # <<<<<<<<<<<<<<
@@ -1482,7 +1527,7 @@ static CYTHON_INLINE int __pyx_f_16py_stringsimjoin_8apply_rf_13sim_functions_in
   __pyx_t_1 = ((__pyx_v_b <= __pyx_v_c) != 0);
   if (__pyx_t_1) {
 
-    /* "py_stringsimjoin/apply_rf/sim_functions.pyx":68
+    /* "py_stringsimjoin/apply_rf/sim_functions.pyx":69
  *         return a
  *     elif (b<=c):
  *         return b             # <<<<<<<<<<<<<<
@@ -1492,7 +1537,7 @@ static CYTHON_INLINE int __pyx_f_16py_stringsimjoin_8apply_rf_13sim_functions_in
     __pyx_r = __pyx_v_b;
     goto __pyx_L0;
 
-    /* "py_stringsimjoin/apply_rf/sim_functions.pyx":67
+    /* "py_stringsimjoin/apply_rf/sim_functions.pyx":68
  *     if (a<=b) and (a<= c):
  *         return a
  *     elif (b<=c):             # <<<<<<<<<<<<<<
@@ -1501,7 +1546,7 @@ static CYTHON_INLINE int __pyx_f_16py_stringsimjoin_8apply_rf_13sim_functions_in
  */
   }
 
-  /* "py_stringsimjoin/apply_rf/sim_functions.pyx":70
+  /* "py_stringsimjoin/apply_rf/sim_functions.pyx":71
  *         return b
  *     else:
  *         return c             # <<<<<<<<<<<<<<
@@ -1513,7 +1558,7 @@ static CYTHON_INLINE int __pyx_f_16py_stringsimjoin_8apply_rf_13sim_functions_in
     goto __pyx_L0;
   }
 
-  /* "py_stringsimjoin/apply_rf/sim_functions.pyx":64
+  /* "py_stringsimjoin/apply_rf/sim_functions.pyx":65
  *     return <double>overlap / sqrt(size1*size2)
  * 
  * cdef inline int int_min(int a, int b, int c) nogil:             # <<<<<<<<<<<<<<
@@ -1526,7 +1571,7 @@ static CYTHON_INLINE int __pyx_f_16py_stringsimjoin_8apply_rf_13sim_functions_in
   return __pyx_r;
 }
 
-/* "py_stringsimjoin/apply_rf/sim_functions.pyx":72
+/* "py_stringsimjoin/apply_rf/sim_functions.pyx":73
  *         return c
  * 
  * cdef double edit_distance(const string& str1, const string& str2) nogil:             # <<<<<<<<<<<<<<
@@ -1555,7 +1600,7 @@ static double __pyx_f_16py_stringsimjoin_8apply_rf_13sim_functions_edit_distance
   int __pyx_t_5;
   int __pyx_t_6;
 
-  /* "py_stringsimjoin/apply_rf/sim_functions.pyx":73
+  /* "py_stringsimjoin/apply_rf/sim_functions.pyx":74
  * 
  * cdef double edit_distance(const string& str1, const string& str2) nogil:
  *     cdef int len_str1 = str1.length(), len_str2 = str2.length()             # <<<<<<<<<<<<<<
@@ -1565,7 +1610,7 @@ static double __pyx_f_16py_stringsimjoin_8apply_rf_13sim_functions_edit_distance
   __pyx_v_len_str1 = __pyx_v_str1.length();
   __pyx_v_len_str2 = __pyx_v_str2.length();
 
-  /* "py_stringsimjoin/apply_rf/sim_functions.pyx":75
+  /* "py_stringsimjoin/apply_rf/sim_functions.pyx":76
  *     cdef int len_str1 = str1.length(), len_str2 = str2.length()
  * 
  *     cdef int ins_cost = 1, del_cost = 1, sub_cost = 1, trans_cost = 1             # <<<<<<<<<<<<<<
@@ -1577,7 +1622,7 @@ static double __pyx_f_16py_stringsimjoin_8apply_rf_13sim_functions_edit_distance
   __pyx_v_sub_cost = 1;
   __pyx_v_trans_cost = 1;
 
-  /* "py_stringsimjoin/apply_rf/sim_functions.pyx":77
+  /* "py_stringsimjoin/apply_rf/sim_functions.pyx":78
  *     cdef int ins_cost = 1, del_cost = 1, sub_cost = 1, trans_cost = 1
  * 
  *     cdef int edit_dist, i = 0, j = 0             # <<<<<<<<<<<<<<
@@ -1587,7 +1632,7 @@ static double __pyx_f_16py_stringsimjoin_8apply_rf_13sim_functions_edit_distance
   __pyx_v_i = 0;
   __pyx_v_j = 0;
 
-  /* "py_stringsimjoin/apply_rf/sim_functions.pyx":79
+  /* "py_stringsimjoin/apply_rf/sim_functions.pyx":80
  *     cdef int edit_dist, i = 0, j = 0
  * 
  *     if len_str1 == 0:             # <<<<<<<<<<<<<<
@@ -1597,7 +1642,7 @@ static double __pyx_f_16py_stringsimjoin_8apply_rf_13sim_functions_edit_distance
   __pyx_t_1 = ((__pyx_v_len_str1 == 0) != 0);
   if (__pyx_t_1) {
 
-    /* "py_stringsimjoin/apply_rf/sim_functions.pyx":80
+    /* "py_stringsimjoin/apply_rf/sim_functions.pyx":81
  * 
  *     if len_str1 == 0:
  *         return len_str2 * ins_cost             # <<<<<<<<<<<<<<
@@ -1607,7 +1652,7 @@ static double __pyx_f_16py_stringsimjoin_8apply_rf_13sim_functions_edit_distance
     __pyx_r = (__pyx_v_len_str2 * __pyx_v_ins_cost);
     goto __pyx_L0;
 
-    /* "py_stringsimjoin/apply_rf/sim_functions.pyx":79
+    /* "py_stringsimjoin/apply_rf/sim_functions.pyx":80
  *     cdef int edit_dist, i = 0, j = 0
  * 
  *     if len_str1 == 0:             # <<<<<<<<<<<<<<
@@ -1616,7 +1661,7 @@ static double __pyx_f_16py_stringsimjoin_8apply_rf_13sim_functions_edit_distance
  */
   }
 
-  /* "py_stringsimjoin/apply_rf/sim_functions.pyx":82
+  /* "py_stringsimjoin/apply_rf/sim_functions.pyx":83
  *         return len_str2 * ins_cost
  * 
  *     if len_str2 == 0:             # <<<<<<<<<<<<<<
@@ -1626,7 +1671,7 @@ static double __pyx_f_16py_stringsimjoin_8apply_rf_13sim_functions_edit_distance
   __pyx_t_1 = ((__pyx_v_len_str2 == 0) != 0);
   if (__pyx_t_1) {
 
-    /* "py_stringsimjoin/apply_rf/sim_functions.pyx":83
+    /* "py_stringsimjoin/apply_rf/sim_functions.pyx":84
  * 
  *     if len_str2 == 0:
  *         return len_str1 * del_cost             # <<<<<<<<<<<<<<
@@ -1636,7 +1681,7 @@ static double __pyx_f_16py_stringsimjoin_8apply_rf_13sim_functions_edit_distance
     __pyx_r = (__pyx_v_len_str1 * __pyx_v_del_cost);
     goto __pyx_L0;
 
-    /* "py_stringsimjoin/apply_rf/sim_functions.pyx":82
+    /* "py_stringsimjoin/apply_rf/sim_functions.pyx":83
  *         return len_str2 * ins_cost
  * 
  *     if len_str2 == 0:             # <<<<<<<<<<<<<<
@@ -1645,7 +1690,7 @@ static double __pyx_f_16py_stringsimjoin_8apply_rf_13sim_functions_edit_distance
  */
   }
 
-  /* "py_stringsimjoin/apply_rf/sim_functions.pyx":85
+  /* "py_stringsimjoin/apply_rf/sim_functions.pyx":86
  *         return len_str1 * del_cost
  * 
  *     cdef int *d_mat = <int*>malloc((len_str1 + 1) * (len_str2 + 1) * sizeof(int))             # <<<<<<<<<<<<<<
@@ -1654,7 +1699,7 @@ static double __pyx_f_16py_stringsimjoin_8apply_rf_13sim_functions_edit_distance
  */
   __pyx_v_d_mat = ((int *)malloc((((__pyx_v_len_str1 + 1) * (__pyx_v_len_str2 + 1)) * (sizeof(int)))));
 
-  /* "py_stringsimjoin/apply_rf/sim_functions.pyx":88
+  /* "py_stringsimjoin/apply_rf/sim_functions.pyx":89
  * #    cdef int[:,:] d_mat = <int[:(len_str1 + 1), :(len_str2 + 1)]>arr
  * 
  *     for i in range(len_str1 + 1):             # <<<<<<<<<<<<<<
@@ -1665,7 +1710,7 @@ static double __pyx_f_16py_stringsimjoin_8apply_rf_13sim_functions_edit_distance
   for (__pyx_t_3 = 0; __pyx_t_3 < __pyx_t_2; __pyx_t_3+=1) {
     __pyx_v_i = __pyx_t_3;
 
-    /* "py_stringsimjoin/apply_rf/sim_functions.pyx":89
+    /* "py_stringsimjoin/apply_rf/sim_functions.pyx":90
  * 
  *     for i in range(len_str1 + 1):
  *         d_mat[i*(len_str2 + 1)] = i * del_cost             # <<<<<<<<<<<<<<
@@ -1675,7 +1720,7 @@ static double __pyx_f_16py_stringsimjoin_8apply_rf_13sim_functions_edit_distance
     (__pyx_v_d_mat[(__pyx_v_i * (__pyx_v_len_str2 + 1))]) = (__pyx_v_i * __pyx_v_del_cost);
   }
 
-  /* "py_stringsimjoin/apply_rf/sim_functions.pyx":91
+  /* "py_stringsimjoin/apply_rf/sim_functions.pyx":92
  *         d_mat[i*(len_str2 + 1)] = i * del_cost
  * 
  *     for j in range(len_str2 + 1):             # <<<<<<<<<<<<<<
@@ -1686,7 +1731,7 @@ static double __pyx_f_16py_stringsimjoin_8apply_rf_13sim_functions_edit_distance
   for (__pyx_t_3 = 0; __pyx_t_3 < __pyx_t_2; __pyx_t_3+=1) {
     __pyx_v_j = __pyx_t_3;
 
-    /* "py_stringsimjoin/apply_rf/sim_functions.pyx":92
+    /* "py_stringsimjoin/apply_rf/sim_functions.pyx":93
  * 
  *     for j in range(len_str2 + 1):
  *         d_mat[j] = j * ins_cost             # <<<<<<<<<<<<<<
@@ -1696,7 +1741,7 @@ static double __pyx_f_16py_stringsimjoin_8apply_rf_13sim_functions_edit_distance
     (__pyx_v_d_mat[__pyx_v_j]) = (__pyx_v_j * __pyx_v_ins_cost);
   }
 
-  /* "py_stringsimjoin/apply_rf/sim_functions.pyx":94
+  /* "py_stringsimjoin/apply_rf/sim_functions.pyx":95
  *         d_mat[j] = j * ins_cost
  * 
  *     cdef unsigned char lchar = 0             # <<<<<<<<<<<<<<
@@ -1705,7 +1750,7 @@ static double __pyx_f_16py_stringsimjoin_8apply_rf_13sim_functions_edit_distance
  */
   __pyx_v_lchar = 0;
 
-  /* "py_stringsimjoin/apply_rf/sim_functions.pyx":95
+  /* "py_stringsimjoin/apply_rf/sim_functions.pyx":96
  * 
  *     cdef unsigned char lchar = 0
  *     cdef unsigned char rchar = 0             # <<<<<<<<<<<<<<
@@ -1714,7 +1759,7 @@ static double __pyx_f_16py_stringsimjoin_8apply_rf_13sim_functions_edit_distance
  */
   __pyx_v_rchar = 0;
 
-  /* "py_stringsimjoin/apply_rf/sim_functions.pyx":97
+  /* "py_stringsimjoin/apply_rf/sim_functions.pyx":98
  *     cdef unsigned char rchar = 0
  * 
  *     for i in range(len_str1):             # <<<<<<<<<<<<<<
@@ -1725,7 +1770,7 @@ static double __pyx_f_16py_stringsimjoin_8apply_rf_13sim_functions_edit_distance
   for (__pyx_t_4 = 0; __pyx_t_4 < __pyx_t_3; __pyx_t_4+=1) {
     __pyx_v_i = __pyx_t_4;
 
-    /* "py_stringsimjoin/apply_rf/sim_functions.pyx":98
+    /* "py_stringsimjoin/apply_rf/sim_functions.pyx":99
  * 
  *     for i in range(len_str1):
  *         lchar = str1[i]             # <<<<<<<<<<<<<<
@@ -1734,7 +1779,7 @@ static double __pyx_f_16py_stringsimjoin_8apply_rf_13sim_functions_edit_distance
  */
     __pyx_v_lchar = (__pyx_v_str1[__pyx_v_i]);
 
-    /* "py_stringsimjoin/apply_rf/sim_functions.pyx":99
+    /* "py_stringsimjoin/apply_rf/sim_functions.pyx":100
  *     for i in range(len_str1):
  *         lchar = str1[i]
  *         for j in range(len_str2):             # <<<<<<<<<<<<<<
@@ -1745,7 +1790,7 @@ static double __pyx_f_16py_stringsimjoin_8apply_rf_13sim_functions_edit_distance
     for (__pyx_t_6 = 0; __pyx_t_6 < __pyx_t_5; __pyx_t_6+=1) {
       __pyx_v_j = __pyx_t_6;
 
-      /* "py_stringsimjoin/apply_rf/sim_functions.pyx":100
+      /* "py_stringsimjoin/apply_rf/sim_functions.pyx":101
  *         lchar = str1[i]
  *         for j in range(len_str2):
  *             rchar = str2[j]             # <<<<<<<<<<<<<<
@@ -1754,7 +1799,7 @@ static double __pyx_f_16py_stringsimjoin_8apply_rf_13sim_functions_edit_distance
  */
       __pyx_v_rchar = (__pyx_v_str2[__pyx_v_j]);
 
-      /* "py_stringsimjoin/apply_rf/sim_functions.pyx":104
+      /* "py_stringsimjoin/apply_rf/sim_functions.pyx":105
  *             d_mat[(i+1)*(len_str2 + 1) + j+1] = int_min(d_mat[(i + 1)*(len_str2 + 1) + j] + ins_cost,
  *                                      d_mat[i*(len_str2 + 1) + j + 1] + del_cost,
  *                                      d_mat[i*(len_str2 + 1) + j] + (sub_cost if lchar != rchar else 0))             # <<<<<<<<<<<<<<
@@ -1767,7 +1812,7 @@ static double __pyx_f_16py_stringsimjoin_8apply_rf_13sim_functions_edit_distance
         __pyx_t_2 = 0;
       }
 
-      /* "py_stringsimjoin/apply_rf/sim_functions.pyx":102
+      /* "py_stringsimjoin/apply_rf/sim_functions.pyx":103
  *             rchar = str2[j]
  * 
  *             d_mat[(i+1)*(len_str2 + 1) + j+1] = int_min(d_mat[(i + 1)*(len_str2 + 1) + j] + ins_cost,             # <<<<<<<<<<<<<<
@@ -1778,7 +1823,7 @@ static double __pyx_f_16py_stringsimjoin_8apply_rf_13sim_functions_edit_distance
     }
   }
 
-  /* "py_stringsimjoin/apply_rf/sim_functions.pyx":105
+  /* "py_stringsimjoin/apply_rf/sim_functions.pyx":106
  *                                      d_mat[i*(len_str2 + 1) + j + 1] + del_cost,
  *                                      d_mat[i*(len_str2 + 1) + j] + (sub_cost if lchar != rchar else 0))
  *     edit_dist = d_mat[len_str1*(len_str2 + 1) + len_str2]             # <<<<<<<<<<<<<<
@@ -1787,23 +1832,26 @@ static double __pyx_f_16py_stringsimjoin_8apply_rf_13sim_functions_edit_distance
  */
   __pyx_v_edit_dist = (__pyx_v_d_mat[((__pyx_v_len_str1 * (__pyx_v_len_str2 + 1)) + __pyx_v_len_str2)]);
 
-  /* "py_stringsimjoin/apply_rf/sim_functions.pyx":106
+  /* "py_stringsimjoin/apply_rf/sim_functions.pyx":107
  *                                      d_mat[i*(len_str2 + 1) + j] + (sub_cost if lchar != rchar else 0))
  *     edit_dist = d_mat[len_str1*(len_str2 + 1) + len_str2]
  *     free(d_mat)             # <<<<<<<<<<<<<<
  *     return <double>edit_dist
+ * 
  */
   free(__pyx_v_d_mat);
 
-  /* "py_stringsimjoin/apply_rf/sim_functions.pyx":107
+  /* "py_stringsimjoin/apply_rf/sim_functions.pyx":108
  *     edit_dist = d_mat[len_str1*(len_str2 + 1) + len_str2]
  *     free(d_mat)
  *     return <double>edit_dist             # <<<<<<<<<<<<<<
+ * 
+ * cdef double jaccard_str(vector[string]& tokens1, vector[string]& tokens2) nogil:
  */
   __pyx_r = ((double)__pyx_v_edit_dist);
   goto __pyx_L0;
 
-  /* "py_stringsimjoin/apply_rf/sim_functions.pyx":72
+  /* "py_stringsimjoin/apply_rf/sim_functions.pyx":73
  *         return c
  * 
  * cdef double edit_distance(const string& str1, const string& str2) nogil:             # <<<<<<<<<<<<<<
@@ -1812,6 +1860,767 @@ static double __pyx_f_16py_stringsimjoin_8apply_rf_13sim_functions_edit_distance
  */
 
   /* function exit code */
+  __pyx_L0:;
+  return __pyx_r;
+}
+
+/* "py_stringsimjoin/apply_rf/sim_functions.pyx":110
+ *     return <double>edit_dist
+ * 
+ * cdef double jaccard_str(vector[string]& tokens1, vector[string]& tokens2) nogil:             # <<<<<<<<<<<<<<
+ *     cdef int i=0, j=0, size1 = tokens1.size(), size2 = tokens2.size()
+ *     cdef int sum_of_size = size1 + size2
+ */
+
+static double __pyx_f_16py_stringsimjoin_8apply_rf_13sim_functions_jaccard_str(std::vector<std::string>  &__pyx_v_tokens1, std::vector<std::string>  &__pyx_v_tokens2) {
+  CYTHON_UNUSED int __pyx_v_i;
+  CYTHON_UNUSED int __pyx_v_j;
+  int __pyx_v_size1;
+  int __pyx_v_size2;
+  int __pyx_v_sum_of_size;
+  int __pyx_v_overlap;
+  std::set<std::string>  __pyx_v_ltokens;
+  std::string __pyx_v_token;
+  double __pyx_r;
+  int __pyx_t_1;
+  int __pyx_t_2;
+  std::vector<std::string> ::iterator __pyx_t_3;
+  std::string __pyx_t_4;
+  double __pyx_t_5;
+  double __pyx_t_6;
+  int __pyx_lineno = 0;
+  const char *__pyx_filename = NULL;
+  int __pyx_clineno = 0;
+
+  /* "py_stringsimjoin/apply_rf/sim_functions.pyx":111
+ * 
+ * cdef double jaccard_str(vector[string]& tokens1, vector[string]& tokens2) nogil:
+ *     cdef int i=0, j=0, size1 = tokens1.size(), size2 = tokens2.size()             # <<<<<<<<<<<<<<
+ *     cdef int sum_of_size = size1 + size2
+ *     if sum_of_size == 0:
+ */
+  __pyx_v_i = 0;
+  __pyx_v_j = 0;
+  __pyx_v_size1 = __pyx_v_tokens1.size();
+  __pyx_v_size2 = __pyx_v_tokens2.size();
+
+  /* "py_stringsimjoin/apply_rf/sim_functions.pyx":112
+ * cdef double jaccard_str(vector[string]& tokens1, vector[string]& tokens2) nogil:
+ *     cdef int i=0, j=0, size1 = tokens1.size(), size2 = tokens2.size()
+ *     cdef int sum_of_size = size1 + size2             # <<<<<<<<<<<<<<
+ *     if sum_of_size == 0:
+ *         return 1.0
+ */
+  __pyx_v_sum_of_size = (__pyx_v_size1 + __pyx_v_size2);
+
+  /* "py_stringsimjoin/apply_rf/sim_functions.pyx":113
+ *     cdef int i=0, j=0, size1 = tokens1.size(), size2 = tokens2.size()
+ *     cdef int sum_of_size = size1 + size2
+ *     if sum_of_size == 0:             # <<<<<<<<<<<<<<
+ *         return 1.0
+ *     if size1 == 0 or size2 == 0:
+ */
+  __pyx_t_1 = ((__pyx_v_sum_of_size == 0) != 0);
+  if (__pyx_t_1) {
+
+    /* "py_stringsimjoin/apply_rf/sim_functions.pyx":114
+ *     cdef int sum_of_size = size1 + size2
+ *     if sum_of_size == 0:
+ *         return 1.0             # <<<<<<<<<<<<<<
+ *     if size1 == 0 or size2 == 0:
+ *         return 0.0
+ */
+    __pyx_r = 1.0;
+    goto __pyx_L0;
+
+    /* "py_stringsimjoin/apply_rf/sim_functions.pyx":113
+ *     cdef int i=0, j=0, size1 = tokens1.size(), size2 = tokens2.size()
+ *     cdef int sum_of_size = size1 + size2
+ *     if sum_of_size == 0:             # <<<<<<<<<<<<<<
+ *         return 1.0
+ *     if size1 == 0 or size2 == 0:
+ */
+  }
+
+  /* "py_stringsimjoin/apply_rf/sim_functions.pyx":115
+ *     if sum_of_size == 0:
+ *         return 1.0
+ *     if size1 == 0 or size2 == 0:             # <<<<<<<<<<<<<<
+ *         return 0.0
+ *     cdef int overlap = 0
+ */
+  __pyx_t_2 = ((__pyx_v_size1 == 0) != 0);
+  if (!__pyx_t_2) {
+  } else {
+    __pyx_t_1 = __pyx_t_2;
+    goto __pyx_L5_bool_binop_done;
+  }
+  __pyx_t_2 = ((__pyx_v_size2 == 0) != 0);
+  __pyx_t_1 = __pyx_t_2;
+  __pyx_L5_bool_binop_done:;
+  if (__pyx_t_1) {
+
+    /* "py_stringsimjoin/apply_rf/sim_functions.pyx":116
+ *         return 1.0
+ *     if size1 == 0 or size2 == 0:
+ *         return 0.0             # <<<<<<<<<<<<<<
+ *     cdef int overlap = 0
+ *     cdef oset[string] ltokens
+ */
+    __pyx_r = 0.0;
+    goto __pyx_L0;
+
+    /* "py_stringsimjoin/apply_rf/sim_functions.pyx":115
+ *     if sum_of_size == 0:
+ *         return 1.0
+ *     if size1 == 0 or size2 == 0:             # <<<<<<<<<<<<<<
+ *         return 0.0
+ *     cdef int overlap = 0
+ */
+  }
+
+  /* "py_stringsimjoin/apply_rf/sim_functions.pyx":117
+ *     if size1 == 0 or size2 == 0:
+ *         return 0.0
+ *     cdef int overlap = 0             # <<<<<<<<<<<<<<
+ *     cdef oset[string] ltokens
+ *     cdef string token
+ */
+  __pyx_v_overlap = 0;
+
+  /* "py_stringsimjoin/apply_rf/sim_functions.pyx":120
+ *     cdef oset[string] ltokens
+ *     cdef string token
+ *     for token in tokens1:             # <<<<<<<<<<<<<<
+ *         ltokens.insert(token)
+ *     for token in tokens2:
+ */
+  __pyx_t_3 = __pyx_v_tokens1.begin();
+  for (;;) {
+    if (!(__pyx_t_3 != __pyx_v_tokens1.end())) break;
+    __pyx_t_4 = *__pyx_t_3;
+    ++__pyx_t_3;
+    __pyx_v_token = __pyx_t_4;
+
+    /* "py_stringsimjoin/apply_rf/sim_functions.pyx":121
+ *     cdef string token
+ *     for token in tokens1:
+ *         ltokens.insert(token)             # <<<<<<<<<<<<<<
+ *     for token in tokens2:
+ *         if ltokens.find(token) != ltokens.end():
+ */
+    try {
+      __pyx_v_ltokens.insert(__pyx_v_token);
+    } catch(...) {
+      #ifdef WITH_THREAD
+      PyGILState_STATE __pyx_gilstate_save = PyGILState_Ensure();
+      #endif
+      __Pyx_CppExn2PyErr();
+      #ifdef WITH_THREAD
+      PyGILState_Release(__pyx_gilstate_save);
+      #endif
+      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 121; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    }
+
+    /* "py_stringsimjoin/apply_rf/sim_functions.pyx":120
+ *     cdef oset[string] ltokens
+ *     cdef string token
+ *     for token in tokens1:             # <<<<<<<<<<<<<<
+ *         ltokens.insert(token)
+ *     for token in tokens2:
+ */
+  }
+
+  /* "py_stringsimjoin/apply_rf/sim_functions.pyx":122
+ *     for token in tokens1:
+ *         ltokens.insert(token)
+ *     for token in tokens2:             # <<<<<<<<<<<<<<
+ *         if ltokens.find(token) != ltokens.end():
+ *             overlap += 1
+ */
+  __pyx_t_3 = __pyx_v_tokens2.begin();
+  for (;;) {
+    if (!(__pyx_t_3 != __pyx_v_tokens2.end())) break;
+    __pyx_t_4 = *__pyx_t_3;
+    ++__pyx_t_3;
+    __pyx_v_token = __pyx_t_4;
+
+    /* "py_stringsimjoin/apply_rf/sim_functions.pyx":123
+ *         ltokens.insert(token)
+ *     for token in tokens2:
+ *         if ltokens.find(token) != ltokens.end():             # <<<<<<<<<<<<<<
+ *             overlap += 1
+ *     return (overlap * 1.0) / <double>(sum_of_size - overlap)
+ */
+    __pyx_t_1 = ((__pyx_v_ltokens.find(__pyx_v_token) != __pyx_v_ltokens.end()) != 0);
+    if (__pyx_t_1) {
+
+      /* "py_stringsimjoin/apply_rf/sim_functions.pyx":124
+ *     for token in tokens2:
+ *         if ltokens.find(token) != ltokens.end():
+ *             overlap += 1             # <<<<<<<<<<<<<<
+ *     return (overlap * 1.0) / <double>(sum_of_size - overlap)
+ * 
+ */
+      __pyx_v_overlap = (__pyx_v_overlap + 1);
+
+      /* "py_stringsimjoin/apply_rf/sim_functions.pyx":123
+ *         ltokens.insert(token)
+ *     for token in tokens2:
+ *         if ltokens.find(token) != ltokens.end():             # <<<<<<<<<<<<<<
+ *             overlap += 1
+ *     return (overlap * 1.0) / <double>(sum_of_size - overlap)
+ */
+    }
+
+    /* "py_stringsimjoin/apply_rf/sim_functions.pyx":122
+ *     for token in tokens1:
+ *         ltokens.insert(token)
+ *     for token in tokens2:             # <<<<<<<<<<<<<<
+ *         if ltokens.find(token) != ltokens.end():
+ *             overlap += 1
+ */
+  }
+
+  /* "py_stringsimjoin/apply_rf/sim_functions.pyx":125
+ *         if ltokens.find(token) != ltokens.end():
+ *             overlap += 1
+ *     return (overlap * 1.0) / <double>(sum_of_size - overlap)             # <<<<<<<<<<<<<<
+ * 
+ * cdef double dice_str(vector[string]& tokens1, vector[string]& tokens2) nogil:
+ */
+  __pyx_t_5 = (__pyx_v_overlap * 1.0);
+  __pyx_t_6 = ((double)(__pyx_v_sum_of_size - __pyx_v_overlap));
+  if (unlikely(__pyx_t_6 == 0)) {
+    #ifdef WITH_THREAD
+    PyGILState_STATE __pyx_gilstate_save = PyGILState_Ensure();
+    #endif
+    PyErr_SetString(PyExc_ZeroDivisionError, "float division");
+    #ifdef WITH_THREAD
+    PyGILState_Release(__pyx_gilstate_save);
+    #endif
+    {__pyx_filename = __pyx_f[0]; __pyx_lineno = 125; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  }
+  __pyx_r = (__pyx_t_5 / __pyx_t_6);
+  goto __pyx_L0;
+
+  /* "py_stringsimjoin/apply_rf/sim_functions.pyx":110
+ *     return <double>edit_dist
+ * 
+ * cdef double jaccard_str(vector[string]& tokens1, vector[string]& tokens2) nogil:             # <<<<<<<<<<<<<<
+ *     cdef int i=0, j=0, size1 = tokens1.size(), size2 = tokens2.size()
+ *     cdef int sum_of_size = size1 + size2
+ */
+
+  /* function exit code */
+  __pyx_L1_error:;
+  __Pyx_WriteUnraisable("py_stringsimjoin.apply_rf.sim_functions.jaccard_str", __pyx_clineno, __pyx_lineno, __pyx_filename, 0, 1);
+  __pyx_r = 0;
+  __pyx_L0:;
+  return __pyx_r;
+}
+
+/* "py_stringsimjoin/apply_rf/sim_functions.pyx":127
+ *     return (overlap * 1.0) / <double>(sum_of_size - overlap)
+ * 
+ * cdef double dice_str(vector[string]& tokens1, vector[string]& tokens2) nogil:             # <<<<<<<<<<<<<<
+ *     cdef int i=0, j=0, size1 = tokens1.size(), size2 = tokens2.size()
+ *     cdef int sum_of_size = size1 + size2
+ */
+
+static double __pyx_f_16py_stringsimjoin_8apply_rf_13sim_functions_dice_str(std::vector<std::string>  &__pyx_v_tokens1, std::vector<std::string>  &__pyx_v_tokens2) {
+  CYTHON_UNUSED int __pyx_v_i;
+  CYTHON_UNUSED int __pyx_v_j;
+  int __pyx_v_size1;
+  int __pyx_v_size2;
+  int __pyx_v_sum_of_size;
+  int __pyx_v_overlap;
+  std::set<std::string>  __pyx_v_ltokens;
+  std::string __pyx_v_token;
+  double __pyx_r;
+  int __pyx_t_1;
+  int __pyx_t_2;
+  std::vector<std::string> ::iterator __pyx_t_3;
+  std::string __pyx_t_4;
+  double __pyx_t_5;
+  int __pyx_lineno = 0;
+  const char *__pyx_filename = NULL;
+  int __pyx_clineno = 0;
+
+  /* "py_stringsimjoin/apply_rf/sim_functions.pyx":128
+ * 
+ * cdef double dice_str(vector[string]& tokens1, vector[string]& tokens2) nogil:
+ *     cdef int i=0, j=0, size1 = tokens1.size(), size2 = tokens2.size()             # <<<<<<<<<<<<<<
+ *     cdef int sum_of_size = size1 + size2
+ *     if sum_of_size == 0:
+ */
+  __pyx_v_i = 0;
+  __pyx_v_j = 0;
+  __pyx_v_size1 = __pyx_v_tokens1.size();
+  __pyx_v_size2 = __pyx_v_tokens2.size();
+
+  /* "py_stringsimjoin/apply_rf/sim_functions.pyx":129
+ * cdef double dice_str(vector[string]& tokens1, vector[string]& tokens2) nogil:
+ *     cdef int i=0, j=0, size1 = tokens1.size(), size2 = tokens2.size()
+ *     cdef int sum_of_size = size1 + size2             # <<<<<<<<<<<<<<
+ *     if sum_of_size == 0:
+ *         return 1.0
+ */
+  __pyx_v_sum_of_size = (__pyx_v_size1 + __pyx_v_size2);
+
+  /* "py_stringsimjoin/apply_rf/sim_functions.pyx":130
+ *     cdef int i=0, j=0, size1 = tokens1.size(), size2 = tokens2.size()
+ *     cdef int sum_of_size = size1 + size2
+ *     if sum_of_size == 0:             # <<<<<<<<<<<<<<
+ *         return 1.0
+ *     if size1 == 0 or size2 == 0:
+ */
+  __pyx_t_1 = ((__pyx_v_sum_of_size == 0) != 0);
+  if (__pyx_t_1) {
+
+    /* "py_stringsimjoin/apply_rf/sim_functions.pyx":131
+ *     cdef int sum_of_size = size1 + size2
+ *     if sum_of_size == 0:
+ *         return 1.0             # <<<<<<<<<<<<<<
+ *     if size1 == 0 or size2 == 0:
+ *         return 0.0
+ */
+    __pyx_r = 1.0;
+    goto __pyx_L0;
+
+    /* "py_stringsimjoin/apply_rf/sim_functions.pyx":130
+ *     cdef int i=0, j=0, size1 = tokens1.size(), size2 = tokens2.size()
+ *     cdef int sum_of_size = size1 + size2
+ *     if sum_of_size == 0:             # <<<<<<<<<<<<<<
+ *         return 1.0
+ *     if size1 == 0 or size2 == 0:
+ */
+  }
+
+  /* "py_stringsimjoin/apply_rf/sim_functions.pyx":132
+ *     if sum_of_size == 0:
+ *         return 1.0
+ *     if size1 == 0 or size2 == 0:             # <<<<<<<<<<<<<<
+ *         return 0.0
+ *     cdef int overlap = 0
+ */
+  __pyx_t_2 = ((__pyx_v_size1 == 0) != 0);
+  if (!__pyx_t_2) {
+  } else {
+    __pyx_t_1 = __pyx_t_2;
+    goto __pyx_L5_bool_binop_done;
+  }
+  __pyx_t_2 = ((__pyx_v_size2 == 0) != 0);
+  __pyx_t_1 = __pyx_t_2;
+  __pyx_L5_bool_binop_done:;
+  if (__pyx_t_1) {
+
+    /* "py_stringsimjoin/apply_rf/sim_functions.pyx":133
+ *         return 1.0
+ *     if size1 == 0 or size2 == 0:
+ *         return 0.0             # <<<<<<<<<<<<<<
+ *     cdef int overlap = 0
+ *     cdef oset[string] ltokens
+ */
+    __pyx_r = 0.0;
+    goto __pyx_L0;
+
+    /* "py_stringsimjoin/apply_rf/sim_functions.pyx":132
+ *     if sum_of_size == 0:
+ *         return 1.0
+ *     if size1 == 0 or size2 == 0:             # <<<<<<<<<<<<<<
+ *         return 0.0
+ *     cdef int overlap = 0
+ */
+  }
+
+  /* "py_stringsimjoin/apply_rf/sim_functions.pyx":134
+ *     if size1 == 0 or size2 == 0:
+ *         return 0.0
+ *     cdef int overlap = 0             # <<<<<<<<<<<<<<
+ *     cdef oset[string] ltokens
+ *     cdef string token
+ */
+  __pyx_v_overlap = 0;
+
+  /* "py_stringsimjoin/apply_rf/sim_functions.pyx":137
+ *     cdef oset[string] ltokens
+ *     cdef string token
+ *     for token in tokens1:             # <<<<<<<<<<<<<<
+ *         ltokens.insert(token)
+ *     for token in tokens2:
+ */
+  __pyx_t_3 = __pyx_v_tokens1.begin();
+  for (;;) {
+    if (!(__pyx_t_3 != __pyx_v_tokens1.end())) break;
+    __pyx_t_4 = *__pyx_t_3;
+    ++__pyx_t_3;
+    __pyx_v_token = __pyx_t_4;
+
+    /* "py_stringsimjoin/apply_rf/sim_functions.pyx":138
+ *     cdef string token
+ *     for token in tokens1:
+ *         ltokens.insert(token)             # <<<<<<<<<<<<<<
+ *     for token in tokens2:
+ *         if ltokens.find(token) != ltokens.end():
+ */
+    try {
+      __pyx_v_ltokens.insert(__pyx_v_token);
+    } catch(...) {
+      #ifdef WITH_THREAD
+      PyGILState_STATE __pyx_gilstate_save = PyGILState_Ensure();
+      #endif
+      __Pyx_CppExn2PyErr();
+      #ifdef WITH_THREAD
+      PyGILState_Release(__pyx_gilstate_save);
+      #endif
+      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 138; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    }
+
+    /* "py_stringsimjoin/apply_rf/sim_functions.pyx":137
+ *     cdef oset[string] ltokens
+ *     cdef string token
+ *     for token in tokens1:             # <<<<<<<<<<<<<<
+ *         ltokens.insert(token)
+ *     for token in tokens2:
+ */
+  }
+
+  /* "py_stringsimjoin/apply_rf/sim_functions.pyx":139
+ *     for token in tokens1:
+ *         ltokens.insert(token)
+ *     for token in tokens2:             # <<<<<<<<<<<<<<
+ *         if ltokens.find(token) != ltokens.end():
+ *             overlap += 1
+ */
+  __pyx_t_3 = __pyx_v_tokens2.begin();
+  for (;;) {
+    if (!(__pyx_t_3 != __pyx_v_tokens2.end())) break;
+    __pyx_t_4 = *__pyx_t_3;
+    ++__pyx_t_3;
+    __pyx_v_token = __pyx_t_4;
+
+    /* "py_stringsimjoin/apply_rf/sim_functions.pyx":140
+ *         ltokens.insert(token)
+ *     for token in tokens2:
+ *         if ltokens.find(token) != ltokens.end():             # <<<<<<<<<<<<<<
+ *             overlap += 1
+ *     return (overlap * 2.0) / <double>sum_of_size
+ */
+    __pyx_t_1 = ((__pyx_v_ltokens.find(__pyx_v_token) != __pyx_v_ltokens.end()) != 0);
+    if (__pyx_t_1) {
+
+      /* "py_stringsimjoin/apply_rf/sim_functions.pyx":141
+ *     for token in tokens2:
+ *         if ltokens.find(token) != ltokens.end():
+ *             overlap += 1             # <<<<<<<<<<<<<<
+ *     return (overlap * 2.0) / <double>sum_of_size
+ * 
+ */
+      __pyx_v_overlap = (__pyx_v_overlap + 1);
+
+      /* "py_stringsimjoin/apply_rf/sim_functions.pyx":140
+ *         ltokens.insert(token)
+ *     for token in tokens2:
+ *         if ltokens.find(token) != ltokens.end():             # <<<<<<<<<<<<<<
+ *             overlap += 1
+ *     return (overlap * 2.0) / <double>sum_of_size
+ */
+    }
+
+    /* "py_stringsimjoin/apply_rf/sim_functions.pyx":139
+ *     for token in tokens1:
+ *         ltokens.insert(token)
+ *     for token in tokens2:             # <<<<<<<<<<<<<<
+ *         if ltokens.find(token) != ltokens.end():
+ *             overlap += 1
+ */
+  }
+
+  /* "py_stringsimjoin/apply_rf/sim_functions.pyx":142
+ *         if ltokens.find(token) != ltokens.end():
+ *             overlap += 1
+ *     return (overlap * 2.0) / <double>sum_of_size             # <<<<<<<<<<<<<<
+ * 
+ * cdef double cosine_str(vector[string]& tokens1, vector[string]& tokens2) nogil:
+ */
+  __pyx_t_5 = (__pyx_v_overlap * 2.0);
+  if (unlikely(((double)__pyx_v_sum_of_size) == 0)) {
+    #ifdef WITH_THREAD
+    PyGILState_STATE __pyx_gilstate_save = PyGILState_Ensure();
+    #endif
+    PyErr_SetString(PyExc_ZeroDivisionError, "float division");
+    #ifdef WITH_THREAD
+    PyGILState_Release(__pyx_gilstate_save);
+    #endif
+    {__pyx_filename = __pyx_f[0]; __pyx_lineno = 142; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  }
+  __pyx_r = (__pyx_t_5 / ((double)__pyx_v_sum_of_size));
+  goto __pyx_L0;
+
+  /* "py_stringsimjoin/apply_rf/sim_functions.pyx":127
+ *     return (overlap * 1.0) / <double>(sum_of_size - overlap)
+ * 
+ * cdef double dice_str(vector[string]& tokens1, vector[string]& tokens2) nogil:             # <<<<<<<<<<<<<<
+ *     cdef int i=0, j=0, size1 = tokens1.size(), size2 = tokens2.size()
+ *     cdef int sum_of_size = size1 + size2
+ */
+
+  /* function exit code */
+  __pyx_L1_error:;
+  __Pyx_WriteUnraisable("py_stringsimjoin.apply_rf.sim_functions.dice_str", __pyx_clineno, __pyx_lineno, __pyx_filename, 0, 1);
+  __pyx_r = 0;
+  __pyx_L0:;
+  return __pyx_r;
+}
+
+/* "py_stringsimjoin/apply_rf/sim_functions.pyx":144
+ *     return (overlap * 2.0) / <double>sum_of_size
+ * 
+ * cdef double cosine_str(vector[string]& tokens1, vector[string]& tokens2) nogil:             # <<<<<<<<<<<<<<
+ *     cdef int i=0, j=0, size1 = tokens1.size(), size2 = tokens2.size()
+ *     cdef int sum_of_size = size1 + size2
+ */
+
+static double __pyx_f_16py_stringsimjoin_8apply_rf_13sim_functions_cosine_str(std::vector<std::string>  &__pyx_v_tokens1, std::vector<std::string>  &__pyx_v_tokens2) {
+  CYTHON_UNUSED int __pyx_v_i;
+  CYTHON_UNUSED int __pyx_v_j;
+  int __pyx_v_size1;
+  int __pyx_v_size2;
+  int __pyx_v_sum_of_size;
+  int __pyx_v_overlap;
+  std::set<std::string>  __pyx_v_ltokens;
+  std::string __pyx_v_token;
+  double __pyx_r;
+  int __pyx_t_1;
+  int __pyx_t_2;
+  std::vector<std::string> ::iterator __pyx_t_3;
+  std::string __pyx_t_4;
+  double __pyx_t_5;
+  int __pyx_lineno = 0;
+  const char *__pyx_filename = NULL;
+  int __pyx_clineno = 0;
+
+  /* "py_stringsimjoin/apply_rf/sim_functions.pyx":145
+ * 
+ * cdef double cosine_str(vector[string]& tokens1, vector[string]& tokens2) nogil:
+ *     cdef int i=0, j=0, size1 = tokens1.size(), size2 = tokens2.size()             # <<<<<<<<<<<<<<
+ *     cdef int sum_of_size = size1 + size2
+ *     if sum_of_size == 0:
+ */
+  __pyx_v_i = 0;
+  __pyx_v_j = 0;
+  __pyx_v_size1 = __pyx_v_tokens1.size();
+  __pyx_v_size2 = __pyx_v_tokens2.size();
+
+  /* "py_stringsimjoin/apply_rf/sim_functions.pyx":146
+ * cdef double cosine_str(vector[string]& tokens1, vector[string]& tokens2) nogil:
+ *     cdef int i=0, j=0, size1 = tokens1.size(), size2 = tokens2.size()
+ *     cdef int sum_of_size = size1 + size2             # <<<<<<<<<<<<<<
+ *     if sum_of_size == 0:
+ *         return 1.0
+ */
+  __pyx_v_sum_of_size = (__pyx_v_size1 + __pyx_v_size2);
+
+  /* "py_stringsimjoin/apply_rf/sim_functions.pyx":147
+ *     cdef int i=0, j=0, size1 = tokens1.size(), size2 = tokens2.size()
+ *     cdef int sum_of_size = size1 + size2
+ *     if sum_of_size == 0:             # <<<<<<<<<<<<<<
+ *         return 1.0
+ *     if size1 == 0 or size2 == 0:
+ */
+  __pyx_t_1 = ((__pyx_v_sum_of_size == 0) != 0);
+  if (__pyx_t_1) {
+
+    /* "py_stringsimjoin/apply_rf/sim_functions.pyx":148
+ *     cdef int sum_of_size = size1 + size2
+ *     if sum_of_size == 0:
+ *         return 1.0             # <<<<<<<<<<<<<<
+ *     if size1 == 0 or size2 == 0:
+ *         return 0.0
+ */
+    __pyx_r = 1.0;
+    goto __pyx_L0;
+
+    /* "py_stringsimjoin/apply_rf/sim_functions.pyx":147
+ *     cdef int i=0, j=0, size1 = tokens1.size(), size2 = tokens2.size()
+ *     cdef int sum_of_size = size1 + size2
+ *     if sum_of_size == 0:             # <<<<<<<<<<<<<<
+ *         return 1.0
+ *     if size1 == 0 or size2 == 0:
+ */
+  }
+
+  /* "py_stringsimjoin/apply_rf/sim_functions.pyx":149
+ *     if sum_of_size == 0:
+ *         return 1.0
+ *     if size1 == 0 or size2 == 0:             # <<<<<<<<<<<<<<
+ *         return 0.0
+ *     cdef int overlap = 0
+ */
+  __pyx_t_2 = ((__pyx_v_size1 == 0) != 0);
+  if (!__pyx_t_2) {
+  } else {
+    __pyx_t_1 = __pyx_t_2;
+    goto __pyx_L5_bool_binop_done;
+  }
+  __pyx_t_2 = ((__pyx_v_size2 == 0) != 0);
+  __pyx_t_1 = __pyx_t_2;
+  __pyx_L5_bool_binop_done:;
+  if (__pyx_t_1) {
+
+    /* "py_stringsimjoin/apply_rf/sim_functions.pyx":150
+ *         return 1.0
+ *     if size1 == 0 or size2 == 0:
+ *         return 0.0             # <<<<<<<<<<<<<<
+ *     cdef int overlap = 0
+ *     cdef oset[string] ltokens
+ */
+    __pyx_r = 0.0;
+    goto __pyx_L0;
+
+    /* "py_stringsimjoin/apply_rf/sim_functions.pyx":149
+ *     if sum_of_size == 0:
+ *         return 1.0
+ *     if size1 == 0 or size2 == 0:             # <<<<<<<<<<<<<<
+ *         return 0.0
+ *     cdef int overlap = 0
+ */
+  }
+
+  /* "py_stringsimjoin/apply_rf/sim_functions.pyx":151
+ *     if size1 == 0 or size2 == 0:
+ *         return 0.0
+ *     cdef int overlap = 0             # <<<<<<<<<<<<<<
+ *     cdef oset[string] ltokens
+ *     cdef string token
+ */
+  __pyx_v_overlap = 0;
+
+  /* "py_stringsimjoin/apply_rf/sim_functions.pyx":154
+ *     cdef oset[string] ltokens
+ *     cdef string token
+ *     for token in tokens1:             # <<<<<<<<<<<<<<
+ *         ltokens.insert(token)
+ *     for token in tokens2:
+ */
+  __pyx_t_3 = __pyx_v_tokens1.begin();
+  for (;;) {
+    if (!(__pyx_t_3 != __pyx_v_tokens1.end())) break;
+    __pyx_t_4 = *__pyx_t_3;
+    ++__pyx_t_3;
+    __pyx_v_token = __pyx_t_4;
+
+    /* "py_stringsimjoin/apply_rf/sim_functions.pyx":155
+ *     cdef string token
+ *     for token in tokens1:
+ *         ltokens.insert(token)             # <<<<<<<<<<<<<<
+ *     for token in tokens2:
+ *         if ltokens.find(token) != ltokens.end():
+ */
+    try {
+      __pyx_v_ltokens.insert(__pyx_v_token);
+    } catch(...) {
+      #ifdef WITH_THREAD
+      PyGILState_STATE __pyx_gilstate_save = PyGILState_Ensure();
+      #endif
+      __Pyx_CppExn2PyErr();
+      #ifdef WITH_THREAD
+      PyGILState_Release(__pyx_gilstate_save);
+      #endif
+      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 155; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    }
+
+    /* "py_stringsimjoin/apply_rf/sim_functions.pyx":154
+ *     cdef oset[string] ltokens
+ *     cdef string token
+ *     for token in tokens1:             # <<<<<<<<<<<<<<
+ *         ltokens.insert(token)
+ *     for token in tokens2:
+ */
+  }
+
+  /* "py_stringsimjoin/apply_rf/sim_functions.pyx":156
+ *     for token in tokens1:
+ *         ltokens.insert(token)
+ *     for token in tokens2:             # <<<<<<<<<<<<<<
+ *         if ltokens.find(token) != ltokens.end():
+ *             overlap += 1
+ */
+  __pyx_t_3 = __pyx_v_tokens2.begin();
+  for (;;) {
+    if (!(__pyx_t_3 != __pyx_v_tokens2.end())) break;
+    __pyx_t_4 = *__pyx_t_3;
+    ++__pyx_t_3;
+    __pyx_v_token = __pyx_t_4;
+
+    /* "py_stringsimjoin/apply_rf/sim_functions.pyx":157
+ *         ltokens.insert(token)
+ *     for token in tokens2:
+ *         if ltokens.find(token) != ltokens.end():             # <<<<<<<<<<<<<<
+ *             overlap += 1
+ *     return <double>overlap / sqrt(size1*size2)
+ */
+    __pyx_t_1 = ((__pyx_v_ltokens.find(__pyx_v_token) != __pyx_v_ltokens.end()) != 0);
+    if (__pyx_t_1) {
+
+      /* "py_stringsimjoin/apply_rf/sim_functions.pyx":158
+ *     for token in tokens2:
+ *         if ltokens.find(token) != ltokens.end():
+ *             overlap += 1             # <<<<<<<<<<<<<<
+ *     return <double>overlap / sqrt(size1*size2)
+ */
+      __pyx_v_overlap = (__pyx_v_overlap + 1);
+
+      /* "py_stringsimjoin/apply_rf/sim_functions.pyx":157
+ *         ltokens.insert(token)
+ *     for token in tokens2:
+ *         if ltokens.find(token) != ltokens.end():             # <<<<<<<<<<<<<<
+ *             overlap += 1
+ *     return <double>overlap / sqrt(size1*size2)
+ */
+    }
+
+    /* "py_stringsimjoin/apply_rf/sim_functions.pyx":156
+ *     for token in tokens1:
+ *         ltokens.insert(token)
+ *     for token in tokens2:             # <<<<<<<<<<<<<<
+ *         if ltokens.find(token) != ltokens.end():
+ *             overlap += 1
+ */
+  }
+
+  /* "py_stringsimjoin/apply_rf/sim_functions.pyx":159
+ *         if ltokens.find(token) != ltokens.end():
+ *             overlap += 1
+ *     return <double>overlap / sqrt(size1*size2)             # <<<<<<<<<<<<<<
+ */
+  __pyx_t_5 = sqrt((__pyx_v_size1 * __pyx_v_size2));
+  if (unlikely(__pyx_t_5 == 0)) {
+    #ifdef WITH_THREAD
+    PyGILState_STATE __pyx_gilstate_save = PyGILState_Ensure();
+    #endif
+    PyErr_SetString(PyExc_ZeroDivisionError, "float division");
+    #ifdef WITH_THREAD
+    PyGILState_Release(__pyx_gilstate_save);
+    #endif
+    {__pyx_filename = __pyx_f[0]; __pyx_lineno = 159; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  }
+  __pyx_r = (((double)__pyx_v_overlap) / __pyx_t_5);
+  goto __pyx_L0;
+
+  /* "py_stringsimjoin/apply_rf/sim_functions.pyx":144
+ *     return (overlap * 2.0) / <double>sum_of_size
+ * 
+ * cdef double cosine_str(vector[string]& tokens1, vector[string]& tokens2) nogil:             # <<<<<<<<<<<<<<
+ *     cdef int i=0, j=0, size1 = tokens1.size(), size2 = tokens2.size()
+ *     cdef int sum_of_size = size1 + size2
+ */
+
+  /* function exit code */
+  __pyx_L1_error:;
+  __Pyx_WriteUnraisable("py_stringsimjoin.apply_rf.sim_functions.cosine_str", __pyx_clineno, __pyx_lineno, __pyx_filename, 0, 1);
+  __pyx_r = 0;
   __pyx_L0:;
   return __pyx_r;
 }
@@ -1845,7 +2654,7 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {0, 0, 0, 0, 0, 0, 0}
 };
 static int __Pyx_InitCachedBuiltins(void) {
-  __pyx_builtin_range = __Pyx_GetBuiltinName(__pyx_n_s_range); if (!__pyx_builtin_range) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 88; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_builtin_range = __Pyx_GetBuiltinName(__pyx_n_s_range); if (!__pyx_builtin_range) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 89; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   return 0;
   __pyx_L1_error:;
   return -1;
@@ -1954,6 +2763,9 @@ PyMODINIT_FUNC PyInit_sim_functions(void)
   if (__Pyx_ExportFunction("dice", (void (*)(void))__pyx_f_16py_stringsimjoin_8apply_rf_13sim_functions_dice, "double (std::vector<int>  const &, std::vector<int>  const &)") < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 2; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   if (__Pyx_ExportFunction("cosine", (void (*)(void))__pyx_f_16py_stringsimjoin_8apply_rf_13sim_functions_cosine, "double (std::vector<int>  const &, std::vector<int>  const &)") < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 2; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   if (__Pyx_ExportFunction("edit_distance", (void (*)(void))__pyx_f_16py_stringsimjoin_8apply_rf_13sim_functions_edit_distance, "double (std::string const &, std::string const &)") < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 2; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (__Pyx_ExportFunction("jaccard_str", (void (*)(void))__pyx_f_16py_stringsimjoin_8apply_rf_13sim_functions_jaccard_str, "double (std::vector<std::string>  &, std::vector<std::string>  &)") < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 2; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (__Pyx_ExportFunction("dice_str", (void (*)(void))__pyx_f_16py_stringsimjoin_8apply_rf_13sim_functions_dice_str, "double (std::vector<std::string>  &, std::vector<std::string>  &)") < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 2; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (__Pyx_ExportFunction("cosine_str", (void (*)(void))__pyx_f_16py_stringsimjoin_8apply_rf_13sim_functions_cosine_str, "double (std::vector<std::string>  &, std::vector<std::string>  &)") < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 2; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   /*--- Type init code ---*/
   /*--- Type import code ---*/
   /*--- Variable import code ---*/

@@ -15,7 +15,7 @@ setup(ext_modules = cythonize([
     Extension("edit_distance_join", sources=["edit_distance_join.pyx", "inverted_index.cpp"], language="c++",
               extra_compile_args = ["-O3", "-ffast-math", "-march=native", "-fopenmp"],
               extra_link_args=['-fopenmp']),  
-    Extension("executor", sources=["executor.pyx", "node.cpp", "predicatecpp.cpp"], language="c++",         
+    Extension("executor", sources=["executor.pyx", "node.cpp", "predicatecpp.cpp", "tree.cpp","rule.cpp","coverage.cpp"], language="c++",         
               extra_compile_args = ["-O3", "-ffast-math", "-march=native", "-fopenmp"],
               extra_link_args=['-fopenmp']),
     Extension("ex_plan", sources=["ex_plan.pyx", "tree.cpp", "rule.cpp", "predicatecpp.cpp", "coverage.cpp", "node.cpp"], language="c++",
