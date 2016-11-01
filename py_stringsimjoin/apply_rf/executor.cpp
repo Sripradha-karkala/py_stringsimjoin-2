@@ -609,13 +609,6 @@ static int __Pyx_ParseOptionalKeywords(PyObject *kwds, PyObject **argnames[],\
     PyObject *kwds2, PyObject *values[], Py_ssize_t num_pos_args,\
     const char* function_name);
 
-static CYTHON_INLINE void __Pyx_ErrRestore(PyObject *type, PyObject *value, PyObject *tb);
-static CYTHON_INLINE void __Pyx_ErrFetch(PyObject **type, PyObject **value, PyObject **tb);
-
-static void __Pyx_WriteUnraisable(const char *name, int clineno,
-                                  int lineno, const char *filename,
-                                  int full_traceback, int nogil);
-
 #if CYTHON_COMPILING_IN_CPYTHON
 static CYTHON_INLINE PyObject* __Pyx_PyObject_Call(PyObject *func, PyObject *arg, PyObject *kw);
 #else
@@ -632,6 +625,22 @@ static CYTHON_INLINE PyObject* __Pyx_PyObject_CallOneArg(PyObject *func, PyObjec
 static CYTHON_INLINE PyObject* __Pyx_PyObject_CallNoArg(PyObject *func);
 #else
 #define __Pyx_PyObject_CallNoArg(func) __Pyx_PyObject_Call(func, __pyx_empty_tuple, NULL)
+#endif
+
+static CYTHON_INLINE void __Pyx_ErrRestore(PyObject *type, PyObject *value, PyObject *tb);
+static CYTHON_INLINE void __Pyx_ErrFetch(PyObject **type, PyObject **value, PyObject **tb);
+
+static void __Pyx_WriteUnraisable(const char *name, int clineno,
+                                  int lineno, const char *filename,
+                                  int full_traceback, int nogil);
+
+static CYTHON_INLINE long __Pyx_div_long(long, long);
+
+#if CYTHON_COMPILING_IN_CPYTHON
+static PyObject* __Pyx_PyInt_AddObjC(PyObject *op1, PyObject *op2, long intval, int inplace);
+#else
+#define __Pyx_PyInt_AddObjC(op1, op2, intval, inplace)\
+    (inplace ? PyNumber_InPlaceAdd(op1, op2) : PyNumber_Add(op1, op2))
 #endif
 
 #ifndef __PYX_FORCE_INIT_THREADS
@@ -738,6 +747,10 @@ static PyObject* __pyx_print = 0;
 static PyObject* __pyx_print_kwargs = 0;
 #endif
 
+static int __Pyx_PrintOne(PyObject* stream, PyObject *o);
+
+static CYTHON_INLINE PyObject* __Pyx_PyInt_From_int(int value);
+
 #ifndef __Pyx_CppExn2PyErr
 #include <new>
 #include <typeinfo>
@@ -777,11 +790,7 @@ static void __Pyx_CppExn2PyErr() {
 }
 #endif
 
-static int __Pyx_PrintOne(PyObject* stream, PyObject *o);
-
 static CYTHON_INLINE int __Pyx_PyInt_As_int(PyObject *);
-
-static CYTHON_INLINE PyObject* __Pyx_PyInt_From_int(int value);
 
 static CYTHON_INLINE PyObject* __Pyx_PyInt_From_long(long value);
 
@@ -865,7 +874,7 @@ static void (*__pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_generate_local_optim
 static Node (*__pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_generate_overall_plan)(std::vector<Node> ); /*proto*/
 
 /* Module declarations from 'py_stringsimjoin.apply_rf.executor' */
-static void __pyx_f_16py_stringsimjoin_8apply_rf_8executor_execute_plan(Node &, std::vector<Tree>  &, std::vector<std::string>  &, std::vector<std::string>  &, std::string const &, int); /*proto*/
+static std::map<std::string,int>  __pyx_f_16py_stringsimjoin_8apply_rf_8executor_merge_candsets(std::vector<Tree>  &, std::string const &); /*proto*/
 static PyObject *__pyx_f_16py_stringsimjoin_8apply_rf_8executor_write_candset(std::vector<std::pair<int,int> >  &, int, int, std::string const &); /*proto*/
 static std::vector<std::pair<int,int> >  __pyx_f_16py_stringsimjoin_8apply_rf_8executor_execute_join_node(std::vector<std::string>  &, std::vector<std::string>  &, Predicatecpp, int, std::string const &); /*proto*/
 static std::vector<std::pair<int,int> >  __pyx_f_16py_stringsimjoin_8apply_rf_8executor_execute_filter_node(std::vector<std::pair<int,int> >  &, std::vector<std::string>  &, std::vector<std::string>  &, Predicatecpp, int, std::string const &); /*proto*/
@@ -884,13 +893,11 @@ int __pyx_module_is_main_py_stringsimjoin__apply_rf__executor = 0;
 /* Implementation of 'py_stringsimjoin.apply_rf.executor' */
 static PyObject *__pyx_builtin_open;
 static PyObject *__pyx_builtin_range;
-static char __pyx_k_[] = ",";
+static char __pyx_k_[] = "\n";
 static char __pyx_k_f[] = "f";
-static char __pyx_k_l[] = "l";
 static char __pyx_k_r[] = "r";
-static char __pyx_k_s[] = "s";
 static char __pyx_k_w[] = "w";
-static char __pyx_k__2[] = "\n";
+static char __pyx_k__2[] = ",";
 static char __pyx_k_gh[] = "gh";
 static char __pyx_k_ix[] = "ix";
 static char __pyx_k_l1[] = "l1";
@@ -928,7 +935,6 @@ static char __pyx_k_attr2[] = "attr2";
 static char __pyx_k_close[] = "close";
 static char __pyx_k_entry[] = "entry";
 static char __pyx_k_index[] = "index";
-static char __pyx_k_plans[] = "plans";
 static char __pyx_k_print[] = "print";
 static char __pyx_k_range[] = "range";
 static char __pyx_k_trees[] = "trees";
@@ -938,8 +944,7 @@ static char __pyx_k_FILTER[] = "FILTER";
 static char __pyx_k_OUTPUT[] = "OUTPUT";
 static char __pyx_k_import[] = "__import__";
 static char __pyx_k_n_jobs[] = "n_jobs";
-static char __pyx_k_num_pl[] = "num pl : ";
-static char __pyx_k_output[] = "output";
+static char __pyx_k_output[] = "/output";
 static char __pyx_k_rule_2[] = "rule";
 static char __pyx_k_time_2[] = "time : ";
 static char __pyx_k_tree_2[] = "tree";
@@ -954,14 +959,15 @@ static char __pyx_k_tokens1[] = "tokens1";
 static char __pyx_k_tokens2[] = "tokens2";
 static char __pyx_k_alph_num[] = "alph_num";
 static char __pyx_k_children[] = "children";
-static char __pyx_k_coverage[] = "coverage";
 static char __pyx_k_lstrings[] = "lstrings";
+static char __pyx_k_output_2[] = "output";
 static char __pyx_k_rstrings[] = "rstrings";
 static char __pyx_k_sim_type[] = "sim_type";
 static char __pyx_k_test_jac[] = "test_jac";
 static char __pyx_k_tok_type[] = "tok_type";
 static char __pyx_k_Predicate[] = "Predicate";
 static char __pyx_k_feat_name[] = "feat_name";
+static char __pyx_k_file_name[] = "file_name";
 static char __pyx_k_node_type[] = "node_type";
 static char __pyx_k_num_preds[] = "num preds : ";
 static char __pyx_k_num_rules[] = "num rules : ";
@@ -975,7 +981,6 @@ static char __pyx_k_loaded_tok[] = "loaded tok";
 static char __pyx_k_tokenizers[] = "tokenizers";
 static char __pyx_k_tokenizing[] = "tokenizing";
 static char __pyx_k_filter_done[] = "filter done";
-static char __pyx_k_global_plan[] = "global_plan";
 static char __pyx_k_num_preds_2[] = "num_preds";
 static char __pyx_k_num_rules_2[] = "num_rules";
 static char __pyx_k_output_size[] = "output size : ";
@@ -983,16 +988,16 @@ static char __pyx_k_working_dir[] = "working_dir";
 static char __pyx_k_feature_info[] = "feature_info";
 static char __pyx_k_parallen_end[] = "parallen end";
 static char __pyx_k_feature_table[] = "feature_table";
-static char __pyx_k_executing_plan[] = "executing plan";
 static char __pyx_k_join_completed[] = "join completed";
+static char __pyx_k_merged_candset[] = "merged_candset";
 static char __pyx_k_parallen_begin[] = "parallen begin";
 static char __pyx_k_tokenizer_type[] = "tokenizer_type";
 static char __pyx_k_tokenizing_done[] = "tokenizing done.";
 static char __pyx_k_execute_rf_naive[] = "execute_rf_naive";
+static char __pyx_k_num_output_pairs[] = "num output pairs : ";
 static char __pyx_k_sim_measure_type[] = "sim_measure_type";
 static char __pyx_k_candset_at_output[] = " , candset at output : ";
 static char __pyx_k_candset_after_join[] = "candset after join : ";
-static char __pyx_k_computing_coverage[] = "computing coverage";
 static char __pyx_k_get_predicate_dict[] = "get_predicate_dict";
 static char __pyx_k_afs_cs_wisc_edu_u_p_a_paulgc_gi[] = "/afs/cs.wisc.edu/u/p/a/paulgc/git-repos/ssj_current/py_stringsimjoin/apply_rf/executor.pyx";
 static char __pyx_k_py_stringsimjoin_apply_rf_execut[] = "py_stringsimjoin.apply_rf.execution_plan";
@@ -1020,34 +1025,30 @@ static PyObject *__pyx_kp_s_candset_at_output;
 static PyObject *__pyx_n_s_children;
 static PyObject *__pyx_n_s_close;
 static PyObject *__pyx_n_s_cnt;
-static PyObject *__pyx_kp_s_computing_coverage;
-static PyObject *__pyx_n_s_coverage;
 static PyObject *__pyx_n_s_df1;
 static PyObject *__pyx_n_s_df2;
 static PyObject *__pyx_n_s_end;
 static PyObject *__pyx_n_s_entry;
 static PyObject *__pyx_n_s_execute_rf;
 static PyObject *__pyx_n_s_execute_rf_naive;
-static PyObject *__pyx_kp_s_executing_plan;
 static PyObject *__pyx_n_s_f;
 static PyObject *__pyx_n_s_feat_name;
 static PyObject *__pyx_n_s_feature_info;
 static PyObject *__pyx_n_s_feature_table;
 static PyObject *__pyx_n_s_file;
+static PyObject *__pyx_n_s_file_name;
 static PyObject *__pyx_kp_s_filter_done;
 static PyObject *__pyx_n_s_get;
 static PyObject *__pyx_n_s_get_predicate_dict;
 static PyObject *__pyx_n_b_gh;
 static PyObject *__pyx_n_b_gh1;
 static PyObject *__pyx_n_s_gh1;
-static PyObject *__pyx_n_s_global_plan;
 static PyObject *__pyx_n_s_id1;
 static PyObject *__pyx_n_s_id2;
 static PyObject *__pyx_n_s_import;
 static PyObject *__pyx_n_s_index;
 static PyObject *__pyx_n_s_ix;
 static PyObject *__pyx_kp_s_join_completed;
-static PyObject *__pyx_n_s_l;
 static PyObject *__pyx_n_s_l1;
 static PyObject *__pyx_n_s_l2;
 static PyObject *__pyx_n_s_ldf;
@@ -1055,20 +1056,21 @@ static PyObject *__pyx_kp_s_loaded_tok;
 static PyObject *__pyx_n_s_lstrings;
 static PyObject *__pyx_n_s_ltokens;
 static PyObject *__pyx_n_s_main;
+static PyObject *__pyx_n_s_merged_candset;
 static PyObject *__pyx_n_s_n_jobs;
 static PyObject *__pyx_n_s_node_type;
-static PyObject *__pyx_kp_s_num_pl;
+static PyObject *__pyx_kp_s_num_output_pairs;
 static PyObject *__pyx_kp_s_num_preds;
 static PyObject *__pyx_n_s_num_preds_2;
 static PyObject *__pyx_kp_s_num_rules;
 static PyObject *__pyx_n_s_num_rules_2;
 static PyObject *__pyx_kp_s_num_trees;
 static PyObject *__pyx_n_s_open;
-static PyObject *__pyx_n_s_output;
+static PyObject *__pyx_kp_s_output;
+static PyObject *__pyx_n_s_output_2;
 static PyObject *__pyx_kp_s_output_size;
 static PyObject *__pyx_kp_s_parallen_begin;
 static PyObject *__pyx_kp_s_parallen_end;
-static PyObject *__pyx_n_s_plans;
 static PyObject *__pyx_n_s_pop;
 static PyObject *__pyx_n_s_predicate;
 static PyObject *__pyx_n_s_predict;
@@ -1087,7 +1089,6 @@ static PyObject *__pyx_n_s_rstrings;
 static PyObject *__pyx_n_s_rtokens;
 static PyObject *__pyx_n_s_rule;
 static PyObject *__pyx_n_s_rule_2;
-static PyObject *__pyx_n_s_s;
 static PyObject *__pyx_n_s_sim_measure_type;
 static PyObject *__pyx_n_s_sim_type;
 static PyObject *__pyx_n_s_st;
@@ -1115,7 +1116,7 @@ static PyObject *__pyx_n_s_w;
 static PyObject *__pyx_n_s_working_dir;
 static PyObject *__pyx_n_s_write;
 static PyObject *__pyx_n_b_ws;
-static PyObject *__pyx_pf_16py_stringsimjoin_8apply_rf_8executor_execute_rf(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_rf, PyObject *__pyx_v_feature_table, PyObject *__pyx_v_l1, PyObject *__pyx_v_l2, PyObject *__pyx_v_df1, PyObject *__pyx_v_attr1, PyObject *__pyx_v_df2, PyObject *__pyx_v_attr2, PyObject *__pyx_v_working_dir, PyObject *__pyx_v_n_jobs); /* proto */
+static PyObject *__pyx_pf_16py_stringsimjoin_8apply_rf_8executor_execute_rf(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_rf, PyObject *__pyx_v_feature_table, CYTHON_UNUSED PyObject *__pyx_v_l1, CYTHON_UNUSED PyObject *__pyx_v_l2, CYTHON_UNUSED PyObject *__pyx_v_df1, CYTHON_UNUSED PyObject *__pyx_v_attr1, CYTHON_UNUSED PyObject *__pyx_v_df2, CYTHON_UNUSED PyObject *__pyx_v_attr2, PyObject *__pyx_v_working_dir, CYTHON_UNUSED PyObject *__pyx_v_n_jobs); /* proto */
 static PyObject *__pyx_pf_16py_stringsimjoin_8apply_rf_8executor_2test_tok1(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_df1, PyObject *__pyx_v_attr1, PyObject *__pyx_v_df2, PyObject *__pyx_v_attr2); /* proto */
 static PyObject *__pyx_pf_16py_stringsimjoin_8apply_rf_8executor_4test_jac(CYTHON_UNUSED PyObject *__pyx_self, CYTHON_UNUSED PyObject *__pyx_v_df1, CYTHON_UNUSED PyObject *__pyx_v_attr1, CYTHON_UNUSED PyObject *__pyx_v_df2, CYTHON_UNUSED PyObject *__pyx_v_attr2, PyObject *__pyx_v_sim_type, PyObject *__pyx_v_threshold); /* proto */
 static PyObject *__pyx_pf_16py_stringsimjoin_8apply_rf_8executor_6test_ed(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_df1, PyObject *__pyx_v_attr1, PyObject *__pyx_v_df2, PyObject *__pyx_v_attr2, PyObject *__pyx_v_threshold); /* proto */
@@ -1148,14 +1149,14 @@ static PyMethodDef __pyx_mdef_16py_stringsimjoin_8apply_rf_8executor_1execute_rf
 static PyObject *__pyx_pw_16py_stringsimjoin_8apply_rf_8executor_1execute_rf(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   PyObject *__pyx_v_rf = 0;
   PyObject *__pyx_v_feature_table = 0;
-  PyObject *__pyx_v_l1 = 0;
-  PyObject *__pyx_v_l2 = 0;
-  PyObject *__pyx_v_df1 = 0;
-  PyObject *__pyx_v_attr1 = 0;
-  PyObject *__pyx_v_df2 = 0;
-  PyObject *__pyx_v_attr2 = 0;
+  CYTHON_UNUSED PyObject *__pyx_v_l1 = 0;
+  CYTHON_UNUSED PyObject *__pyx_v_l2 = 0;
+  CYTHON_UNUSED PyObject *__pyx_v_df1 = 0;
+  CYTHON_UNUSED PyObject *__pyx_v_attr1 = 0;
+  CYTHON_UNUSED PyObject *__pyx_v_df2 = 0;
+  CYTHON_UNUSED PyObject *__pyx_v_attr2 = 0;
   PyObject *__pyx_v_working_dir = 0;
-  PyObject *__pyx_v_n_jobs = 0;
+  CYTHON_UNUSED PyObject *__pyx_v_n_jobs = 0;
   int __pyx_lineno = 0;
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
@@ -1276,20 +1277,16 @@ static PyObject *__pyx_pw_16py_stringsimjoin_8apply_rf_8executor_1execute_rf(PyO
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_16py_stringsimjoin_8apply_rf_8executor_execute_rf(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_rf, PyObject *__pyx_v_feature_table, PyObject *__pyx_v_l1, PyObject *__pyx_v_l2, PyObject *__pyx_v_df1, PyObject *__pyx_v_attr1, PyObject *__pyx_v_df2, PyObject *__pyx_v_attr2, PyObject *__pyx_v_working_dir, PyObject *__pyx_v_n_jobs) {
+static PyObject *__pyx_pf_16py_stringsimjoin_8apply_rf_8executor_execute_rf(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_rf, PyObject *__pyx_v_feature_table, CYTHON_UNUSED PyObject *__pyx_v_l1, CYTHON_UNUSED PyObject *__pyx_v_l2, CYTHON_UNUSED PyObject *__pyx_v_df1, CYTHON_UNUSED PyObject *__pyx_v_attr1, CYTHON_UNUSED PyObject *__pyx_v_df2, CYTHON_UNUSED PyObject *__pyx_v_attr2, PyObject *__pyx_v_working_dir, CYTHON_UNUSED PyObject *__pyx_v_n_jobs) {
   std::vector<Tree>  __pyx_v_trees;
   PyObject *__pyx_v_num_rules = NULL;
   PyObject *__pyx_v_num_preds = NULL;
   Tree __pyx_v_tree;
   Rule __pyx_v_rule;
-  std::map<std::string,Coverage>  __pyx_v_coverage;
-  std::vector<std::string>  __pyx_v_l;
-  std::vector<std::string>  __pyx_v_r;
-  PyObject *__pyx_v_s = NULL;
-  std::vector<Node>  __pyx_v_plans;
-  Node __pyx_v_global_plan;
-  std::vector<std::string>  __pyx_v_lstrings;
-  std::vector<std::string>  __pyx_v_rstrings;
+  std::map<std::string,int>  __pyx_v_merged_candset;
+  std::pair<std::string,int>  __pyx_v_entry;
+  PyObject *__pyx_v_file_name = NULL;
+  PyObject *__pyx_v_f = NULL;
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -1299,10 +1296,13 @@ static PyObject *__pyx_pf_16py_stringsimjoin_8apply_rf_8executor_execute_rf(CYTH
   std::vector<Rule> ::iterator __pyx_t_5;
   std::vector<Rule>  *__pyx_t_6;
   Rule __pyx_t_7;
-  Py_ssize_t __pyx_t_8;
-  PyObject *(*__pyx_t_9)(PyObject *);
-  std::string __pyx_t_10;
+  std::string __pyx_t_8;
+  std::map<std::string,int> ::iterator __pyx_t_9;
+  std::pair<std::string,int>  __pyx_t_10;
   int __pyx_t_11;
+  PyObject *__pyx_t_12 = NULL;
+  PyObject *__pyx_t_13 = NULL;
+  PyObject *__pyx_t_14 = NULL;
   int __pyx_lineno = 0;
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
@@ -1457,7 +1457,7 @@ static PyObject *__pyx_pf_16py_stringsimjoin_8apply_rf_8executor_execute_rf(CYTH
  *     print 'num rules : ', num_rules
  *     print 'num preds : ', num_preds             # <<<<<<<<<<<<<<
  * 
- *     cdef omap[string, Coverage] coverage
+ * #    cdef omap[string, Coverage] coverage
  */
   __pyx_t_2 = PyTuple_New(2); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 45; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_2);
@@ -1470,253 +1470,161 @@ static PyObject *__pyx_pf_16py_stringsimjoin_8apply_rf_8executor_execute_rf(CYTH
   if (__Pyx_Print(0, __pyx_t_2, 1) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 45; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "py_stringsimjoin/apply_rf/executor.pyx":49
- *     cdef omap[string, Coverage] coverage
- *     cdef vector[string] l, r
- *     for s in l1:             # <<<<<<<<<<<<<<
- *         l.push_back(s)
- *     for s in l2:
- */
-  if (likely(PyList_CheckExact(__pyx_v_l1)) || PyTuple_CheckExact(__pyx_v_l1)) {
-    __pyx_t_2 = __pyx_v_l1; __Pyx_INCREF(__pyx_t_2); __pyx_t_8 = 0;
-    __pyx_t_9 = NULL;
-  } else {
-    __pyx_t_8 = -1; __pyx_t_2 = PyObject_GetIter(__pyx_v_l1); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 49; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-    __Pyx_GOTREF(__pyx_t_2);
-    __pyx_t_9 = Py_TYPE(__pyx_t_2)->tp_iternext; if (unlikely(!__pyx_t_9)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 49; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  }
-  for (;;) {
-    if (likely(!__pyx_t_9)) {
-      if (likely(PyList_CheckExact(__pyx_t_2))) {
-        if (__pyx_t_8 >= PyList_GET_SIZE(__pyx_t_2)) break;
-        #if CYTHON_COMPILING_IN_CPYTHON
-        __pyx_t_1 = PyList_GET_ITEM(__pyx_t_2, __pyx_t_8); __Pyx_INCREF(__pyx_t_1); __pyx_t_8++; if (unlikely(0 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 49; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-        #else
-        __pyx_t_1 = PySequence_ITEM(__pyx_t_2, __pyx_t_8); __pyx_t_8++; if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 49; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-        __Pyx_GOTREF(__pyx_t_1);
-        #endif
-      } else {
-        if (__pyx_t_8 >= PyTuple_GET_SIZE(__pyx_t_2)) break;
-        #if CYTHON_COMPILING_IN_CPYTHON
-        __pyx_t_1 = PyTuple_GET_ITEM(__pyx_t_2, __pyx_t_8); __Pyx_INCREF(__pyx_t_1); __pyx_t_8++; if (unlikely(0 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 49; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-        #else
-        __pyx_t_1 = PySequence_ITEM(__pyx_t_2, __pyx_t_8); __pyx_t_8++; if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 49; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-        __Pyx_GOTREF(__pyx_t_1);
-        #endif
-      }
-    } else {
-      __pyx_t_1 = __pyx_t_9(__pyx_t_2);
-      if (unlikely(!__pyx_t_1)) {
-        PyObject* exc_type = PyErr_Occurred();
-        if (exc_type) {
-          if (likely(exc_type == PyExc_StopIteration || PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) PyErr_Clear();
-          else {__pyx_filename = __pyx_f[0]; __pyx_lineno = 49; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-        }
-        break;
-      }
-      __Pyx_GOTREF(__pyx_t_1);
-    }
-    __Pyx_XDECREF_SET(__pyx_v_s, __pyx_t_1);
-    __pyx_t_1 = 0;
-
-    /* "py_stringsimjoin/apply_rf/executor.pyx":50
- *     cdef vector[string] l, r
- *     for s in l1:
- *         l.push_back(s)             # <<<<<<<<<<<<<<
- *     for s in l2:
- *         r.push_back(s)
- */
-    __pyx_t_10 = __pyx_convert_string_from_py_std__in_string(__pyx_v_s); if (unlikely(PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 50; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-    try {
-      __pyx_v_l.push_back(__pyx_t_10);
-    } catch(...) {
-      __Pyx_CppExn2PyErr();
-      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 50; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-    }
-
-    /* "py_stringsimjoin/apply_rf/executor.pyx":49
- *     cdef omap[string, Coverage] coverage
- *     cdef vector[string] l, r
- *     for s in l1:             # <<<<<<<<<<<<<<
- *         l.push_back(s)
- *     for s in l2:
- */
-  }
-  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-
-  /* "py_stringsimjoin/apply_rf/executor.pyx":51
- *     for s in l1:
- *         l.push_back(s)
- *     for s in l2:             # <<<<<<<<<<<<<<
- *         r.push_back(s)
- *     print 'computing coverage'
- */
-  if (likely(PyList_CheckExact(__pyx_v_l2)) || PyTuple_CheckExact(__pyx_v_l2)) {
-    __pyx_t_2 = __pyx_v_l2; __Pyx_INCREF(__pyx_t_2); __pyx_t_8 = 0;
-    __pyx_t_9 = NULL;
-  } else {
-    __pyx_t_8 = -1; __pyx_t_2 = PyObject_GetIter(__pyx_v_l2); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 51; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-    __Pyx_GOTREF(__pyx_t_2);
-    __pyx_t_9 = Py_TYPE(__pyx_t_2)->tp_iternext; if (unlikely(!__pyx_t_9)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 51; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  }
-  for (;;) {
-    if (likely(!__pyx_t_9)) {
-      if (likely(PyList_CheckExact(__pyx_t_2))) {
-        if (__pyx_t_8 >= PyList_GET_SIZE(__pyx_t_2)) break;
-        #if CYTHON_COMPILING_IN_CPYTHON
-        __pyx_t_1 = PyList_GET_ITEM(__pyx_t_2, __pyx_t_8); __Pyx_INCREF(__pyx_t_1); __pyx_t_8++; if (unlikely(0 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 51; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-        #else
-        __pyx_t_1 = PySequence_ITEM(__pyx_t_2, __pyx_t_8); __pyx_t_8++; if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 51; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-        __Pyx_GOTREF(__pyx_t_1);
-        #endif
-      } else {
-        if (__pyx_t_8 >= PyTuple_GET_SIZE(__pyx_t_2)) break;
-        #if CYTHON_COMPILING_IN_CPYTHON
-        __pyx_t_1 = PyTuple_GET_ITEM(__pyx_t_2, __pyx_t_8); __Pyx_INCREF(__pyx_t_1); __pyx_t_8++; if (unlikely(0 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 51; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-        #else
-        __pyx_t_1 = PySequence_ITEM(__pyx_t_2, __pyx_t_8); __pyx_t_8++; if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 51; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-        __Pyx_GOTREF(__pyx_t_1);
-        #endif
-      }
-    } else {
-      __pyx_t_1 = __pyx_t_9(__pyx_t_2);
-      if (unlikely(!__pyx_t_1)) {
-        PyObject* exc_type = PyErr_Occurred();
-        if (exc_type) {
-          if (likely(exc_type == PyExc_StopIteration || PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) PyErr_Clear();
-          else {__pyx_filename = __pyx_f[0]; __pyx_lineno = 51; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-        }
-        break;
-      }
-      __Pyx_GOTREF(__pyx_t_1);
-    }
-    __Pyx_XDECREF_SET(__pyx_v_s, __pyx_t_1);
-    __pyx_t_1 = 0;
-
-    /* "py_stringsimjoin/apply_rf/executor.pyx":52
- *         l.push_back(s)
- *     for s in l2:
- *         r.push_back(s)             # <<<<<<<<<<<<<<
- *     print 'computing coverage'
- *     compute_predicate_cost_and_coverage(l, r, trees, coverage)
- */
-    __pyx_t_10 = __pyx_convert_string_from_py_std__in_string(__pyx_v_s); if (unlikely(PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 52; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-    try {
-      __pyx_v_r.push_back(__pyx_t_10);
-    } catch(...) {
-      __Pyx_CppExn2PyErr();
-      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 52; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-    }
-
-    /* "py_stringsimjoin/apply_rf/executor.pyx":51
- *     for s in l1:
- *         l.push_back(s)
- *     for s in l2:             # <<<<<<<<<<<<<<
- *         r.push_back(s)
- *     print 'computing coverage'
- */
-  }
-  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-
-  /* "py_stringsimjoin/apply_rf/executor.pyx":53
- *     for s in l2:
- *         r.push_back(s)
- *     print 'computing coverage'             # <<<<<<<<<<<<<<
- *     compute_predicate_cost_and_coverage(l, r, trees, coverage)
+  /* "py_stringsimjoin/apply_rf/executor.pyx":69
+ * #    execute_plan(global_plan, trees, lstrings, rstrings, working_dir, n_jobs)
  * 
+ *     cdef omap[string, int] merged_candset = merge_candsets(trees, working_dir)             # <<<<<<<<<<<<<<
+ *     cdef pair[string, int] entry
+ *     file_name = working_dir + "/output"
  */
-  if (__Pyx_PrintOne(0, __pyx_kp_s_computing_coverage) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 53; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_8 = __pyx_convert_string_from_py_std__in_string(__pyx_v_working_dir); if (unlikely(PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 69; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_v_merged_candset = __pyx_f_16py_stringsimjoin_8apply_rf_8executor_merge_candsets(__pyx_v_trees, __pyx_t_8);
 
-  /* "py_stringsimjoin/apply_rf/executor.pyx":54
- *         r.push_back(s)
- *     print 'computing coverage'
- *     compute_predicate_cost_and_coverage(l, r, trees, coverage)             # <<<<<<<<<<<<<<
- * 
- *     cdef vector[Node] plans
+  /* "py_stringsimjoin/apply_rf/executor.pyx":71
+ *     cdef omap[string, int] merged_candset = merge_candsets(trees, working_dir)
+ *     cdef pair[string, int] entry
+ *     file_name = working_dir + "/output"             # <<<<<<<<<<<<<<
+ *     f = open(file_name, 'w')
+ *     for entry in merged_candset:
  */
-  __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_compute_predicate_cost_and_coverage(__pyx_v_l, __pyx_v_r, __pyx_v_trees, __pyx_v_coverage);
-
-  /* "py_stringsimjoin/apply_rf/executor.pyx":57
- * 
- *     cdef vector[Node] plans
- *     generate_local_optimal_plans(trees, coverage, l.size(), plans)             # <<<<<<<<<<<<<<
- *     print 'num pl : ', plans.size()
- * 
- */
-  __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_generate_local_optimal_plans(__pyx_v_trees, __pyx_v_coverage, __pyx_v_l.size(), __pyx_v_plans);
-
-  /* "py_stringsimjoin/apply_rf/executor.pyx":58
- *     cdef vector[Node] plans
- *     generate_local_optimal_plans(trees, coverage, l.size(), plans)
- *     print 'num pl : ', plans.size()             # <<<<<<<<<<<<<<
- * 
- *     cdef Node global_plan
- */
-  __pyx_t_2 = __Pyx_PyInt_FromSize_t(__pyx_v_plans.size()); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 58; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_2 = PyNumber_Add(__pyx_v_working_dir, __pyx_kp_s_output); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 71; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_1 = PyTuple_New(2); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 58; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_GOTREF(__pyx_t_1);
-  __Pyx_INCREF(__pyx_kp_s_num_pl);
-  __Pyx_GIVEREF(__pyx_kp_s_num_pl);
-  PyTuple_SET_ITEM(__pyx_t_1, 0, __pyx_kp_s_num_pl);
-  __Pyx_GIVEREF(__pyx_t_2);
-  PyTuple_SET_ITEM(__pyx_t_1, 1, __pyx_t_2);
+  __pyx_v_file_name = __pyx_t_2;
   __pyx_t_2 = 0;
-  if (__Pyx_Print(0, __pyx_t_1, 1) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 58; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "py_stringsimjoin/apply_rf/executor.pyx":61
- * 
- *     cdef Node global_plan
- *     global_plan = generate_overall_plan(plans)             # <<<<<<<<<<<<<<
- * 
- *     cdef vector[string] lstrings, rstrings
+  /* "py_stringsimjoin/apply_rf/executor.pyx":72
+ *     cdef pair[string, int] entry
+ *     file_name = working_dir + "/output"
+ *     f = open(file_name, 'w')             # <<<<<<<<<<<<<<
+ *     for entry in merged_candset:
+ *         if entry.second >= (trees.size()/2.0):
  */
-  __pyx_v_global_plan = __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_generate_overall_plan(__pyx_v_plans);
-
-  /* "py_stringsimjoin/apply_rf/executor.pyx":64
- * 
- *     cdef vector[string] lstrings, rstrings
- *     convert_to_vector1(df1[attr1], lstrings)             # <<<<<<<<<<<<<<
- *     convert_to_vector1(df2[attr2], rstrings)
- *     print 'executing plan'
- */
-  __pyx_t_1 = PyObject_GetItem(__pyx_v_df1, __pyx_v_attr1); if (unlikely(__pyx_t_1 == NULL)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 64; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
+  __pyx_t_2 = PyTuple_New(2); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 72; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_2);
+  __Pyx_INCREF(__pyx_v_file_name);
+  __Pyx_GIVEREF(__pyx_v_file_name);
+  PyTuple_SET_ITEM(__pyx_t_2, 0, __pyx_v_file_name);
+  __Pyx_INCREF(__pyx_n_s_w);
+  __Pyx_GIVEREF(__pyx_n_s_w);
+  PyTuple_SET_ITEM(__pyx_t_2, 1, __pyx_n_s_w);
+  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_open, __pyx_t_2, NULL); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 72; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_f_16py_stringsimjoin_8apply_rf_8executor_convert_to_vector1(__pyx_t_1, __pyx_v_lstrings);
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  __pyx_v_f = __pyx_t_1;
+  __pyx_t_1 = 0;
 
-  /* "py_stringsimjoin/apply_rf/executor.pyx":65
- *     cdef vector[string] lstrings, rstrings
- *     convert_to_vector1(df1[attr1], lstrings)
- *     convert_to_vector1(df2[attr2], rstrings)             # <<<<<<<<<<<<<<
- *     print 'executing plan'
- *     execute_plan(global_plan, trees, lstrings, rstrings, working_dir, n_jobs)
+  /* "py_stringsimjoin/apply_rf/executor.pyx":73
+ *     file_name = working_dir + "/output"
+ *     f = open(file_name, 'w')
+ *     for entry in merged_candset:             # <<<<<<<<<<<<<<
+ *         if entry.second >= (trees.size()/2.0):
+ *             f.write(entry.first + "\n")
  */
-  __pyx_t_1 = PyObject_GetItem(__pyx_v_df2, __pyx_v_attr2); if (unlikely(__pyx_t_1 == NULL)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 65; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
+  __pyx_t_9 = __pyx_v_merged_candset.begin();
+  for (;;) {
+    if (!(__pyx_t_9 != __pyx_v_merged_candset.end())) break;
+    __pyx_t_10 = *__pyx_t_9;
+    ++__pyx_t_9;
+    __pyx_v_entry = __pyx_t_10;
+
+    /* "py_stringsimjoin/apply_rf/executor.pyx":74
+ *     f = open(file_name, 'w')
+ *     for entry in merged_candset:
+ *         if entry.second >= (trees.size()/2.0):             # <<<<<<<<<<<<<<
+ *             f.write(entry.first + "\n")
+ *     f.close()
+ */
+    __pyx_t_11 = ((__pyx_v_entry.second >= (__pyx_v_trees.size() / 2.0)) != 0);
+    if (__pyx_t_11) {
+
+      /* "py_stringsimjoin/apply_rf/executor.pyx":75
+ *     for entry in merged_candset:
+ *         if entry.second >= (trees.size()/2.0):
+ *             f.write(entry.first + "\n")             # <<<<<<<<<<<<<<
+ *     f.close()
+ * 
+ */
+      __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_f, __pyx_n_s_write); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 75; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __Pyx_GOTREF(__pyx_t_2);
+      __pyx_t_12 = __pyx_convert_PyBytes_string_to_py_std__in_string(__pyx_v_entry.first); if (unlikely(!__pyx_t_12)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 75; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __Pyx_GOTREF(__pyx_t_12);
+      __pyx_t_13 = PyNumber_Add(__pyx_t_12, __pyx_kp_s_); if (unlikely(!__pyx_t_13)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 75; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __Pyx_GOTREF(__pyx_t_13);
+      __Pyx_DECREF(__pyx_t_12); __pyx_t_12 = 0;
+      __pyx_t_12 = NULL;
+      if (CYTHON_COMPILING_IN_CPYTHON && likely(PyMethod_Check(__pyx_t_2))) {
+        __pyx_t_12 = PyMethod_GET_SELF(__pyx_t_2);
+        if (likely(__pyx_t_12)) {
+          PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_2);
+          __Pyx_INCREF(__pyx_t_12);
+          __Pyx_INCREF(function);
+          __Pyx_DECREF_SET(__pyx_t_2, function);
+        }
+      }
+      if (!__pyx_t_12) {
+        __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_t_13); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 75; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        __Pyx_DECREF(__pyx_t_13); __pyx_t_13 = 0;
+        __Pyx_GOTREF(__pyx_t_1);
+      } else {
+        __pyx_t_14 = PyTuple_New(1+1); if (unlikely(!__pyx_t_14)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 75; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        __Pyx_GOTREF(__pyx_t_14);
+        __Pyx_GIVEREF(__pyx_t_12); PyTuple_SET_ITEM(__pyx_t_14, 0, __pyx_t_12); __pyx_t_12 = NULL;
+        __Pyx_GIVEREF(__pyx_t_13);
+        PyTuple_SET_ITEM(__pyx_t_14, 0+1, __pyx_t_13);
+        __pyx_t_13 = 0;
+        __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_14, NULL); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 75; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        __Pyx_GOTREF(__pyx_t_1);
+        __Pyx_DECREF(__pyx_t_14); __pyx_t_14 = 0;
+      }
+      __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+      __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+
+      /* "py_stringsimjoin/apply_rf/executor.pyx":74
+ *     f = open(file_name, 'w')
+ *     for entry in merged_candset:
+ *         if entry.second >= (trees.size()/2.0):             # <<<<<<<<<<<<<<
+ *             f.write(entry.first + "\n")
+ *     f.close()
+ */
+    }
+
+    /* "py_stringsimjoin/apply_rf/executor.pyx":73
+ *     file_name = working_dir + "/output"
+ *     f = open(file_name, 'w')
+ *     for entry in merged_candset:             # <<<<<<<<<<<<<<
+ *         if entry.second >= (trees.size()/2.0):
+ *             f.write(entry.first + "\n")
+ */
+  }
+
+  /* "py_stringsimjoin/apply_rf/executor.pyx":76
+ *         if entry.second >= (trees.size()/2.0):
+ *             f.write(entry.first + "\n")
+ *     f.close()             # <<<<<<<<<<<<<<
+ * 
+ * 
+ */
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_f, __pyx_n_s_close); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 76; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_2);
+  __pyx_t_14 = NULL;
+  if (CYTHON_COMPILING_IN_CPYTHON && likely(PyMethod_Check(__pyx_t_2))) {
+    __pyx_t_14 = PyMethod_GET_SELF(__pyx_t_2);
+    if (likely(__pyx_t_14)) {
+      PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_2);
+      __Pyx_INCREF(__pyx_t_14);
+      __Pyx_INCREF(function);
+      __Pyx_DECREF_SET(__pyx_t_2, function);
+    }
+  }
+  if (__pyx_t_14) {
+    __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_t_14); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 76; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __Pyx_DECREF(__pyx_t_14); __pyx_t_14 = 0;
+  } else {
+    __pyx_t_1 = __Pyx_PyObject_CallNoArg(__pyx_t_2); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 76; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  }
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_f_16py_stringsimjoin_8apply_rf_8executor_convert_to_vector1(__pyx_t_1, __pyx_v_rstrings);
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-
-  /* "py_stringsimjoin/apply_rf/executor.pyx":66
- *     convert_to_vector1(df1[attr1], lstrings)
- *     convert_to_vector1(df2[attr2], rstrings)
- *     print 'executing plan'             # <<<<<<<<<<<<<<
- *     execute_plan(global_plan, trees, lstrings, rstrings, working_dir, n_jobs)
- * 
- */
-  if (__Pyx_PrintOne(0, __pyx_kp_s_executing_plan) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 66; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-
-  /* "py_stringsimjoin/apply_rf/executor.pyx":67
- *     convert_to_vector1(df2[attr2], rstrings)
- *     print 'executing plan'
- *     execute_plan(global_plan, trees, lstrings, rstrings, working_dir, n_jobs)             # <<<<<<<<<<<<<<
- * 
- * 
- */
-  __pyx_t_10 = __pyx_convert_string_from_py_std__in_string(__pyx_v_working_dir); if (unlikely(PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 67; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __pyx_t_11 = __Pyx_PyInt_As_int(__pyx_v_n_jobs); if (unlikely((__pyx_t_11 == (int)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 67; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __pyx_f_16py_stringsimjoin_8apply_rf_8executor_execute_plan(__pyx_v_global_plan, __pyx_v_trees, __pyx_v_lstrings, __pyx_v_rstrings, __pyx_t_10, __pyx_t_11);
 
   /* "py_stringsimjoin/apply_rf/executor.pyx":32
  * 
@@ -1732,18 +1640,22 @@ static PyObject *__pyx_pf_16py_stringsimjoin_8apply_rf_8executor_execute_rf(CYTH
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
   __Pyx_XDECREF(__pyx_t_2);
+  __Pyx_XDECREF(__pyx_t_12);
+  __Pyx_XDECREF(__pyx_t_13);
+  __Pyx_XDECREF(__pyx_t_14);
   __Pyx_AddTraceback("py_stringsimjoin.apply_rf.executor.execute_rf", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XDECREF(__pyx_v_num_rules);
   __Pyx_XDECREF(__pyx_v_num_preds);
-  __Pyx_XDECREF(__pyx_v_s);
+  __Pyx_XDECREF(__pyx_v_file_name);
+  __Pyx_XDECREF(__pyx_v_f);
   __Pyx_XGIVEREF(__pyx_r);
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-/* "py_stringsimjoin/apply_rf/executor.pyx":70
+/* "py_stringsimjoin/apply_rf/executor.pyx":79
  * 
  * 
  * cdef void execute_plan(Node& root, vector[Tree]& trees, vector[string]& lstrings,             # <<<<<<<<<<<<<<
@@ -1778,7 +1690,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_8executor_execute_plan(Node &__
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("execute_plan", 0);
 
-  /* "py_stringsimjoin/apply_rf/executor.pyx":72
+  /* "py_stringsimjoin/apply_rf/executor.pyx":81
  * cdef void execute_plan(Node& root, vector[Tree]& trees, vector[string]& lstrings,
  *         vector[string]& rstrings, const string& working_dir, int n_jobs):
  *     tokenize_strings(trees, lstrings, rstrings, working_dir)             # <<<<<<<<<<<<<<
@@ -1787,18 +1699,18 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_8executor_execute_plan(Node &__
  */
   __pyx_f_16py_stringsimjoin_8apply_rf_8executor_tokenize_strings(__pyx_v_trees, __pyx_v_lstrings, __pyx_v_rstrings, __pyx_v_working_dir);
 
-  /* "py_stringsimjoin/apply_rf/executor.pyx":76
+  /* "py_stringsimjoin/apply_rf/executor.pyx":85
  *     cdef vector[pair[int, int]] candset, curr_candset
  * #    cdef Node root
  *     print root.children.size(), root.children[0].children.size()             # <<<<<<<<<<<<<<
  * 
  *     cdef Node join_node, child_node, curr_node
  */
-  __pyx_t_1 = __Pyx_PyInt_FromSize_t(__pyx_v_root.children.size()); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 76; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = __Pyx_PyInt_FromSize_t(__pyx_v_root.children.size()); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 85; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = __Pyx_PyInt_FromSize_t((__pyx_v_root.children[0]).children.size()); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 76; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_2 = __Pyx_PyInt_FromSize_t((__pyx_v_root.children[0]).children.size()); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 85; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_3 = PyTuple_New(2); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 76; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_3 = PyTuple_New(2); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 85; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_GIVEREF(__pyx_t_1);
   PyTuple_SET_ITEM(__pyx_t_3, 0, __pyx_t_1);
@@ -1806,23 +1718,23 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_8executor_execute_plan(Node &__
   PyTuple_SET_ITEM(__pyx_t_3, 1, __pyx_t_2);
   __pyx_t_1 = 0;
   __pyx_t_2 = 0;
-  if (__Pyx_Print(0, __pyx_t_3, 1) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 76; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (__Pyx_Print(0, __pyx_t_3, 1) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 85; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
-  /* "py_stringsimjoin/apply_rf/executor.pyx":79
+  /* "py_stringsimjoin/apply_rf/executor.pyx":88
  * 
  *     cdef Node join_node, child_node, curr_node
  *     print root.node_type, root.predicates.size(), root.children.size()             # <<<<<<<<<<<<<<
  *     for join_node in root.children:
  *          print 'JOIN', join_node.predicates[0].sim_measure_type, join_node.predicates[0].tokenizer_type, join_node.predicates[0].comp_op, join_node.predicates[0].threshold
  */
-  __pyx_t_3 = __pyx_convert_PyBytes_string_to_py_std__in_string(__pyx_v_root.node_type); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 79; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_3 = __pyx_convert_PyBytes_string_to_py_std__in_string(__pyx_v_root.node_type); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 88; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_2 = __Pyx_PyInt_FromSize_t(__pyx_v_root.predicates.size()); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 79; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_2 = __Pyx_PyInt_FromSize_t(__pyx_v_root.predicates.size()); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 88; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_1 = __Pyx_PyInt_FromSize_t(__pyx_v_root.children.size()); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 79; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = __Pyx_PyInt_FromSize_t(__pyx_v_root.children.size()); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 88; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_4 = PyTuple_New(3); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 79; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_4 = PyTuple_New(3); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 88; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_4);
   __Pyx_GIVEREF(__pyx_t_3);
   PyTuple_SET_ITEM(__pyx_t_4, 0, __pyx_t_3);
@@ -1833,10 +1745,10 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_8executor_execute_plan(Node &__
   __pyx_t_3 = 0;
   __pyx_t_2 = 0;
   __pyx_t_1 = 0;
-  if (__Pyx_Print(0, __pyx_t_4, 1) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 79; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (__Pyx_Print(0, __pyx_t_4, 1) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 88; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "py_stringsimjoin/apply_rf/executor.pyx":80
+  /* "py_stringsimjoin/apply_rf/executor.pyx":89
  *     cdef Node join_node, child_node, curr_node
  *     print root.node_type, root.predicates.size(), root.children.size()
  *     for join_node in root.children:             # <<<<<<<<<<<<<<
@@ -1851,22 +1763,22 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_8executor_execute_plan(Node &__
     ++__pyx_t_5;
     __pyx_v_join_node = __pyx_t_7;
 
-    /* "py_stringsimjoin/apply_rf/executor.pyx":81
+    /* "py_stringsimjoin/apply_rf/executor.pyx":90
  *     print root.node_type, root.predicates.size(), root.children.size()
  *     for join_node in root.children:
  *          print 'JOIN', join_node.predicates[0].sim_measure_type, join_node.predicates[0].tokenizer_type, join_node.predicates[0].comp_op, join_node.predicates[0].threshold             # <<<<<<<<<<<<<<
  *          candset = execute_join_node(lstrings, rstrings, join_node.predicates[0],
  *                                      n_jobs, working_dir)
  */
-    __pyx_t_4 = __pyx_convert_PyBytes_string_to_py_std__in_string((__pyx_v_join_node.predicates[0]).sim_measure_type); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 81; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_4 = __pyx_convert_PyBytes_string_to_py_std__in_string((__pyx_v_join_node.predicates[0]).sim_measure_type); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 90; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_4);
-    __pyx_t_1 = __pyx_convert_PyBytes_string_to_py_std__in_string((__pyx_v_join_node.predicates[0]).tokenizer_type); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 81; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_1 = __pyx_convert_PyBytes_string_to_py_std__in_string((__pyx_v_join_node.predicates[0]).tokenizer_type); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 90; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_1);
-    __pyx_t_2 = __pyx_convert_PyBytes_string_to_py_std__in_string((__pyx_v_join_node.predicates[0]).comp_op); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 81; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_2 = __pyx_convert_PyBytes_string_to_py_std__in_string((__pyx_v_join_node.predicates[0]).comp_op); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 90; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_2);
-    __pyx_t_3 = PyFloat_FromDouble((__pyx_v_join_node.predicates[0]).threshold); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 81; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_3 = PyFloat_FromDouble((__pyx_v_join_node.predicates[0]).threshold); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 90; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_3);
-    __pyx_t_8 = PyTuple_New(5); if (unlikely(!__pyx_t_8)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 81; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_8 = PyTuple_New(5); if (unlikely(!__pyx_t_8)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 90; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_8);
     __Pyx_INCREF(__pyx_n_s_JOIN);
     __Pyx_GIVEREF(__pyx_n_s_JOIN);
@@ -1883,10 +1795,10 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_8executor_execute_plan(Node &__
     __pyx_t_1 = 0;
     __pyx_t_2 = 0;
     __pyx_t_3 = 0;
-    if (__Pyx_Print(0, __pyx_t_8, 1) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 81; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    if (__Pyx_Print(0, __pyx_t_8, 1) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 90; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
 
-    /* "py_stringsimjoin/apply_rf/executor.pyx":82
+    /* "py_stringsimjoin/apply_rf/executor.pyx":91
  *     for join_node in root.children:
  *          print 'JOIN', join_node.predicates[0].sim_measure_type, join_node.predicates[0].tokenizer_type, join_node.predicates[0].comp_op, join_node.predicates[0].threshold
  *          candset = execute_join_node(lstrings, rstrings, join_node.predicates[0],             # <<<<<<<<<<<<<<
@@ -1895,16 +1807,16 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_8executor_execute_plan(Node &__
  */
     __pyx_v_candset = __pyx_f_16py_stringsimjoin_8apply_rf_8executor_execute_join_node(__pyx_v_lstrings, __pyx_v_rstrings, (__pyx_v_join_node.predicates[0]), __pyx_v_n_jobs, __pyx_v_working_dir);
 
-    /* "py_stringsimjoin/apply_rf/executor.pyx":84
+    /* "py_stringsimjoin/apply_rf/executor.pyx":93
  *          candset = execute_join_node(lstrings, rstrings, join_node.predicates[0],
  *                                      n_jobs, working_dir)
  *          print 'join completed'             # <<<<<<<<<<<<<<
  *          for child_node in join_node.children:
  *              curr_node = child_node
  */
-    if (__Pyx_PrintOne(0, __pyx_kp_s_join_completed) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 84; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    if (__Pyx_PrintOne(0, __pyx_kp_s_join_completed) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 93; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
 
-    /* "py_stringsimjoin/apply_rf/executor.pyx":85
+    /* "py_stringsimjoin/apply_rf/executor.pyx":94
  *                                      n_jobs, working_dir)
  *          print 'join completed'
  *          for child_node in join_node.children:             # <<<<<<<<<<<<<<
@@ -1919,7 +1831,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_8executor_execute_plan(Node &__
       ++__pyx_t_9;
       __pyx_v_child_node = __pyx_t_7;
 
-      /* "py_stringsimjoin/apply_rf/executor.pyx":86
+      /* "py_stringsimjoin/apply_rf/executor.pyx":95
  *          print 'join completed'
  *          for child_node in join_node.children:
  *              curr_node = child_node             # <<<<<<<<<<<<<<
@@ -1928,7 +1840,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_8executor_execute_plan(Node &__
  */
       __pyx_v_curr_node = __pyx_v_child_node;
 
-      /* "py_stringsimjoin/apply_rf/executor.pyx":87
+      /* "py_stringsimjoin/apply_rf/executor.pyx":96
  *          for child_node in join_node.children:
  *              curr_node = child_node
  *              curr_candset = candset             # <<<<<<<<<<<<<<
@@ -1937,7 +1849,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_8executor_execute_plan(Node &__
  */
       __pyx_v_curr_candset = __pyx_v_candset;
 
-      /* "py_stringsimjoin/apply_rf/executor.pyx":89
+      /* "py_stringsimjoin/apply_rf/executor.pyx":98
  *              curr_candset = candset
  * 
  *              while curr_node.node_type.compare('OUTPUT') != 0:             # <<<<<<<<<<<<<<
@@ -1945,26 +1857,26 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_8executor_execute_plan(Node &__
  *                  curr_candset = execute_filter_node(curr_candset, lstrings, rstrings,
  */
       while (1) {
-        __pyx_t_11 = __pyx_convert_string_from_py_std__in_string(__pyx_n_b_OUTPUT); if (unlikely(PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 89; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        __pyx_t_11 = __pyx_convert_string_from_py_std__in_string(__pyx_n_b_OUTPUT); if (unlikely(PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 98; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
         __pyx_t_12 = ((__pyx_v_curr_node.node_type.compare(__pyx_t_11) != 0) != 0);
         if (!__pyx_t_12) break;
 
-        /* "py_stringsimjoin/apply_rf/executor.pyx":90
+        /* "py_stringsimjoin/apply_rf/executor.pyx":99
  * 
  *              while curr_node.node_type.compare('OUTPUT') != 0:
  *                  print 'FILTER', curr_node.predicates[0].sim_measure_type, curr_node.predicates[0].tokenizer_type, curr_node.predicates[0].comp_op, curr_node.predicates[0].threshold             # <<<<<<<<<<<<<<
  *                  curr_candset = execute_filter_node(curr_candset, lstrings, rstrings,
  *                                     curr_node.predicates[0], n_jobs, working_dir)
  */
-        __pyx_t_8 = __pyx_convert_PyBytes_string_to_py_std__in_string((__pyx_v_curr_node.predicates[0]).sim_measure_type); if (unlikely(!__pyx_t_8)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 90; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        __pyx_t_8 = __pyx_convert_PyBytes_string_to_py_std__in_string((__pyx_v_curr_node.predicates[0]).sim_measure_type); if (unlikely(!__pyx_t_8)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 99; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
         __Pyx_GOTREF(__pyx_t_8);
-        __pyx_t_3 = __pyx_convert_PyBytes_string_to_py_std__in_string((__pyx_v_curr_node.predicates[0]).tokenizer_type); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 90; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        __pyx_t_3 = __pyx_convert_PyBytes_string_to_py_std__in_string((__pyx_v_curr_node.predicates[0]).tokenizer_type); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 99; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
         __Pyx_GOTREF(__pyx_t_3);
-        __pyx_t_2 = __pyx_convert_PyBytes_string_to_py_std__in_string((__pyx_v_curr_node.predicates[0]).comp_op); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 90; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        __pyx_t_2 = __pyx_convert_PyBytes_string_to_py_std__in_string((__pyx_v_curr_node.predicates[0]).comp_op); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 99; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
         __Pyx_GOTREF(__pyx_t_2);
-        __pyx_t_1 = PyFloat_FromDouble((__pyx_v_curr_node.predicates[0]).threshold); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 90; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        __pyx_t_1 = PyFloat_FromDouble((__pyx_v_curr_node.predicates[0]).threshold); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 99; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
         __Pyx_GOTREF(__pyx_t_1);
-        __pyx_t_4 = PyTuple_New(5); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 90; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        __pyx_t_4 = PyTuple_New(5); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 99; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
         __Pyx_GOTREF(__pyx_t_4);
         __Pyx_INCREF(__pyx_n_s_FILTER);
         __Pyx_GIVEREF(__pyx_n_s_FILTER);
@@ -1981,10 +1893,10 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_8executor_execute_plan(Node &__
         __pyx_t_3 = 0;
         __pyx_t_2 = 0;
         __pyx_t_1 = 0;
-        if (__Pyx_Print(0, __pyx_t_4, 1) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 90; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        if (__Pyx_Print(0, __pyx_t_4, 1) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 99; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
         __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-        /* "py_stringsimjoin/apply_rf/executor.pyx":91
+        /* "py_stringsimjoin/apply_rf/executor.pyx":100
  *              while curr_node.node_type.compare('OUTPUT') != 0:
  *                  print 'FILTER', curr_node.predicates[0].sim_measure_type, curr_node.predicates[0].tokenizer_type, curr_node.predicates[0].comp_op, curr_node.predicates[0].threshold
  *                  curr_candset = execute_filter_node(curr_candset, lstrings, rstrings,             # <<<<<<<<<<<<<<
@@ -1993,28 +1905,28 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_8executor_execute_plan(Node &__
  */
         __pyx_v_curr_candset = __pyx_f_16py_stringsimjoin_8apply_rf_8executor_execute_filter_node(__pyx_v_curr_candset, __pyx_v_lstrings, __pyx_v_rstrings, (__pyx_v_curr_node.predicates[0]), __pyx_v_n_jobs, __pyx_v_working_dir);
 
-        /* "py_stringsimjoin/apply_rf/executor.pyx":93
+        /* "py_stringsimjoin/apply_rf/executor.pyx":102
  *                  curr_candset = execute_filter_node(curr_candset, lstrings, rstrings,
  *                                     curr_node.predicates[0], n_jobs, working_dir)
  *                  print 'filter done'             # <<<<<<<<<<<<<<
  *                  print curr_node.children.size()
  *                  curr_node = curr_node.children[0]
  */
-        if (__Pyx_PrintOne(0, __pyx_kp_s_filter_done) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 93; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        if (__Pyx_PrintOne(0, __pyx_kp_s_filter_done) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 102; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
 
-        /* "py_stringsimjoin/apply_rf/executor.pyx":94
+        /* "py_stringsimjoin/apply_rf/executor.pyx":103
  *                                     curr_node.predicates[0], n_jobs, working_dir)
  *                  print 'filter done'
  *                  print curr_node.children.size()             # <<<<<<<<<<<<<<
  *                  curr_node = curr_node.children[0]
  *              tree_id = curr_node.tree_id
  */
-        __pyx_t_4 = __Pyx_PyInt_FromSize_t(__pyx_v_curr_node.children.size()); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 94; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        __pyx_t_4 = __Pyx_PyInt_FromSize_t(__pyx_v_curr_node.children.size()); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 103; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
         __Pyx_GOTREF(__pyx_t_4);
-        if (__Pyx_PrintOne(0, __pyx_t_4) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 94; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        if (__Pyx_PrintOne(0, __pyx_t_4) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 103; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
         __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-        /* "py_stringsimjoin/apply_rf/executor.pyx":95
+        /* "py_stringsimjoin/apply_rf/executor.pyx":104
  *                  print 'filter done'
  *                  print curr_node.children.size()
  *                  curr_node = curr_node.children[0]             # <<<<<<<<<<<<<<
@@ -2024,7 +1936,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_8executor_execute_plan(Node &__
         __pyx_v_curr_node = (__pyx_v_curr_node.children[0]);
       }
 
-      /* "py_stringsimjoin/apply_rf/executor.pyx":96
+      /* "py_stringsimjoin/apply_rf/executor.pyx":105
  *                  print curr_node.children.size()
  *                  curr_node = curr_node.children[0]
  *              tree_id = curr_node.tree_id             # <<<<<<<<<<<<<<
@@ -2034,7 +1946,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_8executor_execute_plan(Node &__
       __pyx_t_13 = __pyx_v_curr_node.tree_id;
       __pyx_v_tree_id = __pyx_t_13;
 
-      /* "py_stringsimjoin/apply_rf/executor.pyx":97
+      /* "py_stringsimjoin/apply_rf/executor.pyx":106
  *                  curr_node = curr_node.children[0]
  *              tree_id = curr_node.tree_id
  *              rule_id = curr_node.rule_id             # <<<<<<<<<<<<<<
@@ -2044,29 +1956,29 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_8executor_execute_plan(Node &__
       __pyx_t_13 = __pyx_v_curr_node.rule_id;
       __pyx_v_rule_id = __pyx_t_13;
 
-      /* "py_stringsimjoin/apply_rf/executor.pyx":98
+      /* "py_stringsimjoin/apply_rf/executor.pyx":107
  *              tree_id = curr_node.tree_id
  *              rule_id = curr_node.rule_id
  *              write_candset(curr_candset, tree_id, rule_id, working_dir)             # <<<<<<<<<<<<<<
  * 
  *              print 'candset after join : ', candset.size() , " , candset at output : ", curr_candset.size()
  */
-      __pyx_t_4 = __pyx_f_16py_stringsimjoin_8apply_rf_8executor_write_candset(__pyx_v_curr_candset, __pyx_v_tree_id, __pyx_v_rule_id, __pyx_v_working_dir); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 98; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_4 = __pyx_f_16py_stringsimjoin_8apply_rf_8executor_write_candset(__pyx_v_curr_candset, __pyx_v_tree_id, __pyx_v_rule_id, __pyx_v_working_dir); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 107; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_GOTREF(__pyx_t_4);
       __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-      /* "py_stringsimjoin/apply_rf/executor.pyx":100
+      /* "py_stringsimjoin/apply_rf/executor.pyx":109
  *              write_candset(curr_candset, tree_id, rule_id, working_dir)
  * 
  *              print 'candset after join : ', candset.size() , " , candset at output : ", curr_candset.size()             # <<<<<<<<<<<<<<
  * 
  * 
  */
-      __pyx_t_4 = __Pyx_PyInt_FromSize_t(__pyx_v_candset.size()); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 100; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_4 = __Pyx_PyInt_FromSize_t(__pyx_v_candset.size()); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 109; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_GOTREF(__pyx_t_4);
-      __pyx_t_1 = __Pyx_PyInt_FromSize_t(__pyx_v_curr_candset.size()); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 100; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_1 = __Pyx_PyInt_FromSize_t(__pyx_v_curr_candset.size()); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 109; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_GOTREF(__pyx_t_1);
-      __pyx_t_2 = PyTuple_New(4); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 100; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_2 = PyTuple_New(4); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 109; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_GOTREF(__pyx_t_2);
       __Pyx_INCREF(__pyx_kp_s_candset_after_join);
       __Pyx_GIVEREF(__pyx_kp_s_candset_after_join);
@@ -2080,10 +1992,10 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_8executor_execute_plan(Node &__
       PyTuple_SET_ITEM(__pyx_t_2, 3, __pyx_t_1);
       __pyx_t_4 = 0;
       __pyx_t_1 = 0;
-      if (__Pyx_Print(0, __pyx_t_2, 1) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 100; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      if (__Pyx_Print(0, __pyx_t_2, 1) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 109; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-      /* "py_stringsimjoin/apply_rf/executor.pyx":85
+      /* "py_stringsimjoin/apply_rf/executor.pyx":94
  *                                      n_jobs, working_dir)
  *          print 'join completed'
  *          for child_node in join_node.children:             # <<<<<<<<<<<<<<
@@ -2092,7 +2004,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_8executor_execute_plan(Node &__
  */
     }
 
-    /* "py_stringsimjoin/apply_rf/executor.pyx":80
+    /* "py_stringsimjoin/apply_rf/executor.pyx":89
  *     cdef Node join_node, child_node, curr_node
  *     print root.node_type, root.predicates.size(), root.children.size()
  *     for join_node in root.children:             # <<<<<<<<<<<<<<
@@ -2101,7 +2013,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_8executor_execute_plan(Node &__
  */
   }
 
-  /* "py_stringsimjoin/apply_rf/executor.pyx":70
+  /* "py_stringsimjoin/apply_rf/executor.pyx":79
  * 
  * 
  * cdef void execute_plan(Node& root, vector[Tree]& trees, vector[string]& lstrings,             # <<<<<<<<<<<<<<
@@ -2122,7 +2034,393 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_8executor_execute_plan(Node &__
   __Pyx_RefNannyFinishContext();
 }
 
-/* "py_stringsimjoin/apply_rf/executor.pyx":103
+/* "py_stringsimjoin/apply_rf/executor.pyx":112
+ * 
+ * 
+ * cdef omap[string, int] merge_candsets(vector[Tree]& trees, const string& working_dir):             # <<<<<<<<<<<<<<
+ *     cdef int n = trees.size(), i=0
+ *     cdef string string_pair
+ */
+
+static std::map<std::string,int>  __pyx_f_16py_stringsimjoin_8apply_rf_8executor_merge_candsets(std::vector<Tree>  &__pyx_v_trees, std::string const &__pyx_v_working_dir) {
+  int __pyx_v_n;
+  int __pyx_v_i;
+  std::string __pyx_v_string_pair;
+  std::set<std::string>  __pyx_v_curr_pairs;
+  std::map<std::string,int>  __pyx_v_merged_candset;
+  std::pair<std::string,int>  __pyx_v_entry;
+  PyObject *__pyx_v_file_name = NULL;
+  PyObject *__pyx_v_f = NULL;
+  PyObject *__pyx_v_line = NULL;
+  PyObject *__pyx_v_cnt = NULL;
+  std::map<std::string,int>  __pyx_r;
+  __Pyx_RefNannyDeclarations
+  int __pyx_t_1;
+  PyObject *__pyx_t_2 = NULL;
+  PyObject *__pyx_t_3 = NULL;
+  PyObject *__pyx_t_4 = NULL;
+  Py_ssize_t __pyx_t_5;
+  PyObject *(*__pyx_t_6)(PyObject *);
+  std::string __pyx_t_7;
+  std::set<std::string> ::iterator __pyx_t_8;
+  std::map<std::string,int> ::iterator __pyx_t_9;
+  std::pair<std::string,int>  __pyx_t_10;
+  int __pyx_lineno = 0;
+  const char *__pyx_filename = NULL;
+  int __pyx_clineno = 0;
+  __Pyx_RefNannySetupContext("merge_candsets", 0);
+
+  /* "py_stringsimjoin/apply_rf/executor.pyx":113
+ * 
+ * cdef omap[string, int] merge_candsets(vector[Tree]& trees, const string& working_dir):
+ *     cdef int n = trees.size(), i=0             # <<<<<<<<<<<<<<
+ *     cdef string string_pair
+ *     cdef oset[string] curr_pairs
+ */
+  __pyx_v_n = __pyx_v_trees.size();
+  __pyx_v_i = 0;
+
+  /* "py_stringsimjoin/apply_rf/executor.pyx":118
+ *     cdef omap[string, int] merged_candset
+ *     cdef pair[string, int] entry
+ *     while i < n:             # <<<<<<<<<<<<<<
+ *         file_name = working_dir + "/tree_" + str(i)
+ *         print file_name
+ */
+  while (1) {
+    __pyx_t_1 = ((__pyx_v_i < __pyx_v_n) != 0);
+    if (!__pyx_t_1) break;
+
+    /* "py_stringsimjoin/apply_rf/executor.pyx":119
+ *     cdef pair[string, int] entry
+ *     while i < n:
+ *         file_name = working_dir + "/tree_" + str(i)             # <<<<<<<<<<<<<<
+ *         print file_name
+ *         f = open(file_name, 'r')
+ */
+    __pyx_t_2 = __pyx_convert_PyBytes_string_to_py_std__in_string(__pyx_v_working_dir); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 119; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __Pyx_GOTREF(__pyx_t_2);
+    __pyx_t_3 = PyNumber_Add(__pyx_t_2, __pyx_kp_s_tree); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 119; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __Pyx_GOTREF(__pyx_t_3);
+    __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+    __pyx_t_2 = __Pyx_PyInt_From_int(__pyx_v_i); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 119; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __Pyx_GOTREF(__pyx_t_2);
+    __pyx_t_4 = PyTuple_New(1); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 119; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __Pyx_GOTREF(__pyx_t_4);
+    __Pyx_GIVEREF(__pyx_t_2);
+    PyTuple_SET_ITEM(__pyx_t_4, 0, __pyx_t_2);
+    __pyx_t_2 = 0;
+    __pyx_t_2 = __Pyx_PyObject_Call(((PyObject *)(&PyString_Type)), __pyx_t_4, NULL); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 119; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __Pyx_GOTREF(__pyx_t_2);
+    __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+    __pyx_t_4 = PyNumber_Add(__pyx_t_3, __pyx_t_2); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 119; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __Pyx_GOTREF(__pyx_t_4);
+    __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+    __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+    __Pyx_XDECREF_SET(__pyx_v_file_name, __pyx_t_4);
+    __pyx_t_4 = 0;
+
+    /* "py_stringsimjoin/apply_rf/executor.pyx":120
+ *     while i < n:
+ *         file_name = working_dir + "/tree_" + str(i)
+ *         print file_name             # <<<<<<<<<<<<<<
+ *         f = open(file_name, 'r')
+ *         for line in f:
+ */
+    if (__Pyx_PrintOne(0, __pyx_v_file_name) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 120; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+
+    /* "py_stringsimjoin/apply_rf/executor.pyx":121
+ *         file_name = working_dir + "/tree_" + str(i)
+ *         print file_name
+ *         f = open(file_name, 'r')             # <<<<<<<<<<<<<<
+ *         for line in f:
+ *             curr_pairs.insert(line)
+ */
+    __pyx_t_4 = PyTuple_New(2); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 121; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __Pyx_GOTREF(__pyx_t_4);
+    __Pyx_INCREF(__pyx_v_file_name);
+    __Pyx_GIVEREF(__pyx_v_file_name);
+    PyTuple_SET_ITEM(__pyx_t_4, 0, __pyx_v_file_name);
+    __Pyx_INCREF(__pyx_n_s_r);
+    __Pyx_GIVEREF(__pyx_n_s_r);
+    PyTuple_SET_ITEM(__pyx_t_4, 1, __pyx_n_s_r);
+    __pyx_t_2 = __Pyx_PyObject_Call(__pyx_builtin_open, __pyx_t_4, NULL); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 121; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __Pyx_GOTREF(__pyx_t_2);
+    __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+    __Pyx_XDECREF_SET(__pyx_v_f, __pyx_t_2);
+    __pyx_t_2 = 0;
+
+    /* "py_stringsimjoin/apply_rf/executor.pyx":122
+ *         print file_name
+ *         f = open(file_name, 'r')
+ *         for line in f:             # <<<<<<<<<<<<<<
+ *             curr_pairs.insert(line)
+ *         f.close()
+ */
+    if (likely(PyList_CheckExact(__pyx_v_f)) || PyTuple_CheckExact(__pyx_v_f)) {
+      __pyx_t_2 = __pyx_v_f; __Pyx_INCREF(__pyx_t_2); __pyx_t_5 = 0;
+      __pyx_t_6 = NULL;
+    } else {
+      __pyx_t_5 = -1; __pyx_t_2 = PyObject_GetIter(__pyx_v_f); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 122; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __Pyx_GOTREF(__pyx_t_2);
+      __pyx_t_6 = Py_TYPE(__pyx_t_2)->tp_iternext; if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 122; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    }
+    for (;;) {
+      if (likely(!__pyx_t_6)) {
+        if (likely(PyList_CheckExact(__pyx_t_2))) {
+          if (__pyx_t_5 >= PyList_GET_SIZE(__pyx_t_2)) break;
+          #if CYTHON_COMPILING_IN_CPYTHON
+          __pyx_t_4 = PyList_GET_ITEM(__pyx_t_2, __pyx_t_5); __Pyx_INCREF(__pyx_t_4); __pyx_t_5++; if (unlikely(0 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 122; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+          #else
+          __pyx_t_4 = PySequence_ITEM(__pyx_t_2, __pyx_t_5); __pyx_t_5++; if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 122; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+          __Pyx_GOTREF(__pyx_t_4);
+          #endif
+        } else {
+          if (__pyx_t_5 >= PyTuple_GET_SIZE(__pyx_t_2)) break;
+          #if CYTHON_COMPILING_IN_CPYTHON
+          __pyx_t_4 = PyTuple_GET_ITEM(__pyx_t_2, __pyx_t_5); __Pyx_INCREF(__pyx_t_4); __pyx_t_5++; if (unlikely(0 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 122; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+          #else
+          __pyx_t_4 = PySequence_ITEM(__pyx_t_2, __pyx_t_5); __pyx_t_5++; if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 122; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+          __Pyx_GOTREF(__pyx_t_4);
+          #endif
+        }
+      } else {
+        __pyx_t_4 = __pyx_t_6(__pyx_t_2);
+        if (unlikely(!__pyx_t_4)) {
+          PyObject* exc_type = PyErr_Occurred();
+          if (exc_type) {
+            if (likely(exc_type == PyExc_StopIteration || PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) PyErr_Clear();
+            else {__pyx_filename = __pyx_f[0]; __pyx_lineno = 122; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+          }
+          break;
+        }
+        __Pyx_GOTREF(__pyx_t_4);
+      }
+      __Pyx_XDECREF_SET(__pyx_v_line, __pyx_t_4);
+      __pyx_t_4 = 0;
+
+      /* "py_stringsimjoin/apply_rf/executor.pyx":123
+ *         f = open(file_name, 'r')
+ *         for line in f:
+ *             curr_pairs.insert(line)             # <<<<<<<<<<<<<<
+ *         f.close()
+ *         for string_pair in curr_pairs:
+ */
+      __pyx_t_7 = __pyx_convert_string_from_py_std__in_string(__pyx_v_line); if (unlikely(PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 123; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      try {
+        __pyx_v_curr_pairs.insert(__pyx_t_7);
+      } catch(...) {
+        __Pyx_CppExn2PyErr();
+        {__pyx_filename = __pyx_f[0]; __pyx_lineno = 123; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      }
+
+      /* "py_stringsimjoin/apply_rf/executor.pyx":122
+ *         print file_name
+ *         f = open(file_name, 'r')
+ *         for line in f:             # <<<<<<<<<<<<<<
+ *             curr_pairs.insert(line)
+ *         f.close()
+ */
+    }
+    __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+
+    /* "py_stringsimjoin/apply_rf/executor.pyx":124
+ *         for line in f:
+ *             curr_pairs.insert(line)
+ *         f.close()             # <<<<<<<<<<<<<<
+ *         for string_pair in curr_pairs:
+ *             merged_candset[string_pair] += 1
+ */
+    __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_v_f, __pyx_n_s_close); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 124; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __Pyx_GOTREF(__pyx_t_4);
+    __pyx_t_3 = NULL;
+    if (CYTHON_COMPILING_IN_CPYTHON && likely(PyMethod_Check(__pyx_t_4))) {
+      __pyx_t_3 = PyMethod_GET_SELF(__pyx_t_4);
+      if (likely(__pyx_t_3)) {
+        PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_4);
+        __Pyx_INCREF(__pyx_t_3);
+        __Pyx_INCREF(function);
+        __Pyx_DECREF_SET(__pyx_t_4, function);
+      }
+    }
+    if (__pyx_t_3) {
+      __pyx_t_2 = __Pyx_PyObject_CallOneArg(__pyx_t_4, __pyx_t_3); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 124; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+    } else {
+      __pyx_t_2 = __Pyx_PyObject_CallNoArg(__pyx_t_4); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 124; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    }
+    __Pyx_GOTREF(__pyx_t_2);
+    __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+    __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+
+    /* "py_stringsimjoin/apply_rf/executor.pyx":125
+ *             curr_pairs.insert(line)
+ *         f.close()
+ *         for string_pair in curr_pairs:             # <<<<<<<<<<<<<<
+ *             merged_candset[string_pair] += 1
+ *         i += 1
+ */
+    __pyx_t_8 = __pyx_v_curr_pairs.begin();
+    for (;;) {
+      if (!(__pyx_t_8 != __pyx_v_curr_pairs.end())) break;
+      __pyx_t_7 = *__pyx_t_8;
+      ++__pyx_t_8;
+      __pyx_v_string_pair = __pyx_t_7;
+
+      /* "py_stringsimjoin/apply_rf/executor.pyx":126
+ *         f.close()
+ *         for string_pair in curr_pairs:
+ *             merged_candset[string_pair] += 1             # <<<<<<<<<<<<<<
+ *         i += 1
+ *         curr_pairs.clear()
+ */
+      __pyx_t_7 = __pyx_v_string_pair;
+      (__pyx_v_merged_candset[__pyx_t_7]) = ((__pyx_v_merged_candset[__pyx_t_7]) + 1);
+
+      /* "py_stringsimjoin/apply_rf/executor.pyx":125
+ *             curr_pairs.insert(line)
+ *         f.close()
+ *         for string_pair in curr_pairs:             # <<<<<<<<<<<<<<
+ *             merged_candset[string_pair] += 1
+ *         i += 1
+ */
+    }
+
+    /* "py_stringsimjoin/apply_rf/executor.pyx":127
+ *         for string_pair in curr_pairs:
+ *             merged_candset[string_pair] += 1
+ *         i += 1             # <<<<<<<<<<<<<<
+ *         curr_pairs.clear()
+ *     cnt = 0
+ */
+    __pyx_v_i = (__pyx_v_i + 1);
+
+    /* "py_stringsimjoin/apply_rf/executor.pyx":128
+ *             merged_candset[string_pair] += 1
+ *         i += 1
+ *         curr_pairs.clear()             # <<<<<<<<<<<<<<
+ *     cnt = 0
+ *     for entry in merged_candset:
+ */
+    __pyx_v_curr_pairs.clear();
+  }
+
+  /* "py_stringsimjoin/apply_rf/executor.pyx":129
+ *         i += 1
+ *         curr_pairs.clear()
+ *     cnt = 0             # <<<<<<<<<<<<<<
+ *     for entry in merged_candset:
+ *         if entry.second > (n/2):
+ */
+  __Pyx_INCREF(__pyx_int_0);
+  __pyx_v_cnt = __pyx_int_0;
+
+  /* "py_stringsimjoin/apply_rf/executor.pyx":130
+ *         curr_pairs.clear()
+ *     cnt = 0
+ *     for entry in merged_candset:             # <<<<<<<<<<<<<<
+ *         if entry.second > (n/2):
+ *             cnt += 1
+ */
+  __pyx_t_9 = __pyx_v_merged_candset.begin();
+  for (;;) {
+    if (!(__pyx_t_9 != __pyx_v_merged_candset.end())) break;
+    __pyx_t_10 = *__pyx_t_9;
+    ++__pyx_t_9;
+    __pyx_v_entry = __pyx_t_10;
+
+    /* "py_stringsimjoin/apply_rf/executor.pyx":131
+ *     cnt = 0
+ *     for entry in merged_candset:
+ *         if entry.second > (n/2):             # <<<<<<<<<<<<<<
+ *             cnt += 1
+ *     print 'num output pairs : ', cnt
+ */
+    __pyx_t_1 = ((__pyx_v_entry.second > __Pyx_div_long(__pyx_v_n, 2)) != 0);
+    if (__pyx_t_1) {
+
+      /* "py_stringsimjoin/apply_rf/executor.pyx":132
+ *     for entry in merged_candset:
+ *         if entry.second > (n/2):
+ *             cnt += 1             # <<<<<<<<<<<<<<
+ *     print 'num output pairs : ', cnt
+ *     return merged_candset
+ */
+      __pyx_t_2 = __Pyx_PyInt_AddObjC(__pyx_v_cnt, __pyx_int_1, 1, 1); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 132; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __Pyx_GOTREF(__pyx_t_2);
+      __Pyx_DECREF_SET(__pyx_v_cnt, __pyx_t_2);
+      __pyx_t_2 = 0;
+
+      /* "py_stringsimjoin/apply_rf/executor.pyx":131
+ *     cnt = 0
+ *     for entry in merged_candset:
+ *         if entry.second > (n/2):             # <<<<<<<<<<<<<<
+ *             cnt += 1
+ *     print 'num output pairs : ', cnt
+ */
+    }
+
+    /* "py_stringsimjoin/apply_rf/executor.pyx":130
+ *         curr_pairs.clear()
+ *     cnt = 0
+ *     for entry in merged_candset:             # <<<<<<<<<<<<<<
+ *         if entry.second > (n/2):
+ *             cnt += 1
+ */
+  }
+
+  /* "py_stringsimjoin/apply_rf/executor.pyx":133
+ *         if entry.second > (n/2):
+ *             cnt += 1
+ *     print 'num output pairs : ', cnt             # <<<<<<<<<<<<<<
+ *     return merged_candset
+ * 
+ */
+  __pyx_t_2 = PyTuple_New(2); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 133; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_2);
+  __Pyx_INCREF(__pyx_kp_s_num_output_pairs);
+  __Pyx_GIVEREF(__pyx_kp_s_num_output_pairs);
+  PyTuple_SET_ITEM(__pyx_t_2, 0, __pyx_kp_s_num_output_pairs);
+  __Pyx_INCREF(__pyx_v_cnt);
+  __Pyx_GIVEREF(__pyx_v_cnt);
+  PyTuple_SET_ITEM(__pyx_t_2, 1, __pyx_v_cnt);
+  if (__Pyx_Print(0, __pyx_t_2, 1) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 133; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+
+  /* "py_stringsimjoin/apply_rf/executor.pyx":134
+ *             cnt += 1
+ *     print 'num output pairs : ', cnt
+ *     return merged_candset             # <<<<<<<<<<<<<<
+ * 
+ * 
+ */
+  __pyx_r = __pyx_v_merged_candset;
+  goto __pyx_L0;
+
+  /* "py_stringsimjoin/apply_rf/executor.pyx":112
+ * 
+ * 
+ * cdef omap[string, int] merge_candsets(vector[Tree]& trees, const string& working_dir):             # <<<<<<<<<<<<<<
+ *     cdef int n = trees.size(), i=0
+ *     cdef string string_pair
+ */
+
+  /* function exit code */
+  __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_2);
+  __Pyx_XDECREF(__pyx_t_3);
+  __Pyx_XDECREF(__pyx_t_4);
+  __Pyx_WriteUnraisable("py_stringsimjoin.apply_rf.executor.merge_candsets", __pyx_clineno, __pyx_lineno, __pyx_filename, 0, 0);
+  __pyx_L0:;
+  __Pyx_XDECREF(__pyx_v_file_name);
+  __Pyx_XDECREF(__pyx_v_f);
+  __Pyx_XDECREF(__pyx_v_line);
+  __Pyx_XDECREF(__pyx_v_cnt);
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+/* "py_stringsimjoin/apply_rf/executor.pyx":137
  * 
  * 
  * cdef write_candset(vector[pair[int,int]]& candset, int tree_id, int rule_id, const string& working_dir):             # <<<<<<<<<<<<<<
@@ -2149,60 +2447,60 @@ static PyObject *__pyx_f_16py_stringsimjoin_8apply_rf_8executor_write_candset(st
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("write_candset", 0);
 
-  /* "py_stringsimjoin/apply_rf/executor.pyx":104
+  /* "py_stringsimjoin/apply_rf/executor.pyx":138
  * 
  * cdef write_candset(vector[pair[int,int]]& candset, int tree_id, int rule_id, const string& working_dir):
  *     file_path = working_dir + "/tree_" + str(tree_id) + "_rule_" + str(rule_id)             # <<<<<<<<<<<<<<
  *     f = open(file_path, 'w')
  *     cdef pair[int, int] tuple_pair
  */
-  __pyx_t_1 = __pyx_convert_PyBytes_string_to_py_std__in_string(__pyx_v_working_dir); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 104; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = __pyx_convert_PyBytes_string_to_py_std__in_string(__pyx_v_working_dir); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 138; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = PyNumber_Add(__pyx_t_1, __pyx_kp_s_tree); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 104; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_2 = PyNumber_Add(__pyx_t_1, __pyx_kp_s_tree); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 138; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_v_tree_id); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 104; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_v_tree_id); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 138; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_3 = PyTuple_New(1); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 104; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_3 = PyTuple_New(1); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 138; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_GIVEREF(__pyx_t_1);
   PyTuple_SET_ITEM(__pyx_t_3, 0, __pyx_t_1);
   __pyx_t_1 = 0;
-  __pyx_t_1 = __Pyx_PyObject_Call(((PyObject *)(&PyString_Type)), __pyx_t_3, NULL); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 104; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = __Pyx_PyObject_Call(((PyObject *)(&PyString_Type)), __pyx_t_3, NULL); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 138; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  __pyx_t_3 = PyNumber_Add(__pyx_t_2, __pyx_t_1); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 104; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_3 = PyNumber_Add(__pyx_t_2, __pyx_t_1); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 138; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_1 = PyNumber_Add(__pyx_t_3, __pyx_n_s_rule); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 104; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = PyNumber_Add(__pyx_t_3, __pyx_n_s_rule); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 138; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  __pyx_t_3 = __Pyx_PyInt_From_int(__pyx_v_rule_id); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 104; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_3 = __Pyx_PyInt_From_int(__pyx_v_rule_id); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 138; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_2 = PyTuple_New(1); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 104; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_2 = PyTuple_New(1); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 138; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_GIVEREF(__pyx_t_3);
   PyTuple_SET_ITEM(__pyx_t_2, 0, __pyx_t_3);
   __pyx_t_3 = 0;
-  __pyx_t_3 = __Pyx_PyObject_Call(((PyObject *)(&PyString_Type)), __pyx_t_2, NULL); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 104; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_3 = __Pyx_PyObject_Call(((PyObject *)(&PyString_Type)), __pyx_t_2, NULL); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 138; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = PyNumber_Add(__pyx_t_1, __pyx_t_3); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 104; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_2 = PyNumber_Add(__pyx_t_1, __pyx_t_3); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 138; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   __pyx_v_file_path = __pyx_t_2;
   __pyx_t_2 = 0;
 
-  /* "py_stringsimjoin/apply_rf/executor.pyx":105
+  /* "py_stringsimjoin/apply_rf/executor.pyx":139
  * cdef write_candset(vector[pair[int,int]]& candset, int tree_id, int rule_id, const string& working_dir):
  *     file_path = working_dir + "/tree_" + str(tree_id) + "_rule_" + str(rule_id)
  *     f = open(file_path, 'w')             # <<<<<<<<<<<<<<
  *     cdef pair[int, int] tuple_pair
  *     for tuple_pair in candset:
  */
-  __pyx_t_2 = PyTuple_New(2); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 105; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_2 = PyTuple_New(2); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 139; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_INCREF(__pyx_v_file_path);
   __Pyx_GIVEREF(__pyx_v_file_path);
@@ -2210,13 +2508,13 @@ static PyObject *__pyx_f_16py_stringsimjoin_8apply_rf_8executor_write_candset(st
   __Pyx_INCREF(__pyx_n_s_w);
   __Pyx_GIVEREF(__pyx_n_s_w);
   PyTuple_SET_ITEM(__pyx_t_2, 1, __pyx_n_s_w);
-  __pyx_t_3 = __Pyx_PyObject_Call(__pyx_builtin_open, __pyx_t_2, NULL); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 105; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_3 = __Pyx_PyObject_Call(__pyx_builtin_open, __pyx_t_2, NULL); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 139; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __pyx_v_f = __pyx_t_3;
   __pyx_t_3 = 0;
 
-  /* "py_stringsimjoin/apply_rf/executor.pyx":107
+  /* "py_stringsimjoin/apply_rf/executor.pyx":141
  *     f = open(file_path, 'w')
  *     cdef pair[int, int] tuple_pair
  *     for tuple_pair in candset:             # <<<<<<<<<<<<<<
@@ -2230,53 +2528,53 @@ static PyObject *__pyx_f_16py_stringsimjoin_8apply_rf_8executor_write_candset(st
     ++__pyx_t_4;
     __pyx_v_tuple_pair = __pyx_t_5;
 
-    /* "py_stringsimjoin/apply_rf/executor.pyx":108
+    /* "py_stringsimjoin/apply_rf/executor.pyx":142
  *     cdef pair[int, int] tuple_pair
  *     for tuple_pair in candset:
  *         s = str(tuple_pair.first) + ',' + str(tuple_pair.second)             # <<<<<<<<<<<<<<
  *         f.write(s + '\n')
  *     f.close()
  */
-    __pyx_t_3 = __Pyx_PyInt_From_int(__pyx_v_tuple_pair.first); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 108; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_3 = __Pyx_PyInt_From_int(__pyx_v_tuple_pair.first); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 142; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_3);
-    __pyx_t_2 = PyTuple_New(1); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 108; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_2 = PyTuple_New(1); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 142; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_2);
     __Pyx_GIVEREF(__pyx_t_3);
     PyTuple_SET_ITEM(__pyx_t_2, 0, __pyx_t_3);
     __pyx_t_3 = 0;
-    __pyx_t_3 = __Pyx_PyObject_Call(((PyObject *)(&PyString_Type)), __pyx_t_2, NULL); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 108; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_3 = __Pyx_PyObject_Call(((PyObject *)(&PyString_Type)), __pyx_t_2, NULL); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 142; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-    __pyx_t_2 = PyNumber_Add(__pyx_t_3, __pyx_kp_s_); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 108; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_2 = PyNumber_Add(__pyx_t_3, __pyx_kp_s__2); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 142; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_2);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    __pyx_t_3 = __Pyx_PyInt_From_int(__pyx_v_tuple_pair.second); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 108; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_3 = __Pyx_PyInt_From_int(__pyx_v_tuple_pair.second); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 142; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_3);
-    __pyx_t_1 = PyTuple_New(1); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 108; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_1 = PyTuple_New(1); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 142; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_GIVEREF(__pyx_t_3);
     PyTuple_SET_ITEM(__pyx_t_1, 0, __pyx_t_3);
     __pyx_t_3 = 0;
-    __pyx_t_3 = __Pyx_PyObject_Call(((PyObject *)(&PyString_Type)), __pyx_t_1, NULL); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 108; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_3 = __Pyx_PyObject_Call(((PyObject *)(&PyString_Type)), __pyx_t_1, NULL); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 142; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-    __pyx_t_1 = PyNumber_Add(__pyx_t_2, __pyx_t_3); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 108; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_1 = PyNumber_Add(__pyx_t_2, __pyx_t_3); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 142; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     __Pyx_XDECREF_SET(__pyx_v_s, __pyx_t_1);
     __pyx_t_1 = 0;
 
-    /* "py_stringsimjoin/apply_rf/executor.pyx":109
+    /* "py_stringsimjoin/apply_rf/executor.pyx":143
  *     for tuple_pair in candset:
  *         s = str(tuple_pair.first) + ',' + str(tuple_pair.second)
  *         f.write(s + '\n')             # <<<<<<<<<<<<<<
  *     f.close()
  * 
  */
-    __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_f, __pyx_n_s_write); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 109; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_f, __pyx_n_s_write); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 143; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_3);
-    __pyx_t_2 = PyNumber_Add(__pyx_v_s, __pyx_kp_s__2); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 109; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_2 = PyNumber_Add(__pyx_v_s, __pyx_kp_s_); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 143; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_2);
     __pyx_t_6 = NULL;
     if (CYTHON_COMPILING_IN_CPYTHON && likely(PyMethod_Check(__pyx_t_3))) {
@@ -2289,24 +2587,24 @@ static PyObject *__pyx_f_16py_stringsimjoin_8apply_rf_8executor_write_candset(st
       }
     }
     if (!__pyx_t_6) {
-      __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_t_3, __pyx_t_2); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 109; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_t_3, __pyx_t_2); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 143; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
       __Pyx_GOTREF(__pyx_t_1);
     } else {
-      __pyx_t_7 = PyTuple_New(1+1); if (unlikely(!__pyx_t_7)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 109; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_7 = PyTuple_New(1+1); if (unlikely(!__pyx_t_7)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 143; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_GOTREF(__pyx_t_7);
       __Pyx_GIVEREF(__pyx_t_6); PyTuple_SET_ITEM(__pyx_t_7, 0, __pyx_t_6); __pyx_t_6 = NULL;
       __Pyx_GIVEREF(__pyx_t_2);
       PyTuple_SET_ITEM(__pyx_t_7, 0+1, __pyx_t_2);
       __pyx_t_2 = 0;
-      __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_3, __pyx_t_7, NULL); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 109; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_3, __pyx_t_7, NULL); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 143; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_GOTREF(__pyx_t_1);
       __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
     }
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-    /* "py_stringsimjoin/apply_rf/executor.pyx":107
+    /* "py_stringsimjoin/apply_rf/executor.pyx":141
  *     f = open(file_path, 'w')
  *     cdef pair[int, int] tuple_pair
  *     for tuple_pair in candset:             # <<<<<<<<<<<<<<
@@ -2315,14 +2613,14 @@ static PyObject *__pyx_f_16py_stringsimjoin_8apply_rf_8executor_write_candset(st
  */
   }
 
-  /* "py_stringsimjoin/apply_rf/executor.pyx":110
+  /* "py_stringsimjoin/apply_rf/executor.pyx":144
  *         s = str(tuple_pair.first) + ',' + str(tuple_pair.second)
  *         f.write(s + '\n')
  *     f.close()             # <<<<<<<<<<<<<<
  * 
  * 
  */
-  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_f, __pyx_n_s_close); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 110; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_f, __pyx_n_s_close); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 144; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_3);
   __pyx_t_7 = NULL;
   if (CYTHON_COMPILING_IN_CPYTHON && likely(PyMethod_Check(__pyx_t_3))) {
@@ -2335,16 +2633,16 @@ static PyObject *__pyx_f_16py_stringsimjoin_8apply_rf_8executor_write_candset(st
     }
   }
   if (__pyx_t_7) {
-    __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_t_3, __pyx_t_7); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 110; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_t_3, __pyx_t_7); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 144; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
   } else {
-    __pyx_t_1 = __Pyx_PyObject_CallNoArg(__pyx_t_3); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 110; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_1 = __Pyx_PyObject_CallNoArg(__pyx_t_3); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 144; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   }
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "py_stringsimjoin/apply_rf/executor.pyx":103
+  /* "py_stringsimjoin/apply_rf/executor.pyx":137
  * 
  * 
  * cdef write_candset(vector[pair[int,int]]& candset, int tree_id, int rule_id, const string& working_dir):             # <<<<<<<<<<<<<<
@@ -2372,7 +2670,7 @@ static PyObject *__pyx_f_16py_stringsimjoin_8apply_rf_8executor_write_candset(st
   return __pyx_r;
 }
 
-/* "py_stringsimjoin/apply_rf/executor.pyx":113
+/* "py_stringsimjoin/apply_rf/executor.pyx":147
  * 
  * 
  * cdef vector[pair[int, int]] execute_join_node(vector[string]& lstrings, vector[string]& rstrings,             # <<<<<<<<<<<<<<
@@ -2395,33 +2693,33 @@ static std::vector<std::pair<int,int> >  __pyx_f_16py_stringsimjoin_8apply_rf_8e
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("execute_join_node", 0);
 
-  /* "py_stringsimjoin/apply_rf/executor.pyx":116
+  /* "py_stringsimjoin/apply_rf/executor.pyx":150
  *                             Predicatecpp predicate, int n_jobs, const string& working_dir):
  *     cdef vector[vector[int]] ltokens, rtokens
  *     load_tok(predicate.tokenizer_type, working_dir, ltokens, rtokens)             # <<<<<<<<<<<<<<
  * 
  *     cdef vector[pair[int, int]] output
  */
-  __pyx_t_1 = __pyx_convert_PyBytes_string_to_py_std__in_string(__pyx_v_predicate.tokenizer_type); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 116; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = __pyx_convert_PyBytes_string_to_py_std__in_string(__pyx_v_predicate.tokenizer_type); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 150; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = __pyx_convert_PyBytes_string_to_py_std__in_string(__pyx_v_working_dir); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 116; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_2 = __pyx_convert_PyBytes_string_to_py_std__in_string(__pyx_v_working_dir); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 150; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_f_16py_stringsimjoin_8apply_rf_10tokenizers_load_tok(__pyx_t_1, __pyx_t_2, __pyx_v_ltokens, __pyx_v_rtokens, 0);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "py_stringsimjoin/apply_rf/executor.pyx":120
+  /* "py_stringsimjoin/apply_rf/executor.pyx":154
  *     cdef vector[pair[int, int]] output
  * 
  *     if predicate.sim_measure_type.compare('COSINE') == 0:             # <<<<<<<<<<<<<<
  *         output = set_sim_join(ltokens, rtokens, 0, predicate.threshold)
  *     elif predicate.sim_measure_type.compare('DICE') == 0:
  */
-  __pyx_t_3 = __pyx_convert_string_from_py_std__in_string(__pyx_n_b_COSINE); if (unlikely(PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 120; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_3 = __pyx_convert_string_from_py_std__in_string(__pyx_n_b_COSINE); if (unlikely(PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 154; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_t_4 = ((__pyx_v_predicate.sim_measure_type.compare(__pyx_t_3) == 0) != 0);
   if (__pyx_t_4) {
 
-    /* "py_stringsimjoin/apply_rf/executor.pyx":121
+    /* "py_stringsimjoin/apply_rf/executor.pyx":155
  * 
  *     if predicate.sim_measure_type.compare('COSINE') == 0:
  *         output = set_sim_join(ltokens, rtokens, 0, predicate.threshold)             # <<<<<<<<<<<<<<
@@ -2430,7 +2728,7 @@ static std::vector<std::pair<int,int> >  __pyx_f_16py_stringsimjoin_8apply_rf_8e
  */
     __pyx_v_output = __pyx_f_16py_stringsimjoin_8apply_rf_12set_sim_join_set_sim_join(__pyx_v_ltokens, __pyx_v_rtokens, 0, __pyx_v_predicate.threshold, 0);
 
-    /* "py_stringsimjoin/apply_rf/executor.pyx":120
+    /* "py_stringsimjoin/apply_rf/executor.pyx":154
  *     cdef vector[pair[int, int]] output
  * 
  *     if predicate.sim_measure_type.compare('COSINE') == 0:             # <<<<<<<<<<<<<<
@@ -2440,18 +2738,18 @@ static std::vector<std::pair<int,int> >  __pyx_f_16py_stringsimjoin_8apply_rf_8e
     goto __pyx_L3;
   }
 
-  /* "py_stringsimjoin/apply_rf/executor.pyx":122
+  /* "py_stringsimjoin/apply_rf/executor.pyx":156
  *     if predicate.sim_measure_type.compare('COSINE') == 0:
  *         output = set_sim_join(ltokens, rtokens, 0, predicate.threshold)
  *     elif predicate.sim_measure_type.compare('DICE') == 0:             # <<<<<<<<<<<<<<
  *         output = set_sim_join(ltokens, rtokens, 1, predicate.threshold)
  *     elif predicate.sim_measure_type.compare('JACCARD') == 0:
  */
-  __pyx_t_3 = __pyx_convert_string_from_py_std__in_string(__pyx_n_b_DICE); if (unlikely(PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 122; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_3 = __pyx_convert_string_from_py_std__in_string(__pyx_n_b_DICE); if (unlikely(PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 156; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_t_4 = ((__pyx_v_predicate.sim_measure_type.compare(__pyx_t_3) == 0) != 0);
   if (__pyx_t_4) {
 
-    /* "py_stringsimjoin/apply_rf/executor.pyx":123
+    /* "py_stringsimjoin/apply_rf/executor.pyx":157
  *         output = set_sim_join(ltokens, rtokens, 0, predicate.threshold)
  *     elif predicate.sim_measure_type.compare('DICE') == 0:
  *         output = set_sim_join(ltokens, rtokens, 1, predicate.threshold)             # <<<<<<<<<<<<<<
@@ -2460,7 +2758,7 @@ static std::vector<std::pair<int,int> >  __pyx_f_16py_stringsimjoin_8apply_rf_8e
  */
     __pyx_v_output = __pyx_f_16py_stringsimjoin_8apply_rf_12set_sim_join_set_sim_join(__pyx_v_ltokens, __pyx_v_rtokens, 1, __pyx_v_predicate.threshold, 0);
 
-    /* "py_stringsimjoin/apply_rf/executor.pyx":122
+    /* "py_stringsimjoin/apply_rf/executor.pyx":156
  *     if predicate.sim_measure_type.compare('COSINE') == 0:
  *         output = set_sim_join(ltokens, rtokens, 0, predicate.threshold)
  *     elif predicate.sim_measure_type.compare('DICE') == 0:             # <<<<<<<<<<<<<<
@@ -2470,18 +2768,18 @@ static std::vector<std::pair<int,int> >  __pyx_f_16py_stringsimjoin_8apply_rf_8e
     goto __pyx_L3;
   }
 
-  /* "py_stringsimjoin/apply_rf/executor.pyx":124
+  /* "py_stringsimjoin/apply_rf/executor.pyx":158
  *     elif predicate.sim_measure_type.compare('DICE') == 0:
  *         output = set_sim_join(ltokens, rtokens, 1, predicate.threshold)
  *     elif predicate.sim_measure_type.compare('JACCARD') == 0:             # <<<<<<<<<<<<<<
  *         output = set_sim_join(ltokens, rtokens, 2, predicate.threshold)
  *     return output
  */
-  __pyx_t_3 = __pyx_convert_string_from_py_std__in_string(__pyx_n_b_JACCARD); if (unlikely(PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 124; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_3 = __pyx_convert_string_from_py_std__in_string(__pyx_n_b_JACCARD); if (unlikely(PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 158; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_t_4 = ((__pyx_v_predicate.sim_measure_type.compare(__pyx_t_3) == 0) != 0);
   if (__pyx_t_4) {
 
-    /* "py_stringsimjoin/apply_rf/executor.pyx":125
+    /* "py_stringsimjoin/apply_rf/executor.pyx":159
  *         output = set_sim_join(ltokens, rtokens, 1, predicate.threshold)
  *     elif predicate.sim_measure_type.compare('JACCARD') == 0:
  *         output = set_sim_join(ltokens, rtokens, 2, predicate.threshold)             # <<<<<<<<<<<<<<
@@ -2490,7 +2788,7 @@ static std::vector<std::pair<int,int> >  __pyx_f_16py_stringsimjoin_8apply_rf_8e
  */
     __pyx_v_output = __pyx_f_16py_stringsimjoin_8apply_rf_12set_sim_join_set_sim_join(__pyx_v_ltokens, __pyx_v_rtokens, 2, __pyx_v_predicate.threshold, 0);
 
-    /* "py_stringsimjoin/apply_rf/executor.pyx":124
+    /* "py_stringsimjoin/apply_rf/executor.pyx":158
  *     elif predicate.sim_measure_type.compare('DICE') == 0:
  *         output = set_sim_join(ltokens, rtokens, 1, predicate.threshold)
  *     elif predicate.sim_measure_type.compare('JACCARD') == 0:             # <<<<<<<<<<<<<<
@@ -2500,7 +2798,7 @@ static std::vector<std::pair<int,int> >  __pyx_f_16py_stringsimjoin_8apply_rf_8e
   }
   __pyx_L3:;
 
-  /* "py_stringsimjoin/apply_rf/executor.pyx":126
+  /* "py_stringsimjoin/apply_rf/executor.pyx":160
  *     elif predicate.sim_measure_type.compare('JACCARD') == 0:
  *         output = set_sim_join(ltokens, rtokens, 2, predicate.threshold)
  *     return output             # <<<<<<<<<<<<<<
@@ -2510,7 +2808,7 @@ static std::vector<std::pair<int,int> >  __pyx_f_16py_stringsimjoin_8apply_rf_8e
   __pyx_r = __pyx_v_output;
   goto __pyx_L0;
 
-  /* "py_stringsimjoin/apply_rf/executor.pyx":113
+  /* "py_stringsimjoin/apply_rf/executor.pyx":147
  * 
  * 
  * cdef vector[pair[int, int]] execute_join_node(vector[string]& lstrings, vector[string]& rstrings,             # <<<<<<<<<<<<<<
@@ -2528,7 +2826,7 @@ static std::vector<std::pair<int,int> >  __pyx_f_16py_stringsimjoin_8apply_rf_8e
   return __pyx_r;
 }
 
-/* "py_stringsimjoin/apply_rf/executor.pyx":128
+/* "py_stringsimjoin/apply_rf/executor.pyx":162
  *     return output
  * 
  * cdef vector[pair[int, int]] execute_filter_node(vector[pair[int, int]]& candset, vector[string]& lstrings, vector[string]& rstrings,             # <<<<<<<<<<<<<<
@@ -2567,40 +2865,40 @@ static std::vector<std::pair<int,int> >  __pyx_f_16py_stringsimjoin_8apply_rf_8e
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("execute_filter_node", 0);
 
-  /* "py_stringsimjoin/apply_rf/executor.pyx":131
+  /* "py_stringsimjoin/apply_rf/executor.pyx":165
  *                             Predicatecpp predicate, int n_jobs, const string& working_dir):
  *     cdef vector[vector[int]] ltokens, rtokens
  *     print 'before tok'             # <<<<<<<<<<<<<<
  *     load_tok(predicate.tokenizer_type, working_dir, ltokens, rtokens)
  *     print 'loaded tok'
  */
-  if (__Pyx_PrintOne(0, __pyx_kp_s_before_tok) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 131; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (__Pyx_PrintOne(0, __pyx_kp_s_before_tok) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 165; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
 
-  /* "py_stringsimjoin/apply_rf/executor.pyx":132
+  /* "py_stringsimjoin/apply_rf/executor.pyx":166
  *     cdef vector[vector[int]] ltokens, rtokens
  *     print 'before tok'
  *     load_tok(predicate.tokenizer_type, working_dir, ltokens, rtokens)             # <<<<<<<<<<<<<<
  *     print 'loaded tok'
  *     cdef vector[pair[int, int]] partitions, final_output_pairs, part_pairs
  */
-  __pyx_t_1 = __pyx_convert_PyBytes_string_to_py_std__in_string(__pyx_v_predicate.tokenizer_type); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 132; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = __pyx_convert_PyBytes_string_to_py_std__in_string(__pyx_v_predicate.tokenizer_type); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 166; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = __pyx_convert_PyBytes_string_to_py_std__in_string(__pyx_v_working_dir); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 132; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_2 = __pyx_convert_PyBytes_string_to_py_std__in_string(__pyx_v_working_dir); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 166; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_f_16py_stringsimjoin_8apply_rf_10tokenizers_load_tok(__pyx_t_1, __pyx_t_2, __pyx_v_ltokens, __pyx_v_rtokens, 0);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "py_stringsimjoin/apply_rf/executor.pyx":133
+  /* "py_stringsimjoin/apply_rf/executor.pyx":167
  *     print 'before tok'
  *     load_tok(predicate.tokenizer_type, working_dir, ltokens, rtokens)
  *     print 'loaded tok'             # <<<<<<<<<<<<<<
  *     cdef vector[pair[int, int]] partitions, final_output_pairs, part_pairs
  *     cdef vector[vector[pair[int, int]]] output_pairs
  */
-  if (__Pyx_PrintOne(0, __pyx_kp_s_loaded_tok) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 133; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (__Pyx_PrintOne(0, __pyx_kp_s_loaded_tok) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 167; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
 
-  /* "py_stringsimjoin/apply_rf/executor.pyx":136
+  /* "py_stringsimjoin/apply_rf/executor.pyx":170
  *     cdef vector[pair[int, int]] partitions, final_output_pairs, part_pairs
  *     cdef vector[vector[pair[int, int]]] output_pairs
  *     cdef int n = candset.size(), start=0, end, i             # <<<<<<<<<<<<<<
@@ -2610,7 +2908,7 @@ static std::vector<std::pair<int,int> >  __pyx_f_16py_stringsimjoin_8apply_rf_8e
   __pyx_v_n = __pyx_v_candset.size();
   __pyx_v_start = 0;
 
-  /* "py_stringsimjoin/apply_rf/executor.pyx":138
+  /* "py_stringsimjoin/apply_rf/executor.pyx":172
  *     cdef int n = candset.size(), start=0, end, i
  * 
  *     partition_size = <int>(<float> n / <float> n_jobs)             # <<<<<<<<<<<<<<
@@ -2619,14 +2917,14 @@ static std::vector<std::pair<int,int> >  __pyx_f_16py_stringsimjoin_8apply_rf_8e
  */
   if (unlikely(((float)__pyx_v_n_jobs) == 0)) {
     PyErr_SetString(PyExc_ZeroDivisionError, "float division");
-    {__pyx_filename = __pyx_f[0]; __pyx_lineno = 138; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    {__pyx_filename = __pyx_f[0]; __pyx_lineno = 172; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   }
-  __pyx_t_2 = __Pyx_PyInt_From_int(((int)(((float)__pyx_v_n) / ((float)__pyx_v_n_jobs)))); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 138; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_2 = __Pyx_PyInt_From_int(((int)(((float)__pyx_v_n) / ((float)__pyx_v_n_jobs)))); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 172; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_v_partition_size = __pyx_t_2;
   __pyx_t_2 = 0;
 
-  /* "py_stringsimjoin/apply_rf/executor.pyx":140
+  /* "py_stringsimjoin/apply_rf/executor.pyx":174
  *     partition_size = <int>(<float> n / <float> n_jobs)
  * 
  *     for i in range(n_jobs):             # <<<<<<<<<<<<<<
@@ -2637,23 +2935,23 @@ static std::vector<std::pair<int,int> >  __pyx_f_16py_stringsimjoin_8apply_rf_8e
   for (__pyx_t_4 = 0; __pyx_t_4 < __pyx_t_3; __pyx_t_4+=1) {
     __pyx_v_i = __pyx_t_4;
 
-    /* "py_stringsimjoin/apply_rf/executor.pyx":141
+    /* "py_stringsimjoin/apply_rf/executor.pyx":175
  * 
  *     for i in range(n_jobs):
  *         end = start + partition_size             # <<<<<<<<<<<<<<
  *         if end > n or i == n_jobs - 1:
  *             end = n
  */
-    __pyx_t_2 = __Pyx_PyInt_From_int(__pyx_v_start); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 141; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_2 = __Pyx_PyInt_From_int(__pyx_v_start); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 175; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_2);
-    __pyx_t_1 = PyNumber_Add(__pyx_t_2, __pyx_v_partition_size); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 141; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_1 = PyNumber_Add(__pyx_t_2, __pyx_v_partition_size); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 175; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-    __pyx_t_5 = __Pyx_PyInt_As_int(__pyx_t_1); if (unlikely((__pyx_t_5 == (int)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 141; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_5 = __Pyx_PyInt_As_int(__pyx_t_1); if (unlikely((__pyx_t_5 == (int)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 175; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
     __pyx_v_end = __pyx_t_5;
 
-    /* "py_stringsimjoin/apply_rf/executor.pyx":142
+    /* "py_stringsimjoin/apply_rf/executor.pyx":176
  *     for i in range(n_jobs):
  *         end = start + partition_size
  *         if end > n or i == n_jobs - 1:             # <<<<<<<<<<<<<<
@@ -2671,7 +2969,7 @@ static std::vector<std::pair<int,int> >  __pyx_f_16py_stringsimjoin_8apply_rf_8e
     __pyx_L6_bool_binop_done:;
     if (__pyx_t_6) {
 
-      /* "py_stringsimjoin/apply_rf/executor.pyx":143
+      /* "py_stringsimjoin/apply_rf/executor.pyx":177
  *         end = start + partition_size
  *         if end > n or i == n_jobs - 1:
  *             end = n             # <<<<<<<<<<<<<<
@@ -2680,7 +2978,7 @@ static std::vector<std::pair<int,int> >  __pyx_f_16py_stringsimjoin_8apply_rf_8e
  */
       __pyx_v_end = __pyx_v_n;
 
-      /* "py_stringsimjoin/apply_rf/executor.pyx":142
+      /* "py_stringsimjoin/apply_rf/executor.pyx":176
  *     for i in range(n_jobs):
  *         end = start + partition_size
  *         if end > n or i == n_jobs - 1:             # <<<<<<<<<<<<<<
@@ -2689,7 +2987,7 @@ static std::vector<std::pair<int,int> >  __pyx_f_16py_stringsimjoin_8apply_rf_8e
  */
     }
 
-    /* "py_stringsimjoin/apply_rf/executor.pyx":144
+    /* "py_stringsimjoin/apply_rf/executor.pyx":178
  *         if end > n or i == n_jobs - 1:
  *             end = n
  *         partitions.push_back(pair[int, int](start, end))             # <<<<<<<<<<<<<<
@@ -2700,16 +2998,16 @@ static std::vector<std::pair<int,int> >  __pyx_f_16py_stringsimjoin_8apply_rf_8e
       __pyx_t_8 = std::pair<int,int> (__pyx_v_start, __pyx_v_end);
     } catch(...) {
       __Pyx_CppExn2PyErr();
-      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 144; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 178; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     }
     try {
       __pyx_v_partitions.push_back(__pyx_t_8);
     } catch(...) {
       __Pyx_CppExn2PyErr();
-      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 144; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 178; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     }
 
-    /* "py_stringsimjoin/apply_rf/executor.pyx":146
+    /* "py_stringsimjoin/apply_rf/executor.pyx":180
  *         partitions.push_back(pair[int, int](start, end))
  * 
  *         start = end             # <<<<<<<<<<<<<<
@@ -2718,7 +3016,7 @@ static std::vector<std::pair<int,int> >  __pyx_f_16py_stringsimjoin_8apply_rf_8e
  */
     __pyx_v_start = __pyx_v_end;
 
-    /* "py_stringsimjoin/apply_rf/executor.pyx":147
+    /* "py_stringsimjoin/apply_rf/executor.pyx":181
  * 
  *         start = end
  *         output_pairs.push_back(vector[pair[int, int]]())             # <<<<<<<<<<<<<<
@@ -2729,17 +3027,17 @@ static std::vector<std::pair<int,int> >  __pyx_f_16py_stringsimjoin_8apply_rf_8e
       __pyx_t_9 = std::vector<std::pair<int,int> > ();
     } catch(...) {
       __Pyx_CppExn2PyErr();
-      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 147; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 181; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     }
     try {
       __pyx_v_output_pairs.push_back(__pyx_t_9);
     } catch(...) {
       __Pyx_CppExn2PyErr();
-      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 147; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 181; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     }
   }
 
-  /* "py_stringsimjoin/apply_rf/executor.pyx":151
+  /* "py_stringsimjoin/apply_rf/executor.pyx":185
  *     cdef int sim_type, comp_type
  * 
  *     sim_type = get_sim_type(predicate.sim_measure_type)             # <<<<<<<<<<<<<<
@@ -2748,7 +3046,7 @@ static std::vector<std::pair<int,int> >  __pyx_f_16py_stringsimjoin_8apply_rf_8e
  */
   __pyx_v_sim_type = __pyx_f_16py_stringsimjoin_8apply_rf_5utils_get_sim_type(__pyx_v_predicate.sim_measure_type);
 
-  /* "py_stringsimjoin/apply_rf/executor.pyx":152
+  /* "py_stringsimjoin/apply_rf/executor.pyx":186
  * 
  *     sim_type = get_sim_type(predicate.sim_measure_type)
  *     comp_type = get_comp_type(predicate.comp_op)             # <<<<<<<<<<<<<<
@@ -2757,16 +3055,16 @@ static std::vector<std::pair<int,int> >  __pyx_f_16py_stringsimjoin_8apply_rf_8e
  */
   __pyx_v_comp_type = __pyx_f_16py_stringsimjoin_8apply_rf_5utils_get_comp_type(__pyx_v_predicate.comp_op);
 
-  /* "py_stringsimjoin/apply_rf/executor.pyx":153
+  /* "py_stringsimjoin/apply_rf/executor.pyx":187
  *     sim_type = get_sim_type(predicate.sim_measure_type)
  *     comp_type = get_comp_type(predicate.comp_op)
  *     print 'parallen begin'             # <<<<<<<<<<<<<<
  *     for i in prange(n_jobs, nogil=True):
  *         execute_filter_node_part(partitions[i], candset, ltokens, rtokens,
  */
-  if (__Pyx_PrintOne(0, __pyx_kp_s_parallen_begin) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 153; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (__Pyx_PrintOne(0, __pyx_kp_s_parallen_begin) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 187; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
 
-  /* "py_stringsimjoin/apply_rf/executor.pyx":154
+  /* "py_stringsimjoin/apply_rf/executor.pyx":188
  *     comp_type = get_comp_type(predicate.comp_op)
  *     print 'parallen begin'
  *     for i in prange(n_jobs, nogil=True):             # <<<<<<<<<<<<<<
@@ -2802,7 +3100,7 @@ static std::vector<std::pair<int,int> >  __pyx_f_16py_stringsimjoin_8apply_rf_8e
                         {
                             __pyx_v_i = 0 + 1 * __pyx_t_4;
 
-                            /* "py_stringsimjoin/apply_rf/executor.pyx":155
+                            /* "py_stringsimjoin/apply_rf/executor.pyx":189
  *     print 'parallen begin'
  *     for i in prange(n_jobs, nogil=True):
  *         execute_filter_node_part(partitions[i], candset, ltokens, rtokens,             # <<<<<<<<<<<<<<
@@ -2823,7 +3121,7 @@ static std::vector<std::pair<int,int> >  __pyx_f_16py_stringsimjoin_8apply_rf_8e
         #endif
       }
 
-      /* "py_stringsimjoin/apply_rf/executor.pyx":154
+      /* "py_stringsimjoin/apply_rf/executor.pyx":188
  *     comp_type = get_comp_type(predicate.comp_op)
  *     print 'parallen begin'
  *     for i in prange(n_jobs, nogil=True):             # <<<<<<<<<<<<<<
@@ -2841,16 +3139,16 @@ static std::vector<std::pair<int,int> >  __pyx_f_16py_stringsimjoin_8apply_rf_8e
       }
   }
 
-  /* "py_stringsimjoin/apply_rf/executor.pyx":157
+  /* "py_stringsimjoin/apply_rf/executor.pyx":191
  *         execute_filter_node_part(partitions[i], candset, ltokens, rtokens,
  *                                  predicate, sim_type, comp_type, output_pairs[i])
  *     print 'parallen end'             # <<<<<<<<<<<<<<
  *     for part_pairs in output_pairs:
  *         final_output_pairs.insert(final_output_pairs.end(), part_pairs.begin(), part_pairs.end())
  */
-  if (__Pyx_PrintOne(0, __pyx_kp_s_parallen_end) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 157; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (__Pyx_PrintOne(0, __pyx_kp_s_parallen_end) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 191; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
 
-  /* "py_stringsimjoin/apply_rf/executor.pyx":158
+  /* "py_stringsimjoin/apply_rf/executor.pyx":192
  *                                  predicate, sim_type, comp_type, output_pairs[i])
  *     print 'parallen end'
  *     for part_pairs in output_pairs:             # <<<<<<<<<<<<<<
@@ -2864,7 +3162,7 @@ static std::vector<std::pair<int,int> >  __pyx_f_16py_stringsimjoin_8apply_rf_8e
     ++__pyx_t_10;
     __pyx_v_part_pairs = __pyx_t_9;
 
-    /* "py_stringsimjoin/apply_rf/executor.pyx":159
+    /* "py_stringsimjoin/apply_rf/executor.pyx":193
  *     print 'parallen end'
  *     for part_pairs in output_pairs:
  *         final_output_pairs.insert(final_output_pairs.end(), part_pairs.begin(), part_pairs.end())             # <<<<<<<<<<<<<<
@@ -2875,10 +3173,10 @@ static std::vector<std::pair<int,int> >  __pyx_f_16py_stringsimjoin_8apply_rf_8e
       __pyx_v_final_output_pairs.insert(__pyx_v_final_output_pairs.end(), __pyx_v_part_pairs.begin(), __pyx_v_part_pairs.end());
     } catch(...) {
       __Pyx_CppExn2PyErr();
-      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 159; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 193; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     }
 
-    /* "py_stringsimjoin/apply_rf/executor.pyx":158
+    /* "py_stringsimjoin/apply_rf/executor.pyx":192
  *                                  predicate, sim_type, comp_type, output_pairs[i])
  *     print 'parallen end'
  *     for part_pairs in output_pairs:             # <<<<<<<<<<<<<<
@@ -2887,7 +3185,7 @@ static std::vector<std::pair<int,int> >  __pyx_f_16py_stringsimjoin_8apply_rf_8e
  */
   }
 
-  /* "py_stringsimjoin/apply_rf/executor.pyx":161
+  /* "py_stringsimjoin/apply_rf/executor.pyx":195
  *         final_output_pairs.insert(final_output_pairs.end(), part_pairs.begin(), part_pairs.end())
  * 
  *     return final_output_pairs             # <<<<<<<<<<<<<<
@@ -2897,7 +3195,7 @@ static std::vector<std::pair<int,int> >  __pyx_f_16py_stringsimjoin_8apply_rf_8e
   __pyx_r = __pyx_v_final_output_pairs;
   goto __pyx_L0;
 
-  /* "py_stringsimjoin/apply_rf/executor.pyx":128
+  /* "py_stringsimjoin/apply_rf/executor.pyx":162
  *     return output
  * 
  * cdef vector[pair[int, int]] execute_filter_node(vector[pair[int, int]]& candset, vector[string]& lstrings, vector[string]& rstrings,             # <<<<<<<<<<<<<<
@@ -2916,7 +3214,7 @@ static std::vector<std::pair<int,int> >  __pyx_f_16py_stringsimjoin_8apply_rf_8e
   return __pyx_r;
 }
 
-/* "py_stringsimjoin/apply_rf/executor.pyx":163
+/* "py_stringsimjoin/apply_rf/executor.pyx":197
  *     return final_output_pairs
  * 
  * cdef void execute_filter_node_part(pair[int, int] partition,             # <<<<<<<<<<<<<<
@@ -2936,7 +3234,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_8executor_execute_filter_node_p
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
 
-  /* "py_stringsimjoin/apply_rf/executor.pyx":174
+  /* "py_stringsimjoin/apply_rf/executor.pyx":208
  *     cdef int i
  * 
  *     cdef simfnptr sim_fn = get_sim_function(sim_type)             # <<<<<<<<<<<<<<
@@ -2945,7 +3243,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_8executor_execute_filter_node_p
  */
   __pyx_v_sim_fn = __pyx_f_16py_stringsimjoin_8apply_rf_5utils_get_sim_function(__pyx_v_sim_type);
 
-  /* "py_stringsimjoin/apply_rf/executor.pyx":175
+  /* "py_stringsimjoin/apply_rf/executor.pyx":209
  * 
  *     cdef simfnptr sim_fn = get_sim_function(sim_type)
  *     cdef compfnptr comp_fn = get_comparison_function(comp_type)             # <<<<<<<<<<<<<<
@@ -2954,7 +3252,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_8executor_execute_filter_node_p
  */
   __pyx_v_comp_fn = __pyx_f_16py_stringsimjoin_8apply_rf_5utils_get_comparison_function(__pyx_v_comp_type);
 
-  /* "py_stringsimjoin/apply_rf/executor.pyx":177
+  /* "py_stringsimjoin/apply_rf/executor.pyx":211
  *     cdef compfnptr comp_fn = get_comparison_function(comp_type)
  * 
  *     for i in range(partition.first, partition.second):             # <<<<<<<<<<<<<<
@@ -2965,7 +3263,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_8executor_execute_filter_node_p
   for (__pyx_t_2 = __pyx_v_partition.first; __pyx_t_2 < __pyx_t_1; __pyx_t_2+=1) {
     __pyx_v_i = __pyx_t_2;
 
-    /* "py_stringsimjoin/apply_rf/executor.pyx":178
+    /* "py_stringsimjoin/apply_rf/executor.pyx":212
  * 
  *     for i in range(partition.first, partition.second):
  *         cand  = candset[i]             # <<<<<<<<<<<<<<
@@ -2974,22 +3272,22 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_8executor_execute_filter_node_p
  */
     __pyx_v_cand = (__pyx_v_candset[__pyx_v_i]);
 
-    /* "py_stringsimjoin/apply_rf/executor.pyx":179
+    /* "py_stringsimjoin/apply_rf/executor.pyx":213
  *     for i in range(partition.first, partition.second):
  *         cand  = candset[i]
  *         if comp_fn(sim_fn(ltokens[cand.first], rtokens[cand.second]), predicate.threshold):             # <<<<<<<<<<<<<<
  *             output_pairs.push_back(cand)
- * 
+ * '''
  */
     __pyx_t_3 = (__pyx_v_comp_fn(__pyx_v_sim_fn((__pyx_v_ltokens[__pyx_v_cand.first]), (__pyx_v_rtokens[__pyx_v_cand.second])), __pyx_v_predicate.threshold) != 0);
     if (__pyx_t_3) {
 
-      /* "py_stringsimjoin/apply_rf/executor.pyx":180
+      /* "py_stringsimjoin/apply_rf/executor.pyx":214
  *         cand  = candset[i]
  *         if comp_fn(sim_fn(ltokens[cand.first], rtokens[cand.second]), predicate.threshold):
  *             output_pairs.push_back(cand)             # <<<<<<<<<<<<<<
- * 
- * cdef void tokenize_strings(vector[Tree]& trees, vector[string]& lstrings,
+ * '''
+ * cdef void execute_trees(omap[string, int]& candset, vector[Tree]& trees, int num_trees, const string& working_dir):
  */
       try {
         __pyx_v_output_pairs.push_back(__pyx_v_cand);
@@ -3001,20 +3299,20 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_8executor_execute_filter_node_p
         #ifdef WITH_THREAD
         PyGILState_Release(__pyx_gilstate_save);
         #endif
-        {__pyx_filename = __pyx_f[0]; __pyx_lineno = 180; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        {__pyx_filename = __pyx_f[0]; __pyx_lineno = 214; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       }
 
-      /* "py_stringsimjoin/apply_rf/executor.pyx":179
+      /* "py_stringsimjoin/apply_rf/executor.pyx":213
  *     for i in range(partition.first, partition.second):
  *         cand  = candset[i]
  *         if comp_fn(sim_fn(ltokens[cand.first], rtokens[cand.second]), predicate.threshold):             # <<<<<<<<<<<<<<
  *             output_pairs.push_back(cand)
- * 
+ * '''
  */
     }
   }
 
-  /* "py_stringsimjoin/apply_rf/executor.pyx":163
+  /* "py_stringsimjoin/apply_rf/executor.pyx":197
  *     return final_output_pairs
  * 
  * cdef void execute_filter_node_part(pair[int, int] partition,             # <<<<<<<<<<<<<<
@@ -3029,8 +3327,8 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_8executor_execute_filter_node_p
   __pyx_L0:;
 }
 
-/* "py_stringsimjoin/apply_rf/executor.pyx":182
- *             output_pairs.push_back(cand)
+/* "py_stringsimjoin/apply_rf/executor.pyx":227
+ * '''
  * 
  * cdef void tokenize_strings(vector[Tree]& trees, vector[string]& lstrings,             # <<<<<<<<<<<<<<
  *                       vector[string]& rstrings, const string& working_dir):
@@ -3059,7 +3357,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_8executor_tokenize_strings(std:
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("tokenize_strings", 0);
 
-  /* "py_stringsimjoin/apply_rf/executor.pyx":188
+  /* "py_stringsimjoin/apply_rf/executor.pyx":233
  *     cdef Rule rule
  *     cdef Predicatecpp predicate
  *     for tree in trees:             # <<<<<<<<<<<<<<
@@ -3073,7 +3371,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_8executor_tokenize_strings(std:
     ++__pyx_t_1;
     __pyx_v_tree = __pyx_t_2;
 
-    /* "py_stringsimjoin/apply_rf/executor.pyx":189
+    /* "py_stringsimjoin/apply_rf/executor.pyx":234
  *     cdef Predicatecpp predicate
  *     for tree in trees:
  *         for rule in tree.rules:             # <<<<<<<<<<<<<<
@@ -3088,7 +3386,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_8executor_tokenize_strings(std:
       ++__pyx_t_3;
       __pyx_v_rule = __pyx_t_5;
 
-      /* "py_stringsimjoin/apply_rf/executor.pyx":190
+      /* "py_stringsimjoin/apply_rf/executor.pyx":235
  *     for tree in trees:
  *         for rule in tree.rules:
  *             for predicate in rule.predicates:             # <<<<<<<<<<<<<<
@@ -3103,7 +3401,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_8executor_tokenize_strings(std:
         ++__pyx_t_6;
         __pyx_v_predicate = __pyx_t_8;
 
-        /* "py_stringsimjoin/apply_rf/executor.pyx":191
+        /* "py_stringsimjoin/apply_rf/executor.pyx":236
  *         for rule in tree.rules:
  *             for predicate in rule.predicates:
  *                 tokenizers.insert(predicate.tokenizer_type)             # <<<<<<<<<<<<<<
@@ -3114,10 +3412,10 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_8executor_tokenize_strings(std:
           __pyx_v_tokenizers.insert(__pyx_v_predicate.tokenizer_type);
         } catch(...) {
           __Pyx_CppExn2PyErr();
-          {__pyx_filename = __pyx_f[0]; __pyx_lineno = 191; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+          {__pyx_filename = __pyx_f[0]; __pyx_lineno = 236; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
         }
 
-        /* "py_stringsimjoin/apply_rf/executor.pyx":190
+        /* "py_stringsimjoin/apply_rf/executor.pyx":235
  *     for tree in trees:
  *         for rule in tree.rules:
  *             for predicate in rule.predicates:             # <<<<<<<<<<<<<<
@@ -3126,7 +3424,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_8executor_tokenize_strings(std:
  */
       }
 
-      /* "py_stringsimjoin/apply_rf/executor.pyx":189
+      /* "py_stringsimjoin/apply_rf/executor.pyx":234
  *     cdef Predicatecpp predicate
  *     for tree in trees:
  *         for rule in tree.rules:             # <<<<<<<<<<<<<<
@@ -3135,7 +3433,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_8executor_tokenize_strings(std:
  */
     }
 
-    /* "py_stringsimjoin/apply_rf/executor.pyx":188
+    /* "py_stringsimjoin/apply_rf/executor.pyx":233
  *     cdef Rule rule
  *     cdef Predicatecpp predicate
  *     for tree in trees:             # <<<<<<<<<<<<<<
@@ -3144,7 +3442,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_8executor_tokenize_strings(std:
  */
   }
 
-  /* "py_stringsimjoin/apply_rf/executor.pyx":194
+  /* "py_stringsimjoin/apply_rf/executor.pyx":239
  * 
  *     cdef string tok_type
  *     for tok_type in tokenizers:             # <<<<<<<<<<<<<<
@@ -3158,7 +3456,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_8executor_tokenize_strings(std:
     ++__pyx_t_9;
     __pyx_v_tok_type = __pyx_t_10;
 
-    /* "py_stringsimjoin/apply_rf/executor.pyx":195
+    /* "py_stringsimjoin/apply_rf/executor.pyx":240
  *     cdef string tok_type
  *     for tok_type in tokenizers:
  *         tokenize(lstrings, rstrings, tok_type, working_dir)             # <<<<<<<<<<<<<<
@@ -3167,7 +3465,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_8executor_tokenize_strings(std:
  */
     __pyx_f_16py_stringsimjoin_8apply_rf_10tokenizers_tokenize(__pyx_v_lstrings, __pyx_v_rstrings, __pyx_v_tok_type, __pyx_v_working_dir, 0);
 
-    /* "py_stringsimjoin/apply_rf/executor.pyx":194
+    /* "py_stringsimjoin/apply_rf/executor.pyx":239
  * 
  *     cdef string tok_type
  *     for tok_type in tokenizers:             # <<<<<<<<<<<<<<
@@ -3176,8 +3474,8 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_8executor_tokenize_strings(std:
  */
   }
 
-  /* "py_stringsimjoin/apply_rf/executor.pyx":182
- *             output_pairs.push_back(cand)
+  /* "py_stringsimjoin/apply_rf/executor.pyx":227
+ * '''
  * 
  * cdef void tokenize_strings(vector[Tree]& trees, vector[string]& lstrings,             # <<<<<<<<<<<<<<
  *                       vector[string]& rstrings, const string& working_dir):
@@ -3192,7 +3490,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_8executor_tokenize_strings(std:
   __Pyx_RefNannyFinishContext();
 }
 
-/* "py_stringsimjoin/apply_rf/executor.pyx":197
+/* "py_stringsimjoin/apply_rf/executor.pyx":242
  *         tokenize(lstrings, rstrings, tok_type, working_dir)
  * 
  * def test_tok1(df1, attr1, df2, attr2):             # <<<<<<<<<<<<<<
@@ -3236,21 +3534,21 @@ static PyObject *__pyx_pw_16py_stringsimjoin_8apply_rf_8executor_3test_tok1(PyOb
         case  1:
         if (likely((values[1] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_attr1)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("test_tok1", 1, 4, 4, 1); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 197; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+          __Pyx_RaiseArgtupleInvalid("test_tok1", 1, 4, 4, 1); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 242; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
         }
         case  2:
         if (likely((values[2] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_df2)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("test_tok1", 1, 4, 4, 2); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 197; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+          __Pyx_RaiseArgtupleInvalid("test_tok1", 1, 4, 4, 2); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 242; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
         }
         case  3:
         if (likely((values[3] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_attr2)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("test_tok1", 1, 4, 4, 3); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 197; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+          __Pyx_RaiseArgtupleInvalid("test_tok1", 1, 4, 4, 3); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 242; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "test_tok1") < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 197; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "test_tok1") < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 242; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 4) {
       goto __pyx_L5_argtuple_error;
@@ -3267,7 +3565,7 @@ static PyObject *__pyx_pw_16py_stringsimjoin_8apply_rf_8executor_3test_tok1(PyOb
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("test_tok1", 1, 4, 4, PyTuple_GET_SIZE(__pyx_args)); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 197; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+  __Pyx_RaiseArgtupleInvalid("test_tok1", 1, 4, 4, PyTuple_GET_SIZE(__pyx_args)); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 242; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
   __pyx_L3_error:;
   __Pyx_AddTraceback("py_stringsimjoin.apply_rf.executor.test_tok1", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
@@ -3293,42 +3591,42 @@ static PyObject *__pyx_pf_16py_stringsimjoin_8apply_rf_8executor_2test_tok1(CYTH
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("test_tok1", 0);
 
-  /* "py_stringsimjoin/apply_rf/executor.pyx":199
+  /* "py_stringsimjoin/apply_rf/executor.pyx":244
  * def test_tok1(df1, attr1, df2, attr2):
  *     cdef vector[string] lstrings, rstrings
  *     convert_to_vector1(df1[attr1], lstrings)             # <<<<<<<<<<<<<<
  *     convert_to_vector1(df2[attr2], rstrings)
  *     tokenize(lstrings, rstrings, 'ws', 'gh')
  */
-  __pyx_t_1 = PyObject_GetItem(__pyx_v_df1, __pyx_v_attr1); if (unlikely(__pyx_t_1 == NULL)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 199; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
+  __pyx_t_1 = PyObject_GetItem(__pyx_v_df1, __pyx_v_attr1); if (unlikely(__pyx_t_1 == NULL)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 244; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_f_16py_stringsimjoin_8apply_rf_8executor_convert_to_vector1(__pyx_t_1, __pyx_v_lstrings);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "py_stringsimjoin/apply_rf/executor.pyx":200
+  /* "py_stringsimjoin/apply_rf/executor.pyx":245
  *     cdef vector[string] lstrings, rstrings
  *     convert_to_vector1(df1[attr1], lstrings)
  *     convert_to_vector1(df2[attr2], rstrings)             # <<<<<<<<<<<<<<
  *     tokenize(lstrings, rstrings, 'ws', 'gh')
  * 
  */
-  __pyx_t_1 = PyObject_GetItem(__pyx_v_df2, __pyx_v_attr2); if (unlikely(__pyx_t_1 == NULL)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 200; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
+  __pyx_t_1 = PyObject_GetItem(__pyx_v_df2, __pyx_v_attr2); if (unlikely(__pyx_t_1 == NULL)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 245; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_f_16py_stringsimjoin_8apply_rf_8executor_convert_to_vector1(__pyx_t_1, __pyx_v_rstrings);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "py_stringsimjoin/apply_rf/executor.pyx":201
+  /* "py_stringsimjoin/apply_rf/executor.pyx":246
  *     convert_to_vector1(df1[attr1], lstrings)
  *     convert_to_vector1(df2[attr2], rstrings)
  *     tokenize(lstrings, rstrings, 'ws', 'gh')             # <<<<<<<<<<<<<<
  * 
  * cdef void convert_to_vector1(string_col, vector[string]& string_vector):
  */
-  __pyx_t_2 = __pyx_convert_string_from_py_std__in_string(__pyx_n_b_ws); if (unlikely(PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 201; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __pyx_t_3 = __pyx_convert_string_from_py_std__in_string(__pyx_n_b_gh); if (unlikely(PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 201; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_2 = __pyx_convert_string_from_py_std__in_string(__pyx_n_b_ws); if (unlikely(PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 246; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_3 = __pyx_convert_string_from_py_std__in_string(__pyx_n_b_gh); if (unlikely(PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 246; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_f_16py_stringsimjoin_8apply_rf_10tokenizers_tokenize(__pyx_v_lstrings, __pyx_v_rstrings, __pyx_t_2, __pyx_t_3, 0);
 
-  /* "py_stringsimjoin/apply_rf/executor.pyx":197
+  /* "py_stringsimjoin/apply_rf/executor.pyx":242
  *         tokenize(lstrings, rstrings, tok_type, working_dir)
  * 
  * def test_tok1(df1, attr1, df2, attr2):             # <<<<<<<<<<<<<<
@@ -3349,7 +3647,7 @@ static PyObject *__pyx_pf_16py_stringsimjoin_8apply_rf_8executor_2test_tok1(CYTH
   return __pyx_r;
 }
 
-/* "py_stringsimjoin/apply_rf/executor.pyx":203
+/* "py_stringsimjoin/apply_rf/executor.pyx":248
  *     tokenize(lstrings, rstrings, 'ws', 'gh')
  * 
  * cdef void convert_to_vector1(string_col, vector[string]& string_vector):             # <<<<<<<<<<<<<<
@@ -3370,7 +3668,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_8executor_convert_to_vector1(Py
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("convert_to_vector1", 0);
 
-  /* "py_stringsimjoin/apply_rf/executor.pyx":204
+  /* "py_stringsimjoin/apply_rf/executor.pyx":249
  * 
  * cdef void convert_to_vector1(string_col, vector[string]& string_vector):
  *     for val in string_col:             # <<<<<<<<<<<<<<
@@ -3381,26 +3679,26 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_8executor_convert_to_vector1(Py
     __pyx_t_1 = __pyx_v_string_col; __Pyx_INCREF(__pyx_t_1); __pyx_t_2 = 0;
     __pyx_t_3 = NULL;
   } else {
-    __pyx_t_2 = -1; __pyx_t_1 = PyObject_GetIter(__pyx_v_string_col); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 204; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_2 = -1; __pyx_t_1 = PyObject_GetIter(__pyx_v_string_col); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 249; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_1);
-    __pyx_t_3 = Py_TYPE(__pyx_t_1)->tp_iternext; if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 204; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_3 = Py_TYPE(__pyx_t_1)->tp_iternext; if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 249; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   }
   for (;;) {
     if (likely(!__pyx_t_3)) {
       if (likely(PyList_CheckExact(__pyx_t_1))) {
         if (__pyx_t_2 >= PyList_GET_SIZE(__pyx_t_1)) break;
         #if CYTHON_COMPILING_IN_CPYTHON
-        __pyx_t_4 = PyList_GET_ITEM(__pyx_t_1, __pyx_t_2); __Pyx_INCREF(__pyx_t_4); __pyx_t_2++; if (unlikely(0 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 204; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        __pyx_t_4 = PyList_GET_ITEM(__pyx_t_1, __pyx_t_2); __Pyx_INCREF(__pyx_t_4); __pyx_t_2++; if (unlikely(0 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 249; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
         #else
-        __pyx_t_4 = PySequence_ITEM(__pyx_t_1, __pyx_t_2); __pyx_t_2++; if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 204; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        __pyx_t_4 = PySequence_ITEM(__pyx_t_1, __pyx_t_2); __pyx_t_2++; if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 249; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
         __Pyx_GOTREF(__pyx_t_4);
         #endif
       } else {
         if (__pyx_t_2 >= PyTuple_GET_SIZE(__pyx_t_1)) break;
         #if CYTHON_COMPILING_IN_CPYTHON
-        __pyx_t_4 = PyTuple_GET_ITEM(__pyx_t_1, __pyx_t_2); __Pyx_INCREF(__pyx_t_4); __pyx_t_2++; if (unlikely(0 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 204; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        __pyx_t_4 = PyTuple_GET_ITEM(__pyx_t_1, __pyx_t_2); __Pyx_INCREF(__pyx_t_4); __pyx_t_2++; if (unlikely(0 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 249; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
         #else
-        __pyx_t_4 = PySequence_ITEM(__pyx_t_1, __pyx_t_2); __pyx_t_2++; if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 204; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        __pyx_t_4 = PySequence_ITEM(__pyx_t_1, __pyx_t_2); __pyx_t_2++; if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 249; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
         __Pyx_GOTREF(__pyx_t_4);
         #endif
       }
@@ -3410,7 +3708,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_8executor_convert_to_vector1(Py
         PyObject* exc_type = PyErr_Occurred();
         if (exc_type) {
           if (likely(exc_type == PyExc_StopIteration || PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) PyErr_Clear();
-          else {__pyx_filename = __pyx_f[0]; __pyx_lineno = 204; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+          else {__pyx_filename = __pyx_f[0]; __pyx_lineno = 249; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
         }
         break;
       }
@@ -3419,22 +3717,22 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_8executor_convert_to_vector1(Py
     __Pyx_XDECREF_SET(__pyx_v_val, __pyx_t_4);
     __pyx_t_4 = 0;
 
-    /* "py_stringsimjoin/apply_rf/executor.pyx":205
+    /* "py_stringsimjoin/apply_rf/executor.pyx":250
  * cdef void convert_to_vector1(string_col, vector[string]& string_vector):
  *     for val in string_col:
  *         string_vector.push_back(val)             # <<<<<<<<<<<<<<
  * 
  * cdef vector[string] infer_tokenizers(plan, rule_sets):
  */
-    __pyx_t_5 = __pyx_convert_string_from_py_std__in_string(__pyx_v_val); if (unlikely(PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 205; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_5 = __pyx_convert_string_from_py_std__in_string(__pyx_v_val); if (unlikely(PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 250; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     try {
       __pyx_v_string_vector.push_back(__pyx_t_5);
     } catch(...) {
       __Pyx_CppExn2PyErr();
-      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 205; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 250; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     }
 
-    /* "py_stringsimjoin/apply_rf/executor.pyx":204
+    /* "py_stringsimjoin/apply_rf/executor.pyx":249
  * 
  * cdef void convert_to_vector1(string_col, vector[string]& string_vector):
  *     for val in string_col:             # <<<<<<<<<<<<<<
@@ -3444,7 +3742,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_8executor_convert_to_vector1(Py
   }
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "py_stringsimjoin/apply_rf/executor.pyx":203
+  /* "py_stringsimjoin/apply_rf/executor.pyx":248
  *     tokenize(lstrings, rstrings, 'ws', 'gh')
  * 
  * cdef void convert_to_vector1(string_col, vector[string]& string_vector):             # <<<<<<<<<<<<<<
@@ -3463,7 +3761,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_8executor_convert_to_vector1(Py
   __Pyx_RefNannyFinishContext();
 }
 
-/* "py_stringsimjoin/apply_rf/executor.pyx":207
+/* "py_stringsimjoin/apply_rf/executor.pyx":252
  *         string_vector.push_back(val)
  * 
  * cdef vector[string] infer_tokenizers(plan, rule_sets):             # <<<<<<<<<<<<<<
@@ -3495,14 +3793,14 @@ static std::vector<std::string>  __pyx_f_16py_stringsimjoin_8apply_rf_8executor_
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("infer_tokenizers", 0);
 
-  /* "py_stringsimjoin/apply_rf/executor.pyx":209
+  /* "py_stringsimjoin/apply_rf/executor.pyx":254
  * cdef vector[string] infer_tokenizers(plan, rule_sets):
  *     cdef vector[string] tokenizers
  *     predicate_dict = get_predicate_dict(rule_sets)             # <<<<<<<<<<<<<<
  * 
  *     queue = []
  */
-  __pyx_t_2 = __Pyx_GetModuleGlobalName(__pyx_n_s_get_predicate_dict); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 209; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_2 = __Pyx_GetModuleGlobalName(__pyx_n_s_get_predicate_dict); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 254; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_t_3 = NULL;
   if (CYTHON_COMPILING_IN_CPYTHON && unlikely(PyMethod_Check(__pyx_t_2))) {
@@ -3515,16 +3813,16 @@ static std::vector<std::string>  __pyx_f_16py_stringsimjoin_8apply_rf_8executor_
     }
   }
   if (!__pyx_t_3) {
-    __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_v_rule_sets); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 209; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_v_rule_sets); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 254; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_1);
   } else {
-    __pyx_t_4 = PyTuple_New(1+1); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 209; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_4 = PyTuple_New(1+1); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 254; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_4);
     __Pyx_GIVEREF(__pyx_t_3); PyTuple_SET_ITEM(__pyx_t_4, 0, __pyx_t_3); __pyx_t_3 = NULL;
     __Pyx_INCREF(__pyx_v_rule_sets);
     __Pyx_GIVEREF(__pyx_v_rule_sets);
     PyTuple_SET_ITEM(__pyx_t_4, 0+1, __pyx_v_rule_sets);
-    __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_4, NULL); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 209; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_4, NULL); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 254; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
   }
@@ -3532,34 +3830,34 @@ static std::vector<std::string>  __pyx_f_16py_stringsimjoin_8apply_rf_8executor_
   __pyx_v_predicate_dict = __pyx_t_1;
   __pyx_t_1 = 0;
 
-  /* "py_stringsimjoin/apply_rf/executor.pyx":211
+  /* "py_stringsimjoin/apply_rf/executor.pyx":256
  *     predicate_dict = get_predicate_dict(rule_sets)
  * 
  *     queue = []             # <<<<<<<<<<<<<<
  *     queue.extend(plan.root.children)
  *     cdef string s
  */
-  __pyx_t_1 = PyList_New(0); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 211; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = PyList_New(0); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 256; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_v_queue = ((PyObject*)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "py_stringsimjoin/apply_rf/executor.pyx":212
+  /* "py_stringsimjoin/apply_rf/executor.pyx":257
  * 
  *     queue = []
  *     queue.extend(plan.root.children)             # <<<<<<<<<<<<<<
  *     cdef string s
  *     while len(queue) > 0:
  */
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_plan, __pyx_n_s_root); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 212; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_plan, __pyx_n_s_root); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 257; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_children); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 212; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_children); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 257; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_5 = __Pyx_PyList_Extend(__pyx_v_queue, __pyx_t_2); if (unlikely(__pyx_t_5 == -1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 212; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_5 = __Pyx_PyList_Extend(__pyx_v_queue, __pyx_t_2); if (unlikely(__pyx_t_5 == -1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 257; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "py_stringsimjoin/apply_rf/executor.pyx":214
+  /* "py_stringsimjoin/apply_rf/executor.pyx":259
  *     queue.extend(plan.root.children)
  *     cdef string s
  *     while len(queue) > 0:             # <<<<<<<<<<<<<<
@@ -3567,60 +3865,60 @@ static std::vector<std::string>  __pyx_f_16py_stringsimjoin_8apply_rf_8executor_
  * 
  */
   while (1) {
-    __pyx_t_6 = PyList_GET_SIZE(__pyx_v_queue); if (unlikely(__pyx_t_6 == -1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 214; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_6 = PyList_GET_SIZE(__pyx_v_queue); if (unlikely(__pyx_t_6 == -1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 259; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __pyx_t_7 = ((__pyx_t_6 > 0) != 0);
     if (!__pyx_t_7) break;
 
-    /* "py_stringsimjoin/apply_rf/executor.pyx":215
+    /* "py_stringsimjoin/apply_rf/executor.pyx":260
  *     cdef string s
  *     while len(queue) > 0:
  *         curr_node = queue.pop(0)             # <<<<<<<<<<<<<<
  * 
  *         if curr_node.node_type in ['JOIN', 'FEATURE', 'FILTER']:
  */
-    __pyx_t_2 = __Pyx_PyList_PopIndex(__pyx_v_queue, __pyx_int_0, 0, 1, Py_ssize_t, PyInt_FromSsize_t); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 215; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_2 = __Pyx_PyList_PopIndex(__pyx_v_queue, __pyx_int_0, 0, 1, Py_ssize_t, PyInt_FromSsize_t); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 260; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_2);
     __Pyx_XDECREF_SET(__pyx_v_curr_node, __pyx_t_2);
     __pyx_t_2 = 0;
 
-    /* "py_stringsimjoin/apply_rf/executor.pyx":217
+    /* "py_stringsimjoin/apply_rf/executor.pyx":262
  *         curr_node = queue.pop(0)
  * 
  *         if curr_node.node_type in ['JOIN', 'FEATURE', 'FILTER']:             # <<<<<<<<<<<<<<
  *             pred = predicate_dict.get(curr_node.predicate)
  *             s = pred.tokenizer_type
  */
-    __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_curr_node, __pyx_n_s_node_type); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 217; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_curr_node, __pyx_n_s_node_type); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 262; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_2);
-    __pyx_t_8 = (__Pyx_PyString_Equals(__pyx_t_2, __pyx_n_s_JOIN, Py_EQ)); if (unlikely(__pyx_t_8 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 217; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_8 = (__Pyx_PyString_Equals(__pyx_t_2, __pyx_n_s_JOIN, Py_EQ)); if (unlikely(__pyx_t_8 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 262; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     if (!__pyx_t_8) {
     } else {
       __pyx_t_7 = __pyx_t_8;
       goto __pyx_L6_bool_binop_done;
     }
-    __pyx_t_8 = (__Pyx_PyString_Equals(__pyx_t_2, __pyx_n_s_FEATURE, Py_EQ)); if (unlikely(__pyx_t_8 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 217; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_8 = (__Pyx_PyString_Equals(__pyx_t_2, __pyx_n_s_FEATURE, Py_EQ)); if (unlikely(__pyx_t_8 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 262; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     if (!__pyx_t_8) {
     } else {
       __pyx_t_7 = __pyx_t_8;
       goto __pyx_L6_bool_binop_done;
     }
-    __pyx_t_8 = (__Pyx_PyString_Equals(__pyx_t_2, __pyx_n_s_FILTER, Py_EQ)); if (unlikely(__pyx_t_8 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 217; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_8 = (__Pyx_PyString_Equals(__pyx_t_2, __pyx_n_s_FILTER, Py_EQ)); if (unlikely(__pyx_t_8 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 262; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __pyx_t_7 = __pyx_t_8;
     __pyx_L6_bool_binop_done:;
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
     __pyx_t_8 = (__pyx_t_7 != 0);
     if (__pyx_t_8) {
 
-      /* "py_stringsimjoin/apply_rf/executor.pyx":218
+      /* "py_stringsimjoin/apply_rf/executor.pyx":263
  * 
  *         if curr_node.node_type in ['JOIN', 'FEATURE', 'FILTER']:
  *             pred = predicate_dict.get(curr_node.predicate)             # <<<<<<<<<<<<<<
  *             s = pred.tokenizer_type
  *             tokenizers.push_back(s)
  */
-      __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_predicate_dict, __pyx_n_s_get); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 218; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_predicate_dict, __pyx_n_s_get); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 263; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_GOTREF(__pyx_t_1);
-      __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_v_curr_node, __pyx_n_s_predicate); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 218; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_v_curr_node, __pyx_n_s_predicate); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 263; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_GOTREF(__pyx_t_4);
       __pyx_t_3 = NULL;
       if (CYTHON_COMPILING_IN_CPYTHON && likely(PyMethod_Check(__pyx_t_1))) {
@@ -3633,17 +3931,17 @@ static std::vector<std::string>  __pyx_f_16py_stringsimjoin_8apply_rf_8executor_
         }
       }
       if (!__pyx_t_3) {
-        __pyx_t_2 = __Pyx_PyObject_CallOneArg(__pyx_t_1, __pyx_t_4); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 218; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        __pyx_t_2 = __Pyx_PyObject_CallOneArg(__pyx_t_1, __pyx_t_4); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 263; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
         __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
         __Pyx_GOTREF(__pyx_t_2);
       } else {
-        __pyx_t_9 = PyTuple_New(1+1); if (unlikely(!__pyx_t_9)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 218; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        __pyx_t_9 = PyTuple_New(1+1); if (unlikely(!__pyx_t_9)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 263; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
         __Pyx_GOTREF(__pyx_t_9);
         __Pyx_GIVEREF(__pyx_t_3); PyTuple_SET_ITEM(__pyx_t_9, 0, __pyx_t_3); __pyx_t_3 = NULL;
         __Pyx_GIVEREF(__pyx_t_4);
         PyTuple_SET_ITEM(__pyx_t_9, 0+1, __pyx_t_4);
         __pyx_t_4 = 0;
-        __pyx_t_2 = __Pyx_PyObject_Call(__pyx_t_1, __pyx_t_9, NULL); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 218; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        __pyx_t_2 = __Pyx_PyObject_Call(__pyx_t_1, __pyx_t_9, NULL); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 263; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
         __Pyx_GOTREF(__pyx_t_2);
         __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
       }
@@ -3651,20 +3949,20 @@ static std::vector<std::string>  __pyx_f_16py_stringsimjoin_8apply_rf_8executor_
       __Pyx_XDECREF_SET(__pyx_v_pred, __pyx_t_2);
       __pyx_t_2 = 0;
 
-      /* "py_stringsimjoin/apply_rf/executor.pyx":219
+      /* "py_stringsimjoin/apply_rf/executor.pyx":264
  *         if curr_node.node_type in ['JOIN', 'FEATURE', 'FILTER']:
  *             pred = predicate_dict.get(curr_node.predicate)
  *             s = pred.tokenizer_type             # <<<<<<<<<<<<<<
  *             tokenizers.push_back(s)
  * 
  */
-      __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_pred, __pyx_n_s_tokenizer_type); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 219; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_pred, __pyx_n_s_tokenizer_type); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 264; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_GOTREF(__pyx_t_2);
-      __pyx_t_10 = __pyx_convert_string_from_py_std__in_string(__pyx_t_2); if (unlikely(PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 219; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_10 = __pyx_convert_string_from_py_std__in_string(__pyx_t_2); if (unlikely(PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 264; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
       __pyx_v_s = __pyx_t_10;
 
-      /* "py_stringsimjoin/apply_rf/executor.pyx":220
+      /* "py_stringsimjoin/apply_rf/executor.pyx":265
  *             pred = predicate_dict.get(curr_node.predicate)
  *             s = pred.tokenizer_type
  *             tokenizers.push_back(s)             # <<<<<<<<<<<<<<
@@ -3675,10 +3973,10 @@ static std::vector<std::string>  __pyx_f_16py_stringsimjoin_8apply_rf_8executor_
         __pyx_v_tokenizers.push_back(__pyx_v_s);
       } catch(...) {
         __Pyx_CppExn2PyErr();
-        {__pyx_filename = __pyx_f[0]; __pyx_lineno = 220; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        {__pyx_filename = __pyx_f[0]; __pyx_lineno = 265; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       }
 
-      /* "py_stringsimjoin/apply_rf/executor.pyx":217
+      /* "py_stringsimjoin/apply_rf/executor.pyx":262
  *         curr_node = queue.pop(0)
  * 
  *         if curr_node.node_type in ['JOIN', 'FEATURE', 'FILTER']:             # <<<<<<<<<<<<<<
@@ -3687,20 +3985,20 @@ static std::vector<std::string>  __pyx_f_16py_stringsimjoin_8apply_rf_8executor_
  */
     }
 
-    /* "py_stringsimjoin/apply_rf/executor.pyx":222
+    /* "py_stringsimjoin/apply_rf/executor.pyx":267
  *             tokenizers.push_back(s)
  * 
  *         if curr_node.node_type == 'OUTPUT':             # <<<<<<<<<<<<<<
  *             continue
  *         queue.extend(curr_node.children)
  */
-    __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_curr_node, __pyx_n_s_node_type); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 222; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_curr_node, __pyx_n_s_node_type); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 267; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_2);
-    __pyx_t_8 = (__Pyx_PyString_Equals(__pyx_t_2, __pyx_n_s_OUTPUT, Py_EQ)); if (unlikely(__pyx_t_8 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 222; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_8 = (__Pyx_PyString_Equals(__pyx_t_2, __pyx_n_s_OUTPUT, Py_EQ)); if (unlikely(__pyx_t_8 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 267; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
     if (__pyx_t_8) {
 
-      /* "py_stringsimjoin/apply_rf/executor.pyx":223
+      /* "py_stringsimjoin/apply_rf/executor.pyx":268
  * 
  *         if curr_node.node_type == 'OUTPUT':
  *             continue             # <<<<<<<<<<<<<<
@@ -3709,7 +4007,7 @@ static std::vector<std::string>  __pyx_f_16py_stringsimjoin_8apply_rf_8executor_
  */
       goto __pyx_L3_continue;
 
-      /* "py_stringsimjoin/apply_rf/executor.pyx":222
+      /* "py_stringsimjoin/apply_rf/executor.pyx":267
  *             tokenizers.push_back(s)
  * 
  *         if curr_node.node_type == 'OUTPUT':             # <<<<<<<<<<<<<<
@@ -3718,21 +4016,21 @@ static std::vector<std::string>  __pyx_f_16py_stringsimjoin_8apply_rf_8executor_
  */
     }
 
-    /* "py_stringsimjoin/apply_rf/executor.pyx":224
+    /* "py_stringsimjoin/apply_rf/executor.pyx":269
  *         if curr_node.node_type == 'OUTPUT':
  *             continue
  *         queue.extend(curr_node.children)             # <<<<<<<<<<<<<<
  *     return tokenizers
  * 
  */
-    __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_curr_node, __pyx_n_s_children); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 224; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_curr_node, __pyx_n_s_children); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 269; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_2);
-    __pyx_t_5 = __Pyx_PyList_Extend(__pyx_v_queue, __pyx_t_2); if (unlikely(__pyx_t_5 == -1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 224; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_5 = __Pyx_PyList_Extend(__pyx_v_queue, __pyx_t_2); if (unlikely(__pyx_t_5 == -1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 269; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
     __pyx_L3_continue:;
   }
 
-  /* "py_stringsimjoin/apply_rf/executor.pyx":225
+  /* "py_stringsimjoin/apply_rf/executor.pyx":270
  *             continue
  *         queue.extend(curr_node.children)
  *     return tokenizers             # <<<<<<<<<<<<<<
@@ -3742,7 +4040,7 @@ static std::vector<std::string>  __pyx_f_16py_stringsimjoin_8apply_rf_8executor_
   __pyx_r = __pyx_v_tokenizers;
   goto __pyx_L0;
 
-  /* "py_stringsimjoin/apply_rf/executor.pyx":207
+  /* "py_stringsimjoin/apply_rf/executor.pyx":252
  *         string_vector.push_back(val)
  * 
  * cdef vector[string] infer_tokenizers(plan, rule_sets):             # <<<<<<<<<<<<<<
@@ -3767,7 +4065,7 @@ static std::vector<std::string>  __pyx_f_16py_stringsimjoin_8apply_rf_8executor_
   return __pyx_r;
 }
 
-/* "py_stringsimjoin/apply_rf/executor.pyx":227
+/* "py_stringsimjoin/apply_rf/executor.pyx":272
  *     return tokenizers
  * 
  * def test_jac(df1, attr1, df2, attr2, sim_type, threshold):             # <<<<<<<<<<<<<<
@@ -3815,31 +4113,31 @@ static PyObject *__pyx_pw_16py_stringsimjoin_8apply_rf_8executor_5test_jac(PyObj
         case  1:
         if (likely((values[1] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_attr1)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("test_jac", 1, 6, 6, 1); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 227; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+          __Pyx_RaiseArgtupleInvalid("test_jac", 1, 6, 6, 1); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 272; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
         }
         case  2:
         if (likely((values[2] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_df2)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("test_jac", 1, 6, 6, 2); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 227; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+          __Pyx_RaiseArgtupleInvalid("test_jac", 1, 6, 6, 2); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 272; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
         }
         case  3:
         if (likely((values[3] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_attr2)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("test_jac", 1, 6, 6, 3); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 227; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+          __Pyx_RaiseArgtupleInvalid("test_jac", 1, 6, 6, 3); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 272; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
         }
         case  4:
         if (likely((values[4] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_sim_type)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("test_jac", 1, 6, 6, 4); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 227; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+          __Pyx_RaiseArgtupleInvalid("test_jac", 1, 6, 6, 4); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 272; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
         }
         case  5:
         if (likely((values[5] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_threshold)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("test_jac", 1, 6, 6, 5); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 227; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+          __Pyx_RaiseArgtupleInvalid("test_jac", 1, 6, 6, 5); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 272; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "test_jac") < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 227; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "test_jac") < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 272; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 6) {
       goto __pyx_L5_argtuple_error;
@@ -3860,7 +4158,7 @@ static PyObject *__pyx_pw_16py_stringsimjoin_8apply_rf_8executor_5test_jac(PyObj
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("test_jac", 1, 6, 6, PyTuple_GET_SIZE(__pyx_args)); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 227; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+  __Pyx_RaiseArgtupleInvalid("test_jac", 1, 6, 6, PyTuple_GET_SIZE(__pyx_args)); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 272; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
   __pyx_L3_error:;
   __Pyx_AddTraceback("py_stringsimjoin.apply_rf.executor.test_jac", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
@@ -3891,16 +4189,16 @@ static PyObject *__pyx_pf_16py_stringsimjoin_8apply_rf_8executor_4test_jac(CYTHO
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("test_jac", 0);
 
-  /* "py_stringsimjoin/apply_rf/executor.pyx":228
+  /* "py_stringsimjoin/apply_rf/executor.pyx":273
  * 
  * def test_jac(df1, attr1, df2, attr2, sim_type, threshold):
  *     st = time.time()             # <<<<<<<<<<<<<<
  *     print 'tokenizing'
  *     #test_tok1(df1, attr1, df2, attr2)
  */
-  __pyx_t_2 = __Pyx_GetModuleGlobalName(__pyx_n_s_time); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 228; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_2 = __Pyx_GetModuleGlobalName(__pyx_n_s_time); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 273; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_time); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 228; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_time); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 273; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __pyx_t_2 = NULL;
@@ -3914,35 +4212,35 @@ static PyObject *__pyx_pf_16py_stringsimjoin_8apply_rf_8executor_4test_jac(CYTHO
     }
   }
   if (__pyx_t_2) {
-    __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_t_3, __pyx_t_2); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 228; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_t_3, __pyx_t_2); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 273; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   } else {
-    __pyx_t_1 = __Pyx_PyObject_CallNoArg(__pyx_t_3); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 228; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_1 = __Pyx_PyObject_CallNoArg(__pyx_t_3); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 273; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   }
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   __pyx_v_st = __pyx_t_1;
   __pyx_t_1 = 0;
 
-  /* "py_stringsimjoin/apply_rf/executor.pyx":229
+  /* "py_stringsimjoin/apply_rf/executor.pyx":274
  * def test_jac(df1, attr1, df2, attr2, sim_type, threshold):
  *     st = time.time()
  *     print 'tokenizing'             # <<<<<<<<<<<<<<
  *     #test_tok1(df1, attr1, df2, attr2)
  *     print 'tokenizing done.'
  */
-  if (__Pyx_PrintOne(0, __pyx_n_s_tokenizing) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 229; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (__Pyx_PrintOne(0, __pyx_n_s_tokenizing) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 274; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
 
-  /* "py_stringsimjoin/apply_rf/executor.pyx":231
+  /* "py_stringsimjoin/apply_rf/executor.pyx":276
  *     print 'tokenizing'
  *     #test_tok1(df1, attr1, df2, attr2)
  *     print 'tokenizing done.'             # <<<<<<<<<<<<<<
  *     cdef vector[vector[int]] ltokens, rtokens
  *     cdef vector[pair[int, int]] output
  */
-  if (__Pyx_PrintOne(0, __pyx_kp_s_tokenizing_done) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 231; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (__Pyx_PrintOne(0, __pyx_kp_s_tokenizing_done) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 276; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
 
-  /* "py_stringsimjoin/apply_rf/executor.pyx":234
+  /* "py_stringsimjoin/apply_rf/executor.pyx":279
  *     cdef vector[vector[int]] ltokens, rtokens
  *     cdef vector[pair[int, int]] output
  *     load_tok('alph_num', 't1', ltokens, rtokens)             # <<<<<<<<<<<<<<
@@ -3951,39 +4249,39 @@ static PyObject *__pyx_pf_16py_stringsimjoin_8apply_rf_8executor_4test_jac(CYTHO
  */
   __pyx_f_16py_stringsimjoin_8apply_rf_10tokenizers_load_tok(__pyx_n_s_alph_num, __pyx_n_s_t1, __pyx_v_ltokens, __pyx_v_rtokens, 0);
 
-  /* "py_stringsimjoin/apply_rf/executor.pyx":235
+  /* "py_stringsimjoin/apply_rf/executor.pyx":280
  *     cdef vector[pair[int, int]] output
  *     load_tok('alph_num', 't1', ltokens, rtokens)
  *     print 'loaded tok'             # <<<<<<<<<<<<<<
  *     if sim_type == 3:
  *         output = ov_coeff_join(ltokens, rtokens, threshold)
  */
-  if (__Pyx_PrintOne(0, __pyx_kp_s_loaded_tok) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 235; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (__Pyx_PrintOne(0, __pyx_kp_s_loaded_tok) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 280; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
 
-  /* "py_stringsimjoin/apply_rf/executor.pyx":236
+  /* "py_stringsimjoin/apply_rf/executor.pyx":281
  *     load_tok('alph_num', 't1', ltokens, rtokens)
  *     print 'loaded tok'
  *     if sim_type == 3:             # <<<<<<<<<<<<<<
  *         output = ov_coeff_join(ltokens, rtokens, threshold)
  *     else:
  */
-  __pyx_t_1 = __Pyx_PyInt_EqObjC(__pyx_v_sim_type, __pyx_int_3, 3, 0); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 236; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = __Pyx_PyInt_EqObjC(__pyx_v_sim_type, __pyx_int_3, 3, 0); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 281; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_4 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_4 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 236; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_4 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_4 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 281; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   if (__pyx_t_4) {
 
-    /* "py_stringsimjoin/apply_rf/executor.pyx":237
+    /* "py_stringsimjoin/apply_rf/executor.pyx":282
  *     print 'loaded tok'
  *     if sim_type == 3:
  *         output = ov_coeff_join(ltokens, rtokens, threshold)             # <<<<<<<<<<<<<<
  *     else:
  *         output = set_sim_join(ltokens, rtokens, sim_type, threshold)
  */
-    __pyx_t_5 = __pyx_PyFloat_AsDouble(__pyx_v_threshold); if (unlikely((__pyx_t_5 == (double)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 237; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_5 = __pyx_PyFloat_AsDouble(__pyx_v_threshold); if (unlikely((__pyx_t_5 == (double)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 282; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __pyx_v_output = __pyx_f_16py_stringsimjoin_8apply_rf_24overlap_coefficient_join_ov_coeff_join(__pyx_v_ltokens, __pyx_v_rtokens, __pyx_t_5, 0);
 
-    /* "py_stringsimjoin/apply_rf/executor.pyx":236
+    /* "py_stringsimjoin/apply_rf/executor.pyx":281
  *     load_tok('alph_num', 't1', ltokens, rtokens)
  *     print 'loaded tok'
  *     if sim_type == 3:             # <<<<<<<<<<<<<<
@@ -3993,7 +4291,7 @@ static PyObject *__pyx_pf_16py_stringsimjoin_8apply_rf_8executor_4test_jac(CYTHO
     goto __pyx_L3;
   }
 
-  /* "py_stringsimjoin/apply_rf/executor.pyx":239
+  /* "py_stringsimjoin/apply_rf/executor.pyx":284
  *         output = ov_coeff_join(ltokens, rtokens, threshold)
  *     else:
  *         output = set_sim_join(ltokens, rtokens, sim_type, threshold)             # <<<<<<<<<<<<<<
@@ -4001,22 +4299,22 @@ static PyObject *__pyx_pf_16py_stringsimjoin_8apply_rf_8executor_4test_jac(CYTHO
  *     print 'time : ', time.time() - st
  */
   /*else*/ {
-    __pyx_t_6 = __Pyx_PyInt_As_int(__pyx_v_sim_type); if (unlikely((__pyx_t_6 == (int)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 239; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-    __pyx_t_5 = __pyx_PyFloat_AsDouble(__pyx_v_threshold); if (unlikely((__pyx_t_5 == (double)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 239; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_6 = __Pyx_PyInt_As_int(__pyx_v_sim_type); if (unlikely((__pyx_t_6 == (int)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 284; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_5 = __pyx_PyFloat_AsDouble(__pyx_v_threshold); if (unlikely((__pyx_t_5 == (double)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 284; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __pyx_v_output = __pyx_f_16py_stringsimjoin_8apply_rf_12set_sim_join_set_sim_join(__pyx_v_ltokens, __pyx_v_rtokens, __pyx_t_6, __pyx_t_5, 0);
   }
   __pyx_L3:;
 
-  /* "py_stringsimjoin/apply_rf/executor.pyx":240
+  /* "py_stringsimjoin/apply_rf/executor.pyx":285
  *     else:
  *         output = set_sim_join(ltokens, rtokens, sim_type, threshold)
  *     print 'output size : ', output.size()             # <<<<<<<<<<<<<<
  *     print 'time : ', time.time() - st
  * 
  */
-  __pyx_t_1 = __Pyx_PyInt_FromSize_t(__pyx_v_output.size()); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 240; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = __Pyx_PyInt_FromSize_t(__pyx_v_output.size()); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 285; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_3 = PyTuple_New(2); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 240; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_3 = PyTuple_New(2); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 285; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_INCREF(__pyx_kp_s_output_size);
   __Pyx_GIVEREF(__pyx_kp_s_output_size);
@@ -4024,19 +4322,19 @@ static PyObject *__pyx_pf_16py_stringsimjoin_8apply_rf_8executor_4test_jac(CYTHO
   __Pyx_GIVEREF(__pyx_t_1);
   PyTuple_SET_ITEM(__pyx_t_3, 1, __pyx_t_1);
   __pyx_t_1 = 0;
-  if (__Pyx_Print(0, __pyx_t_3, 1) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 240; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (__Pyx_Print(0, __pyx_t_3, 1) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 285; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
-  /* "py_stringsimjoin/apply_rf/executor.pyx":241
+  /* "py_stringsimjoin/apply_rf/executor.pyx":286
  *         output = set_sim_join(ltokens, rtokens, sim_type, threshold)
  *     print 'output size : ', output.size()
  *     print 'time : ', time.time() - st             # <<<<<<<<<<<<<<
  * 
  * def test_ed(df1, attr1, df2, attr2, threshold):
  */
-  __pyx_t_1 = __Pyx_GetModuleGlobalName(__pyx_n_s_time); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 241; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = __Pyx_GetModuleGlobalName(__pyx_n_s_time); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 286; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_time); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 241; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_time); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 286; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_t_1 = NULL;
@@ -4050,17 +4348,17 @@ static PyObject *__pyx_pf_16py_stringsimjoin_8apply_rf_8executor_4test_jac(CYTHO
     }
   }
   if (__pyx_t_1) {
-    __pyx_t_3 = __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_t_1); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 241; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_3 = __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_t_1); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 286; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   } else {
-    __pyx_t_3 = __Pyx_PyObject_CallNoArg(__pyx_t_2); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 241; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_3 = __Pyx_PyObject_CallNoArg(__pyx_t_2); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 286; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   }
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = PyNumber_Subtract(__pyx_t_3, __pyx_v_st); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 241; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_2 = PyNumber_Subtract(__pyx_t_3, __pyx_v_st); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 286; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  __pyx_t_3 = PyTuple_New(2); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 241; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_3 = PyTuple_New(2); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 286; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_INCREF(__pyx_kp_s_time_2);
   __Pyx_GIVEREF(__pyx_kp_s_time_2);
@@ -4068,10 +4366,10 @@ static PyObject *__pyx_pf_16py_stringsimjoin_8apply_rf_8executor_4test_jac(CYTHO
   __Pyx_GIVEREF(__pyx_t_2);
   PyTuple_SET_ITEM(__pyx_t_3, 1, __pyx_t_2);
   __pyx_t_2 = 0;
-  if (__Pyx_Print(0, __pyx_t_3, 1) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 241; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (__Pyx_Print(0, __pyx_t_3, 1) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 286; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
-  /* "py_stringsimjoin/apply_rf/executor.pyx":227
+  /* "py_stringsimjoin/apply_rf/executor.pyx":272
  *     return tokenizers
  * 
  * def test_jac(df1, attr1, df2, attr2, sim_type, threshold):             # <<<<<<<<<<<<<<
@@ -4095,7 +4393,7 @@ static PyObject *__pyx_pf_16py_stringsimjoin_8apply_rf_8executor_4test_jac(CYTHO
   return __pyx_r;
 }
 
-/* "py_stringsimjoin/apply_rf/executor.pyx":243
+/* "py_stringsimjoin/apply_rf/executor.pyx":288
  *     print 'time : ', time.time() - st
  * 
  * def test_ed(df1, attr1, df2, attr2, threshold):             # <<<<<<<<<<<<<<
@@ -4141,26 +4439,26 @@ static PyObject *__pyx_pw_16py_stringsimjoin_8apply_rf_8executor_7test_ed(PyObje
         case  1:
         if (likely((values[1] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_attr1)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("test_ed", 1, 5, 5, 1); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 243; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+          __Pyx_RaiseArgtupleInvalid("test_ed", 1, 5, 5, 1); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 288; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
         }
         case  2:
         if (likely((values[2] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_df2)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("test_ed", 1, 5, 5, 2); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 243; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+          __Pyx_RaiseArgtupleInvalid("test_ed", 1, 5, 5, 2); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 288; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
         }
         case  3:
         if (likely((values[3] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_attr2)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("test_ed", 1, 5, 5, 3); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 243; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+          __Pyx_RaiseArgtupleInvalid("test_ed", 1, 5, 5, 3); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 288; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
         }
         case  4:
         if (likely((values[4] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_threshold)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("test_ed", 1, 5, 5, 4); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 243; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+          __Pyx_RaiseArgtupleInvalid("test_ed", 1, 5, 5, 4); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 288; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "test_ed") < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 243; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "test_ed") < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 288; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 5) {
       goto __pyx_L5_argtuple_error;
@@ -4179,7 +4477,7 @@ static PyObject *__pyx_pw_16py_stringsimjoin_8apply_rf_8executor_7test_ed(PyObje
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("test_ed", 1, 5, 5, PyTuple_GET_SIZE(__pyx_args)); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 243; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+  __Pyx_RaiseArgtupleInvalid("test_ed", 1, 5, 5, PyTuple_GET_SIZE(__pyx_args)); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 288; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
   __pyx_L3_error:;
   __Pyx_AddTraceback("py_stringsimjoin.apply_rf.executor.test_ed", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
@@ -4212,16 +4510,16 @@ static PyObject *__pyx_pf_16py_stringsimjoin_8apply_rf_8executor_6test_ed(CYTHON
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("test_ed", 0);
 
-  /* "py_stringsimjoin/apply_rf/executor.pyx":244
+  /* "py_stringsimjoin/apply_rf/executor.pyx":289
  * 
  * def test_ed(df1, attr1, df2, attr2, threshold):
  *     st = time.time()             # <<<<<<<<<<<<<<
  *     print 'tokenizing'
  *     cdef vector[string] lstrings, rstrings
  */
-  __pyx_t_2 = __Pyx_GetModuleGlobalName(__pyx_n_s_time); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 244; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_2 = __Pyx_GetModuleGlobalName(__pyx_n_s_time); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 289; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_time); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 244; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_time); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 289; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __pyx_t_2 = NULL;
@@ -4235,70 +4533,70 @@ static PyObject *__pyx_pf_16py_stringsimjoin_8apply_rf_8executor_6test_ed(CYTHON
     }
   }
   if (__pyx_t_2) {
-    __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_t_3, __pyx_t_2); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 244; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_t_3, __pyx_t_2); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 289; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   } else {
-    __pyx_t_1 = __Pyx_PyObject_CallNoArg(__pyx_t_3); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 244; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_1 = __Pyx_PyObject_CallNoArg(__pyx_t_3); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 289; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   }
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   __pyx_v_st = __pyx_t_1;
   __pyx_t_1 = 0;
 
-  /* "py_stringsimjoin/apply_rf/executor.pyx":245
+  /* "py_stringsimjoin/apply_rf/executor.pyx":290
  * def test_ed(df1, attr1, df2, attr2, threshold):
  *     st = time.time()
  *     print 'tokenizing'             # <<<<<<<<<<<<<<
  *     cdef vector[string] lstrings, rstrings
  *     convert_to_vector1(df1[attr1], lstrings)
  */
-  if (__Pyx_PrintOne(0, __pyx_n_s_tokenizing) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 245; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (__Pyx_PrintOne(0, __pyx_n_s_tokenizing) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 290; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
 
-  /* "py_stringsimjoin/apply_rf/executor.pyx":247
+  /* "py_stringsimjoin/apply_rf/executor.pyx":292
  *     print 'tokenizing'
  *     cdef vector[string] lstrings, rstrings
  *     convert_to_vector1(df1[attr1], lstrings)             # <<<<<<<<<<<<<<
  *     convert_to_vector1(df2[attr2], rstrings)
  *     tokenize(lstrings, rstrings, 'qg2', 'gh1')
  */
-  __pyx_t_1 = PyObject_GetItem(__pyx_v_df1, __pyx_v_attr1); if (unlikely(__pyx_t_1 == NULL)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 247; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
+  __pyx_t_1 = PyObject_GetItem(__pyx_v_df1, __pyx_v_attr1); if (unlikely(__pyx_t_1 == NULL)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 292; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_f_16py_stringsimjoin_8apply_rf_8executor_convert_to_vector1(__pyx_t_1, __pyx_v_lstrings);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "py_stringsimjoin/apply_rf/executor.pyx":248
+  /* "py_stringsimjoin/apply_rf/executor.pyx":293
  *     cdef vector[string] lstrings, rstrings
  *     convert_to_vector1(df1[attr1], lstrings)
  *     convert_to_vector1(df2[attr2], rstrings)             # <<<<<<<<<<<<<<
  *     tokenize(lstrings, rstrings, 'qg2', 'gh1')
  *     print 'tokenizing done.'
  */
-  __pyx_t_1 = PyObject_GetItem(__pyx_v_df2, __pyx_v_attr2); if (unlikely(__pyx_t_1 == NULL)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 248; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
+  __pyx_t_1 = PyObject_GetItem(__pyx_v_df2, __pyx_v_attr2); if (unlikely(__pyx_t_1 == NULL)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 293; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_f_16py_stringsimjoin_8apply_rf_8executor_convert_to_vector1(__pyx_t_1, __pyx_v_rstrings);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "py_stringsimjoin/apply_rf/executor.pyx":249
+  /* "py_stringsimjoin/apply_rf/executor.pyx":294
  *     convert_to_vector1(df1[attr1], lstrings)
  *     convert_to_vector1(df2[attr2], rstrings)
  *     tokenize(lstrings, rstrings, 'qg2', 'gh1')             # <<<<<<<<<<<<<<
  *     print 'tokenizing done.'
  *     cdef vector[vector[int]] ltokens, rtokens
  */
-  __pyx_t_4 = __pyx_convert_string_from_py_std__in_string(__pyx_n_b_qg2); if (unlikely(PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 249; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __pyx_t_5 = __pyx_convert_string_from_py_std__in_string(__pyx_n_b_gh1); if (unlikely(PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 249; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_4 = __pyx_convert_string_from_py_std__in_string(__pyx_n_b_qg2); if (unlikely(PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 294; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_5 = __pyx_convert_string_from_py_std__in_string(__pyx_n_b_gh1); if (unlikely(PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 294; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_f_16py_stringsimjoin_8apply_rf_10tokenizers_tokenize(__pyx_v_lstrings, __pyx_v_rstrings, __pyx_t_4, __pyx_t_5, 0);
 
-  /* "py_stringsimjoin/apply_rf/executor.pyx":250
+  /* "py_stringsimjoin/apply_rf/executor.pyx":295
  *     convert_to_vector1(df2[attr2], rstrings)
  *     tokenize(lstrings, rstrings, 'qg2', 'gh1')
  *     print 'tokenizing done.'             # <<<<<<<<<<<<<<
  *     cdef vector[vector[int]] ltokens, rtokens
  *     cdef vector[pair[int, int]] output
  */
-  if (__Pyx_PrintOne(0, __pyx_kp_s_tokenizing_done) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 250; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (__Pyx_PrintOne(0, __pyx_kp_s_tokenizing_done) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 295; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
 
-  /* "py_stringsimjoin/apply_rf/executor.pyx":253
+  /* "py_stringsimjoin/apply_rf/executor.pyx":298
  *     cdef vector[vector[int]] ltokens, rtokens
  *     cdef vector[pair[int, int]] output
  *     load_tok('qg2', 'gh1', ltokens, rtokens)             # <<<<<<<<<<<<<<
@@ -4307,35 +4605,35 @@ static PyObject *__pyx_pf_16py_stringsimjoin_8apply_rf_8executor_6test_ed(CYTHON
  */
   __pyx_f_16py_stringsimjoin_8apply_rf_10tokenizers_load_tok(__pyx_n_s_qg2, __pyx_n_s_gh1, __pyx_v_ltokens, __pyx_v_rtokens, 0);
 
-  /* "py_stringsimjoin/apply_rf/executor.pyx":254
+  /* "py_stringsimjoin/apply_rf/executor.pyx":299
  *     cdef vector[pair[int, int]] output
  *     load_tok('qg2', 'gh1', ltokens, rtokens)
  *     print 'loaded tok'             # <<<<<<<<<<<<<<
  *     output = ed_join(ltokens, rtokens, 2, threshold, lstrings, rstrings)
  *     print 'output size : ', output.size()
  */
-  if (__Pyx_PrintOne(0, __pyx_kp_s_loaded_tok) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 254; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (__Pyx_PrintOne(0, __pyx_kp_s_loaded_tok) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 299; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
 
-  /* "py_stringsimjoin/apply_rf/executor.pyx":255
+  /* "py_stringsimjoin/apply_rf/executor.pyx":300
  *     load_tok('qg2', 'gh1', ltokens, rtokens)
  *     print 'loaded tok'
  *     output = ed_join(ltokens, rtokens, 2, threshold, lstrings, rstrings)             # <<<<<<<<<<<<<<
  *     print 'output size : ', output.size()
  *     print 'time : ', time.time() - st
  */
-  __pyx_t_6 = __pyx_PyFloat_AsDouble(__pyx_v_threshold); if (unlikely((__pyx_t_6 == (double)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 255; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_6 = __pyx_PyFloat_AsDouble(__pyx_v_threshold); if (unlikely((__pyx_t_6 == (double)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 300; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_v_output = __pyx_f_16py_stringsimjoin_8apply_rf_18edit_distance_join_ed_join(__pyx_v_ltokens, __pyx_v_rtokens, 2, __pyx_t_6, __pyx_v_lstrings, __pyx_v_rstrings, 0);
 
-  /* "py_stringsimjoin/apply_rf/executor.pyx":256
+  /* "py_stringsimjoin/apply_rf/executor.pyx":301
  *     print 'loaded tok'
  *     output = ed_join(ltokens, rtokens, 2, threshold, lstrings, rstrings)
  *     print 'output size : ', output.size()             # <<<<<<<<<<<<<<
  *     print 'time : ', time.time() - st
  * 
  */
-  __pyx_t_1 = __Pyx_PyInt_FromSize_t(__pyx_v_output.size()); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 256; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = __Pyx_PyInt_FromSize_t(__pyx_v_output.size()); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 301; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_3 = PyTuple_New(2); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 256; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_3 = PyTuple_New(2); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 301; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_INCREF(__pyx_kp_s_output_size);
   __Pyx_GIVEREF(__pyx_kp_s_output_size);
@@ -4343,19 +4641,19 @@ static PyObject *__pyx_pf_16py_stringsimjoin_8apply_rf_8executor_6test_ed(CYTHON
   __Pyx_GIVEREF(__pyx_t_1);
   PyTuple_SET_ITEM(__pyx_t_3, 1, __pyx_t_1);
   __pyx_t_1 = 0;
-  if (__Pyx_Print(0, __pyx_t_3, 1) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 256; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (__Pyx_Print(0, __pyx_t_3, 1) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 301; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
-  /* "py_stringsimjoin/apply_rf/executor.pyx":257
+  /* "py_stringsimjoin/apply_rf/executor.pyx":302
  *     output = ed_join(ltokens, rtokens, 2, threshold, lstrings, rstrings)
  *     print 'output size : ', output.size()
  *     print 'time : ', time.time() - st             # <<<<<<<<<<<<<<
  * 
  * 
  */
-  __pyx_t_1 = __Pyx_GetModuleGlobalName(__pyx_n_s_time); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 257; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = __Pyx_GetModuleGlobalName(__pyx_n_s_time); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 302; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_time); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 257; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_time); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 302; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_t_1 = NULL;
@@ -4369,17 +4667,17 @@ static PyObject *__pyx_pf_16py_stringsimjoin_8apply_rf_8executor_6test_ed(CYTHON
     }
   }
   if (__pyx_t_1) {
-    __pyx_t_3 = __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_t_1); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 257; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_3 = __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_t_1); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 302; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   } else {
-    __pyx_t_3 = __Pyx_PyObject_CallNoArg(__pyx_t_2); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 257; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_3 = __Pyx_PyObject_CallNoArg(__pyx_t_2); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 302; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   }
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = PyNumber_Subtract(__pyx_t_3, __pyx_v_st); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 257; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_2 = PyNumber_Subtract(__pyx_t_3, __pyx_v_st); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 302; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  __pyx_t_3 = PyTuple_New(2); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 257; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_3 = PyTuple_New(2); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 302; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_INCREF(__pyx_kp_s_time_2);
   __Pyx_GIVEREF(__pyx_kp_s_time_2);
@@ -4387,10 +4685,10 @@ static PyObject *__pyx_pf_16py_stringsimjoin_8apply_rf_8executor_6test_ed(CYTHON
   __Pyx_GIVEREF(__pyx_t_2);
   PyTuple_SET_ITEM(__pyx_t_3, 1, __pyx_t_2);
   __pyx_t_2 = 0;
-  if (__Pyx_Print(0, __pyx_t_3, 1) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 257; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (__Pyx_Print(0, __pyx_t_3, 1) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 302; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
-  /* "py_stringsimjoin/apply_rf/executor.pyx":243
+  /* "py_stringsimjoin/apply_rf/executor.pyx":288
  *     print 'time : ', time.time() - st
  * 
  * def test_ed(df1, attr1, df2, attr2, threshold):             # <<<<<<<<<<<<<<
@@ -4414,7 +4712,7 @@ static PyObject *__pyx_pf_16py_stringsimjoin_8apply_rf_8executor_6test_ed(CYTHON
   return __pyx_r;
 }
 
-/* "py_stringsimjoin/apply_rf/executor.pyx":260
+/* "py_stringsimjoin/apply_rf/executor.pyx":305
  * 
  * 
  * def execute_rf_naive(rf, feature_table, ldf, attr1, rdf, attr2):             # <<<<<<<<<<<<<<
@@ -4462,31 +4760,31 @@ static PyObject *__pyx_pw_16py_stringsimjoin_8apply_rf_8executor_9execute_rf_nai
         case  1:
         if (likely((values[1] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_feature_table)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("execute_rf_naive", 1, 6, 6, 1); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 260; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+          __Pyx_RaiseArgtupleInvalid("execute_rf_naive", 1, 6, 6, 1); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 305; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
         }
         case  2:
         if (likely((values[2] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_ldf)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("execute_rf_naive", 1, 6, 6, 2); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 260; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+          __Pyx_RaiseArgtupleInvalid("execute_rf_naive", 1, 6, 6, 2); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 305; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
         }
         case  3:
         if (likely((values[3] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_attr1)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("execute_rf_naive", 1, 6, 6, 3); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 260; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+          __Pyx_RaiseArgtupleInvalid("execute_rf_naive", 1, 6, 6, 3); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 305; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
         }
         case  4:
         if (likely((values[4] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_rdf)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("execute_rf_naive", 1, 6, 6, 4); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 260; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+          __Pyx_RaiseArgtupleInvalid("execute_rf_naive", 1, 6, 6, 4); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 305; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
         }
         case  5:
         if (likely((values[5] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_attr2)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("execute_rf_naive", 1, 6, 6, 5); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 260; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+          __Pyx_RaiseArgtupleInvalid("execute_rf_naive", 1, 6, 6, 5); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 305; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "execute_rf_naive") < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 260; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "execute_rf_naive") < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 305; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 6) {
       goto __pyx_L5_argtuple_error;
@@ -4507,7 +4805,7 @@ static PyObject *__pyx_pw_16py_stringsimjoin_8apply_rf_8executor_9execute_rf_nai
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("execute_rf_naive", 1, 6, 6, PyTuple_GET_SIZE(__pyx_args)); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 260; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+  __Pyx_RaiseArgtupleInvalid("execute_rf_naive", 1, 6, 6, PyTuple_GET_SIZE(__pyx_args)); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 305; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
   __pyx_L3_error:;
   __Pyx_AddTraceback("py_stringsimjoin.apply_rf.executor.execute_rf_naive", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
@@ -4561,46 +4859,46 @@ static PyObject *__pyx_pf_16py_stringsimjoin_8apply_rf_8executor_8execute_rf_nai
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("execute_rf_naive", 0);
 
-  /* "py_stringsimjoin/apply_rf/executor.pyx":262
+  /* "py_stringsimjoin/apply_rf/executor.pyx":307
  * def execute_rf_naive(rf, feature_table, ldf, attr1, rdf, attr2):
  *     cdef vector[string] lstrings, rstrings
  *     convert_to_vector1(ldf[attr1], lstrings)             # <<<<<<<<<<<<<<
  *     convert_to_vector1(rdf[attr2], rstrings)
  * 
  */
-  __pyx_t_1 = PyObject_GetItem(__pyx_v_ldf, __pyx_v_attr1); if (unlikely(__pyx_t_1 == NULL)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 262; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
+  __pyx_t_1 = PyObject_GetItem(__pyx_v_ldf, __pyx_v_attr1); if (unlikely(__pyx_t_1 == NULL)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 307; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_f_16py_stringsimjoin_8apply_rf_8executor_convert_to_vector1(__pyx_t_1, __pyx_v_lstrings);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "py_stringsimjoin/apply_rf/executor.pyx":263
+  /* "py_stringsimjoin/apply_rf/executor.pyx":308
  *     cdef vector[string] lstrings, rstrings
  *     convert_to_vector1(ldf[attr1], lstrings)
  *     convert_to_vector1(rdf[attr2], rstrings)             # <<<<<<<<<<<<<<
  * 
  *     cdef vector[pair[simfnptr_str, string]] feature_info
  */
-  __pyx_t_1 = PyObject_GetItem(__pyx_v_rdf, __pyx_v_attr2); if (unlikely(__pyx_t_1 == NULL)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 263; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
+  __pyx_t_1 = PyObject_GetItem(__pyx_v_rdf, __pyx_v_attr2); if (unlikely(__pyx_t_1 == NULL)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 308; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_f_16py_stringsimjoin_8apply_rf_8executor_convert_to_vector1(__pyx_t_1, __pyx_v_rstrings);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "py_stringsimjoin/apply_rf/executor.pyx":267
+  /* "py_stringsimjoin/apply_rf/executor.pyx":312
  *     cdef vector[pair[simfnptr_str, string]] feature_info
  *     cdef oset[string] tokenizers
  *     for feat_name in feature_table.index:             # <<<<<<<<<<<<<<
  *         feature_info.push_back(pair[simfnptr_str, string](get_sim_function_str(get_sim_type(feature_table.ix[feat_name]['sim_measure_type'])),
  *                                                       feature_table.ix[feat_name]['tokenizer_type']))
  */
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_feature_table, __pyx_n_s_index); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 267; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_feature_table, __pyx_n_s_index); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 312; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
   if (likely(PyList_CheckExact(__pyx_t_1)) || PyTuple_CheckExact(__pyx_t_1)) {
     __pyx_t_2 = __pyx_t_1; __Pyx_INCREF(__pyx_t_2); __pyx_t_3 = 0;
     __pyx_t_4 = NULL;
   } else {
-    __pyx_t_3 = -1; __pyx_t_2 = PyObject_GetIter(__pyx_t_1); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 267; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_3 = -1; __pyx_t_2 = PyObject_GetIter(__pyx_t_1); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 312; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_2);
-    __pyx_t_4 = Py_TYPE(__pyx_t_2)->tp_iternext; if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 267; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_4 = Py_TYPE(__pyx_t_2)->tp_iternext; if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 312; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   }
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   for (;;) {
@@ -4608,17 +4906,17 @@ static PyObject *__pyx_pf_16py_stringsimjoin_8apply_rf_8executor_8execute_rf_nai
       if (likely(PyList_CheckExact(__pyx_t_2))) {
         if (__pyx_t_3 >= PyList_GET_SIZE(__pyx_t_2)) break;
         #if CYTHON_COMPILING_IN_CPYTHON
-        __pyx_t_1 = PyList_GET_ITEM(__pyx_t_2, __pyx_t_3); __Pyx_INCREF(__pyx_t_1); __pyx_t_3++; if (unlikely(0 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 267; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        __pyx_t_1 = PyList_GET_ITEM(__pyx_t_2, __pyx_t_3); __Pyx_INCREF(__pyx_t_1); __pyx_t_3++; if (unlikely(0 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 312; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
         #else
-        __pyx_t_1 = PySequence_ITEM(__pyx_t_2, __pyx_t_3); __pyx_t_3++; if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 267; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        __pyx_t_1 = PySequence_ITEM(__pyx_t_2, __pyx_t_3); __pyx_t_3++; if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 312; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
         __Pyx_GOTREF(__pyx_t_1);
         #endif
       } else {
         if (__pyx_t_3 >= PyTuple_GET_SIZE(__pyx_t_2)) break;
         #if CYTHON_COMPILING_IN_CPYTHON
-        __pyx_t_1 = PyTuple_GET_ITEM(__pyx_t_2, __pyx_t_3); __Pyx_INCREF(__pyx_t_1); __pyx_t_3++; if (unlikely(0 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 267; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        __pyx_t_1 = PyTuple_GET_ITEM(__pyx_t_2, __pyx_t_3); __Pyx_INCREF(__pyx_t_1); __pyx_t_3++; if (unlikely(0 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 312; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
         #else
-        __pyx_t_1 = PySequence_ITEM(__pyx_t_2, __pyx_t_3); __pyx_t_3++; if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 267; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        __pyx_t_1 = PySequence_ITEM(__pyx_t_2, __pyx_t_3); __pyx_t_3++; if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 312; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
         __Pyx_GOTREF(__pyx_t_1);
         #endif
       }
@@ -4628,7 +4926,7 @@ static PyObject *__pyx_pf_16py_stringsimjoin_8apply_rf_8executor_8execute_rf_nai
         PyObject* exc_type = PyErr_Occurred();
         if (exc_type) {
           if (likely(exc_type == PyExc_StopIteration || PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) PyErr_Clear();
-          else {__pyx_filename = __pyx_f[0]; __pyx_lineno = 267; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+          else {__pyx_filename = __pyx_f[0]; __pyx_lineno = 312; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
         }
         break;
       }
@@ -4637,43 +4935,43 @@ static PyObject *__pyx_pf_16py_stringsimjoin_8apply_rf_8executor_8execute_rf_nai
     __Pyx_XDECREF_SET(__pyx_v_feat_name, __pyx_t_1);
     __pyx_t_1 = 0;
 
-    /* "py_stringsimjoin/apply_rf/executor.pyx":268
+    /* "py_stringsimjoin/apply_rf/executor.pyx":313
  *     cdef oset[string] tokenizers
  *     for feat_name in feature_table.index:
  *         feature_info.push_back(pair[simfnptr_str, string](get_sim_function_str(get_sim_type(feature_table.ix[feat_name]['sim_measure_type'])),             # <<<<<<<<<<<<<<
  *                                                       feature_table.ix[feat_name]['tokenizer_type']))
  *         tokenizers.insert(feature_table.ix[feat_name]['tokenizer_type'])
  */
-    __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_feature_table, __pyx_n_s_ix); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 268; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_feature_table, __pyx_n_s_ix); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 313; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_1);
-    __pyx_t_5 = PyObject_GetItem(__pyx_t_1, __pyx_v_feat_name); if (unlikely(__pyx_t_5 == NULL)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 268; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
+    __pyx_t_5 = PyObject_GetItem(__pyx_t_1, __pyx_v_feat_name); if (unlikely(__pyx_t_5 == NULL)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 313; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
     __Pyx_GOTREF(__pyx_t_5);
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-    __pyx_t_1 = PyObject_GetItem(__pyx_t_5, __pyx_n_s_sim_measure_type); if (unlikely(__pyx_t_1 == NULL)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 268; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
+    __pyx_t_1 = PyObject_GetItem(__pyx_t_5, __pyx_n_s_sim_measure_type); if (unlikely(__pyx_t_1 == NULL)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 313; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-    __pyx_t_6 = __pyx_convert_string_from_py_std__in_string(__pyx_t_1); if (unlikely(PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 268; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_6 = __pyx_convert_string_from_py_std__in_string(__pyx_t_1); if (unlikely(PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 313; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-    /* "py_stringsimjoin/apply_rf/executor.pyx":269
+    /* "py_stringsimjoin/apply_rf/executor.pyx":314
  *     for feat_name in feature_table.index:
  *         feature_info.push_back(pair[simfnptr_str, string](get_sim_function_str(get_sim_type(feature_table.ix[feat_name]['sim_measure_type'])),
  *                                                       feature_table.ix[feat_name]['tokenizer_type']))             # <<<<<<<<<<<<<<
  *         tokenizers.insert(feature_table.ix[feat_name]['tokenizer_type'])
  * 
  */
-    __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_feature_table, __pyx_n_s_ix); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 269; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_feature_table, __pyx_n_s_ix); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 314; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_1);
-    __pyx_t_5 = PyObject_GetItem(__pyx_t_1, __pyx_v_feat_name); if (unlikely(__pyx_t_5 == NULL)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 269; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
+    __pyx_t_5 = PyObject_GetItem(__pyx_t_1, __pyx_v_feat_name); if (unlikely(__pyx_t_5 == NULL)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 314; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
     __Pyx_GOTREF(__pyx_t_5);
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-    __pyx_t_1 = PyObject_GetItem(__pyx_t_5, __pyx_n_s_tokenizer_type); if (unlikely(__pyx_t_1 == NULL)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 269; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
+    __pyx_t_1 = PyObject_GetItem(__pyx_t_5, __pyx_n_s_tokenizer_type); if (unlikely(__pyx_t_1 == NULL)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 314; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-    __pyx_t_7 = __pyx_convert_string_from_py_std__in_string(__pyx_t_1); if (unlikely(PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 269; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_7 = __pyx_convert_string_from_py_std__in_string(__pyx_t_1); if (unlikely(PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 314; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-    /* "py_stringsimjoin/apply_rf/executor.pyx":268
+    /* "py_stringsimjoin/apply_rf/executor.pyx":313
  *     cdef oset[string] tokenizers
  *     for feat_name in feature_table.index:
  *         feature_info.push_back(pair[simfnptr_str, string](get_sim_function_str(get_sim_type(feature_table.ix[feat_name]['sim_measure_type'])),             # <<<<<<<<<<<<<<
@@ -4684,40 +4982,40 @@ static PyObject *__pyx_pf_16py_stringsimjoin_8apply_rf_8executor_8execute_rf_nai
       __pyx_t_8 = std::pair<__pyx_t_16py_stringsimjoin_8apply_rf_5utils_simfnptr_str,std::string> (__pyx_f_16py_stringsimjoin_8apply_rf_5utils_get_sim_function_str(__pyx_f_16py_stringsimjoin_8apply_rf_5utils_get_sim_type(__pyx_t_6)), __pyx_t_7);
     } catch(...) {
       __Pyx_CppExn2PyErr();
-      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 268; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 313; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     }
     try {
       __pyx_v_feature_info.push_back(__pyx_t_8);
     } catch(...) {
       __Pyx_CppExn2PyErr();
-      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 268; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 313; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     }
 
-    /* "py_stringsimjoin/apply_rf/executor.pyx":270
+    /* "py_stringsimjoin/apply_rf/executor.pyx":315
  *         feature_info.push_back(pair[simfnptr_str, string](get_sim_function_str(get_sim_type(feature_table.ix[feat_name]['sim_measure_type'])),
  *                                                       feature_table.ix[feat_name]['tokenizer_type']))
  *         tokenizers.insert(feature_table.ix[feat_name]['tokenizer_type'])             # <<<<<<<<<<<<<<
  * 
  *     cdef vector[string] tokens1, tokens2
  */
-    __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_feature_table, __pyx_n_s_ix); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 270; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_feature_table, __pyx_n_s_ix); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 315; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_1);
-    __pyx_t_5 = PyObject_GetItem(__pyx_t_1, __pyx_v_feat_name); if (unlikely(__pyx_t_5 == NULL)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 270; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
+    __pyx_t_5 = PyObject_GetItem(__pyx_t_1, __pyx_v_feat_name); if (unlikely(__pyx_t_5 == NULL)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 315; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
     __Pyx_GOTREF(__pyx_t_5);
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-    __pyx_t_1 = PyObject_GetItem(__pyx_t_5, __pyx_n_s_tokenizer_type); if (unlikely(__pyx_t_1 == NULL)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 270; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
+    __pyx_t_1 = PyObject_GetItem(__pyx_t_5, __pyx_n_s_tokenizer_type); if (unlikely(__pyx_t_1 == NULL)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 315; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-    __pyx_t_7 = __pyx_convert_string_from_py_std__in_string(__pyx_t_1); if (unlikely(PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 270; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_7 = __pyx_convert_string_from_py_std__in_string(__pyx_t_1); if (unlikely(PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 315; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
     try {
       __pyx_v_tokenizers.insert(__pyx_t_7);
     } catch(...) {
       __Pyx_CppExn2PyErr();
-      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 270; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 315; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     }
 
-    /* "py_stringsimjoin/apply_rf/executor.pyx":267
+    /* "py_stringsimjoin/apply_rf/executor.pyx":312
  *     cdef vector[pair[simfnptr_str, string]] feature_info
  *     cdef oset[string] tokenizers
  *     for feat_name in feature_table.index:             # <<<<<<<<<<<<<<
@@ -4727,7 +5025,7 @@ static PyObject *__pyx_pf_16py_stringsimjoin_8apply_rf_8executor_8execute_rf_nai
   }
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "py_stringsimjoin/apply_rf/executor.pyx":274
+  /* "py_stringsimjoin/apply_rf/executor.pyx":319
  *     cdef vector[string] tokens1, tokens2
  *     cdef string tok_type, str1, str2
  *     cdef int id1=0, id2=0, cnt= 0             # <<<<<<<<<<<<<<
@@ -4738,7 +5036,7 @@ static PyObject *__pyx_pf_16py_stringsimjoin_8apply_rf_8executor_8execute_rf_nai
   __pyx_v_id2 = 0;
   __pyx_v_cnt = 0;
 
-  /* "py_stringsimjoin/apply_rf/executor.pyx":278
+  /* "py_stringsimjoin/apply_rf/executor.pyx":323
  *     cdef pair[simfnptr_str, string] entry
  *     cdef omap[string, vector[string]] ltokens, rtokens
  *     for str1 in lstrings:             # <<<<<<<<<<<<<<
@@ -4752,7 +5050,7 @@ static PyObject *__pyx_pf_16py_stringsimjoin_8apply_rf_8executor_8execute_rf_nai
     ++__pyx_t_9;
     __pyx_v_str1 = __pyx_t_7;
 
-    /* "py_stringsimjoin/apply_rf/executor.pyx":279
+    /* "py_stringsimjoin/apply_rf/executor.pyx":324
  *     cdef omap[string, vector[string]] ltokens, rtokens
  *     for str1 in lstrings:
  *         id2 = 0             # <<<<<<<<<<<<<<
@@ -4761,7 +5059,7 @@ static PyObject *__pyx_pf_16py_stringsimjoin_8apply_rf_8executor_8execute_rf_nai
  */
     __pyx_v_id2 = 0;
 
-    /* "py_stringsimjoin/apply_rf/executor.pyx":280
+    /* "py_stringsimjoin/apply_rf/executor.pyx":325
  *     for str1 in lstrings:
  *         id2 = 0
  *         for tok_type in tokenizers:             # <<<<<<<<<<<<<<
@@ -4775,7 +5073,7 @@ static PyObject *__pyx_pf_16py_stringsimjoin_8apply_rf_8executor_8execute_rf_nai
       ++__pyx_t_10;
       __pyx_v_tok_type = __pyx_t_7;
 
-      /* "py_stringsimjoin/apply_rf/executor.pyx":281
+      /* "py_stringsimjoin/apply_rf/executor.pyx":326
  *         id2 = 0
  *         for tok_type in tokenizers:
  *             ltokens[tok_type] = tokenize_str(str1, tok_type)             # <<<<<<<<<<<<<<
@@ -4784,7 +5082,7 @@ static PyObject *__pyx_pf_16py_stringsimjoin_8apply_rf_8executor_8execute_rf_nai
  */
       (__pyx_v_ltokens[__pyx_v_tok_type]) = __pyx_f_16py_stringsimjoin_8apply_rf_10tokenizers_tokenize_str(__pyx_v_str1, __pyx_v_tok_type);
 
-      /* "py_stringsimjoin/apply_rf/executor.pyx":280
+      /* "py_stringsimjoin/apply_rf/executor.pyx":325
  *     for str1 in lstrings:
  *         id2 = 0
  *         for tok_type in tokenizers:             # <<<<<<<<<<<<<<
@@ -4793,7 +5091,7 @@ static PyObject *__pyx_pf_16py_stringsimjoin_8apply_rf_8executor_8execute_rf_nai
  */
     }
 
-    /* "py_stringsimjoin/apply_rf/executor.pyx":283
+    /* "py_stringsimjoin/apply_rf/executor.pyx":328
  *             ltokens[tok_type] = tokenize_str(str1, tok_type)
  * 
  *         for str2 in rstrings:             # <<<<<<<<<<<<<<
@@ -4807,7 +5105,7 @@ static PyObject *__pyx_pf_16py_stringsimjoin_8apply_rf_8executor_8execute_rf_nai
       ++__pyx_t_11;
       __pyx_v_str2 = __pyx_t_7;
 
-      /* "py_stringsimjoin/apply_rf/executor.pyx":284
+      /* "py_stringsimjoin/apply_rf/executor.pyx":329
  * 
  *         for str2 in rstrings:
  *             for tok_type in tokenizers:             # <<<<<<<<<<<<<<
@@ -4821,7 +5119,7 @@ static PyObject *__pyx_pf_16py_stringsimjoin_8apply_rf_8executor_8execute_rf_nai
         ++__pyx_t_10;
         __pyx_v_tok_type = __pyx_t_7;
 
-        /* "py_stringsimjoin/apply_rf/executor.pyx":285
+        /* "py_stringsimjoin/apply_rf/executor.pyx":330
  *         for str2 in rstrings:
  *             for tok_type in tokenizers:
  *                 rtokens[tok_type] = tokenize_str(str2, tok_type)             # <<<<<<<<<<<<<<
@@ -4830,7 +5128,7 @@ static PyObject *__pyx_pf_16py_stringsimjoin_8apply_rf_8executor_8execute_rf_nai
  */
         (__pyx_v_rtokens[__pyx_v_tok_type]) = __pyx_f_16py_stringsimjoin_8apply_rf_10tokenizers_tokenize_str(__pyx_v_str2, __pyx_v_tok_type);
 
-        /* "py_stringsimjoin/apply_rf/executor.pyx":284
+        /* "py_stringsimjoin/apply_rf/executor.pyx":329
  * 
  *         for str2 in rstrings:
  *             for tok_type in tokenizers:             # <<<<<<<<<<<<<<
@@ -4839,19 +5137,19 @@ static PyObject *__pyx_pf_16py_stringsimjoin_8apply_rf_8executor_8execute_rf_nai
  */
       }
 
-      /* "py_stringsimjoin/apply_rf/executor.pyx":286
+      /* "py_stringsimjoin/apply_rf/executor.pyx":331
  *             for tok_type in tokenizers:
  *                 rtokens[tok_type] = tokenize_str(str2, tok_type)
  *             f = []             # <<<<<<<<<<<<<<
  *             for entry in feature_info:
  *                 f.append(entry.first(ltokens[entry.second], rtokens[entry.second]))
  */
-      __pyx_t_2 = PyList_New(0); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 286; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_2 = PyList_New(0); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 331; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_GOTREF(__pyx_t_2);
       __Pyx_XDECREF_SET(__pyx_v_f, ((PyObject*)__pyx_t_2));
       __pyx_t_2 = 0;
 
-      /* "py_stringsimjoin/apply_rf/executor.pyx":287
+      /* "py_stringsimjoin/apply_rf/executor.pyx":332
  *                 rtokens[tok_type] = tokenize_str(str2, tok_type)
  *             f = []
  *             for entry in feature_info:             # <<<<<<<<<<<<<<
@@ -4865,19 +5163,19 @@ static PyObject *__pyx_pf_16py_stringsimjoin_8apply_rf_8executor_8execute_rf_nai
         ++__pyx_t_12;
         __pyx_v_entry = __pyx_t_8;
 
-        /* "py_stringsimjoin/apply_rf/executor.pyx":288
+        /* "py_stringsimjoin/apply_rf/executor.pyx":333
  *             f = []
  *             for entry in feature_info:
  *                 f.append(entry.first(ltokens[entry.second], rtokens[entry.second]))             # <<<<<<<<<<<<<<
  *             if rf.predict([f]) == 1:
  *                  candset.push_back(pair[int, int](id1, id2))
  */
-        __pyx_t_2 = PyFloat_FromDouble(__pyx_v_entry.first((__pyx_v_ltokens[__pyx_v_entry.second]), (__pyx_v_rtokens[__pyx_v_entry.second]))); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 288; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        __pyx_t_2 = PyFloat_FromDouble(__pyx_v_entry.first((__pyx_v_ltokens[__pyx_v_entry.second]), (__pyx_v_rtokens[__pyx_v_entry.second]))); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 333; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
         __Pyx_GOTREF(__pyx_t_2);
-        __pyx_t_13 = __Pyx_PyList_Append(__pyx_v_f, __pyx_t_2); if (unlikely(__pyx_t_13 == -1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 288; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        __pyx_t_13 = __Pyx_PyList_Append(__pyx_v_f, __pyx_t_2); if (unlikely(__pyx_t_13 == -1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 333; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
         __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-        /* "py_stringsimjoin/apply_rf/executor.pyx":287
+        /* "py_stringsimjoin/apply_rf/executor.pyx":332
  *                 rtokens[tok_type] = tokenize_str(str2, tok_type)
  *             f = []
  *             for entry in feature_info:             # <<<<<<<<<<<<<<
@@ -4886,16 +5184,16 @@ static PyObject *__pyx_pf_16py_stringsimjoin_8apply_rf_8executor_8execute_rf_nai
  */
       }
 
-      /* "py_stringsimjoin/apply_rf/executor.pyx":289
+      /* "py_stringsimjoin/apply_rf/executor.pyx":334
  *             for entry in feature_info:
  *                 f.append(entry.first(ltokens[entry.second], rtokens[entry.second]))
  *             if rf.predict([f]) == 1:             # <<<<<<<<<<<<<<
  *                  candset.push_back(pair[int, int](id1, id2))
  *             id2 += 1
  */
-      __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_rf, __pyx_n_s_predict); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 289; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_rf, __pyx_n_s_predict); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 334; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_GOTREF(__pyx_t_1);
-      __pyx_t_5 = PyList_New(1); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 289; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_5 = PyList_New(1); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 334; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_GOTREF(__pyx_t_5);
       __Pyx_INCREF(__pyx_v_f);
       __Pyx_GIVEREF(__pyx_v_f);
@@ -4911,29 +5209,29 @@ static PyObject *__pyx_pf_16py_stringsimjoin_8apply_rf_8executor_8execute_rf_nai
         }
       }
       if (!__pyx_t_14) {
-        __pyx_t_2 = __Pyx_PyObject_CallOneArg(__pyx_t_1, __pyx_t_5); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 289; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        __pyx_t_2 = __Pyx_PyObject_CallOneArg(__pyx_t_1, __pyx_t_5); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 334; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
         __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
         __Pyx_GOTREF(__pyx_t_2);
       } else {
-        __pyx_t_15 = PyTuple_New(1+1); if (unlikely(!__pyx_t_15)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 289; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        __pyx_t_15 = PyTuple_New(1+1); if (unlikely(!__pyx_t_15)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 334; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
         __Pyx_GOTREF(__pyx_t_15);
         __Pyx_GIVEREF(__pyx_t_14); PyTuple_SET_ITEM(__pyx_t_15, 0, __pyx_t_14); __pyx_t_14 = NULL;
         __Pyx_GIVEREF(__pyx_t_5);
         PyTuple_SET_ITEM(__pyx_t_15, 0+1, __pyx_t_5);
         __pyx_t_5 = 0;
-        __pyx_t_2 = __Pyx_PyObject_Call(__pyx_t_1, __pyx_t_15, NULL); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 289; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        __pyx_t_2 = __Pyx_PyObject_Call(__pyx_t_1, __pyx_t_15, NULL); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 334; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
         __Pyx_GOTREF(__pyx_t_2);
         __Pyx_DECREF(__pyx_t_15); __pyx_t_15 = 0;
       }
       __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-      __pyx_t_1 = __Pyx_PyInt_EqObjC(__pyx_t_2, __pyx_int_1, 1, 0); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 289; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_1 = __Pyx_PyInt_EqObjC(__pyx_t_2, __pyx_int_1, 1, 0); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 334; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_GOTREF(__pyx_t_1);
       __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-      __pyx_t_16 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_16 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 289; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_16 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_16 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 334; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
       if (__pyx_t_16) {
 
-        /* "py_stringsimjoin/apply_rf/executor.pyx":290
+        /* "py_stringsimjoin/apply_rf/executor.pyx":335
  *                 f.append(entry.first(ltokens[entry.second], rtokens[entry.second]))
  *             if rf.predict([f]) == 1:
  *                  candset.push_back(pair[int, int](id1, id2))             # <<<<<<<<<<<<<<
@@ -4944,16 +5242,16 @@ static PyObject *__pyx_pf_16py_stringsimjoin_8apply_rf_8executor_8execute_rf_nai
           __pyx_t_17 = std::pair<int,int> (__pyx_v_id1, __pyx_v_id2);
         } catch(...) {
           __Pyx_CppExn2PyErr();
-          {__pyx_filename = __pyx_f[0]; __pyx_lineno = 290; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+          {__pyx_filename = __pyx_f[0]; __pyx_lineno = 335; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
         }
         try {
           __pyx_v_candset.push_back(__pyx_t_17);
         } catch(...) {
           __Pyx_CppExn2PyErr();
-          {__pyx_filename = __pyx_f[0]; __pyx_lineno = 290; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+          {__pyx_filename = __pyx_f[0]; __pyx_lineno = 335; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
         }
 
-        /* "py_stringsimjoin/apply_rf/executor.pyx":289
+        /* "py_stringsimjoin/apply_rf/executor.pyx":334
  *             for entry in feature_info:
  *                 f.append(entry.first(ltokens[entry.second], rtokens[entry.second]))
  *             if rf.predict([f]) == 1:             # <<<<<<<<<<<<<<
@@ -4962,7 +5260,7 @@ static PyObject *__pyx_pf_16py_stringsimjoin_8apply_rf_8executor_8execute_rf_nai
  */
       }
 
-      /* "py_stringsimjoin/apply_rf/executor.pyx":291
+      /* "py_stringsimjoin/apply_rf/executor.pyx":336
  *             if rf.predict([f]) == 1:
  *                  candset.push_back(pair[int, int](id1, id2))
  *             id2 += 1             # <<<<<<<<<<<<<<
@@ -4971,7 +5269,7 @@ static PyObject *__pyx_pf_16py_stringsimjoin_8apply_rf_8executor_8execute_rf_nai
  */
       __pyx_v_id2 = (__pyx_v_id2 + 1);
 
-      /* "py_stringsimjoin/apply_rf/executor.pyx":292
+      /* "py_stringsimjoin/apply_rf/executor.pyx":337
  *                  candset.push_back(pair[int, int](id1, id2))
  *             id2 += 1
  *             cnt += 1             # <<<<<<<<<<<<<<
@@ -4980,19 +5278,19 @@ static PyObject *__pyx_pf_16py_stringsimjoin_8apply_rf_8executor_8execute_rf_nai
  */
       __pyx_v_cnt = (__pyx_v_cnt + 1);
 
-      /* "py_stringsimjoin/apply_rf/executor.pyx":294
+      /* "py_stringsimjoin/apply_rf/executor.pyx":339
  *             cnt += 1
  * #            if cnt % 1000000 == 0:
  *             print cnt             # <<<<<<<<<<<<<<
  *         id1 += 1
  * 
  */
-      __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_v_cnt); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 294; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_v_cnt); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 339; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_GOTREF(__pyx_t_1);
-      if (__Pyx_PrintOne(0, __pyx_t_1) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 294; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      if (__Pyx_PrintOne(0, __pyx_t_1) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 339; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-      /* "py_stringsimjoin/apply_rf/executor.pyx":283
+      /* "py_stringsimjoin/apply_rf/executor.pyx":328
  *             ltokens[tok_type] = tokenize_str(str1, tok_type)
  * 
  *         for str2 in rstrings:             # <<<<<<<<<<<<<<
@@ -5001,7 +5299,7 @@ static PyObject *__pyx_pf_16py_stringsimjoin_8apply_rf_8executor_8execute_rf_nai
  */
     }
 
-    /* "py_stringsimjoin/apply_rf/executor.pyx":295
+    /* "py_stringsimjoin/apply_rf/executor.pyx":340
  * #            if cnt % 1000000 == 0:
  *             print cnt
  *         id1 += 1             # <<<<<<<<<<<<<<
@@ -5009,7 +5307,7 @@ static PyObject *__pyx_pf_16py_stringsimjoin_8apply_rf_8executor_8execute_rf_nai
  */
     __pyx_v_id1 = (__pyx_v_id1 + 1);
 
-    /* "py_stringsimjoin/apply_rf/executor.pyx":278
+    /* "py_stringsimjoin/apply_rf/executor.pyx":323
  *     cdef pair[simfnptr_str, string] entry
  *     cdef omap[string, vector[string]] ltokens, rtokens
  *     for str1 in lstrings:             # <<<<<<<<<<<<<<
@@ -5018,7 +5316,7 @@ static PyObject *__pyx_pf_16py_stringsimjoin_8apply_rf_8executor_8execute_rf_nai
  */
   }
 
-  /* "py_stringsimjoin/apply_rf/executor.pyx":260
+  /* "py_stringsimjoin/apply_rf/executor.pyx":305
  * 
  * 
  * def execute_rf_naive(rf, feature_table, ldf, attr1, rdf, attr2):             # <<<<<<<<<<<<<<
@@ -5394,34 +5692,30 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_children, __pyx_k_children, sizeof(__pyx_k_children), 0, 0, 1, 1},
   {&__pyx_n_s_close, __pyx_k_close, sizeof(__pyx_k_close), 0, 0, 1, 1},
   {&__pyx_n_s_cnt, __pyx_k_cnt, sizeof(__pyx_k_cnt), 0, 0, 1, 1},
-  {&__pyx_kp_s_computing_coverage, __pyx_k_computing_coverage, sizeof(__pyx_k_computing_coverage), 0, 0, 1, 0},
-  {&__pyx_n_s_coverage, __pyx_k_coverage, sizeof(__pyx_k_coverage), 0, 0, 1, 1},
   {&__pyx_n_s_df1, __pyx_k_df1, sizeof(__pyx_k_df1), 0, 0, 1, 1},
   {&__pyx_n_s_df2, __pyx_k_df2, sizeof(__pyx_k_df2), 0, 0, 1, 1},
   {&__pyx_n_s_end, __pyx_k_end, sizeof(__pyx_k_end), 0, 0, 1, 1},
   {&__pyx_n_s_entry, __pyx_k_entry, sizeof(__pyx_k_entry), 0, 0, 1, 1},
   {&__pyx_n_s_execute_rf, __pyx_k_execute_rf, sizeof(__pyx_k_execute_rf), 0, 0, 1, 1},
   {&__pyx_n_s_execute_rf_naive, __pyx_k_execute_rf_naive, sizeof(__pyx_k_execute_rf_naive), 0, 0, 1, 1},
-  {&__pyx_kp_s_executing_plan, __pyx_k_executing_plan, sizeof(__pyx_k_executing_plan), 0, 0, 1, 0},
   {&__pyx_n_s_f, __pyx_k_f, sizeof(__pyx_k_f), 0, 0, 1, 1},
   {&__pyx_n_s_feat_name, __pyx_k_feat_name, sizeof(__pyx_k_feat_name), 0, 0, 1, 1},
   {&__pyx_n_s_feature_info, __pyx_k_feature_info, sizeof(__pyx_k_feature_info), 0, 0, 1, 1},
   {&__pyx_n_s_feature_table, __pyx_k_feature_table, sizeof(__pyx_k_feature_table), 0, 0, 1, 1},
   {&__pyx_n_s_file, __pyx_k_file, sizeof(__pyx_k_file), 0, 0, 1, 1},
+  {&__pyx_n_s_file_name, __pyx_k_file_name, sizeof(__pyx_k_file_name), 0, 0, 1, 1},
   {&__pyx_kp_s_filter_done, __pyx_k_filter_done, sizeof(__pyx_k_filter_done), 0, 0, 1, 0},
   {&__pyx_n_s_get, __pyx_k_get, sizeof(__pyx_k_get), 0, 0, 1, 1},
   {&__pyx_n_s_get_predicate_dict, __pyx_k_get_predicate_dict, sizeof(__pyx_k_get_predicate_dict), 0, 0, 1, 1},
   {&__pyx_n_b_gh, __pyx_k_gh, sizeof(__pyx_k_gh), 0, 0, 0, 1},
   {&__pyx_n_b_gh1, __pyx_k_gh1, sizeof(__pyx_k_gh1), 0, 0, 0, 1},
   {&__pyx_n_s_gh1, __pyx_k_gh1, sizeof(__pyx_k_gh1), 0, 0, 1, 1},
-  {&__pyx_n_s_global_plan, __pyx_k_global_plan, sizeof(__pyx_k_global_plan), 0, 0, 1, 1},
   {&__pyx_n_s_id1, __pyx_k_id1, sizeof(__pyx_k_id1), 0, 0, 1, 1},
   {&__pyx_n_s_id2, __pyx_k_id2, sizeof(__pyx_k_id2), 0, 0, 1, 1},
   {&__pyx_n_s_import, __pyx_k_import, sizeof(__pyx_k_import), 0, 0, 1, 1},
   {&__pyx_n_s_index, __pyx_k_index, sizeof(__pyx_k_index), 0, 0, 1, 1},
   {&__pyx_n_s_ix, __pyx_k_ix, sizeof(__pyx_k_ix), 0, 0, 1, 1},
   {&__pyx_kp_s_join_completed, __pyx_k_join_completed, sizeof(__pyx_k_join_completed), 0, 0, 1, 0},
-  {&__pyx_n_s_l, __pyx_k_l, sizeof(__pyx_k_l), 0, 0, 1, 1},
   {&__pyx_n_s_l1, __pyx_k_l1, sizeof(__pyx_k_l1), 0, 0, 1, 1},
   {&__pyx_n_s_l2, __pyx_k_l2, sizeof(__pyx_k_l2), 0, 0, 1, 1},
   {&__pyx_n_s_ldf, __pyx_k_ldf, sizeof(__pyx_k_ldf), 0, 0, 1, 1},
@@ -5429,20 +5723,21 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_lstrings, __pyx_k_lstrings, sizeof(__pyx_k_lstrings), 0, 0, 1, 1},
   {&__pyx_n_s_ltokens, __pyx_k_ltokens, sizeof(__pyx_k_ltokens), 0, 0, 1, 1},
   {&__pyx_n_s_main, __pyx_k_main, sizeof(__pyx_k_main), 0, 0, 1, 1},
+  {&__pyx_n_s_merged_candset, __pyx_k_merged_candset, sizeof(__pyx_k_merged_candset), 0, 0, 1, 1},
   {&__pyx_n_s_n_jobs, __pyx_k_n_jobs, sizeof(__pyx_k_n_jobs), 0, 0, 1, 1},
   {&__pyx_n_s_node_type, __pyx_k_node_type, sizeof(__pyx_k_node_type), 0, 0, 1, 1},
-  {&__pyx_kp_s_num_pl, __pyx_k_num_pl, sizeof(__pyx_k_num_pl), 0, 0, 1, 0},
+  {&__pyx_kp_s_num_output_pairs, __pyx_k_num_output_pairs, sizeof(__pyx_k_num_output_pairs), 0, 0, 1, 0},
   {&__pyx_kp_s_num_preds, __pyx_k_num_preds, sizeof(__pyx_k_num_preds), 0, 0, 1, 0},
   {&__pyx_n_s_num_preds_2, __pyx_k_num_preds_2, sizeof(__pyx_k_num_preds_2), 0, 0, 1, 1},
   {&__pyx_kp_s_num_rules, __pyx_k_num_rules, sizeof(__pyx_k_num_rules), 0, 0, 1, 0},
   {&__pyx_n_s_num_rules_2, __pyx_k_num_rules_2, sizeof(__pyx_k_num_rules_2), 0, 0, 1, 1},
   {&__pyx_kp_s_num_trees, __pyx_k_num_trees, sizeof(__pyx_k_num_trees), 0, 0, 1, 0},
   {&__pyx_n_s_open, __pyx_k_open, sizeof(__pyx_k_open), 0, 0, 1, 1},
-  {&__pyx_n_s_output, __pyx_k_output, sizeof(__pyx_k_output), 0, 0, 1, 1},
+  {&__pyx_kp_s_output, __pyx_k_output, sizeof(__pyx_k_output), 0, 0, 1, 0},
+  {&__pyx_n_s_output_2, __pyx_k_output_2, sizeof(__pyx_k_output_2), 0, 0, 1, 1},
   {&__pyx_kp_s_output_size, __pyx_k_output_size, sizeof(__pyx_k_output_size), 0, 0, 1, 0},
   {&__pyx_kp_s_parallen_begin, __pyx_k_parallen_begin, sizeof(__pyx_k_parallen_begin), 0, 0, 1, 0},
   {&__pyx_kp_s_parallen_end, __pyx_k_parallen_end, sizeof(__pyx_k_parallen_end), 0, 0, 1, 0},
-  {&__pyx_n_s_plans, __pyx_k_plans, sizeof(__pyx_k_plans), 0, 0, 1, 1},
   {&__pyx_n_s_pop, __pyx_k_pop, sizeof(__pyx_k_pop), 0, 0, 1, 1},
   {&__pyx_n_s_predicate, __pyx_k_predicate, sizeof(__pyx_k_predicate), 0, 0, 1, 1},
   {&__pyx_n_s_predict, __pyx_k_predict, sizeof(__pyx_k_predict), 0, 0, 1, 1},
@@ -5461,7 +5756,6 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_rtokens, __pyx_k_rtokens, sizeof(__pyx_k_rtokens), 0, 0, 1, 1},
   {&__pyx_n_s_rule, __pyx_k_rule, sizeof(__pyx_k_rule), 0, 0, 1, 1},
   {&__pyx_n_s_rule_2, __pyx_k_rule_2, sizeof(__pyx_k_rule_2), 0, 0, 1, 1},
-  {&__pyx_n_s_s, __pyx_k_s, sizeof(__pyx_k_s), 0, 0, 1, 1},
   {&__pyx_n_s_sim_measure_type, __pyx_k_sim_measure_type, sizeof(__pyx_k_sim_measure_type), 0, 0, 1, 1},
   {&__pyx_n_s_sim_type, __pyx_k_sim_type, sizeof(__pyx_k_sim_type), 0, 0, 1, 1},
   {&__pyx_n_s_st, __pyx_k_st, sizeof(__pyx_k_st), 0, 0, 1, 1},
@@ -5492,8 +5786,8 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {0, 0, 0, 0, 0, 0, 0}
 };
 static int __Pyx_InitCachedBuiltins(void) {
-  __pyx_builtin_open = __Pyx_GetBuiltinName(__pyx_n_s_open); if (!__pyx_builtin_open) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 105; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __pyx_builtin_range = __Pyx_GetBuiltinName(__pyx_n_s_range); if (!__pyx_builtin_range) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 140; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_builtin_open = __Pyx_GetBuiltinName(__pyx_n_s_open); if (!__pyx_builtin_open) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 72; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_builtin_range = __Pyx_GetBuiltinName(__pyx_n_s_range); if (!__pyx_builtin_range) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 174; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   return 0;
   __pyx_L1_error:;
   return -1;
@@ -5510,58 +5804,58 @@ static int __Pyx_InitCachedConstants(void) {
  *     cdef vector[Tree] trees
  *     trees = extract_pos_rules_from_rf(rf, feature_table)
  */
-  __pyx_tuple__3 = PyTuple_Pack(23, __pyx_n_s_rf, __pyx_n_s_feature_table, __pyx_n_s_l1, __pyx_n_s_l2, __pyx_n_s_df1, __pyx_n_s_attr1, __pyx_n_s_df2, __pyx_n_s_attr2, __pyx_n_s_working_dir, __pyx_n_s_n_jobs, __pyx_n_s_trees, __pyx_n_s_num_rules_2, __pyx_n_s_num_preds_2, __pyx_n_s_tree_2, __pyx_n_s_rule_2, __pyx_n_s_coverage, __pyx_n_s_l, __pyx_n_s_r, __pyx_n_s_s, __pyx_n_s_plans, __pyx_n_s_global_plan, __pyx_n_s_lstrings, __pyx_n_s_rstrings); if (unlikely(!__pyx_tuple__3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 32; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_tuple__3 = PyTuple_Pack(19, __pyx_n_s_rf, __pyx_n_s_feature_table, __pyx_n_s_l1, __pyx_n_s_l2, __pyx_n_s_df1, __pyx_n_s_attr1, __pyx_n_s_df2, __pyx_n_s_attr2, __pyx_n_s_working_dir, __pyx_n_s_n_jobs, __pyx_n_s_trees, __pyx_n_s_num_rules_2, __pyx_n_s_num_preds_2, __pyx_n_s_tree_2, __pyx_n_s_rule_2, __pyx_n_s_merged_candset, __pyx_n_s_entry, __pyx_n_s_file_name, __pyx_n_s_f); if (unlikely(!__pyx_tuple__3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 32; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_tuple__3);
   __Pyx_GIVEREF(__pyx_tuple__3);
-  __pyx_codeobj__4 = (PyObject*)__Pyx_PyCode_New(10, 0, 23, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__3, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_afs_cs_wisc_edu_u_p_a_paulgc_gi, __pyx_n_s_execute_rf, 32, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 32; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_codeobj__4 = (PyObject*)__Pyx_PyCode_New(10, 0, 19, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__3, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_afs_cs_wisc_edu_u_p_a_paulgc_gi, __pyx_n_s_execute_rf, 32, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 32; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
 
-  /* "py_stringsimjoin/apply_rf/executor.pyx":197
+  /* "py_stringsimjoin/apply_rf/executor.pyx":242
  *         tokenize(lstrings, rstrings, tok_type, working_dir)
  * 
  * def test_tok1(df1, attr1, df2, attr2):             # <<<<<<<<<<<<<<
  *     cdef vector[string] lstrings, rstrings
  *     convert_to_vector1(df1[attr1], lstrings)
  */
-  __pyx_tuple__5 = PyTuple_Pack(6, __pyx_n_s_df1, __pyx_n_s_attr1, __pyx_n_s_df2, __pyx_n_s_attr2, __pyx_n_s_lstrings, __pyx_n_s_rstrings); if (unlikely(!__pyx_tuple__5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 197; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_tuple__5 = PyTuple_Pack(6, __pyx_n_s_df1, __pyx_n_s_attr1, __pyx_n_s_df2, __pyx_n_s_attr2, __pyx_n_s_lstrings, __pyx_n_s_rstrings); if (unlikely(!__pyx_tuple__5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 242; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_tuple__5);
   __Pyx_GIVEREF(__pyx_tuple__5);
-  __pyx_codeobj__6 = (PyObject*)__Pyx_PyCode_New(4, 0, 6, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__5, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_afs_cs_wisc_edu_u_p_a_paulgc_gi, __pyx_n_s_test_tok1, 197, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 197; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_codeobj__6 = (PyObject*)__Pyx_PyCode_New(4, 0, 6, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__5, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_afs_cs_wisc_edu_u_p_a_paulgc_gi, __pyx_n_s_test_tok1, 242, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 242; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
 
-  /* "py_stringsimjoin/apply_rf/executor.pyx":227
+  /* "py_stringsimjoin/apply_rf/executor.pyx":272
  *     return tokenizers
  * 
  * def test_jac(df1, attr1, df2, attr2, sim_type, threshold):             # <<<<<<<<<<<<<<
  *     st = time.time()
  *     print 'tokenizing'
  */
-  __pyx_tuple__7 = PyTuple_Pack(10, __pyx_n_s_df1, __pyx_n_s_attr1, __pyx_n_s_df2, __pyx_n_s_attr2, __pyx_n_s_sim_type, __pyx_n_s_threshold, __pyx_n_s_st, __pyx_n_s_ltokens, __pyx_n_s_rtokens, __pyx_n_s_output); if (unlikely(!__pyx_tuple__7)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 227; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_tuple__7 = PyTuple_Pack(10, __pyx_n_s_df1, __pyx_n_s_attr1, __pyx_n_s_df2, __pyx_n_s_attr2, __pyx_n_s_sim_type, __pyx_n_s_threshold, __pyx_n_s_st, __pyx_n_s_ltokens, __pyx_n_s_rtokens, __pyx_n_s_output_2); if (unlikely(!__pyx_tuple__7)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 272; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_tuple__7);
   __Pyx_GIVEREF(__pyx_tuple__7);
-  __pyx_codeobj__8 = (PyObject*)__Pyx_PyCode_New(6, 0, 10, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__7, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_afs_cs_wisc_edu_u_p_a_paulgc_gi, __pyx_n_s_test_jac, 227, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__8)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 227; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_codeobj__8 = (PyObject*)__Pyx_PyCode_New(6, 0, 10, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__7, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_afs_cs_wisc_edu_u_p_a_paulgc_gi, __pyx_n_s_test_jac, 272, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__8)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 272; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
 
-  /* "py_stringsimjoin/apply_rf/executor.pyx":243
+  /* "py_stringsimjoin/apply_rf/executor.pyx":288
  *     print 'time : ', time.time() - st
  * 
  * def test_ed(df1, attr1, df2, attr2, threshold):             # <<<<<<<<<<<<<<
  *     st = time.time()
  *     print 'tokenizing'
  */
-  __pyx_tuple__9 = PyTuple_Pack(11, __pyx_n_s_df1, __pyx_n_s_attr1, __pyx_n_s_df2, __pyx_n_s_attr2, __pyx_n_s_threshold, __pyx_n_s_st, __pyx_n_s_lstrings, __pyx_n_s_rstrings, __pyx_n_s_ltokens, __pyx_n_s_rtokens, __pyx_n_s_output); if (unlikely(!__pyx_tuple__9)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 243; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_tuple__9 = PyTuple_Pack(11, __pyx_n_s_df1, __pyx_n_s_attr1, __pyx_n_s_df2, __pyx_n_s_attr2, __pyx_n_s_threshold, __pyx_n_s_st, __pyx_n_s_lstrings, __pyx_n_s_rstrings, __pyx_n_s_ltokens, __pyx_n_s_rtokens, __pyx_n_s_output_2); if (unlikely(!__pyx_tuple__9)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 288; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_tuple__9);
   __Pyx_GIVEREF(__pyx_tuple__9);
-  __pyx_codeobj__10 = (PyObject*)__Pyx_PyCode_New(5, 0, 11, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__9, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_afs_cs_wisc_edu_u_p_a_paulgc_gi, __pyx_n_s_test_ed, 243, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__10)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 243; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_codeobj__10 = (PyObject*)__Pyx_PyCode_New(5, 0, 11, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__9, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_afs_cs_wisc_edu_u_p_a_paulgc_gi, __pyx_n_s_test_ed, 288, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__10)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 288; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
 
-  /* "py_stringsimjoin/apply_rf/executor.pyx":260
+  /* "py_stringsimjoin/apply_rf/executor.pyx":305
  * 
  * 
  * def execute_rf_naive(rf, feature_table, ldf, attr1, rdf, attr2):             # <<<<<<<<<<<<<<
  *     cdef vector[string] lstrings, rstrings
  *     convert_to_vector1(ldf[attr1], lstrings)
  */
-  __pyx_tuple__11 = PyTuple_Pack(24, __pyx_n_s_rf, __pyx_n_s_feature_table, __pyx_n_s_ldf, __pyx_n_s_attr1, __pyx_n_s_rdf, __pyx_n_s_attr2, __pyx_n_s_lstrings, __pyx_n_s_rstrings, __pyx_n_s_feature_info, __pyx_n_s_tokenizers, __pyx_n_s_feat_name, __pyx_n_s_tokens1, __pyx_n_s_tokens2, __pyx_n_s_tok_type, __pyx_n_s_str1, __pyx_n_s_str2, __pyx_n_s_id1, __pyx_n_s_id2, __pyx_n_s_cnt, __pyx_n_s_candset, __pyx_n_s_entry, __pyx_n_s_ltokens, __pyx_n_s_rtokens, __pyx_n_s_f); if (unlikely(!__pyx_tuple__11)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 260; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_tuple__11 = PyTuple_Pack(24, __pyx_n_s_rf, __pyx_n_s_feature_table, __pyx_n_s_ldf, __pyx_n_s_attr1, __pyx_n_s_rdf, __pyx_n_s_attr2, __pyx_n_s_lstrings, __pyx_n_s_rstrings, __pyx_n_s_feature_info, __pyx_n_s_tokenizers, __pyx_n_s_feat_name, __pyx_n_s_tokens1, __pyx_n_s_tokens2, __pyx_n_s_tok_type, __pyx_n_s_str1, __pyx_n_s_str2, __pyx_n_s_id1, __pyx_n_s_id2, __pyx_n_s_cnt, __pyx_n_s_candset, __pyx_n_s_entry, __pyx_n_s_ltokens, __pyx_n_s_rtokens, __pyx_n_s_f); if (unlikely(!__pyx_tuple__11)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 305; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_tuple__11);
   __Pyx_GIVEREF(__pyx_tuple__11);
-  __pyx_codeobj__12 = (PyObject*)__Pyx_PyCode_New(6, 0, 24, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__11, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_afs_cs_wisc_edu_u_p_a_paulgc_gi, __pyx_n_s_execute_rf_naive, 260, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__12)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 260; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_codeobj__12 = (PyObject*)__Pyx_PyCode_New(6, 0, 24, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__11, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_afs_cs_wisc_edu_u_p_a_paulgc_gi, __pyx_n_s_execute_rf_naive, 305, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__12)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 305; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_RefNannyFinishContext();
   return 0;
   __pyx_L1_error:;
@@ -5785,52 +6079,52 @@ PyMODINIT_FUNC PyInit_executor(void)
   if (PyDict_SetItem(__pyx_d, __pyx_n_s_execute_rf, __pyx_t_8) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 32; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
 
-  /* "py_stringsimjoin/apply_rf/executor.pyx":197
+  /* "py_stringsimjoin/apply_rf/executor.pyx":242
  *         tokenize(lstrings, rstrings, tok_type, working_dir)
  * 
  * def test_tok1(df1, attr1, df2, attr2):             # <<<<<<<<<<<<<<
  *     cdef vector[string] lstrings, rstrings
  *     convert_to_vector1(df1[attr1], lstrings)
  */
-  __pyx_t_8 = PyCFunction_NewEx(&__pyx_mdef_16py_stringsimjoin_8apply_rf_8executor_3test_tok1, NULL, __pyx_n_s_py_stringsimjoin_apply_rf_execut_2); if (unlikely(!__pyx_t_8)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 197; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_8 = PyCFunction_NewEx(&__pyx_mdef_16py_stringsimjoin_8apply_rf_8executor_3test_tok1, NULL, __pyx_n_s_py_stringsimjoin_apply_rf_execut_2); if (unlikely(!__pyx_t_8)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 242; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_8);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_test_tok1, __pyx_t_8) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 197; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_test_tok1, __pyx_t_8) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 242; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
 
-  /* "py_stringsimjoin/apply_rf/executor.pyx":227
+  /* "py_stringsimjoin/apply_rf/executor.pyx":272
  *     return tokenizers
  * 
  * def test_jac(df1, attr1, df2, attr2, sim_type, threshold):             # <<<<<<<<<<<<<<
  *     st = time.time()
  *     print 'tokenizing'
  */
-  __pyx_t_8 = PyCFunction_NewEx(&__pyx_mdef_16py_stringsimjoin_8apply_rf_8executor_5test_jac, NULL, __pyx_n_s_py_stringsimjoin_apply_rf_execut_2); if (unlikely(!__pyx_t_8)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 227; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_8 = PyCFunction_NewEx(&__pyx_mdef_16py_stringsimjoin_8apply_rf_8executor_5test_jac, NULL, __pyx_n_s_py_stringsimjoin_apply_rf_execut_2); if (unlikely(!__pyx_t_8)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 272; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_8);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_test_jac, __pyx_t_8) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 227; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_test_jac, __pyx_t_8) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 272; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
 
-  /* "py_stringsimjoin/apply_rf/executor.pyx":243
+  /* "py_stringsimjoin/apply_rf/executor.pyx":288
  *     print 'time : ', time.time() - st
  * 
  * def test_ed(df1, attr1, df2, attr2, threshold):             # <<<<<<<<<<<<<<
  *     st = time.time()
  *     print 'tokenizing'
  */
-  __pyx_t_8 = PyCFunction_NewEx(&__pyx_mdef_16py_stringsimjoin_8apply_rf_8executor_7test_ed, NULL, __pyx_n_s_py_stringsimjoin_apply_rf_execut_2); if (unlikely(!__pyx_t_8)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 243; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_8 = PyCFunction_NewEx(&__pyx_mdef_16py_stringsimjoin_8apply_rf_8executor_7test_ed, NULL, __pyx_n_s_py_stringsimjoin_apply_rf_execut_2); if (unlikely(!__pyx_t_8)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 288; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_8);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_test_ed, __pyx_t_8) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 243; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_test_ed, __pyx_t_8) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 288; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
 
-  /* "py_stringsimjoin/apply_rf/executor.pyx":260
+  /* "py_stringsimjoin/apply_rf/executor.pyx":305
  * 
  * 
  * def execute_rf_naive(rf, feature_table, ldf, attr1, rdf, attr2):             # <<<<<<<<<<<<<<
  *     cdef vector[string] lstrings, rstrings
  *     convert_to_vector1(ldf[attr1], lstrings)
  */
-  __pyx_t_8 = PyCFunction_NewEx(&__pyx_mdef_16py_stringsimjoin_8apply_rf_8executor_9execute_rf_naive, NULL, __pyx_n_s_py_stringsimjoin_apply_rf_execut_2); if (unlikely(!__pyx_t_8)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 260; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_8 = PyCFunction_NewEx(&__pyx_mdef_16py_stringsimjoin_8apply_rf_8executor_9execute_rf_naive, NULL, __pyx_n_s_py_stringsimjoin_apply_rf_execut_2); if (unlikely(!__pyx_t_8)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 305; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_8);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_execute_rf_naive, __pyx_t_8) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 260; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_execute_rf_naive, __pyx_t_8) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 305; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
 
   /* "py_stringsimjoin/apply_rf/executor.pyx":2
@@ -6051,73 +6345,6 @@ bad:
     return -1;
 }
 
-static CYTHON_INLINE void __Pyx_ErrRestore(PyObject *type, PyObject *value, PyObject *tb) {
-#if CYTHON_COMPILING_IN_CPYTHON
-    PyObject *tmp_type, *tmp_value, *tmp_tb;
-    PyThreadState *tstate = PyThreadState_GET();
-    tmp_type = tstate->curexc_type;
-    tmp_value = tstate->curexc_value;
-    tmp_tb = tstate->curexc_traceback;
-    tstate->curexc_type = type;
-    tstate->curexc_value = value;
-    tstate->curexc_traceback = tb;
-    Py_XDECREF(tmp_type);
-    Py_XDECREF(tmp_value);
-    Py_XDECREF(tmp_tb);
-#else
-    PyErr_Restore(type, value, tb);
-#endif
-}
-static CYTHON_INLINE void __Pyx_ErrFetch(PyObject **type, PyObject **value, PyObject **tb) {
-#if CYTHON_COMPILING_IN_CPYTHON
-    PyThreadState *tstate = PyThreadState_GET();
-    *type = tstate->curexc_type;
-    *value = tstate->curexc_value;
-    *tb = tstate->curexc_traceback;
-    tstate->curexc_type = 0;
-    tstate->curexc_value = 0;
-    tstate->curexc_traceback = 0;
-#else
-    PyErr_Fetch(type, value, tb);
-#endif
-}
-
-static void __Pyx_WriteUnraisable(const char *name, CYTHON_UNUSED int clineno,
-                                  CYTHON_UNUSED int lineno, CYTHON_UNUSED const char *filename,
-                                  int full_traceback, CYTHON_UNUSED int nogil) {
-    PyObject *old_exc, *old_val, *old_tb;
-    PyObject *ctx;
-#ifdef WITH_THREAD
-    PyGILState_STATE state;
-    if (nogil)
-        state = PyGILState_Ensure();
-#endif
-    __Pyx_ErrFetch(&old_exc, &old_val, &old_tb);
-    if (full_traceback) {
-        Py_XINCREF(old_exc);
-        Py_XINCREF(old_val);
-        Py_XINCREF(old_tb);
-        __Pyx_ErrRestore(old_exc, old_val, old_tb);
-        PyErr_PrintEx(1);
-    }
-    #if PY_MAJOR_VERSION < 3
-    ctx = PyString_FromString(name);
-    #else
-    ctx = PyUnicode_FromString(name);
-    #endif
-    __Pyx_ErrRestore(old_exc, old_val, old_tb);
-    if (!ctx) {
-        PyErr_WriteUnraisable(Py_None);
-    } else {
-        PyErr_WriteUnraisable(ctx);
-        Py_DECREF(ctx);
-    }
-#ifdef WITH_THREAD
-    if (nogil)
-        PyGILState_Release(state);
-#endif
-}
-
 #if CYTHON_COMPILING_IN_CPYTHON
 static CYTHON_INLINE PyObject* __Pyx_PyObject_Call(PyObject *func, PyObject *arg, PyObject *kw) {
     PyObject *result;
@@ -6202,6 +6429,181 @@ static CYTHON_INLINE PyObject* __Pyx_PyObject_CallNoArg(PyObject *func) {
         }
     }
     return __Pyx_PyObject_Call(func, __pyx_empty_tuple, NULL);
+}
+#endif
+
+static CYTHON_INLINE void __Pyx_ErrRestore(PyObject *type, PyObject *value, PyObject *tb) {
+#if CYTHON_COMPILING_IN_CPYTHON
+    PyObject *tmp_type, *tmp_value, *tmp_tb;
+    PyThreadState *tstate = PyThreadState_GET();
+    tmp_type = tstate->curexc_type;
+    tmp_value = tstate->curexc_value;
+    tmp_tb = tstate->curexc_traceback;
+    tstate->curexc_type = type;
+    tstate->curexc_value = value;
+    tstate->curexc_traceback = tb;
+    Py_XDECREF(tmp_type);
+    Py_XDECREF(tmp_value);
+    Py_XDECREF(tmp_tb);
+#else
+    PyErr_Restore(type, value, tb);
+#endif
+}
+static CYTHON_INLINE void __Pyx_ErrFetch(PyObject **type, PyObject **value, PyObject **tb) {
+#if CYTHON_COMPILING_IN_CPYTHON
+    PyThreadState *tstate = PyThreadState_GET();
+    *type = tstate->curexc_type;
+    *value = tstate->curexc_value;
+    *tb = tstate->curexc_traceback;
+    tstate->curexc_type = 0;
+    tstate->curexc_value = 0;
+    tstate->curexc_traceback = 0;
+#else
+    PyErr_Fetch(type, value, tb);
+#endif
+}
+
+static void __Pyx_WriteUnraisable(const char *name, CYTHON_UNUSED int clineno,
+                                  CYTHON_UNUSED int lineno, CYTHON_UNUSED const char *filename,
+                                  int full_traceback, CYTHON_UNUSED int nogil) {
+    PyObject *old_exc, *old_val, *old_tb;
+    PyObject *ctx;
+#ifdef WITH_THREAD
+    PyGILState_STATE state;
+    if (nogil)
+        state = PyGILState_Ensure();
+#endif
+    __Pyx_ErrFetch(&old_exc, &old_val, &old_tb);
+    if (full_traceback) {
+        Py_XINCREF(old_exc);
+        Py_XINCREF(old_val);
+        Py_XINCREF(old_tb);
+        __Pyx_ErrRestore(old_exc, old_val, old_tb);
+        PyErr_PrintEx(1);
+    }
+    #if PY_MAJOR_VERSION < 3
+    ctx = PyString_FromString(name);
+    #else
+    ctx = PyUnicode_FromString(name);
+    #endif
+    __Pyx_ErrRestore(old_exc, old_val, old_tb);
+    if (!ctx) {
+        PyErr_WriteUnraisable(Py_None);
+    } else {
+        PyErr_WriteUnraisable(ctx);
+        Py_DECREF(ctx);
+    }
+#ifdef WITH_THREAD
+    if (nogil)
+        PyGILState_Release(state);
+#endif
+}
+
+static CYTHON_INLINE long __Pyx_div_long(long a, long b) {
+    long q = a / b;
+    long r = a - q*b;
+    q -= ((r != 0) & ((r ^ b) < 0));
+    return q;
+}
+
+#if CYTHON_USE_PYLONG_INTERNALS
+  #include "longintrepr.h"
+#endif
+
+#if CYTHON_COMPILING_IN_CPYTHON
+static PyObject* __Pyx_PyInt_AddObjC(PyObject *op1, PyObject *op2, CYTHON_UNUSED long intval, CYTHON_UNUSED int inplace) {
+    #if PY_MAJOR_VERSION < 3
+    if (likely(PyInt_CheckExact(op1))) {
+        const long b = intval;
+        long x;
+        long a = PyInt_AS_LONG(op1);
+            x = (long)((unsigned long)a + b);
+            if (likely((x^a) >= 0 || (x^b) >= 0))
+                return PyInt_FromLong(x);
+            return PyLong_Type.tp_as_number->nb_add(op1, op2);
+    }
+    #endif
+    #if CYTHON_USE_PYLONG_INTERNALS && PY_MAJOR_VERSION >= 3
+    if (likely(PyLong_CheckExact(op1))) {
+        const long b = intval;
+        long a, x;
+        const PY_LONG_LONG llb = intval;
+        PY_LONG_LONG lla, llx;
+        const digit* digits = ((PyLongObject*)op1)->ob_digit;
+        const Py_ssize_t size = Py_SIZE(op1);
+        if (likely(__Pyx_sst_abs(size) <= 1)) {
+            a = likely(size) ? digits[0] : 0;
+            if (size == -1) a = -a;
+        } else {
+            switch (size) {
+                case -2:
+                    if (8 * sizeof(long) - 1 > 2 * PyLong_SHIFT) {
+                        a = -(long) (((((unsigned long)digits[1]) << PyLong_SHIFT) | (unsigned long)digits[0]));
+                        break;
+                    } else if (8 * sizeof(PY_LONG_LONG) - 1 > 2 * PyLong_SHIFT) {
+                        lla = -(PY_LONG_LONG) (((((unsigned PY_LONG_LONG)digits[1]) << PyLong_SHIFT) | (unsigned PY_LONG_LONG)digits[0]));
+                        goto long_long;
+                    }
+                case 2:
+                    if (8 * sizeof(long) - 1 > 2 * PyLong_SHIFT) {
+                        a = (long) (((((unsigned long)digits[1]) << PyLong_SHIFT) | (unsigned long)digits[0]));
+                        break;
+                    } else if (8 * sizeof(PY_LONG_LONG) - 1 > 2 * PyLong_SHIFT) {
+                        lla = (PY_LONG_LONG) (((((unsigned PY_LONG_LONG)digits[1]) << PyLong_SHIFT) | (unsigned PY_LONG_LONG)digits[0]));
+                        goto long_long;
+                    }
+                case -3:
+                    if (8 * sizeof(long) - 1 > 3 * PyLong_SHIFT) {
+                        a = -(long) (((((((unsigned long)digits[2]) << PyLong_SHIFT) | (unsigned long)digits[1]) << PyLong_SHIFT) | (unsigned long)digits[0]));
+                        break;
+                    } else if (8 * sizeof(PY_LONG_LONG) - 1 > 3 * PyLong_SHIFT) {
+                        lla = -(PY_LONG_LONG) (((((((unsigned PY_LONG_LONG)digits[2]) << PyLong_SHIFT) | (unsigned PY_LONG_LONG)digits[1]) << PyLong_SHIFT) | (unsigned PY_LONG_LONG)digits[0]));
+                        goto long_long;
+                    }
+                case 3:
+                    if (8 * sizeof(long) - 1 > 3 * PyLong_SHIFT) {
+                        a = (long) (((((((unsigned long)digits[2]) << PyLong_SHIFT) | (unsigned long)digits[1]) << PyLong_SHIFT) | (unsigned long)digits[0]));
+                        break;
+                    } else if (8 * sizeof(PY_LONG_LONG) - 1 > 3 * PyLong_SHIFT) {
+                        lla = (PY_LONG_LONG) (((((((unsigned PY_LONG_LONG)digits[2]) << PyLong_SHIFT) | (unsigned PY_LONG_LONG)digits[1]) << PyLong_SHIFT) | (unsigned PY_LONG_LONG)digits[0]));
+                        goto long_long;
+                    }
+                case -4:
+                    if (8 * sizeof(long) - 1 > 4 * PyLong_SHIFT) {
+                        a = -(long) (((((((((unsigned long)digits[3]) << PyLong_SHIFT) | (unsigned long)digits[2]) << PyLong_SHIFT) | (unsigned long)digits[1]) << PyLong_SHIFT) | (unsigned long)digits[0]));
+                        break;
+                    } else if (8 * sizeof(PY_LONG_LONG) - 1 > 4 * PyLong_SHIFT) {
+                        lla = -(PY_LONG_LONG) (((((((((unsigned PY_LONG_LONG)digits[3]) << PyLong_SHIFT) | (unsigned PY_LONG_LONG)digits[2]) << PyLong_SHIFT) | (unsigned PY_LONG_LONG)digits[1]) << PyLong_SHIFT) | (unsigned PY_LONG_LONG)digits[0]));
+                        goto long_long;
+                    }
+                case 4:
+                    if (8 * sizeof(long) - 1 > 4 * PyLong_SHIFT) {
+                        a = (long) (((((((((unsigned long)digits[3]) << PyLong_SHIFT) | (unsigned long)digits[2]) << PyLong_SHIFT) | (unsigned long)digits[1]) << PyLong_SHIFT) | (unsigned long)digits[0]));
+                        break;
+                    } else if (8 * sizeof(PY_LONG_LONG) - 1 > 4 * PyLong_SHIFT) {
+                        lla = (PY_LONG_LONG) (((((((((unsigned PY_LONG_LONG)digits[3]) << PyLong_SHIFT) | (unsigned PY_LONG_LONG)digits[2]) << PyLong_SHIFT) | (unsigned PY_LONG_LONG)digits[1]) << PyLong_SHIFT) | (unsigned PY_LONG_LONG)digits[0]));
+                        goto long_long;
+                    }
+                default: return PyLong_Type.tp_as_number->nb_add(op1, op2);
+            }
+        }
+                x = a + b;
+            return PyLong_FromLong(x);
+        long_long:
+                llx = lla + llb;
+            return PyLong_FromLongLong(llx);
+    }
+    #endif
+    if (PyFloat_CheckExact(op1)) {
+        const long b = intval;
+        double a = PyFloat_AS_DOUBLE(op1);
+            double result;
+            PyFPE_START_PROTECT("add", return NULL)
+            result = ((double)a) + (double)b;
+            PyFPE_END_PROTECT(result)
+            return PyFloat_FromDouble(result);
+    }
+    return (inplace ? PyNumber_InPlaceAdd : PyNumber_Add)(op1, op2);
 }
 #endif
 
@@ -6406,10 +6808,6 @@ return_ne:
     return (equals == Py_NE);
 #endif
 }
-
-#if CYTHON_USE_PYLONG_INTERNALS
-  #include "longintrepr.h"
-#endif
 
 #if CYTHON_COMPILING_IN_CPYTHON
 static PyObject* __Pyx_PyInt_EqObjC(PyObject *op1, PyObject *op2, CYTHON_UNUSED long intval, CYTHON_UNUSED int inplace) {
@@ -6881,6 +7279,32 @@ static int __Pyx_PrintOne(PyObject* stream, PyObject *o) {
 }
 #endif
 
+static CYTHON_INLINE PyObject* __Pyx_PyInt_From_int(int value) {
+    const int neg_one = (int) -1, const_zero = (int) 0;
+    const int is_unsigned = neg_one > const_zero;
+    if (is_unsigned) {
+        if (sizeof(int) < sizeof(long)) {
+            return PyInt_FromLong((long) value);
+        } else if (sizeof(int) <= sizeof(unsigned long)) {
+            return PyLong_FromUnsignedLong((unsigned long) value);
+        } else if (sizeof(int) <= sizeof(unsigned PY_LONG_LONG)) {
+            return PyLong_FromUnsignedLongLong((unsigned PY_LONG_LONG) value);
+        }
+    } else {
+        if (sizeof(int) <= sizeof(long)) {
+            return PyInt_FromLong((long) value);
+        } else if (sizeof(int) <= sizeof(PY_LONG_LONG)) {
+            return PyLong_FromLongLong((PY_LONG_LONG) value);
+        }
+    }
+    {
+        int one = 1; int little = (int)*(unsigned char *)&one;
+        unsigned char *bytes = (unsigned char *)&value;
+        return _PyLong_FromByteArray(bytes, sizeof(int),
+                                     little, !is_unsigned);
+    }
+}
+
 #define __PYX_VERIFY_RETURN_INT(target_type, func_type, func_value)\
     __PYX__VERIFY_RETURN_INT(target_type, func_type, func_value, 0)
 #define __PYX_VERIFY_RETURN_INT_EXC(target_type, func_type, func_value)\
@@ -7084,32 +7508,6 @@ raise_neg_overflow:
     PyErr_SetString(PyExc_OverflowError,
         "can't convert negative value to int");
     return (int) -1;
-}
-
-static CYTHON_INLINE PyObject* __Pyx_PyInt_From_int(int value) {
-    const int neg_one = (int) -1, const_zero = (int) 0;
-    const int is_unsigned = neg_one > const_zero;
-    if (is_unsigned) {
-        if (sizeof(int) < sizeof(long)) {
-            return PyInt_FromLong((long) value);
-        } else if (sizeof(int) <= sizeof(unsigned long)) {
-            return PyLong_FromUnsignedLong((unsigned long) value);
-        } else if (sizeof(int) <= sizeof(unsigned PY_LONG_LONG)) {
-            return PyLong_FromUnsignedLongLong((unsigned PY_LONG_LONG) value);
-        }
-    } else {
-        if (sizeof(int) <= sizeof(long)) {
-            return PyInt_FromLong((long) value);
-        } else if (sizeof(int) <= sizeof(PY_LONG_LONG)) {
-            return PyLong_FromLongLong((PY_LONG_LONG) value);
-        }
-    }
-    {
-        int one = 1; int little = (int)*(unsigned char *)&one;
-        unsigned char *bytes = (unsigned char *)&value;
-        return _PyLong_FromByteArray(bytes, sizeof(int),
-                                     little, !is_unsigned);
-    }
 }
 
 static CYTHON_INLINE PyObject* __Pyx_PyInt_From_long(long value) {

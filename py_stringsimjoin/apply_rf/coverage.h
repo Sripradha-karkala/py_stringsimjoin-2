@@ -7,6 +7,7 @@ class Coverage {
   public:
     std::bitset<MAX_SIZE> bit_vector;
     int count;
+    int size;
  
     Coverage();
     Coverage(std::vector<bool>&);
@@ -15,4 +16,6 @@ class Coverage {
     int and_sum(const Coverage&);
     void and_coverage(const Coverage&);
     void or_coverage(const Coverage&);
+    void reset();
+    int sum();
 };

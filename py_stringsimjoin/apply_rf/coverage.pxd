@@ -10,4 +10,6 @@ cdef extern from "coverage.h" nogil:
         int and_sum(const Coverage&)                                            
         void or_coverage(const Coverage&)                                       
         void and_coverage(const Coverage&)                                      
-        int count    
+        void reset()
+        int sum()
+        int count, size    

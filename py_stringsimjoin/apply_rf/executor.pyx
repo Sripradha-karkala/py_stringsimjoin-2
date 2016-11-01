@@ -1,6 +1,6 @@
 
 import time
-
+import random
 from cython.parallel import prange                                              
 
 from libcpp.vector cimport vector
@@ -27,7 +27,8 @@ from py_stringsimjoin.apply_rf.rule cimport Rule
 from py_stringsimjoin.apply_rf.tree cimport Tree  
 from py_stringsimjoin.apply_rf.ex_plan cimport compute_predicate_cost_and_coverage, extract_pos_rules_from_rf, generate_local_optimal_plans, generate_overall_plan  
 
-
+cdef extern from "string.h" nogil:                                              
+    char *strtok (char *inp_str, const char *delimiters)     
 
 def execute_rf(rf, feature_table, l1, l2, df1, attr1, df2, attr2, working_dir, n_jobs):                                          
     cdef vector[Tree] trees                                                     
@@ -44,27 +45,36 @@ def execute_rf(rf, feature_table, l1, l2, df1, attr1, df2, attr2, working_dir, n
     print 'num rules : ', num_rules                                             
     print 'num preds : ', num_preds  
 
-    cdef omap[string, Coverage] coverage
-    cdef vector[string] l, r                                                    
-    for s in l1:                                                                
-        l.push_back(s)                                                          
-    for s in l2:                                                                
-        r.push_back(s)
-    print 'computing coverage'                                           
-    compute_predicate_cost_and_coverage(l, r, trees, coverage)    
+#    cdef omap[string, Coverage] coverage
+#    cdef vector[string] l, r                                                    
+#    for s in l1:                                                                
+#        l.push_back(s)                                                          
+#    for s in l2:                                                                
+#        r.push_back(s)
+#    print 'computing coverage'                                           
+#    compute_predicate_cost_and_coverage(l, r, trees, coverage)    
 
-    cdef vector[Node] plans                                                     
-    generate_local_optimal_plans(trees, coverage, l.size(), plans)              
-    print 'num pl : ', plans.size()     
+#    cdef vector[Node] plans                                                     
+#    generate_local_optimal_plans(trees, coverage, l.size(), plans)              
+#    print 'num pl : ', plans.size()     
 
-    cdef Node global_plan
-    global_plan = generate_overall_plan(plans)                                                
+#    cdef Node global_plan
+#    global_plan = generate_overall_plan(plans)                                                
 
-    cdef vector[string] lstrings, rstrings                                      
-    convert_to_vector1(df1[attr1], lstrings)                                    
-    convert_to_vector1(df2[attr2], rstrings)
-    print 'executing plan' 
-    execute_plan(global_plan, trees, lstrings, rstrings, working_dir, n_jobs)           
+#    cdef vector[string] lstrings, rstrings                                      
+#    convert_to_vector1(df1[attr1], lstrings)                                    
+#    convert_to_vector1(df2[attr2], rstrings)
+#    print 'executing plan' 
+#    execute_plan(global_plan, trees, lstrings, rstrings, working_dir, n_jobs)           
+
+    cdef omap[string, int] merged_candset = merge_candsets(trees, working_dir)
+    cdef pair[string, int] entry
+    file_name = working_dir + "/output"
+    f = open(file_name, 'w')
+    for entry in merged_candset:
+        if entry.second >= (trees.size()/2.0):
+            f.write(entry.first + "\n")
+    f.close()
 
 
 cdef void execute_plan(Node& root, vector[Tree]& trees, vector[string]& lstrings, 
@@ -98,6 +108,31 @@ cdef void execute_plan(Node& root, vector[Tree]& trees, vector[string]& lstrings
              write_candset(curr_candset, tree_id, rule_id, working_dir)
 
              print 'candset after join : ', candset.size() , " , candset at output : ", curr_candset.size()                        
+
+
+cdef omap[string, int] merge_candsets(vector[Tree]& trees, const string& working_dir):
+    cdef int n = trees.size(), i=0
+    cdef string string_pair
+    cdef oset[string] curr_pairs
+    cdef omap[string, int] merged_candset
+    cdef pair[string, int] entry
+    while i < n:
+        file_name = working_dir + "/tree_" + str(i)
+        print file_name
+        f = open(file_name, 'r')
+        for line in f:
+            curr_pairs.insert(line)
+        f.close()
+        for string_pair in curr_pairs:
+            merged_candset[string_pair] += 1
+        i += 1
+        curr_pairs.clear()
+    cnt = 0
+    for entry in merged_candset:
+        if entry.second > (n/2):
+            cnt += 1
+    print 'num output pairs : ', cnt
+    return merged_candset
 
 
 cdef write_candset(vector[pair[int,int]]& candset, int tree_id, int rule_id, const string& working_dir):
@@ -178,7 +213,53 @@ cdef void execute_filter_node_part(pair[int, int] partition,
         cand  = candset[i]
         if comp_fn(sim_fn(ltokens[cand.first], rtokens[cand.second]), predicate.threshold):
             output_pairs.push_back(cand)         
- 
+
+cdef void execute_trees(omap[string, int]& candset, vector[Tree]& trees, 
+                        vector[string]& lstrings, vector[string]& rstrings,
+                        int num_trees, const string& working_dir):
+    cdef vector[Node] plans = generate_ex_plan_for_stage2(candset, 
+                                                          lstrings, rstrings,
+                                                          5000)
+    cdef omap[string, int] curr_candset = execute_tree_plan(candset, plans[0])
+    cdef int i = 1
+    curr_candset = 
+    for i in xrange(1, plans.size()):
+        curr_candset = execute_tree_plan(curr_candset, plans[i])
+
+         
+cdef omap[string, int] execute_tree_plan(omap[string, int]& candset, Node& plan):
+    cdef Node top_level_node, curr_node, node, tmp_node
+
+    for top_level_node in plan.children:
+        curr_candset = candset
+        if top_level_node.node_type.compare("FILTER") == 0:
+             curr_node = top_level_node                                             
+            while curr_node.node_type.compare("OUTPUT") != 0:
+                curr_candset = execute_filter_node(curr_candset, lstrings, rstrings,
+                                        curr_node.predicates[0], n_jobs, working_dir)
+                if curr_node.children.size() > 1:
+                    break
+                curr_node = curr_node.children[0]
+            if curr_node.children.size() > 1:
+                for node in curr_node.children:
+                    tmp_node = node
+                    tmp_candset = curr_candset
+                    while tmp_node.node_type.compare("OUTPUT") != 0:
+                        tmp_candset = execute_filter_node(tmp_candset, lstrings, rstrings,
+                                        tmp_node.predicates[0], n_jobs, working_dir)
+                        tmp_node = tmp_node.children[0]
+            else:
+            
+                        
+cdef vector[int] split(string inp_string) nogil:                                      
+    cdef char* pch                                                              
+    pch = strtok (<char*> inp_string.c_str(), ",")                              
+    cdef vector[int] out_tokens                                                 
+    while pch != NULL:                                                          
+        out_tokens.push_back(atoi(pch))                                         
+        pch = strtok (NULL, ",")                                                
+    return out_tokens    
+
 cdef void tokenize_strings(vector[Tree]& trees, vector[string]& lstrings, 
                       vector[string]& rstrings, const string& working_dir):
     cdef oset[string] tokenizers
