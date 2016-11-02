@@ -227,29 +227,54 @@ cdef void execute_trees(omap[string, int]& candset, vector[Tree]& trees,
         curr_candset = execute_tree_plan(curr_candset, plans[i])
 
          
-cdef omap[string, int] execute_tree_plan(omap[string, int]& candset, Node& plan):
-    cdef Node top_level_node, curr_node, node, tmp_node
+cdef omap[string, int] execute_tree_plan(omap[string, int]& candset, vector[bool]& valid_pairs, Node& plan):
+    cdef Node child_node, grand_child_node, curr_node
 
-    for top_level_node in plan.children:
-        curr_candset = candset
-        if top_level_node.node_type.compare("FILTER") == 0:
-             curr_node = top_level_node                                             
-            while curr_node.node_type.compare("OUTPUT") != 0:
-                curr_candset = execute_filter_node(curr_candset, lstrings, rstrings,
-                                        curr_node.predicates[0], n_jobs, working_dir)
-                if curr_node.children.size() > 1:
-                    break
-                curr_node = curr_node.children[0]
-            if curr_node.children.size() > 1:
-                for node in curr_node.children:
-                    tmp_node = node
-                    tmp_candset = curr_candset
-                    while tmp_node.node_type.compare("OUTPUT") != 0:
-                        tmp_candset = execute_filter_node(tmp_candset, lstrings, rstrings,
-                                        tmp_node.predicates[0], n_jobs, working_dir)
-                        tmp_node = tmp_node.children[0]
-            else:
-            
+    cdef vector[pair[Node, int]] queue
+    cdef pair[Node, int] curr_entry
+    cdef vector[int] pair_ids, curr_pair_ids, output_pair_ids
+
+    for child_node in plan.children():
+        queue.push_back(pair[Node, int](curr_node, -1))   
+   
+    cdef vector[vector[int]] cached_pair_ids
+    cdef curr_index = 0
+
+    while queue.size() > 0:
+        curr_entry = queue.back()
+        queue.pop_back();
+        
+        pair_ids = cached_pair_ids[curr_entry.second]
+        curr_node = curr_entry.first
+        while (curr_node.node_type.compare("OUTPUT") != 0 and 
+               curr_node.children.size() < 2):
+            pair_ids = execute_node(candset, pair_ids, lstrings, rstrings,
+                                    curr_node, n_jobs, working_dir)
+            curr_node = curr_node.children[0]
+        
+        if curr_node.node_type.compare("OUTPUT") == 0:
+            continue
+
+        if curr_node.node_type.compare("FEATURE") == 0:
+           feature_values = compute_feature(candset, pair_ids, lstrings, rstrings,
+                                            curr_node.predicates[0], n_jobs)
+           for child_node in curr_node.children:
+               curr_pair_ids = execute_select_node(pair_ids, feature_values, 
+                              child_node.predicates[0], n_jobs)
+               for grand_child_node in child_node.children:
+                   queue.push_back(pair[Node, int](grand_child_node, curr_index))
+               cached_pair_ids.push_back(curr_pair_ids)                                 
+               curr_index += 1         
+        else:
+            pair_ids = execute_node(candset, pair_ids, lstrings, rstrings,      
+                                    curr_node, n_jobs, working_dir)           
+        
+            for child_node in curr_node.children:
+                queue.push_back(pair[Node, int](child_node, curr_index))
+
+            cached_pair_ids.push_back(pair_ids)
+            curr_index += 1
+
                         
 cdef vector[int] split(string inp_string) nogil:                                      
     cdef char* pch                                                              
