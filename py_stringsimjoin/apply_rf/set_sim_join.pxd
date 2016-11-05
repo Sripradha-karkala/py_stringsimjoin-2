@@ -2,7 +2,12 @@
 from libcpp.vector cimport vector                                               
 from libcpp.pair cimport pair                                                   
 
-cpdef vector[pair[int, int]] set_sim_join(vector[vector[int]]& ltokens, 
+cpdef pair[vector[pair[int, int]], vector[double]] set_sim_join(vector[vector[int]]& ltokens, 
                                           vector[vector[int]]& rtokens,
                                           int sim_type,
+                                          double threshold)
+
+cpdef void set_sim_join1(vector[vector[int]]& ltokens,
+                                          vector[vector[int]]& rtokens,         
+                                          int sim_type,                         
                                           double threshold)

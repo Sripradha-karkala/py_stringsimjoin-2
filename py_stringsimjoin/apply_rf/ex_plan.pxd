@@ -1,5 +1,6 @@
 
-from libcpp.vector cimport vector                                               
+from libcpp.vector cimport vector             
+from libcpp.pair cimport pair                                  
 from libcpp.string cimport string
 from libcpp.map cimport map as omap                                             
 
@@ -18,6 +19,6 @@ cdef vector[Tree] extract_pos_rules_from_rf(rf, feature_table)
 cdef void generate_local_optimal_plans(vector[Tree]& trees, omap[string, Coverage]& coverage, int sample_size, vector[Node]& plans)
 cdef Node generate_overall_plan(vector[Node] plans)
 
-cdef vector[Node] generate_ex_plan_for_stage2(vector[string]& lstrings,         
+cdef vector[Node] generate_ex_plan_for_stage2(vector[pair[int, int]]&, vector[string]& lstrings,         
                                               vector[string]& rstrings,         
-                                              vector[Tree]& trees)
+                                              vector[Tree]& trees, int)

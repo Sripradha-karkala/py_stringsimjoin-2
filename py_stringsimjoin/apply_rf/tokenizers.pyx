@@ -189,7 +189,7 @@ cdef vector[string] tokenize_str(string& inp_str, const string& tok_type):
     elif tok_type.compare('num') == 0:                                          
         tok = NumericTokenizer(True)                                            
     elif tok_type.compare('qg2') == 0:                                          
-        tok = QgramTokenizer(2, True, ord('#'), ord('$'), False)                
+        tok = QgramTokenizer(2, True, ord('#'), ord('$'), True)                
     elif tok_type.compare('qg3') == 0:                                          
         tok = QgramTokenizer(3, True, ord('#'), ord('$'), True)        
     return tok.tokenize(inp_str)
@@ -206,7 +206,7 @@ cpdef void tokenize(vector[string]& lstrings, vector[string]& rstrings,
     elif tok_type.compare('num') == 0:                                          
         tok = NumericTokenizer(True)                                 
     elif tok_type.compare('qg2') == 0:                                          
-        tok = QgramTokenizer(2, True, ord('#'), ord('$'), False)      
+        tok = QgramTokenizer(2, True, ord('#'), ord('$'), True)      
     elif tok_type.compare('qg3') == 0:                                          
         tok = QgramTokenizer(3, True, ord('#'), ord('$'), True)      
 
@@ -298,7 +298,7 @@ cdef void tokenize_without_materializing(vector[string]& lstrings,
     elif tok_type.compare('num') == 0:                                          
         tok = NumericTokenizer(True)                                            
     elif tok_type.compare('qg2') == 0:                                          
-        tok = QgramTokenizer(2, True, ord('#'), ord('$'), False)                
+        tok = QgramTokenizer(2, True, ord('#'), ord('$'), True)                
     elif tok_type.compare('qg3') == 0:                                          
         tok = QgramTokenizer(3, True, ord('#'), ord('$'), True)                 
                                                                                 

@@ -4859,7 +4859,7 @@ static std::vector<std::string>  __pyx_f_16py_stringsimjoin_8apply_rf_10tokenize
  *     elif tok_type.compare('num') == 0:
  *         tok = NumericTokenizer(True)             # <<<<<<<<<<<<<<
  *     elif tok_type.compare('qg2') == 0:
- *         tok = QgramTokenizer(2, True, ord('#'), ord('$'), False)
+ *         tok = QgramTokenizer(2, True, ord('#'), ord('$'), True)
  */
     __pyx_t_3 = __Pyx_GetModuleGlobalName(__pyx_n_s_NumericTokenizer); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 190; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_3);
@@ -4883,7 +4883,7 @@ static std::vector<std::string>  __pyx_f_16py_stringsimjoin_8apply_rf_10tokenize
  *     elif tok_type.compare('num') == 0:
  *         tok = NumericTokenizer(True)
  *     elif tok_type.compare('qg2') == 0:             # <<<<<<<<<<<<<<
- *         tok = QgramTokenizer(2, True, ord('#'), ord('$'), False)
+ *         tok = QgramTokenizer(2, True, ord('#'), ord('$'), True)
  *     elif tok_type.compare('qg3') == 0:
  */
   __pyx_t_1 = __pyx_convert_string_from_py_std__in_string(__pyx_n_b_qg2); if (unlikely(PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 191; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
@@ -4893,7 +4893,7 @@ static std::vector<std::string>  __pyx_f_16py_stringsimjoin_8apply_rf_10tokenize
     /* "py_stringsimjoin/apply_rf/tokenizers.pyx":192
  *         tok = NumericTokenizer(True)
  *     elif tok_type.compare('qg2') == 0:
- *         tok = QgramTokenizer(2, True, ord('#'), ord('$'), False)             # <<<<<<<<<<<<<<
+ *         tok = QgramTokenizer(2, True, ord('#'), ord('$'), True)             # <<<<<<<<<<<<<<
  *     elif tok_type.compare('qg3') == 0:
  *         tok = QgramTokenizer(3, True, ord('#'), ord('$'), True)
  */
@@ -4906,7 +4906,7 @@ static std::vector<std::string>  __pyx_f_16py_stringsimjoin_8apply_rf_10tokenize
  *     elif tok_type.compare('num') == 0:
  *         tok = NumericTokenizer(True)
  *     elif tok_type.compare('qg2') == 0:             # <<<<<<<<<<<<<<
- *         tok = QgramTokenizer(2, True, ord('#'), ord('$'), False)
+ *         tok = QgramTokenizer(2, True, ord('#'), ord('$'), True)
  *     elif tok_type.compare('qg3') == 0:
  */
     goto __pyx_L3;
@@ -4914,7 +4914,7 @@ static std::vector<std::string>  __pyx_f_16py_stringsimjoin_8apply_rf_10tokenize
 
   /* "py_stringsimjoin/apply_rf/tokenizers.pyx":193
  *     elif tok_type.compare('qg2') == 0:
- *         tok = QgramTokenizer(2, True, ord('#'), ord('$'), False)
+ *         tok = QgramTokenizer(2, True, ord('#'), ord('$'), True)
  *     elif tok_type.compare('qg3') == 0:             # <<<<<<<<<<<<<<
  *         tok = QgramTokenizer(3, True, ord('#'), ord('$'), True)
  *     return tok.tokenize(inp_str)
@@ -4924,7 +4924,7 @@ static std::vector<std::string>  __pyx_f_16py_stringsimjoin_8apply_rf_10tokenize
   if (__pyx_t_2) {
 
     /* "py_stringsimjoin/apply_rf/tokenizers.pyx":194
- *         tok = QgramTokenizer(2, True, ord('#'), ord('$'), False)
+ *         tok = QgramTokenizer(2, True, ord('#'), ord('$'), True)
  *     elif tok_type.compare('qg3') == 0:
  *         tok = QgramTokenizer(3, True, ord('#'), ord('$'), True)             # <<<<<<<<<<<<<<
  *     return tok.tokenize(inp_str)
@@ -4937,7 +4937,7 @@ static std::vector<std::string>  __pyx_f_16py_stringsimjoin_8apply_rf_10tokenize
 
     /* "py_stringsimjoin/apply_rf/tokenizers.pyx":193
  *     elif tok_type.compare('qg2') == 0:
- *         tok = QgramTokenizer(2, True, ord('#'), ord('$'), False)
+ *         tok = QgramTokenizer(2, True, ord('#'), ord('$'), True)
  *     elif tok_type.compare('qg3') == 0:             # <<<<<<<<<<<<<<
  *         tok = QgramTokenizer(3, True, ord('#'), ord('$'), True)
  *     return tok.tokenize(inp_str)
@@ -5180,7 +5180,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_10tokenizers_tokenize(std::vect
  *     elif tok_type.compare('num') == 0:
  *         tok = NumericTokenizer(True)             # <<<<<<<<<<<<<<
  *     elif tok_type.compare('qg2') == 0:
- *         tok = QgramTokenizer(2, True, ord('#'), ord('$'), False)
+ *         tok = QgramTokenizer(2, True, ord('#'), ord('$'), True)
  */
     __pyx_t_3 = __Pyx_GetModuleGlobalName(__pyx_n_s_NumericTokenizer); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 207; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_3);
@@ -5204,7 +5204,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_10tokenizers_tokenize(std::vect
  *     elif tok_type.compare('num') == 0:
  *         tok = NumericTokenizer(True)
  *     elif tok_type.compare('qg2') == 0:             # <<<<<<<<<<<<<<
- *         tok = QgramTokenizer(2, True, ord('#'), ord('$'), False)
+ *         tok = QgramTokenizer(2, True, ord('#'), ord('$'), True)
  *     elif tok_type.compare('qg3') == 0:
  */
   __pyx_t_1 = __pyx_convert_string_from_py_std__in_string(__pyx_n_b_qg2); if (unlikely(PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 208; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
@@ -5214,7 +5214,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_10tokenizers_tokenize(std::vect
     /* "py_stringsimjoin/apply_rf/tokenizers.pyx":209
  *         tok = NumericTokenizer(True)
  *     elif tok_type.compare('qg2') == 0:
- *         tok = QgramTokenizer(2, True, ord('#'), ord('$'), False)             # <<<<<<<<<<<<<<
+ *         tok = QgramTokenizer(2, True, ord('#'), ord('$'), True)             # <<<<<<<<<<<<<<
  *     elif tok_type.compare('qg3') == 0:
  *         tok = QgramTokenizer(3, True, ord('#'), ord('$'), True)
  */
@@ -5227,7 +5227,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_10tokenizers_tokenize(std::vect
  *     elif tok_type.compare('num') == 0:
  *         tok = NumericTokenizer(True)
  *     elif tok_type.compare('qg2') == 0:             # <<<<<<<<<<<<<<
- *         tok = QgramTokenizer(2, True, ord('#'), ord('$'), False)
+ *         tok = QgramTokenizer(2, True, ord('#'), ord('$'), True)
  *     elif tok_type.compare('qg3') == 0:
  */
     goto __pyx_L3;
@@ -5235,7 +5235,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_10tokenizers_tokenize(std::vect
 
   /* "py_stringsimjoin/apply_rf/tokenizers.pyx":210
  *     elif tok_type.compare('qg2') == 0:
- *         tok = QgramTokenizer(2, True, ord('#'), ord('$'), False)
+ *         tok = QgramTokenizer(2, True, ord('#'), ord('$'), True)
  *     elif tok_type.compare('qg3') == 0:             # <<<<<<<<<<<<<<
  *         tok = QgramTokenizer(3, True, ord('#'), ord('$'), True)
  * 
@@ -5245,7 +5245,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_10tokenizers_tokenize(std::vect
   if (__pyx_t_2) {
 
     /* "py_stringsimjoin/apply_rf/tokenizers.pyx":211
- *         tok = QgramTokenizer(2, True, ord('#'), ord('$'), False)
+ *         tok = QgramTokenizer(2, True, ord('#'), ord('$'), True)
  *     elif tok_type.compare('qg3') == 0:
  *         tok = QgramTokenizer(3, True, ord('#'), ord('$'), True)             # <<<<<<<<<<<<<<
  * 
@@ -5258,7 +5258,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_10tokenizers_tokenize(std::vect
 
     /* "py_stringsimjoin/apply_rf/tokenizers.pyx":210
  *     elif tok_type.compare('qg2') == 0:
- *         tok = QgramTokenizer(2, True, ord('#'), ord('$'), False)
+ *         tok = QgramTokenizer(2, True, ord('#'), ord('$'), True)
  *     elif tok_type.compare('qg3') == 0:             # <<<<<<<<<<<<<<
  *         tok = QgramTokenizer(3, True, ord('#'), ord('$'), True)
  * 
@@ -6576,7 +6576,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_10tokenizers_tokenize_without_m
  *     elif tok_type.compare('num') == 0:
  *         tok = NumericTokenizer(True)             # <<<<<<<<<<<<<<
  *     elif tok_type.compare('qg2') == 0:
- *         tok = QgramTokenizer(2, True, ord('#'), ord('$'), False)
+ *         tok = QgramTokenizer(2, True, ord('#'), ord('$'), True)
  */
     __pyx_t_3 = __Pyx_GetModuleGlobalName(__pyx_n_s_NumericTokenizer); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 299; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_3);
@@ -6600,7 +6600,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_10tokenizers_tokenize_without_m
  *     elif tok_type.compare('num') == 0:
  *         tok = NumericTokenizer(True)
  *     elif tok_type.compare('qg2') == 0:             # <<<<<<<<<<<<<<
- *         tok = QgramTokenizer(2, True, ord('#'), ord('$'), False)
+ *         tok = QgramTokenizer(2, True, ord('#'), ord('$'), True)
  *     elif tok_type.compare('qg3') == 0:
  */
   __pyx_t_1 = __pyx_convert_string_from_py_std__in_string(__pyx_n_b_qg2); if (unlikely(PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 300; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
@@ -6610,7 +6610,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_10tokenizers_tokenize_without_m
     /* "py_stringsimjoin/apply_rf/tokenizers.pyx":301
  *         tok = NumericTokenizer(True)
  *     elif tok_type.compare('qg2') == 0:
- *         tok = QgramTokenizer(2, True, ord('#'), ord('$'), False)             # <<<<<<<<<<<<<<
+ *         tok = QgramTokenizer(2, True, ord('#'), ord('$'), True)             # <<<<<<<<<<<<<<
  *     elif tok_type.compare('qg3') == 0:
  *         tok = QgramTokenizer(3, True, ord('#'), ord('$'), True)
  */
@@ -6623,7 +6623,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_10tokenizers_tokenize_without_m
  *     elif tok_type.compare('num') == 0:
  *         tok = NumericTokenizer(True)
  *     elif tok_type.compare('qg2') == 0:             # <<<<<<<<<<<<<<
- *         tok = QgramTokenizer(2, True, ord('#'), ord('$'), False)
+ *         tok = QgramTokenizer(2, True, ord('#'), ord('$'), True)
  *     elif tok_type.compare('qg3') == 0:
  */
     goto __pyx_L3;
@@ -6631,7 +6631,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_10tokenizers_tokenize_without_m
 
   /* "py_stringsimjoin/apply_rf/tokenizers.pyx":302
  *     elif tok_type.compare('qg2') == 0:
- *         tok = QgramTokenizer(2, True, ord('#'), ord('$'), False)
+ *         tok = QgramTokenizer(2, True, ord('#'), ord('$'), True)
  *     elif tok_type.compare('qg3') == 0:             # <<<<<<<<<<<<<<
  *         tok = QgramTokenizer(3, True, ord('#'), ord('$'), True)
  * 
@@ -6641,7 +6641,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_10tokenizers_tokenize_without_m
   if (__pyx_t_2) {
 
     /* "py_stringsimjoin/apply_rf/tokenizers.pyx":303
- *         tok = QgramTokenizer(2, True, ord('#'), ord('$'), False)
+ *         tok = QgramTokenizer(2, True, ord('#'), ord('$'), True)
  *     elif tok_type.compare('qg3') == 0:
  *         tok = QgramTokenizer(3, True, ord('#'), ord('$'), True)             # <<<<<<<<<<<<<<
  * 
@@ -6654,7 +6654,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_10tokenizers_tokenize_without_m
 
     /* "py_stringsimjoin/apply_rf/tokenizers.pyx":302
  *     elif tok_type.compare('qg2') == 0:
- *         tok = QgramTokenizer(2, True, ord('#'), ord('$'), False)
+ *         tok = QgramTokenizer(2, True, ord('#'), ord('$'), True)
  *     elif tok_type.compare('qg3') == 0:             # <<<<<<<<<<<<<<
  *         tok = QgramTokenizer(3, True, ord('#'), ord('$'), True)
  * 
@@ -8344,7 +8344,7 @@ static int __Pyx_InitCachedConstants(void) {
  *     elif tok_type.compare('num') == 0:
  *         tok = NumericTokenizer(True)             # <<<<<<<<<<<<<<
  *     elif tok_type.compare('qg2') == 0:
- *         tok = QgramTokenizer(2, True, ord('#'), ord('$'), False)
+ *         tok = QgramTokenizer(2, True, ord('#'), ord('$'), True)
  */
   __pyx_tuple__8 = PyTuple_Pack(1, Py_True); if (unlikely(!__pyx_tuple__8)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 190; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_tuple__8);
@@ -8353,16 +8353,16 @@ static int __Pyx_InitCachedConstants(void) {
   /* "py_stringsimjoin/apply_rf/tokenizers.pyx":192
  *         tok = NumericTokenizer(True)
  *     elif tok_type.compare('qg2') == 0:
- *         tok = QgramTokenizer(2, True, ord('#'), ord('$'), False)             # <<<<<<<<<<<<<<
+ *         tok = QgramTokenizer(2, True, ord('#'), ord('$'), True)             # <<<<<<<<<<<<<<
  *     elif tok_type.compare('qg3') == 0:
  *         tok = QgramTokenizer(3, True, ord('#'), ord('$'), True)
  */
-  __pyx_tuple__9 = PyTuple_Pack(5, __pyx_int_2, Py_True, __pyx_int_35, __pyx_int_36, Py_False); if (unlikely(!__pyx_tuple__9)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 192; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_tuple__9 = PyTuple_Pack(5, __pyx_int_2, Py_True, __pyx_int_35, __pyx_int_36, Py_True); if (unlikely(!__pyx_tuple__9)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 192; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_tuple__9);
   __Pyx_GIVEREF(__pyx_tuple__9);
 
   /* "py_stringsimjoin/apply_rf/tokenizers.pyx":194
- *         tok = QgramTokenizer(2, True, ord('#'), ord('$'), False)
+ *         tok = QgramTokenizer(2, True, ord('#'), ord('$'), True)
  *     elif tok_type.compare('qg3') == 0:
  *         tok = QgramTokenizer(3, True, ord('#'), ord('$'), True)             # <<<<<<<<<<<<<<
  *     return tok.tokenize(inp_str)
@@ -8410,7 +8410,7 @@ static int __Pyx_InitCachedConstants(void) {
  *     elif tok_type.compare('num') == 0:
  *         tok = NumericTokenizer(True)             # <<<<<<<<<<<<<<
  *     elif tok_type.compare('qg2') == 0:
- *         tok = QgramTokenizer(2, True, ord('#'), ord('$'), False)
+ *         tok = QgramTokenizer(2, True, ord('#'), ord('$'), True)
  */
   __pyx_tuple__14 = PyTuple_Pack(1, Py_True); if (unlikely(!__pyx_tuple__14)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 207; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_tuple__14);
@@ -8419,16 +8419,16 @@ static int __Pyx_InitCachedConstants(void) {
   /* "py_stringsimjoin/apply_rf/tokenizers.pyx":209
  *         tok = NumericTokenizer(True)
  *     elif tok_type.compare('qg2') == 0:
- *         tok = QgramTokenizer(2, True, ord('#'), ord('$'), False)             # <<<<<<<<<<<<<<
+ *         tok = QgramTokenizer(2, True, ord('#'), ord('$'), True)             # <<<<<<<<<<<<<<
  *     elif tok_type.compare('qg3') == 0:
  *         tok = QgramTokenizer(3, True, ord('#'), ord('$'), True)
  */
-  __pyx_tuple__15 = PyTuple_Pack(5, __pyx_int_2, Py_True, __pyx_int_35, __pyx_int_36, Py_False); if (unlikely(!__pyx_tuple__15)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 209; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_tuple__15 = PyTuple_Pack(5, __pyx_int_2, Py_True, __pyx_int_35, __pyx_int_36, Py_True); if (unlikely(!__pyx_tuple__15)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 209; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_tuple__15);
   __Pyx_GIVEREF(__pyx_tuple__15);
 
   /* "py_stringsimjoin/apply_rf/tokenizers.pyx":211
- *         tok = QgramTokenizer(2, True, ord('#'), ord('$'), False)
+ *         tok = QgramTokenizer(2, True, ord('#'), ord('$'), True)
  *     elif tok_type.compare('qg3') == 0:
  *         tok = QgramTokenizer(3, True, ord('#'), ord('$'), True)             # <<<<<<<<<<<<<<
  * 
@@ -8487,7 +8487,7 @@ static int __Pyx_InitCachedConstants(void) {
  *     elif tok_type.compare('num') == 0:
  *         tok = NumericTokenizer(True)             # <<<<<<<<<<<<<<
  *     elif tok_type.compare('qg2') == 0:
- *         tok = QgramTokenizer(2, True, ord('#'), ord('$'), False)
+ *         tok = QgramTokenizer(2, True, ord('#'), ord('$'), True)
  */
   __pyx_tuple__22 = PyTuple_Pack(1, Py_True); if (unlikely(!__pyx_tuple__22)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 299; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_tuple__22);
@@ -8496,16 +8496,16 @@ static int __Pyx_InitCachedConstants(void) {
   /* "py_stringsimjoin/apply_rf/tokenizers.pyx":301
  *         tok = NumericTokenizer(True)
  *     elif tok_type.compare('qg2') == 0:
- *         tok = QgramTokenizer(2, True, ord('#'), ord('$'), False)             # <<<<<<<<<<<<<<
+ *         tok = QgramTokenizer(2, True, ord('#'), ord('$'), True)             # <<<<<<<<<<<<<<
  *     elif tok_type.compare('qg3') == 0:
  *         tok = QgramTokenizer(3, True, ord('#'), ord('$'), True)
  */
-  __pyx_tuple__23 = PyTuple_Pack(5, __pyx_int_2, Py_True, __pyx_int_35, __pyx_int_36, Py_False); if (unlikely(!__pyx_tuple__23)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 301; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_tuple__23 = PyTuple_Pack(5, __pyx_int_2, Py_True, __pyx_int_35, __pyx_int_36, Py_True); if (unlikely(!__pyx_tuple__23)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 301; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_tuple__23);
   __Pyx_GIVEREF(__pyx_tuple__23);
 
   /* "py_stringsimjoin/apply_rf/tokenizers.pyx":303
- *         tok = QgramTokenizer(2, True, ord('#'), ord('$'), False)
+ *         tok = QgramTokenizer(2, True, ord('#'), ord('$'), True)
  *     elif tok_type.compare('qg3') == 0:
  *         tok = QgramTokenizer(3, True, ord('#'), ord('$'), True)             # <<<<<<<<<<<<<<
  * 
