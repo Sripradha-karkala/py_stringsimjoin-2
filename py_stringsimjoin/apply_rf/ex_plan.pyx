@@ -90,7 +90,7 @@ cdef void compute_predicate_cost_and_coverage(vector[string]& lstrings, vector[s
                     if cov[predicate.pred_name].size() > max_size:
                         max_size = cov[predicate.pred_name].size()
                     coverage[predicate.pred_name] = Coverage(cov[predicate.pred_name])
-    print 'max size ', max_size
+#    print 'max size ', max_size
 
 cdef vector[Node] generate_ex_plan_for_stage2(vector[pair[int, int]]& candset,
                                               vector[string]& lstrings, 
@@ -171,7 +171,7 @@ cdef vector[Node] generate_ex_plan_for_stage2(vector[pair[int, int]]& candset,
     cdef Node plan
 
     for i in xrange(trees.size()):
-        print i
+#        print i
         plan = gen_plan_for_tree(trees[i], coverage, sample_size)
         tree_plans.push_back(plan)
         tree_costs.push_back(compute_plan_cost(plan, coverage, sample_size))
@@ -195,9 +195,9 @@ cdef Node gen_plan_for_tree(Tree& tree, omap[string, Coverage]& coverage, const 
 
     for rule in tree.rules:                                                 
         nodes = vector[Node]()                                             
-        print 'test1' 
+ #       print 'test1' 
         optimal_seq = get_optimal_filter_seq(rule.predicates, coverage, sample_size)
-        print 'test2'
+#        print 'test2'
         node_type = "ROOT"                                                  
         nodes.push_back(Node(node_type))                                    
                                                                                 
@@ -210,18 +210,18 @@ cdef Node gen_plan_for_tree(Tree& tree, omap[string, Coverage]& coverage, const 
         node_type = "OUTPUT"                                                
         new_node = Node(node_type)                                          
         nodes.push_back(new_node)                                           
-        print 'n ', nodes.size()                                            
+#        print 'n ', nodes.size()                                            
         for i in xrange(nodes.size() - 2, -1, -1):                          
             nodes[i].add_child(nodes[i+1])                                  
         plans.push_back(nodes[0])
 
     cdef Node combined_plan = plans[0]                                          
     i=1                                                                
-    print 'before merge size : ', combined_plan.children.size()                 
+#    print 'before merge size : ', combined_plan.children.size()                 
     while i < plans.size():                                                     
         combined_plan = merge_plans_stage2(combined_plan, plans[i])                    
         i += 1                                                                  
-        print 'i = ', i, ' , num child nodes : ', combined_plan.children.size() 
+#        print 'i = ', i, ' , num child nodes : ', combined_plan.children.size() 
 
     return combined_plan    
 
@@ -262,10 +262,10 @@ cdef Node merge_plans_stage2(Node plan1, Node plan2):
     cdef Predicatecpp pred1, pred2                                              
     cdef string node_type = "SELECT"                                            
     pred2 = plan2_node.predicates[0]                                            
-    cdef int i                                                                  
+    cdef int i=0                                                                  
                                                                                 
     while i < plan1.children.size():                                            
-        print 'sib : ', plan1.children[i].node_type                             
+#        print 'sib : ', plan1.children[i].node_type                             
         if plan1.children[i].predicates[0].feat_name.compare(pred2.feat_name) == 0:         
             break                                                               
         i += 1                                                                  
@@ -274,7 +274,7 @@ cdef Node merge_plans_stage2(Node plan1, Node plan2):
         plan1.add_child(plan2.children[0])                                      
         return plan1                                                            
                                                                                 
-    print 't1', plan2_node.node_type                                            
+#    print 't1', plan2_node.node_type                                            
     pred1 = plan1.children[i].predicates[0]
     cdef vector[Predicatecpp] preds
     if plan1.children[i].node_type.compare("FEATURE") == 0:
@@ -284,13 +284,16 @@ cdef Node merge_plans_stage2(Node plan1, Node plan2):
     elif plan1.children[i].node_type.compare("FILTER") == 0:
         node_type = "SELECT"
         plan2_node.set_node_type(node_type)
+
         plan1.children[i].set_node_type(node_type)
+
         preds.push_back(plan1.children[i].predicates[0])
         new_node = Node(preds, "FEATURE")
         new_node.add_child(plan1.children[i])
         new_node.add_child(plan2_node)
+
         plan1.remove_child(plan1.children[i])
-                                                                                
+        plan1.add_child(new_node)                                                                                 
     return plan1  
 
 cdef vector[int] get_optimal_filter_seq(vector[Predicatecpp]& predicates,
@@ -318,7 +321,7 @@ cdef vector[int] get_optimal_filter_seq(vector[Predicatecpp]& predicates,
             else:                                                            
                 pred_score = (1.0 - (prev_coverage.and_sum(coverage[predicates[i].pred_name]) / sample_size)) / predicates[i].cost
 
-            print pred_score, max_score                                         
+#            print pred_score, max_score                                         
                                                                                 
             if pred_score > max_score:                                          
                 max_score = pred_score                                          
@@ -358,7 +361,7 @@ cdef vector[int] get_optimal_tree_seq(vector[double] costs,
             else:                                                               
                 tree_score = (1.0 - (prev_coverage.and_sum(coverage[i]) / sample_size)) / costs[i]
                                                                                 
-            print tree_score, max_score                                         
+#            print tree_score, max_score                                         
                                                                                 
             if tree_score > max_score:                                          
                 max_score = tree_score                                          
@@ -407,7 +410,7 @@ cdef void generate_local_optimal_plans(vector[Tree]& trees, omap[string, Coverag
             new_node.set_tree_id(tree_id)
             new_node.set_rule_id(rule_id)
             nodes.push_back(new_node)
-            print 'n ', nodes.size()
+#            print 'n ', nodes.size()
             for i in xrange(nodes.size() - 2, -1, -1):
                 nodes[i].add_child(nodes[i+1])
             plans.push_back(nodes[0])
@@ -547,7 +550,7 @@ cdef void traverse(node, left, right, features, threshold, value, feature_table,
             rule = Rule(preds)                                        
 #                r.set_name('r'+str(start_rule_id + len(rule_set.rules)+1))      
             rules.push_back(rule)                                            
-            print 'pos rule: ', cache[0:depth]                              
+#            print 'pos rule: ', cache[0:depth]                              
                                                                                 
 cdef vector[Tree] extract_pos_rules_from_rf(rf, feature_table):                               
     cdef vector[Tree] trees
@@ -623,7 +626,7 @@ cdef Node merge_plans(Node plan1, Node plan2):
     cdef int i
 
     while i < plan1.children.size():
-        print 'sib : ', plan1.children[i].node_type                              
+#        print 'sib : ', plan1.children[i].node_type                              
         if nodes_can_be_merged(plan1.children[i], plan2_node, 
                                plan1.children[i].predicates[0], pred2):
             break
@@ -633,7 +636,7 @@ cdef Node merge_plans(Node plan1, Node plan2):
         plan1.add_child(plan2.children[0])
         return plan1
  
-    print 't1', plan2_node.node_type                                
+#    print 't1', plan2_node.node_type                                
     cdef vector[Node] child_nodes_to_move
     cdef Node node_to_move
     cdef int k
@@ -643,7 +646,7 @@ cdef Node merge_plans(Node plan1, Node plan2):
             (pred1.threshold == pred2.threshold and                 
              pred1.comp_op.compare(">=") == 0 and 
              pred2.comp_op.compare(">") == 0)):      
-            print 't2'
+#            print 't2'
             plan2_node.set_node_type(node_type)                         
             plan1.children[i].add_child(plan2_node)                      
                                                                                 
@@ -651,7 +654,7 @@ cdef Node merge_plans(Node plan1, Node plan2):
               (pred1.threshold == pred2.threshold and               
                pred1.comp_op.compare(">") == 0 and 
                pred2.comp_op.compare(">=") == 0)):    
-            print 't3'                                              
+#            print 't3'                                              
             plan1.children[i].set_node_type(node_type)
             for k in xrange(plan1.children[i].children.size()):
                 if plan1.children[i].children[k].node_type.compare("SELECT") == 0:
@@ -665,7 +668,7 @@ cdef Node merge_plans(Node plan1, Node plan2):
             plan1.add_child(plan2_node)               
                                                                                 
         elif pred1.threshold == pred2.threshold:                    
-            print 't4'                                                      
+#            print 't4'                                                      
             plan1.children[i].add_child(plan2_node.children[0])
     else:
         print 'invalid rf'                                                             
@@ -698,5 +701,5 @@ cdef Node generate_overall_plan(vector[Node] plans):
     while i < plans.size():
         combined_plan = merge_plans(combined_plan, plans[i])
         i += 1
-        print 'i = ', i, ' , num child nodes : ', combined_plan.children.size()
+#        print 'i = ', i, ' , num child nodes : ', combined_plan.children.size()
     return combined_plan

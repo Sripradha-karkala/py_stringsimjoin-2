@@ -1,6 +1,7 @@
 
 import time
 import random
+import pandas as pd
 from cython.parallel import prange                                              
 
 from libcpp.vector cimport vector
@@ -31,14 +32,79 @@ from py_stringsimjoin.apply_rf.ex_plan cimport generate_ex_plan_for_stage2, comp
 cdef extern from "string.h" nogil:                                              
     char *strtok (char *inp_str, const char *delimiters)     
 
-def execute_rf(rf, feature_table, l1, l2, df1, attr1, df2, attr2, working_dir, n_jobs):                                          
+cdef void load_strings(data_path, attr, vector[string]& strings):
+    df = pd.read_csv(data_path)
+    convert_to_vector1(df[attr], strings)
+
+def test_execute_rf(rf, feature_table, l1, l2, path1, attr1, path2, attr2, working_dir, n_jobs):
+    start_time = time.time()                                                    
+    cdef vector[Tree] trees, trees1, trees2                                     
+    trees = extract_pos_rules_from_rf(rf, feature_table)                        
+                                                                                
+    cdef int i=0, num_total_trees = trees.size(), num_trees_processed           
+#    num_trees_processed = (num_total_trees / 2) + 1                             
+    num_trees_processed = 1                                                    
+    while i < num_trees_processed:                                              
+        trees1.push_back(trees[i])                                              
+        i += 1                                                                  
+                                                                                
+    while i < num_total_trees:                                                  
+        trees2.push_back(trees[i])                                              
+        i += 1                                                                  
+    print 'trees1 : ', trees1.size()                                            
+    print 'trees2 : ', trees2.size()                                            
+    print 'num trees : ', trees.size()                                          
+    num_rules = 0                                                               
+    num_preds = 0                                                               
+    cdef Tree tree                                                              
+    cdef Rule rule                                                              
+    for tree in trees:                                                          
+        num_rules += tree.rules.size()                                          
+        for rule in tree.rules:                                                 
+            num_preds += rule.predicates.size()                                 
+    print 'num rules : ', num_rules                                             
+    print 'num preds : ', num_preds                                             
+                                                                                
+    cdef vector[string] lstrings, rstrings                                      
+    load_strings(path1, attr1, lstrings)                                        
+    load_strings(path2, attr2, rstrings)                                        
+                                                                                
+    cdef omap[string, Coverage] coverage                                        
+    cdef vector[string] l, r                                                    
+    for s in l1:                                                                
+        l.push_back(lstrings[int(s) - 1])                                       
+    for s in l2:                                                                
+        r.push_back(rstrings[int(s) - 1])                                       
+    print 'computing coverage'                                                  
+    compute_predicate_cost_and_coverage(l, r, trees1, coverage)                 
+                                                                                
+    cdef vector[Node] plans                                                     
+    generate_local_optimal_plans(trees1, coverage, l.size(), plans)             
+#    print 'num pl : ', plans.size()                                            
+                                                                                
+    cdef Node global_plan                                                       
+    global_plan = generate_overall_plan(plans)                                  
+                                                                                
+    print 'executing plan'                                                      
+    print 'num join nodes : ', global_plan.children.size()                      
+    cdef Node child_node, gn                                                    
+    for child_node in global_plan.children:                                     
+        print child_node.children.size()                                        
+        print '------B----'                                                     
+        for gn in child_node.children:                                          
+            print 'size : ', gn.children.size()                                 
+        print '------E----'                                                     
+    execute_plan(global_plan, trees1, lstrings, rstrings, working_dir, n_jobs)
+
+
+def execute_rf(rf, feature_table, l1, l2, path1, attr1, path2, attr2, working_dir, n_jobs):                                          
     start_time = time.time()
     cdef vector[Tree] trees, trees1, trees2                                                     
     trees = extract_pos_rules_from_rf(rf, feature_table)
 
     cdef int i=0, num_total_trees = trees.size(), num_trees_processed                
     num_trees_processed = (num_total_trees / 2) + 1 
-#    num_trees_processed = 1
+#    num_trees_processed = 3
     while i < num_trees_processed:
         trees1.push_back(trees[i])
         i += 1
@@ -60,12 +126,16 @@ def execute_rf(rf, feature_table, l1, l2, df1, attr1, df2, attr2, working_dir, n
     print 'num rules : ', num_rules                                             
     print 'num preds : ', num_preds  
 
+    cdef vector[string] lstrings, rstrings                                      
+    load_strings(path1, attr1, lstrings)                                        
+    load_strings(path2, attr2, rstrings)  
+
     cdef omap[string, Coverage] coverage
     cdef vector[string] l, r                                                    
     for s in l1:                                                                
-        l.push_back(s)                                                          
+        l.push_back(lstrings[int(s) - 1])                                                          
     for s in l2:                                                                
-        r.push_back(s)
+        r.push_back(rstrings[int(s) - 1])
     print 'computing coverage'                                           
     compute_predicate_cost_and_coverage(l, r, trees1, coverage)    
 
@@ -76,18 +146,9 @@ def execute_rf(rf, feature_table, l1, l2, df1, attr1, df2, attr2, working_dir, n
     cdef Node global_plan
     global_plan = generate_overall_plan(plans)                                                
 
-    cdef vector[string] lstrings, rstrings                                      
-    convert_to_vector1(df1[attr1], lstrings)                                    
-    convert_to_vector1(df2[attr2], rstrings)
-    print 'executing plan' 
-    print 'num join nodes : ', global_plan.children.size()
-    cdef Node child_node, gn
-    for child_node in global_plan.children:
-        print child_node.children.size()
-        print '------B----'
-        for gn in child_node.children:
-            print 'size : ', gn.children.size()
-        print '------E----'
+    print 'tokenizing strings'
+    tokenize_strings(trees, lstrings, rstrings, working_dir)                    
+    print 'finished tokenizing. executing plan'
     execute_plan(global_plan, trees1, lstrings, rstrings, working_dir, n_jobs)           
 
 #    cdef omap[string, int] merged_candset = merge_candsets(trees, working_dir)
@@ -121,7 +182,7 @@ def execute_rf(rf, feature_table, l1, l2, df1, attr1, df2, attr2, working_dir, n
 
 cdef void execute_plan(Node& root, vector[Tree]& trees, vector[string]& lstrings, 
         vector[string]& rstrings, const string& working_dir, int n_jobs):
-    tokenize_strings(trees, lstrings, rstrings, working_dir)
+#    tokenize_strings(trees, lstrings, rstrings, working_dir)
 
     cdef pair[vector[pair[int, int]], vector[double]] candset
 #    cdef Node root
@@ -162,6 +223,8 @@ cdef pair[vector[pair[int, int]], vector[int]] execute_join_subtree(
         curr_entry = queue.back()                                               
         queue.pop_back();                                                       
         curr_node = curr_entry.first                                            
+
+        top_level_node = False
                                                             
         if curr_entry.second == -1:                                             
             top_level_node = True                                               
@@ -176,7 +239,7 @@ cdef pair[vector[pair[int, int]], vector[int]] execute_join_subtree(
         if top_level_node and curr_node.node_type.compare("SELECT") == 0:
             print 'SELECT', curr_node.predicates[0].sim_measure_type, curr_node.predicates[0].tokenizer_type, curr_node.predicates[0].comp_op, curr_node.predicates[0].threshold
             curr_pair_ids = execute_select_node_candset(candset.size(), 
-                                    feature_values, child_node.predicates[0])    
+                                    feature_values, curr_node.predicates[0])    
                                                                                 
             for child_node in curr_node.children:                     
                queue.push_back(pair[Node, int](child_node, curr_index))
@@ -197,8 +260,13 @@ cdef pair[vector[pair[int, int]], vector[int]] execute_join_subtree(
             top_level_node = False                                              
                                                                                 
         if curr_node.node_type.compare("OUTPUT") == 0:
-            write_candset_using_pair_ids(candset, pair_ids, curr_node.tree_id, curr_node.rule_id, 
-                                         working_dir)                                   
+            if top_level_node:
+                write_candset(candset, curr_node.tree_id, curr_node.rule_id,
+                              working_dir)    
+            else:
+                write_candset_using_pair_ids(candset, pair_ids, 
+                                             curr_node.tree_id, 
+                                             curr_node.rule_id, working_dir)                                   
             continue                                                            
                                                                                 
         if curr_node.node_type.compare("FEATURE") == 0:                         
@@ -207,10 +275,13 @@ cdef pair[vector[pair[int, int]], vector[int]] execute_join_subtree(
                                                  lstrings, rstrings,            
                                                 curr_node.predicates[0], n_jobs,
                                                 working_dir)                    
-           top_level_node = False                                               
            for child_node in curr_node.children:                                
                print 'SELECT', child_node.predicates[0].sim_measure_type, child_node.predicates[0].tokenizer_type, child_node.predicates[0].comp_op, child_node.predicates[0].threshold
-               curr_pair_ids = execute_select_node(pair_ids, curr_feature_values,    
+               if top_level_node:
+                   curr_pair_ids = execute_select_node_candset(candset.size(), curr_feature_values,
+                                                   child_node.predicates[0])   
+               else:
+                   curr_pair_ids = execute_select_node(pair_ids, curr_feature_values,    
                                                    child_node.predicates[0])    
 
                for grand_child_node in child_node.children:                     
@@ -224,7 +295,6 @@ cdef pair[vector[pair[int, int]], vector[int]] execute_join_subtree(
             pair_ids = execute_filter_node1(candset, pair_ids, top_level_node,
                                            lstrings, rstrings,                  
                                            curr_node.predicates[0], n_jobs, working_dir)
-            top_level_node = False                                              
             for child_node in curr_node.children:                               
                 queue.push_back(pair[Node, int](child_node, curr_index))        
                                                                                 
@@ -396,6 +466,8 @@ cdef pair[vector[pair[int, int]], vector[int]] execute_tree_plan(
         queue.pop_back();
         curr_node = curr_entry.first                                        
         
+        top_level_node = False
+
         if curr_entry.second == -1:
             top_level_node = True
         else:
@@ -427,10 +499,14 @@ cdef pair[vector[pair[int, int]], vector[int]] execute_tree_plan(
                                                  lstrings, rstrings,
                                                 curr_node.predicates[0], n_jobs,
                                                 working_dir)
-           top_level_node = False
            for child_node in curr_node.children:
                print 'SELECT', child_node.predicates[0].sim_measure_type, child_node.predicates[0].tokenizer_type, child_node.predicates[0].comp_op, child_node.predicates[0].threshold
-               curr_pair_ids = execute_select_node(pair_ids, feature_values, 
+
+               if top_level_node:
+                   curr_pair_ids = execute_select_node_candset(candset_votes.first.size(), feature_values,    
+                                                       child_node.predicates[0])  
+               else:
+                   curr_pair_ids = execute_select_node(pair_ids, feature_values, 
                                                    child_node.predicates[0])
 
                for grand_child_node in child_node.children:
@@ -444,7 +520,6 @@ cdef pair[vector[pair[int, int]], vector[int]] execute_tree_plan(
             pair_ids = execute_filter_node1(candset_votes.first, pair_ids, top_level_node,
                                            lstrings, rstrings,      
                                            curr_node.predicates[0], n_jobs, working_dir)           
-            top_level_node = False
             for child_node in curr_node.children:
                 queue.push_back(pair[Node, int](child_node, curr_index))
 
