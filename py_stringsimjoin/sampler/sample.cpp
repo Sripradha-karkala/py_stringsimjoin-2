@@ -13,6 +13,9 @@
         "extra_link_args": [
             "-fopenmp"
         ], 
+        "include_dirs": [
+            "../apply_rf/"
+        ], 
         "language": "c++"
     }
 }
@@ -261,8 +264,9 @@ static CYTHON_INLINE float __PYX_NAN() {
   #endif
 #endif
 
-#define __PYX_HAVE__py_stringsimjoin__apply_rf__overlap_coefficient_join
-#define __PYX_HAVE_API__py_stringsimjoin__apply_rf__overlap_coefficient_join
+#define __PYX_HAVE__py_stringsimjoin__sampler__sample
+#define __PYX_HAVE_API__py_stringsimjoin__sampler__sample
+#include "math.h"
 #include <vector>
 #include "ios"
 #include "new"
@@ -273,6 +277,7 @@ static CYTHON_INLINE float __PYX_NAN() {
 #include "string.h"
 #include <string>
 #include <map>
+#include <algorithm>
 #include "inverted_index.h"
 #ifdef _OPENMP
 #include <omp.h>
@@ -482,8 +487,8 @@ static const char *__pyx_filename;
 
 
 static const char *__pyx_f[] = {
-  "py_stringsimjoin/apply_rf/overlap_coefficient_join.pyx",
-  "py_stringsimjoin/apply_rf/stringsource",
+  "py_stringsimjoin/sampler/sample.pyx",
+  "py_stringsimjoin/sampler/stringsource",
 };
 
 /*--- Type declarations ---*/
@@ -595,13 +600,6 @@ static CYTHON_INLINE PyObject* __Pyx_PyObject_GetAttrStr(PyObject* obj, PyObject
 
 static PyObject *__Pyx_GetBuiltinName(PyObject *name);
 
-static CYTHON_INLINE void __Pyx_ErrRestore(PyObject *type, PyObject *value, PyObject *tb);
-static CYTHON_INLINE void __Pyx_ErrFetch(PyObject **type, PyObject **value, PyObject **tb);
-
-static void __Pyx_WriteUnraisable(const char *name, int clineno,
-                                  int lineno, const char *filename,
-                                  int full_traceback, int nogil);
-
 static void __Pyx_RaiseArgtupleInvalid(const char* func_name, int exact,
     Py_ssize_t num_min, Py_ssize_t num_max, Py_ssize_t num_found);
 
@@ -611,15 +609,11 @@ static int __Pyx_ParseOptionalKeywords(PyObject *kwds, PyObject **argnames[],\
     PyObject *kwds2, PyObject *values[], Py_ssize_t num_pos_args,\
     const char* function_name);
 
-#ifndef __PYX_FORCE_INIT_THREADS
-  #define __PYX_FORCE_INIT_THREADS 0
-#endif
-
 #if CYTHON_COMPILING_IN_CPYTHON
-static CYTHON_INLINE int __Pyx_ListComp_Append(PyObject* list, PyObject* x) {
+static CYTHON_INLINE int __Pyx_PyList_Append(PyObject* list, PyObject* x) {
     PyListObject* L = (PyListObject*) list;
     Py_ssize_t len = Py_SIZE(list);
-    if (likely(L->allocated > len)) {
+    if (likely(L->allocated > len) & likely(len > (L->allocated >> 1))) {
         Py_INCREF(x);
         PyList_SET_ITEM(list, len, x);
         Py_SIZE(list) = len+1;
@@ -628,8 +622,48 @@ static CYTHON_INLINE int __Pyx_ListComp_Append(PyObject* list, PyObject* x) {
     return PyList_Append(list, x);
 }
 #else
-#define __Pyx_ListComp_Append(L,x) PyList_Append(L,x)
+#define __Pyx_PyList_Append(L,x) PyList_Append(L,x)
 #endif
+
+#if CYTHON_COMPILING_IN_CPYTHON
+static CYTHON_INLINE PyObject* __Pyx_PyObject_Call(PyObject *func, PyObject *arg, PyObject *kw);
+#else
+#define __Pyx_PyObject_Call(func, arg, kw) PyObject_Call(func, arg, kw)
+#endif
+
+#define __Pyx_GetItemInt(o, i, type, is_signed, to_py_func, is_list, wraparound, boundscheck)\
+    (__Pyx_fits_Py_ssize_t(i, type, is_signed) ?\
+    __Pyx_GetItemInt_Fast(o, (Py_ssize_t)i, is_list, wraparound, boundscheck) :\
+    (is_list ? (PyErr_SetString(PyExc_IndexError, "list index out of range"), (PyObject*)NULL) :\
+               __Pyx_GetItemInt_Generic(o, to_py_func(i))))
+#define __Pyx_GetItemInt_List(o, i, type, is_signed, to_py_func, is_list, wraparound, boundscheck)\
+    (__Pyx_fits_Py_ssize_t(i, type, is_signed) ?\
+    __Pyx_GetItemInt_List_Fast(o, (Py_ssize_t)i, wraparound, boundscheck) :\
+    (PyErr_SetString(PyExc_IndexError, "list index out of range"), (PyObject*)NULL))
+static CYTHON_INLINE PyObject *__Pyx_GetItemInt_List_Fast(PyObject *o, Py_ssize_t i,
+                                                              int wraparound, int boundscheck);
+#define __Pyx_GetItemInt_Tuple(o, i, type, is_signed, to_py_func, is_list, wraparound, boundscheck)\
+    (__Pyx_fits_Py_ssize_t(i, type, is_signed) ?\
+    __Pyx_GetItemInt_Tuple_Fast(o, (Py_ssize_t)i, wraparound, boundscheck) :\
+    (PyErr_SetString(PyExc_IndexError, "tuple index out of range"), (PyObject*)NULL))
+static CYTHON_INLINE PyObject *__Pyx_GetItemInt_Tuple_Fast(PyObject *o, Py_ssize_t i,
+                                                              int wraparound, int boundscheck);
+static CYTHON_INLINE PyObject *__Pyx_GetItemInt_Generic(PyObject *o, PyObject* j);
+static CYTHON_INLINE PyObject *__Pyx_GetItemInt_Fast(PyObject *o, Py_ssize_t i,
+                                                     int is_list, int wraparound, int boundscheck);
+
+static CYTHON_INLINE PyObject *__Pyx_GetModuleGlobalName(PyObject *name);
+
+static CYTHON_INLINE void __Pyx_ErrRestore(PyObject *type, PyObject *value, PyObject *tb);
+static CYTHON_INLINE void __Pyx_ErrFetch(PyObject **type, PyObject **value, PyObject **tb);
+
+static void __Pyx_WriteUnraisable(const char *name, int clineno,
+                                  int lineno, const char *filename,
+                                  int full_traceback, int nogil);
+
+static PyObject *__Pyx_Import(PyObject *name, PyObject *from_list, int level);
+
+static PyObject* __Pyx_ImportFrom(PyObject* module, PyObject* name);
 
 typedef struct {
     int code_line;
@@ -650,13 +684,9 @@ static void __Pyx_AddTraceback(const char *funcname, int c_line,
 
 static CYTHON_INLINE int __Pyx_PyInt_As_int(PyObject *);
 
-static int __Pyx_Print(PyObject*, PyObject *, int);
-#if CYTHON_COMPILING_IN_PYPY || PY_MAJOR_VERSION >= 3
-static PyObject* __pyx_print = 0;
-static PyObject* __pyx_print_kwargs = 0;
-#endif
-
 static CYTHON_INLINE PyObject* __Pyx_PyInt_From_int(int value);
+
+static CYTHON_INLINE PyObject* __Pyx_PyInt_From_long(long value);
 
 #ifndef __Pyx_CppExn2PyErr
 #include <new>
@@ -697,15 +727,9 @@ static void __Pyx_CppExn2PyErr() {
 }
 #endif
 
-static CYTHON_INLINE size_t __Pyx_PyInt_As_size_t(PyObject *);
-
-static CYTHON_INLINE PyObject* __Pyx_PyInt_From_long(long value);
-
 static CYTHON_INLINE long __Pyx_PyInt_As_long(PyObject *);
 
 static int __Pyx_check_binary_version(void);
-
-static int __Pyx_ExportFunction(const char *name, void (*f)(void), const char *sig);
 
 #if !defined(__Pyx_PyIdentifier_FromString)
 #if PY_MAJOR_VERSION < 3
@@ -722,11 +746,11 @@ static int __Pyx_ImportFunction(PyObject *module, const char *funcname, void (**
 static int __Pyx_InitStrings(__Pyx_StringTabEntry *t);
 
 
+/* Module declarations from 'libc.math' */
+
 /* Module declarations from 'libcpp.vector' */
 
 /* Module declarations from 'libcpp.utility' */
-
-/* Module declarations from 'libcpp.pair' */
 
 /* Module declarations from 'libcpp.set' */
 
@@ -738,458 +762,163 @@ static int __Pyx_InitStrings(__Pyx_StringTabEntry *t);
 
 /* Module declarations from 'libcpp.map' */
 
+/* Module declarations from 'libcpp.pair' */
+
+/* Module declarations from 'libcpp.algorithm' */
+
 /* Module declarations from 'py_stringsimjoin.apply_rf.inverted_index' */
 
 /* Module declarations from 'py_stringsimjoin.apply_rf.utils' */
 static void (*__pyx_f_16py_stringsimjoin_8apply_rf_5utils_build_inverted_index)(std::vector<std::vector<int> >  &, InvertedIndex &); /*proto*/
 
-/* Module declarations from 'py_stringsimjoin.apply_rf.overlap_coefficient_join' */
-static std::vector<std::pair<int,int> >  __pyx_f_16py_stringsimjoin_8apply_rf_24overlap_coefficient_join_ov_coeff_join(std::vector<std::vector<int> >  &, std::vector<std::vector<int> >  &, double, int __pyx_skip_dispatch); /*proto*/
-static CYTHON_INLINE int __pyx_f_16py_stringsimjoin_8apply_rf_24overlap_coefficient_join_int_min(int, int); /*proto*/
-static void __pyx_f_16py_stringsimjoin_8apply_rf_24overlap_coefficient_join_ov_coeff_join_part(std::pair<int,int> , std::vector<std::vector<int> >  &, std::vector<std::vector<int> >  &, double, InvertedIndex &, std::vector<std::pair<int,int> >  &); /*proto*/
-static std::vector<int>  __pyx_convert_vector_from_py_int(PyObject *); /*proto*/
-static std::vector<std::vector<int> >  __pyx_convert_vector_from_py_std_3a__3a_vector_3c_int_3e___(PyObject *); /*proto*/
-static PyObject *__pyx_convert_pair_to_py_int____int(std::pair<int,int>  const &); /*proto*/
-static PyObject *__pyx_convert_vector_to_py_std_3a__3a_pair_3c_int_2c_int_3e___(const std::vector<std::pair<int,int> >  &); /*proto*/
-#define __Pyx_MODULE_NAME "py_stringsimjoin.apply_rf.overlap_coefficient_join"
-int __pyx_module_is_main_py_stringsimjoin__apply_rf__overlap_coefficient_join = 0;
+/* Module declarations from 'py_stringsimjoin.apply_rf.tokenizers' */
+static void (*__pyx_f_16py_stringsimjoin_8apply_rf_10tokenizers_tokenize_without_materializing)(std::vector<std::string>  const &, std::vector<std::string>  const &, std::string const &, std::vector<std::vector<int> >  &, std::vector<std::vector<int> >  &); /*proto*/
 
-/* Implementation of 'py_stringsimjoin.apply_rf.overlap_coefficient_join' */
+/* Module declarations from 'py_stringsimjoin.sampler.sample' */
+static void __pyx_f_16py_stringsimjoin_7sampler_6sample_convert_to_string_vector(PyObject *, std::vector<std::string>  &); /*proto*/
+static void __pyx_f_16py_stringsimjoin_7sampler_6sample_convert_to_int_vector(PyObject *, std::vector<int>  &); /*proto*/
+static void __pyx_f_16py_stringsimjoin_7sampler_6sample_sample_pairs(std::vector<std::string>  &, std::vector<std::string>  &, int, int, std::vector<std::pair<int,int> >  &); /*proto*/
+static std::string __pyx_convert_string_from_py_std__in_string(PyObject *); /*proto*/
+#define __Pyx_MODULE_NAME "py_stringsimjoin.sampler.sample"
+int __pyx_module_is_main_py_stringsimjoin__sampler__sample = 0;
+
+/* Implementation of 'py_stringsimjoin.sampler.sample' */
 static PyObject *__pyx_builtin_range;
-static char __pyx_k_end[] = "end";
-static char __pyx_k_file[] = "file";
+static char __pyx_k_l[] = "l_";
+static char __pyx_k_r[] = "r_";
+static char __pyx_k_id[] = "_id";
+static char __pyx_k_pd[] = "pd";
+static char __pyx_k_ws[] = "ws";
 static char __pyx_k_main[] = "__main__";
+static char __pyx_k_seed[] = "seed";
 static char __pyx_k_test[] = "__test__";
-static char __pyx_k_print[] = "print";
+static char __pyx_k_entry[] = "entry";
+static char __pyx_k_index[] = "index";
+static char __pyx_k_l_ids[] = "l_ids";
+static char __pyx_k_r_ids[] = "r_ids";
 static char __pyx_k_range[] = "range";
-static char __pyx_k_l_size[] = "l size. : ";
-static char __pyx_k_r_size[] = " , r size : ";
-static char __pyx_k_ltokens[] = "ltokens";
-static char __pyx_k_rtokens[] = "rtokens";
-static char __pyx_k_part_size[] = "part size : ";
-static char __pyx_k_threshold[] = "threshold";
-static PyObject *__pyx_n_s_end;
-static PyObject *__pyx_n_s_file;
-static PyObject *__pyx_kp_s_l_size;
-static PyObject *__pyx_n_s_ltokens;
+static char __pyx_k_import[] = "__import__";
+static char __pyx_k_insert[] = "insert";
+static char __pyx_k_ltable[] = "ltable";
+static char __pyx_k_pandas[] = "pandas";
+static char __pyx_k_random[] = "random";
+static char __pyx_k_rtable[] = "rtable";
+static char __pyx_k_sample[] = "sample";
+static char __pyx_k_columns[] = "columns";
+static char __pyx_k_y_param[] = "y_param";
+static char __pyx_k_lstrings[] = "lstrings";
+static char __pyx_k_rstrings[] = "rstrings";
+static char __pyx_k_DataFrame[] = "DataFrame";
+static char __pyx_k_itertuples[] = "itertuples";
+static char __pyx_k_l_key_attr[] = "l_key_attr";
+static char __pyx_k_r_key_attr[] = "r_key_attr";
+static char __pyx_k_l_join_attr[] = "l_join_attr";
+static char __pyx_k_output_rows[] = "output_rows";
+static char __pyx_k_r_join_attr[] = "r_join_attr";
+static char __pyx_k_sample_size[] = "sample_size";
+static char __pyx_k_l_out_prefix[] = "l_out_prefix";
+static char __pyx_k_output_table[] = "output_table";
+static char __pyx_k_r_out_prefix[] = "r_out_prefix";
+static char __pyx_k_output_header[] = "output_header";
+static char __pyx_k_sample_cython[] = "sample_cython";
+static char __pyx_k_seed_pair_row[] = "seed_pair_row";
+static char __pyx_k_get_output_header_from_tables[] = "get_output_header_from_tables";
+static char __pyx_k_afs_cs_wisc_edu_u_p_a_paulgc_gi[] = "/afs/cs.wisc.edu/u/p/a/paulgc/git-repos/ssj_current/py_stringsimjoin/sampler/sample.pyx";
+static char __pyx_k_py_stringsimjoin_sampler_sample[] = "py_stringsimjoin.sampler.sample";
+static char __pyx_k_py_stringsimjoin_utils_generic_h[] = "py_stringsimjoin.utils.generic_helper";
+static PyObject *__pyx_n_s_DataFrame;
+static PyObject *__pyx_kp_s_afs_cs_wisc_edu_u_p_a_paulgc_gi;
+static PyObject *__pyx_n_s_columns;
+static PyObject *__pyx_n_s_entry;
+static PyObject *__pyx_n_s_get_output_header_from_tables;
+static PyObject *__pyx_n_s_id;
+static PyObject *__pyx_n_s_import;
+static PyObject *__pyx_n_s_index;
+static PyObject *__pyx_n_s_insert;
+static PyObject *__pyx_n_s_itertuples;
+static PyObject *__pyx_n_s_l;
+static PyObject *__pyx_n_s_l_ids;
+static PyObject *__pyx_n_s_l_join_attr;
+static PyObject *__pyx_n_s_l_key_attr;
+static PyObject *__pyx_n_s_l_out_prefix;
+static PyObject *__pyx_n_s_lstrings;
+static PyObject *__pyx_n_s_ltable;
 static PyObject *__pyx_n_s_main;
-static PyObject *__pyx_kp_s_part_size;
-static PyObject *__pyx_n_s_print;
-static PyObject *__pyx_kp_s_r_size;
+static PyObject *__pyx_n_s_output_header;
+static PyObject *__pyx_n_s_output_rows;
+static PyObject *__pyx_n_s_output_table;
+static PyObject *__pyx_n_s_pandas;
+static PyObject *__pyx_n_s_pd;
+static PyObject *__pyx_n_s_py_stringsimjoin_sampler_sample;
+static PyObject *__pyx_n_s_py_stringsimjoin_utils_generic_h;
+static PyObject *__pyx_n_s_r;
+static PyObject *__pyx_n_s_r_ids;
+static PyObject *__pyx_n_s_r_join_attr;
+static PyObject *__pyx_n_s_r_key_attr;
+static PyObject *__pyx_n_s_r_out_prefix;
+static PyObject *__pyx_n_s_random;
 static PyObject *__pyx_n_s_range;
-static PyObject *__pyx_n_s_rtokens;
+static PyObject *__pyx_n_s_rstrings;
+static PyObject *__pyx_n_s_rtable;
+static PyObject *__pyx_n_s_sample;
+static PyObject *__pyx_n_s_sample_cython;
+static PyObject *__pyx_n_s_sample_size;
+static PyObject *__pyx_n_s_seed;
+static PyObject *__pyx_n_s_seed_pair_row;
 static PyObject *__pyx_n_s_test;
-static PyObject *__pyx_n_s_threshold;
-static PyObject *__pyx_pf_16py_stringsimjoin_8apply_rf_24overlap_coefficient_join_ov_coeff_join(CYTHON_UNUSED PyObject *__pyx_self, std::vector<std::vector<int> >  __pyx_v_ltokens, std::vector<std::vector<int> >  __pyx_v_rtokens, double __pyx_v_threshold); /* proto */
+static PyObject *__pyx_n_b_ws;
+static PyObject *__pyx_n_s_y_param;
+static PyObject *__pyx_pf_16py_stringsimjoin_7sampler_6sample_sample_cython(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_ltable, PyObject *__pyx_v_rtable, PyObject *__pyx_v_l_key_attr, PyObject *__pyx_v_r_key_attr, PyObject *__pyx_v_l_join_attr, PyObject *__pyx_v_r_join_attr, PyObject *__pyx_v_sample_size, PyObject *__pyx_v_y_param, PyObject *__pyx_v_seed, PyObject *__pyx_v_l_out_prefix, PyObject *__pyx_v_r_out_prefix); /* proto */
+static PyObject *__pyx_int_0;
+static PyObject *__pyx_tuple_;
+static PyObject *__pyx_codeobj__2;
 
-/* "py_stringsimjoin/apply_rf/overlap_coefficient_join.pyx":14
- * from py_stringsimjoin.apply_rf.utils cimport build_inverted_index
+/* "py_stringsimjoin/sampler/sample.pyx":23
+ * from py_stringsimjoin.apply_rf.tokenizers cimport tokenize_without_materializing
  * 
- * cpdef vector[pair[int, int]] ov_coeff_join(vector[vector[int]]& ltokens,             # <<<<<<<<<<<<<<
- *                                            vector[vector[int]]& rtokens,
- *                                            double threshold):
- */
-
-static PyObject *__pyx_pw_16py_stringsimjoin_8apply_rf_24overlap_coefficient_join_1ov_coeff_join(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static std::vector<std::pair<int,int> >  __pyx_f_16py_stringsimjoin_8apply_rf_24overlap_coefficient_join_ov_coeff_join(std::vector<std::vector<int> >  &__pyx_v_ltokens, std::vector<std::vector<int> >  &__pyx_v_rtokens, double __pyx_v_threshold, CYTHON_UNUSED int __pyx_skip_dispatch) {
-  std::vector<std::vector<std::pair<int,int> > >  __pyx_v_output_pairs;
-  std::vector<std::pair<int,int> >  __pyx_v_partitions;
-  std::vector<std::pair<int,int> >  __pyx_v_final_output_pairs;
-  std::vector<std::pair<int,int> >  __pyx_v_part_pairs;
-  int __pyx_v_i;
-  int __pyx_v_n;
-  int __pyx_v_ncpus;
-  int __pyx_v_partition_size;
-  int __pyx_v_start;
-  int __pyx_v_end;
-  InvertedIndex __pyx_v_index;
-  std::vector<std::pair<int,int> >  __pyx_r;
-  __Pyx_RefNannyDeclarations
-  PyObject *__pyx_t_1 = NULL;
-  PyObject *__pyx_t_2 = NULL;
-  PyObject *__pyx_t_3 = NULL;
-  int __pyx_t_4;
-  int __pyx_t_5;
-  int __pyx_t_6;
-  int __pyx_t_7;
-  std::pair<int,int>  __pyx_t_8;
-  std::vector<std::pair<int,int> >  __pyx_t_9;
-  int __pyx_t_10;
-  std::vector<std::vector<std::pair<int,int> > > ::iterator __pyx_t_11;
-  int __pyx_lineno = 0;
-  const char *__pyx_filename = NULL;
-  int __pyx_clineno = 0;
-  __Pyx_RefNannySetupContext("ov_coeff_join", 0);
-
-  /* "py_stringsimjoin/apply_rf/overlap_coefficient_join.pyx":17
- *                                            vector[vector[int]]& rtokens,
- *                                            double threshold):
- *     print 'l size. : ', ltokens.size(), ' , r size : ', rtokens.size()             # <<<<<<<<<<<<<<
- *     cdef vector[vector[pair[int, int]]] output_pairs
- *     cdef vector[pair[int, int]] partitions, final_output_pairs, part_pairs
- */
-  __pyx_t_1 = __Pyx_PyInt_FromSize_t(__pyx_v_ltokens.size()); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 17; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = __Pyx_PyInt_FromSize_t(__pyx_v_rtokens.size()); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 17; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_3 = PyTuple_New(4); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 17; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_GOTREF(__pyx_t_3);
-  __Pyx_INCREF(__pyx_kp_s_l_size);
-  __Pyx_GIVEREF(__pyx_kp_s_l_size);
-  PyTuple_SET_ITEM(__pyx_t_3, 0, __pyx_kp_s_l_size);
-  __Pyx_GIVEREF(__pyx_t_1);
-  PyTuple_SET_ITEM(__pyx_t_3, 1, __pyx_t_1);
-  __Pyx_INCREF(__pyx_kp_s_r_size);
-  __Pyx_GIVEREF(__pyx_kp_s_r_size);
-  PyTuple_SET_ITEM(__pyx_t_3, 2, __pyx_kp_s_r_size);
-  __Pyx_GIVEREF(__pyx_t_2);
-  PyTuple_SET_ITEM(__pyx_t_3, 3, __pyx_t_2);
-  __pyx_t_1 = 0;
-  __pyx_t_2 = 0;
-  if (__Pyx_Print(0, __pyx_t_3, 1) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 17; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-
-  /* "py_stringsimjoin/apply_rf/overlap_coefficient_join.pyx":20
- *     cdef vector[vector[pair[int, int]]] output_pairs
- *     cdef vector[pair[int, int]] partitions, final_output_pairs, part_pairs
- *     cdef int i, n=rtokens.size(), ncpus=4, partition_size, start=0, end             # <<<<<<<<<<<<<<
- *     cdef InvertedIndex index
- *     build_inverted_index(ltokens, index)
- */
-  __pyx_v_n = __pyx_v_rtokens.size();
-  __pyx_v_ncpus = 4;
-  __pyx_v_start = 0;
-
-  /* "py_stringsimjoin/apply_rf/overlap_coefficient_join.pyx":22
- *     cdef int i, n=rtokens.size(), ncpus=4, partition_size, start=0, end
- *     cdef InvertedIndex index
- *     build_inverted_index(ltokens, index)             # <<<<<<<<<<<<<<
- * 
- *     partition_size = <int>(<float> n / <float> ncpus)
- */
-  __pyx_f_16py_stringsimjoin_8apply_rf_5utils_build_inverted_index(__pyx_v_ltokens, __pyx_v_index);
-
-  /* "py_stringsimjoin/apply_rf/overlap_coefficient_join.pyx":24
- *     build_inverted_index(ltokens, index)
- * 
- *     partition_size = <int>(<float> n / <float> ncpus)             # <<<<<<<<<<<<<<
- *     print 'part size : ', partition_size
- *     for i in range(ncpus):
- */
-  if (unlikely(((float)__pyx_v_ncpus) == 0)) {
-    PyErr_SetString(PyExc_ZeroDivisionError, "float division");
-    {__pyx_filename = __pyx_f[0]; __pyx_lineno = 24; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  }
-  __pyx_v_partition_size = ((int)(((float)__pyx_v_n) / ((float)__pyx_v_ncpus)));
-
-  /* "py_stringsimjoin/apply_rf/overlap_coefficient_join.pyx":25
- * 
- *     partition_size = <int>(<float> n / <float> ncpus)
- *     print 'part size : ', partition_size             # <<<<<<<<<<<<<<
- *     for i in range(ncpus):
- *         end = start + partition_size
- */
-  __pyx_t_3 = __Pyx_PyInt_From_int(__pyx_v_partition_size); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 25; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_2 = PyTuple_New(2); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 25; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_GOTREF(__pyx_t_2);
-  __Pyx_INCREF(__pyx_kp_s_part_size);
-  __Pyx_GIVEREF(__pyx_kp_s_part_size);
-  PyTuple_SET_ITEM(__pyx_t_2, 0, __pyx_kp_s_part_size);
-  __Pyx_GIVEREF(__pyx_t_3);
-  PyTuple_SET_ITEM(__pyx_t_2, 1, __pyx_t_3);
-  __pyx_t_3 = 0;
-  if (__Pyx_Print(0, __pyx_t_2, 1) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 25; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-
-  /* "py_stringsimjoin/apply_rf/overlap_coefficient_join.pyx":26
- *     partition_size = <int>(<float> n / <float> ncpus)
- *     print 'part size : ', partition_size
- *     for i in range(ncpus):             # <<<<<<<<<<<<<<
- *         end = start + partition_size
- *         if end > n or i == ncpus - 1:
- */
-  __pyx_t_4 = __pyx_v_ncpus;
-  for (__pyx_t_5 = 0; __pyx_t_5 < __pyx_t_4; __pyx_t_5+=1) {
-    __pyx_v_i = __pyx_t_5;
-
-    /* "py_stringsimjoin/apply_rf/overlap_coefficient_join.pyx":27
- *     print 'part size : ', partition_size
- *     for i in range(ncpus):
- *         end = start + partition_size             # <<<<<<<<<<<<<<
- *         if end > n or i == ncpus - 1:
- *             end = n
- */
-    __pyx_v_end = (__pyx_v_start + __pyx_v_partition_size);
-
-    /* "py_stringsimjoin/apply_rf/overlap_coefficient_join.pyx":28
- *     for i in range(ncpus):
- *         end = start + partition_size
- *         if end > n or i == ncpus - 1:             # <<<<<<<<<<<<<<
- *             end = n
- *         partitions.push_back(pair[int, int](start, end))
- */
-    __pyx_t_7 = ((__pyx_v_end > __pyx_v_n) != 0);
-    if (!__pyx_t_7) {
-    } else {
-      __pyx_t_6 = __pyx_t_7;
-      goto __pyx_L6_bool_binop_done;
-    }
-    __pyx_t_7 = ((__pyx_v_i == (__pyx_v_ncpus - 1)) != 0);
-    __pyx_t_6 = __pyx_t_7;
-    __pyx_L6_bool_binop_done:;
-    if (__pyx_t_6) {
-
-      /* "py_stringsimjoin/apply_rf/overlap_coefficient_join.pyx":29
- *         end = start + partition_size
- *         if end > n or i == ncpus - 1:
- *             end = n             # <<<<<<<<<<<<<<
- *         partitions.push_back(pair[int, int](start, end))
- *         print start, end
- */
-      __pyx_v_end = __pyx_v_n;
-
-      /* "py_stringsimjoin/apply_rf/overlap_coefficient_join.pyx":28
- *     for i in range(ncpus):
- *         end = start + partition_size
- *         if end > n or i == ncpus - 1:             # <<<<<<<<<<<<<<
- *             end = n
- *         partitions.push_back(pair[int, int](start, end))
- */
-    }
-
-    /* "py_stringsimjoin/apply_rf/overlap_coefficient_join.pyx":30
- *         if end > n or i == ncpus - 1:
- *             end = n
- *         partitions.push_back(pair[int, int](start, end))             # <<<<<<<<<<<<<<
- *         print start, end
- *         start = end
- */
-    try {
-      __pyx_t_8 = std::pair<int,int> (__pyx_v_start, __pyx_v_end);
-    } catch(...) {
-      __Pyx_CppExn2PyErr();
-      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 30; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-    }
-    try {
-      __pyx_v_partitions.push_back(__pyx_t_8);
-    } catch(...) {
-      __Pyx_CppExn2PyErr();
-      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 30; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-    }
-
-    /* "py_stringsimjoin/apply_rf/overlap_coefficient_join.pyx":31
- *             end = n
- *         partitions.push_back(pair[int, int](start, end))
- *         print start, end             # <<<<<<<<<<<<<<
- *         start = end
- *         output_pairs.push_back(vector[pair[int, int]]())
- */
-    __pyx_t_2 = __Pyx_PyInt_From_int(__pyx_v_start); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 31; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-    __Pyx_GOTREF(__pyx_t_2);
-    __pyx_t_3 = __Pyx_PyInt_From_int(__pyx_v_end); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 31; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-    __Pyx_GOTREF(__pyx_t_3);
-    __pyx_t_1 = PyTuple_New(2); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 31; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-    __Pyx_GOTREF(__pyx_t_1);
-    __Pyx_GIVEREF(__pyx_t_2);
-    PyTuple_SET_ITEM(__pyx_t_1, 0, __pyx_t_2);
-    __Pyx_GIVEREF(__pyx_t_3);
-    PyTuple_SET_ITEM(__pyx_t_1, 1, __pyx_t_3);
-    __pyx_t_2 = 0;
-    __pyx_t_3 = 0;
-    if (__Pyx_Print(0, __pyx_t_1, 1) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 31; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-    __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-
-    /* "py_stringsimjoin/apply_rf/overlap_coefficient_join.pyx":32
- *         partitions.push_back(pair[int, int](start, end))
- *         print start, end
- *         start = end             # <<<<<<<<<<<<<<
- *         output_pairs.push_back(vector[pair[int, int]]())
+ * def sample_cython(ltable, rtable, l_key_attr, r_key_attr,             # <<<<<<<<<<<<<<
+ *                  l_join_attr, r_join_attr, sample_size, y_param, seed, l_out_prefix='l_', r_out_prefix='r_'):
  * 
  */
-    __pyx_v_start = __pyx_v_end;
-
-    /* "py_stringsimjoin/apply_rf/overlap_coefficient_join.pyx":33
- *         print start, end
- *         start = end
- *         output_pairs.push_back(vector[pair[int, int]]())             # <<<<<<<<<<<<<<
- * 
- *     for i in prange(ncpus, nogil=True):
- */
-    try {
-      __pyx_t_9 = std::vector<std::pair<int,int> > ();
-    } catch(...) {
-      __Pyx_CppExn2PyErr();
-      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 33; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-    }
-    try {
-      __pyx_v_output_pairs.push_back(__pyx_t_9);
-    } catch(...) {
-      __Pyx_CppExn2PyErr();
-      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 33; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-    }
-  }
-
-  /* "py_stringsimjoin/apply_rf/overlap_coefficient_join.pyx":35
- *         output_pairs.push_back(vector[pair[int, int]]())
- * 
- *     for i in prange(ncpus, nogil=True):             # <<<<<<<<<<<<<<
- *         ov_coeff_join_part(partitions[i], ltokens, rtokens, threshold, index, output_pairs[i])
- * 
- */
-  {
-      #ifdef WITH_THREAD
-      PyThreadState *_save;
-      Py_UNBLOCK_THREADS
-      #endif
-      /*try:*/ {
-        __pyx_t_4 = __pyx_v_ncpus;
-        if (1 == 0) abort();
-        {
-            #if ((defined(__APPLE__) || defined(__OSX__)) && (defined(__GNUC__) && (__GNUC__ > 2 || (__GNUC__ == 2 && (__GNUC_MINOR__ > 95)))))
-                #undef likely
-                #undef unlikely
-                #define likely(x)   (x)
-                #define unlikely(x) (x)
-            #endif
-            __pyx_t_10 = (__pyx_t_4 - 0) / 1;
-            if (__pyx_t_10 > 0)
-            {
-                #ifdef _OPENMP
-                #pragma omp parallel
-                #endif /* _OPENMP */
-                {
-                    #ifdef _OPENMP
-                    #pragma omp for firstprivate(__pyx_v_i) lastprivate(__pyx_v_i)
-                    #endif /* _OPENMP */
-                    for (__pyx_t_5 = 0; __pyx_t_5 < __pyx_t_10; __pyx_t_5++){
-                        {
-                            __pyx_v_i = 0 + 1 * __pyx_t_5;
-
-                            /* "py_stringsimjoin/apply_rf/overlap_coefficient_join.pyx":36
- * 
- *     for i in prange(ncpus, nogil=True):
- *         ov_coeff_join_part(partitions[i], ltokens, rtokens, threshold, index, output_pairs[i])             # <<<<<<<<<<<<<<
- * 
- *     for part_pairs in output_pairs:
- */
-                            __pyx_f_16py_stringsimjoin_8apply_rf_24overlap_coefficient_join_ov_coeff_join_part((__pyx_v_partitions[__pyx_v_i]), __pyx_v_ltokens, __pyx_v_rtokens, __pyx_v_threshold, __pyx_v_index, (__pyx_v_output_pairs[__pyx_v_i]));
-                        }
-                    }
-                }
-            }
-        }
-        #if ((defined(__APPLE__) || defined(__OSX__)) && (defined(__GNUC__) && (__GNUC__ > 2 || (__GNUC__ == 2 && (__GNUC_MINOR__ > 95)))))
-            #undef likely
-            #undef unlikely
-            #define likely(x)   __builtin_expect(!!(x), 1)
-            #define unlikely(x) __builtin_expect(!!(x), 0)
-        #endif
-      }
-
-      /* "py_stringsimjoin/apply_rf/overlap_coefficient_join.pyx":35
- *         output_pairs.push_back(vector[pair[int, int]]())
- * 
- *     for i in prange(ncpus, nogil=True):             # <<<<<<<<<<<<<<
- *         ov_coeff_join_part(partitions[i], ltokens, rtokens, threshold, index, output_pairs[i])
- * 
- */
-      /*finally:*/ {
-        /*normal exit:*/{
-          #ifdef WITH_THREAD
-          Py_BLOCK_THREADS
-          #endif
-          goto __pyx_L10;
-        }
-        __pyx_L10:;
-      }
-  }
-
-  /* "py_stringsimjoin/apply_rf/overlap_coefficient_join.pyx":38
- *         ov_coeff_join_part(partitions[i], ltokens, rtokens, threshold, index, output_pairs[i])
- * 
- *     for part_pairs in output_pairs:             # <<<<<<<<<<<<<<
- *         final_output_pairs.insert(final_output_pairs.end(), part_pairs.begin(), part_pairs.end())
- * 
- */
-  __pyx_t_11 = __pyx_v_output_pairs.begin();
-  for (;;) {
-    if (!(__pyx_t_11 != __pyx_v_output_pairs.end())) break;
-    __pyx_t_9 = *__pyx_t_11;
-    ++__pyx_t_11;
-    __pyx_v_part_pairs = __pyx_t_9;
-
-    /* "py_stringsimjoin/apply_rf/overlap_coefficient_join.pyx":39
- * 
- *     for part_pairs in output_pairs:
- *         final_output_pairs.insert(final_output_pairs.end(), part_pairs.begin(), part_pairs.end())             # <<<<<<<<<<<<<<
- * 
- *     return final_output_pairs
- */
-    try {
-      __pyx_v_final_output_pairs.insert(__pyx_v_final_output_pairs.end(), __pyx_v_part_pairs.begin(), __pyx_v_part_pairs.end());
-    } catch(...) {
-      __Pyx_CppExn2PyErr();
-      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 39; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-    }
-
-    /* "py_stringsimjoin/apply_rf/overlap_coefficient_join.pyx":38
- *         ov_coeff_join_part(partitions[i], ltokens, rtokens, threshold, index, output_pairs[i])
- * 
- *     for part_pairs in output_pairs:             # <<<<<<<<<<<<<<
- *         final_output_pairs.insert(final_output_pairs.end(), part_pairs.begin(), part_pairs.end())
- * 
- */
-  }
-
-  /* "py_stringsimjoin/apply_rf/overlap_coefficient_join.pyx":41
- *         final_output_pairs.insert(final_output_pairs.end(), part_pairs.begin(), part_pairs.end())
- * 
- *     return final_output_pairs             # <<<<<<<<<<<<<<
- * 
- * cdef inline int int_min(int a, int b) nogil: return a if a <= b else b
- */
-  __pyx_r = __pyx_v_final_output_pairs;
-  goto __pyx_L0;
-
-  /* "py_stringsimjoin/apply_rf/overlap_coefficient_join.pyx":14
- * from py_stringsimjoin.apply_rf.utils cimport build_inverted_index
- * 
- * cpdef vector[pair[int, int]] ov_coeff_join(vector[vector[int]]& ltokens,             # <<<<<<<<<<<<<<
- *                                            vector[vector[int]]& rtokens,
- *                                            double threshold):
- */
-
-  /* function exit code */
-  __pyx_L1_error:;
-  __Pyx_XDECREF(__pyx_t_1);
-  __Pyx_XDECREF(__pyx_t_2);
-  __Pyx_XDECREF(__pyx_t_3);
-  __Pyx_WriteUnraisable("py_stringsimjoin.apply_rf.overlap_coefficient_join.ov_coeff_join", __pyx_clineno, __pyx_lineno, __pyx_filename, 0, 0);
-  __pyx_L0:;
-  __Pyx_RefNannyFinishContext();
-  return __pyx_r;
-}
 
 /* Python wrapper */
-static PyObject *__pyx_pw_16py_stringsimjoin_8apply_rf_24overlap_coefficient_join_1ov_coeff_join(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static PyObject *__pyx_pw_16py_stringsimjoin_8apply_rf_24overlap_coefficient_join_1ov_coeff_join(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
-  std::vector<std::vector<int> >  __pyx_v_ltokens;
-  std::vector<std::vector<int> >  __pyx_v_rtokens;
-  double __pyx_v_threshold;
+static PyObject *__pyx_pw_16py_stringsimjoin_7sampler_6sample_1sample_cython(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static PyMethodDef __pyx_mdef_16py_stringsimjoin_7sampler_6sample_1sample_cython = {"sample_cython", (PyCFunction)__pyx_pw_16py_stringsimjoin_7sampler_6sample_1sample_cython, METH_VARARGS|METH_KEYWORDS, 0};
+static PyObject *__pyx_pw_16py_stringsimjoin_7sampler_6sample_1sample_cython(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+  PyObject *__pyx_v_ltable = 0;
+  PyObject *__pyx_v_rtable = 0;
+  PyObject *__pyx_v_l_key_attr = 0;
+  PyObject *__pyx_v_r_key_attr = 0;
+  PyObject *__pyx_v_l_join_attr = 0;
+  PyObject *__pyx_v_r_join_attr = 0;
+  PyObject *__pyx_v_sample_size = 0;
+  PyObject *__pyx_v_y_param = 0;
+  PyObject *__pyx_v_seed = 0;
+  PyObject *__pyx_v_l_out_prefix = 0;
+  PyObject *__pyx_v_r_out_prefix = 0;
   int __pyx_lineno = 0;
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
-  __Pyx_RefNannySetupContext("ov_coeff_join (wrapper)", 0);
+  __Pyx_RefNannySetupContext("sample_cython (wrapper)", 0);
   {
-    static PyObject **__pyx_pyargnames[] = {&__pyx_n_s_ltokens,&__pyx_n_s_rtokens,&__pyx_n_s_threshold,0};
-    PyObject* values[3] = {0,0,0};
+    static PyObject **__pyx_pyargnames[] = {&__pyx_n_s_ltable,&__pyx_n_s_rtable,&__pyx_n_s_l_key_attr,&__pyx_n_s_r_key_attr,&__pyx_n_s_l_join_attr,&__pyx_n_s_r_join_attr,&__pyx_n_s_sample_size,&__pyx_n_s_y_param,&__pyx_n_s_seed,&__pyx_n_s_l_out_prefix,&__pyx_n_s_r_out_prefix,0};
+    PyObject* values[11] = {0,0,0,0,0,0,0,0,0,0,0};
+    values[9] = ((PyObject *)__pyx_n_s_l);
+    values[10] = ((PyObject *)__pyx_n_s_r);
     if (unlikely(__pyx_kwds)) {
       Py_ssize_t kw_args;
       const Py_ssize_t pos_args = PyTuple_GET_SIZE(__pyx_args);
       switch (pos_args) {
+        case 11: values[10] = PyTuple_GET_ITEM(__pyx_args, 10);
+        case 10: values[9] = PyTuple_GET_ITEM(__pyx_args, 9);
+        case  9: values[8] = PyTuple_GET_ITEM(__pyx_args, 8);
+        case  8: values[7] = PyTuple_GET_ITEM(__pyx_args, 7);
+        case  7: values[6] = PyTuple_GET_ITEM(__pyx_args, 6);
+        case  6: values[5] = PyTuple_GET_ITEM(__pyx_args, 5);
+        case  5: values[4] = PyTuple_GET_ITEM(__pyx_args, 4);
+        case  4: values[3] = PyTuple_GET_ITEM(__pyx_args, 3);
         case  3: values[2] = PyTuple_GET_ITEM(__pyx_args, 2);
         case  2: values[1] = PyTuple_GET_ITEM(__pyx_args, 1);
         case  1: values[0] = PyTuple_GET_ITEM(__pyx_args, 0);
@@ -1199,345 +928,648 @@ static PyObject *__pyx_pw_16py_stringsimjoin_8apply_rf_24overlap_coefficient_joi
       kw_args = PyDict_Size(__pyx_kwds);
       switch (pos_args) {
         case  0:
-        if (likely((values[0] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_ltokens)) != 0)) kw_args--;
+        if (likely((values[0] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_ltable)) != 0)) kw_args--;
         else goto __pyx_L5_argtuple_error;
         case  1:
-        if (likely((values[1] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_rtokens)) != 0)) kw_args--;
+        if (likely((values[1] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_rtable)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("ov_coeff_join", 1, 3, 3, 1); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 14; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+          __Pyx_RaiseArgtupleInvalid("sample_cython", 0, 9, 11, 1); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 23; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
         }
         case  2:
-        if (likely((values[2] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_threshold)) != 0)) kw_args--;
+        if (likely((values[2] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_l_key_attr)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("ov_coeff_join", 1, 3, 3, 2); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 14; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+          __Pyx_RaiseArgtupleInvalid("sample_cython", 0, 9, 11, 2); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 23; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+        }
+        case  3:
+        if (likely((values[3] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_r_key_attr)) != 0)) kw_args--;
+        else {
+          __Pyx_RaiseArgtupleInvalid("sample_cython", 0, 9, 11, 3); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 23; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+        }
+        case  4:
+        if (likely((values[4] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_l_join_attr)) != 0)) kw_args--;
+        else {
+          __Pyx_RaiseArgtupleInvalid("sample_cython", 0, 9, 11, 4); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 23; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+        }
+        case  5:
+        if (likely((values[5] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_r_join_attr)) != 0)) kw_args--;
+        else {
+          __Pyx_RaiseArgtupleInvalid("sample_cython", 0, 9, 11, 5); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 23; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+        }
+        case  6:
+        if (likely((values[6] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_sample_size)) != 0)) kw_args--;
+        else {
+          __Pyx_RaiseArgtupleInvalid("sample_cython", 0, 9, 11, 6); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 23; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+        }
+        case  7:
+        if (likely((values[7] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_y_param)) != 0)) kw_args--;
+        else {
+          __Pyx_RaiseArgtupleInvalid("sample_cython", 0, 9, 11, 7); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 23; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+        }
+        case  8:
+        if (likely((values[8] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_seed)) != 0)) kw_args--;
+        else {
+          __Pyx_RaiseArgtupleInvalid("sample_cython", 0, 9, 11, 8); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 23; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+        }
+        case  9:
+        if (kw_args > 0) {
+          PyObject* value = PyDict_GetItem(__pyx_kwds, __pyx_n_s_l_out_prefix);
+          if (value) { values[9] = value; kw_args--; }
+        }
+        case 10:
+        if (kw_args > 0) {
+          PyObject* value = PyDict_GetItem(__pyx_kwds, __pyx_n_s_r_out_prefix);
+          if (value) { values[10] = value; kw_args--; }
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "ov_coeff_join") < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 14; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "sample_cython") < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 23; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
       }
-    } else if (PyTuple_GET_SIZE(__pyx_args) != 3) {
-      goto __pyx_L5_argtuple_error;
     } else {
-      values[0] = PyTuple_GET_ITEM(__pyx_args, 0);
-      values[1] = PyTuple_GET_ITEM(__pyx_args, 1);
-      values[2] = PyTuple_GET_ITEM(__pyx_args, 2);
+      switch (PyTuple_GET_SIZE(__pyx_args)) {
+        case 11: values[10] = PyTuple_GET_ITEM(__pyx_args, 10);
+        case 10: values[9] = PyTuple_GET_ITEM(__pyx_args, 9);
+        case  9: values[8] = PyTuple_GET_ITEM(__pyx_args, 8);
+        values[7] = PyTuple_GET_ITEM(__pyx_args, 7);
+        values[6] = PyTuple_GET_ITEM(__pyx_args, 6);
+        values[5] = PyTuple_GET_ITEM(__pyx_args, 5);
+        values[4] = PyTuple_GET_ITEM(__pyx_args, 4);
+        values[3] = PyTuple_GET_ITEM(__pyx_args, 3);
+        values[2] = PyTuple_GET_ITEM(__pyx_args, 2);
+        values[1] = PyTuple_GET_ITEM(__pyx_args, 1);
+        values[0] = PyTuple_GET_ITEM(__pyx_args, 0);
+        break;
+        default: goto __pyx_L5_argtuple_error;
+      }
     }
-    __pyx_v_ltokens = __pyx_convert_vector_from_py_std_3a__3a_vector_3c_int_3e___(values[0]); if (unlikely(PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 14; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
-    __pyx_v_rtokens = __pyx_convert_vector_from_py_std_3a__3a_vector_3c_int_3e___(values[1]); if (unlikely(PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 15; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
-    __pyx_v_threshold = __pyx_PyFloat_AsDouble(values[2]); if (unlikely((__pyx_v_threshold == (double)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 16; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+    __pyx_v_ltable = values[0];
+    __pyx_v_rtable = values[1];
+    __pyx_v_l_key_attr = values[2];
+    __pyx_v_r_key_attr = values[3];
+    __pyx_v_l_join_attr = values[4];
+    __pyx_v_r_join_attr = values[5];
+    __pyx_v_sample_size = values[6];
+    __pyx_v_y_param = values[7];
+    __pyx_v_seed = values[8];
+    __pyx_v_l_out_prefix = values[9];
+    __pyx_v_r_out_prefix = values[10];
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("ov_coeff_join", 1, 3, 3, PyTuple_GET_SIZE(__pyx_args)); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 14; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+  __Pyx_RaiseArgtupleInvalid("sample_cython", 0, 9, 11, PyTuple_GET_SIZE(__pyx_args)); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 23; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
   __pyx_L3_error:;
-  __Pyx_AddTraceback("py_stringsimjoin.apply_rf.overlap_coefficient_join.ov_coeff_join", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("py_stringsimjoin.sampler.sample.sample_cython", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  __pyx_r = __pyx_pf_16py_stringsimjoin_8apply_rf_24overlap_coefficient_join_ov_coeff_join(__pyx_self, __pyx_v_ltokens, __pyx_v_rtokens, __pyx_v_threshold);
+  __pyx_r = __pyx_pf_16py_stringsimjoin_7sampler_6sample_sample_cython(__pyx_self, __pyx_v_ltable, __pyx_v_rtable, __pyx_v_l_key_attr, __pyx_v_r_key_attr, __pyx_v_l_join_attr, __pyx_v_r_join_attr, __pyx_v_sample_size, __pyx_v_y_param, __pyx_v_seed, __pyx_v_l_out_prefix, __pyx_v_r_out_prefix);
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_16py_stringsimjoin_8apply_rf_24overlap_coefficient_join_ov_coeff_join(CYTHON_UNUSED PyObject *__pyx_self, std::vector<std::vector<int> >  __pyx_v_ltokens, std::vector<std::vector<int> >  __pyx_v_rtokens, double __pyx_v_threshold) {
+static PyObject *__pyx_pf_16py_stringsimjoin_7sampler_6sample_sample_cython(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_ltable, PyObject *__pyx_v_rtable, PyObject *__pyx_v_l_key_attr, PyObject *__pyx_v_r_key_attr, PyObject *__pyx_v_l_join_attr, PyObject *__pyx_v_r_join_attr, PyObject *__pyx_v_sample_size, PyObject *__pyx_v_y_param, PyObject *__pyx_v_seed, PyObject *__pyx_v_l_out_prefix, PyObject *__pyx_v_r_out_prefix) {
+  std::vector<std::pair<int,int> >  __pyx_v_sample;
+  std::vector<std::string>  __pyx_v_lstrings;
+  std::vector<std::string>  __pyx_v_rstrings;
+  std::vector<int>  __pyx_v_l_ids;
+  std::vector<int>  __pyx_v_r_ids;
+  PyObject *__pyx_v_output_rows = NULL;
+  std::pair<int,int>  __pyx_v_entry;
+  PyObject *__pyx_v_seed_pair_row = NULL;
+  PyObject *__pyx_v_output_header = NULL;
+  PyObject *__pyx_v_output_table = NULL;
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
+  int __pyx_t_2;
+  int __pyx_t_3;
+  std::vector<std::pair<int,int> > ::iterator __pyx_t_4;
+  std::pair<int,int>  __pyx_t_5;
+  PyObject *__pyx_t_6 = NULL;
+  PyObject *__pyx_t_7 = NULL;
+  int __pyx_t_8;
+  Py_ssize_t __pyx_t_9;
+  PyObject *(*__pyx_t_10)(PyObject *);
+  PyObject *__pyx_t_11 = NULL;
+  PyObject *__pyx_t_12 = NULL;
   int __pyx_lineno = 0;
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
-  __Pyx_RefNannySetupContext("ov_coeff_join", 0);
-  __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __pyx_convert_vector_to_py_std_3a__3a_pair_3c_int_2c_int_3e___(__pyx_f_16py_stringsimjoin_8apply_rf_24overlap_coefficient_join_ov_coeff_join(__pyx_v_ltokens, __pyx_v_rtokens, __pyx_v_threshold, 0)); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 14; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_RefNannySetupContext("sample_cython", 0);
+
+  /* "py_stringsimjoin/sampler/sample.pyx":29
+ *     cdef vector[string] lstrings, rstrings
+ *     cdef vector[int] l_ids, r_ids
+ *     convert_to_string_vector(ltable[l_join_attr], lstrings)             # <<<<<<<<<<<<<<
+ *     convert_to_string_vector(rtable[r_join_attr], rstrings)
+ *     convert_to_int_vector(ltable[l_key_attr], l_ids)
+ */
+  __pyx_t_1 = PyObject_GetItem(__pyx_v_ltable, __pyx_v_l_join_attr); if (unlikely(__pyx_t_1 == NULL)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 29; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_r = __pyx_t_1;
+  __pyx_f_16py_stringsimjoin_7sampler_6sample_convert_to_string_vector(__pyx_t_1, __pyx_v_lstrings);
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+
+  /* "py_stringsimjoin/sampler/sample.pyx":30
+ *     cdef vector[int] l_ids, r_ids
+ *     convert_to_string_vector(ltable[l_join_attr], lstrings)
+ *     convert_to_string_vector(rtable[r_join_attr], rstrings)             # <<<<<<<<<<<<<<
+ *     convert_to_int_vector(ltable[l_key_attr], l_ids)
+ *     convert_to_int_vector(rtable[r_key_attr], r_ids)
+ */
+  __pyx_t_1 = PyObject_GetItem(__pyx_v_rtable, __pyx_v_r_join_attr); if (unlikely(__pyx_t_1 == NULL)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 30; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
+  __Pyx_GOTREF(__pyx_t_1);
+  __pyx_f_16py_stringsimjoin_7sampler_6sample_convert_to_string_vector(__pyx_t_1, __pyx_v_rstrings);
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+
+  /* "py_stringsimjoin/sampler/sample.pyx":31
+ *     convert_to_string_vector(ltable[l_join_attr], lstrings)
+ *     convert_to_string_vector(rtable[r_join_attr], rstrings)
+ *     convert_to_int_vector(ltable[l_key_attr], l_ids)             # <<<<<<<<<<<<<<
+ *     convert_to_int_vector(rtable[r_key_attr], r_ids)
+ * 
+ */
+  __pyx_t_1 = PyObject_GetItem(__pyx_v_ltable, __pyx_v_l_key_attr); if (unlikely(__pyx_t_1 == NULL)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 31; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
+  __Pyx_GOTREF(__pyx_t_1);
+  __pyx_f_16py_stringsimjoin_7sampler_6sample_convert_to_int_vector(__pyx_t_1, __pyx_v_l_ids);
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+
+  /* "py_stringsimjoin/sampler/sample.pyx":32
+ *     convert_to_string_vector(rtable[r_join_attr], rstrings)
+ *     convert_to_int_vector(ltable[l_key_attr], l_ids)
+ *     convert_to_int_vector(rtable[r_key_attr], r_ids)             # <<<<<<<<<<<<<<
+ * 
+ *     sample_pairs(lstrings, rstrings, sample_size, y_param, sample)
+ */
+  __pyx_t_1 = PyObject_GetItem(__pyx_v_rtable, __pyx_v_r_key_attr); if (unlikely(__pyx_t_1 == NULL)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 32; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
+  __Pyx_GOTREF(__pyx_t_1);
+  __pyx_f_16py_stringsimjoin_7sampler_6sample_convert_to_int_vector(__pyx_t_1, __pyx_v_r_ids);
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+
+  /* "py_stringsimjoin/sampler/sample.pyx":34
+ *     convert_to_int_vector(rtable[r_key_attr], r_ids)
+ * 
+ *     sample_pairs(lstrings, rstrings, sample_size, y_param, sample)             # <<<<<<<<<<<<<<
+ * 
+ *     output_rows = []
+ */
+  __pyx_t_2 = __Pyx_PyInt_As_int(__pyx_v_sample_size); if (unlikely((__pyx_t_2 == (int)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 34; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_3 = __Pyx_PyInt_As_int(__pyx_v_y_param); if (unlikely((__pyx_t_3 == (int)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 34; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_f_16py_stringsimjoin_7sampler_6sample_sample_pairs(__pyx_v_lstrings, __pyx_v_rstrings, __pyx_t_2, __pyx_t_3, __pyx_v_sample);
+
+  /* "py_stringsimjoin/sampler/sample.pyx":36
+ *     sample_pairs(lstrings, rstrings, sample_size, y_param, sample)
+ * 
+ *     output_rows = []             # <<<<<<<<<<<<<<
+ *     cdef pair[int, int] entry
+ *     for entry in sample:
+ */
+  __pyx_t_1 = PyList_New(0); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 36; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_1);
+  __pyx_v_output_rows = ((PyObject*)__pyx_t_1);
   __pyx_t_1 = 0;
+
+  /* "py_stringsimjoin/sampler/sample.pyx":38
+ *     output_rows = []
+ *     cdef pair[int, int] entry
+ *     for entry in sample:             # <<<<<<<<<<<<<<
+ *         output_rows.append([l_ids[entry.first], r_ids[entry.second]])
+ * 
+ */
+  __pyx_t_4 = __pyx_v_sample.begin();
+  for (;;) {
+    if (!(__pyx_t_4 != __pyx_v_sample.end())) break;
+    __pyx_t_5 = *__pyx_t_4;
+    ++__pyx_t_4;
+    __pyx_v_entry = __pyx_t_5;
+
+    /* "py_stringsimjoin/sampler/sample.pyx":39
+ *     cdef pair[int, int] entry
+ *     for entry in sample:
+ *         output_rows.append([l_ids[entry.first], r_ids[entry.second]])             # <<<<<<<<<<<<<<
+ * 
+ *     for seed_pair_row in seed.itertuples(index=False):
+ */
+    __pyx_t_1 = __Pyx_PyInt_From_int((__pyx_v_l_ids[__pyx_v_entry.first])); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 39; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __Pyx_GOTREF(__pyx_t_1);
+    __pyx_t_6 = __Pyx_PyInt_From_int((__pyx_v_r_ids[__pyx_v_entry.second])); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 39; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __Pyx_GOTREF(__pyx_t_6);
+    __pyx_t_7 = PyList_New(2); if (unlikely(!__pyx_t_7)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 39; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __Pyx_GOTREF(__pyx_t_7);
+    __Pyx_GIVEREF(__pyx_t_1);
+    PyList_SET_ITEM(__pyx_t_7, 0, __pyx_t_1);
+    __Pyx_GIVEREF(__pyx_t_6);
+    PyList_SET_ITEM(__pyx_t_7, 1, __pyx_t_6);
+    __pyx_t_1 = 0;
+    __pyx_t_6 = 0;
+    __pyx_t_8 = __Pyx_PyList_Append(__pyx_v_output_rows, __pyx_t_7); if (unlikely(__pyx_t_8 == -1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 39; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
+
+    /* "py_stringsimjoin/sampler/sample.pyx":38
+ *     output_rows = []
+ *     cdef pair[int, int] entry
+ *     for entry in sample:             # <<<<<<<<<<<<<<
+ *         output_rows.append([l_ids[entry.first], r_ids[entry.second]])
+ * 
+ */
+  }
+
+  /* "py_stringsimjoin/sampler/sample.pyx":41
+ *         output_rows.append([l_ids[entry.first], r_ids[entry.second]])
+ * 
+ *     for seed_pair_row in seed.itertuples(index=False):             # <<<<<<<<<<<<<<
+ *         output_rows.append([seed_pair_row[0], seed_pair_row[1]])
+ * 
+ */
+  __pyx_t_7 = __Pyx_PyObject_GetAttrStr(__pyx_v_seed, __pyx_n_s_itertuples); if (unlikely(!__pyx_t_7)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 41; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_7);
+  __pyx_t_6 = PyDict_New(); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 41; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_6);
+  if (PyDict_SetItem(__pyx_t_6, __pyx_n_s_index, Py_False) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 41; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_7, __pyx_empty_tuple, __pyx_t_6); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 41; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_1);
+  __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
+  __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
+  if (likely(PyList_CheckExact(__pyx_t_1)) || PyTuple_CheckExact(__pyx_t_1)) {
+    __pyx_t_6 = __pyx_t_1; __Pyx_INCREF(__pyx_t_6); __pyx_t_9 = 0;
+    __pyx_t_10 = NULL;
+  } else {
+    __pyx_t_9 = -1; __pyx_t_6 = PyObject_GetIter(__pyx_t_1); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 41; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __Pyx_GOTREF(__pyx_t_6);
+    __pyx_t_10 = Py_TYPE(__pyx_t_6)->tp_iternext; if (unlikely(!__pyx_t_10)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 41; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  }
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  for (;;) {
+    if (likely(!__pyx_t_10)) {
+      if (likely(PyList_CheckExact(__pyx_t_6))) {
+        if (__pyx_t_9 >= PyList_GET_SIZE(__pyx_t_6)) break;
+        #if CYTHON_COMPILING_IN_CPYTHON
+        __pyx_t_1 = PyList_GET_ITEM(__pyx_t_6, __pyx_t_9); __Pyx_INCREF(__pyx_t_1); __pyx_t_9++; if (unlikely(0 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 41; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        #else
+        __pyx_t_1 = PySequence_ITEM(__pyx_t_6, __pyx_t_9); __pyx_t_9++; if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 41; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        __Pyx_GOTREF(__pyx_t_1);
+        #endif
+      } else {
+        if (__pyx_t_9 >= PyTuple_GET_SIZE(__pyx_t_6)) break;
+        #if CYTHON_COMPILING_IN_CPYTHON
+        __pyx_t_1 = PyTuple_GET_ITEM(__pyx_t_6, __pyx_t_9); __Pyx_INCREF(__pyx_t_1); __pyx_t_9++; if (unlikely(0 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 41; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        #else
+        __pyx_t_1 = PySequence_ITEM(__pyx_t_6, __pyx_t_9); __pyx_t_9++; if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 41; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        __Pyx_GOTREF(__pyx_t_1);
+        #endif
+      }
+    } else {
+      __pyx_t_1 = __pyx_t_10(__pyx_t_6);
+      if (unlikely(!__pyx_t_1)) {
+        PyObject* exc_type = PyErr_Occurred();
+        if (exc_type) {
+          if (likely(exc_type == PyExc_StopIteration || PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) PyErr_Clear();
+          else {__pyx_filename = __pyx_f[0]; __pyx_lineno = 41; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        }
+        break;
+      }
+      __Pyx_GOTREF(__pyx_t_1);
+    }
+    __Pyx_XDECREF_SET(__pyx_v_seed_pair_row, __pyx_t_1);
+    __pyx_t_1 = 0;
+
+    /* "py_stringsimjoin/sampler/sample.pyx":42
+ * 
+ *     for seed_pair_row in seed.itertuples(index=False):
+ *         output_rows.append([seed_pair_row[0], seed_pair_row[1]])             # <<<<<<<<<<<<<<
+ * 
+ *     output_header = get_output_header_from_tables(l_key_attr, r_key_attr,
+ */
+    __pyx_t_1 = __Pyx_GetItemInt(__pyx_v_seed_pair_row, 0, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(__pyx_t_1 == NULL)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 42; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
+    __Pyx_GOTREF(__pyx_t_1);
+    __pyx_t_7 = __Pyx_GetItemInt(__pyx_v_seed_pair_row, 1, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(__pyx_t_7 == NULL)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 42; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
+    __Pyx_GOTREF(__pyx_t_7);
+    __pyx_t_11 = PyList_New(2); if (unlikely(!__pyx_t_11)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 42; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __Pyx_GOTREF(__pyx_t_11);
+    __Pyx_GIVEREF(__pyx_t_1);
+    PyList_SET_ITEM(__pyx_t_11, 0, __pyx_t_1);
+    __Pyx_GIVEREF(__pyx_t_7);
+    PyList_SET_ITEM(__pyx_t_11, 1, __pyx_t_7);
+    __pyx_t_1 = 0;
+    __pyx_t_7 = 0;
+    __pyx_t_8 = __Pyx_PyList_Append(__pyx_v_output_rows, __pyx_t_11); if (unlikely(__pyx_t_8 == -1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 42; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __Pyx_DECREF(__pyx_t_11); __pyx_t_11 = 0;
+
+    /* "py_stringsimjoin/sampler/sample.pyx":41
+ *         output_rows.append([l_ids[entry.first], r_ids[entry.second]])
+ * 
+ *     for seed_pair_row in seed.itertuples(index=False):             # <<<<<<<<<<<<<<
+ *         output_rows.append([seed_pair_row[0], seed_pair_row[1]])
+ * 
+ */
+  }
+  __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
+
+  /* "py_stringsimjoin/sampler/sample.pyx":44
+ *         output_rows.append([seed_pair_row[0], seed_pair_row[1]])
+ * 
+ *     output_header = get_output_header_from_tables(l_key_attr, r_key_attr,             # <<<<<<<<<<<<<<
+ *                                                   None, None,
+ *                                                   l_out_prefix, r_out_prefix)
+ */
+  __pyx_t_11 = __Pyx_GetModuleGlobalName(__pyx_n_s_get_output_header_from_tables); if (unlikely(!__pyx_t_11)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 44; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_11);
+
+  /* "py_stringsimjoin/sampler/sample.pyx":46
+ *     output_header = get_output_header_from_tables(l_key_attr, r_key_attr,
+ *                                                   None, None,
+ *                                                   l_out_prefix, r_out_prefix)             # <<<<<<<<<<<<<<
+ * 
+ *     output_table = pd.DataFrame(output_rows, columns=output_header)
+ */
+  __pyx_t_7 = NULL;
+  __pyx_t_9 = 0;
+  if (CYTHON_COMPILING_IN_CPYTHON && unlikely(PyMethod_Check(__pyx_t_11))) {
+    __pyx_t_7 = PyMethod_GET_SELF(__pyx_t_11);
+    if (likely(__pyx_t_7)) {
+      PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_11);
+      __Pyx_INCREF(__pyx_t_7);
+      __Pyx_INCREF(function);
+      __Pyx_DECREF_SET(__pyx_t_11, function);
+      __pyx_t_9 = 1;
+    }
+  }
+  __pyx_t_1 = PyTuple_New(6+__pyx_t_9); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 44; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_1);
+  if (__pyx_t_7) {
+    __Pyx_GIVEREF(__pyx_t_7); PyTuple_SET_ITEM(__pyx_t_1, 0, __pyx_t_7); __pyx_t_7 = NULL;
+  }
+  __Pyx_INCREF(__pyx_v_l_key_attr);
+  __Pyx_GIVEREF(__pyx_v_l_key_attr);
+  PyTuple_SET_ITEM(__pyx_t_1, 0+__pyx_t_9, __pyx_v_l_key_attr);
+  __Pyx_INCREF(__pyx_v_r_key_attr);
+  __Pyx_GIVEREF(__pyx_v_r_key_attr);
+  PyTuple_SET_ITEM(__pyx_t_1, 1+__pyx_t_9, __pyx_v_r_key_attr);
+  __Pyx_INCREF(Py_None);
+  __Pyx_GIVEREF(Py_None);
+  PyTuple_SET_ITEM(__pyx_t_1, 2+__pyx_t_9, Py_None);
+  __Pyx_INCREF(Py_None);
+  __Pyx_GIVEREF(Py_None);
+  PyTuple_SET_ITEM(__pyx_t_1, 3+__pyx_t_9, Py_None);
+  __Pyx_INCREF(__pyx_v_l_out_prefix);
+  __Pyx_GIVEREF(__pyx_v_l_out_prefix);
+  PyTuple_SET_ITEM(__pyx_t_1, 4+__pyx_t_9, __pyx_v_l_out_prefix);
+  __Pyx_INCREF(__pyx_v_r_out_prefix);
+  __Pyx_GIVEREF(__pyx_v_r_out_prefix);
+  PyTuple_SET_ITEM(__pyx_t_1, 5+__pyx_t_9, __pyx_v_r_out_prefix);
+  __pyx_t_6 = __Pyx_PyObject_Call(__pyx_t_11, __pyx_t_1, NULL); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 44; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_6);
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  __Pyx_DECREF(__pyx_t_11); __pyx_t_11 = 0;
+  __pyx_v_output_header = __pyx_t_6;
+  __pyx_t_6 = 0;
+
+  /* "py_stringsimjoin/sampler/sample.pyx":48
+ *                                                   l_out_prefix, r_out_prefix)
+ * 
+ *     output_table = pd.DataFrame(output_rows, columns=output_header)             # <<<<<<<<<<<<<<
+ * 
+ *     # add an id column named '_id' to the output table.
+ */
+  __pyx_t_6 = __Pyx_GetModuleGlobalName(__pyx_n_s_pd); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 48; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_6);
+  __pyx_t_11 = __Pyx_PyObject_GetAttrStr(__pyx_t_6, __pyx_n_s_DataFrame); if (unlikely(!__pyx_t_11)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 48; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_11);
+  __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
+  __pyx_t_6 = PyTuple_New(1); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 48; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_6);
+  __Pyx_INCREF(__pyx_v_output_rows);
+  __Pyx_GIVEREF(__pyx_v_output_rows);
+  PyTuple_SET_ITEM(__pyx_t_6, 0, __pyx_v_output_rows);
+  __pyx_t_1 = PyDict_New(); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 48; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_1);
+  if (PyDict_SetItem(__pyx_t_1, __pyx_n_s_columns, __pyx_v_output_header) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 48; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_7 = __Pyx_PyObject_Call(__pyx_t_11, __pyx_t_6, __pyx_t_1); if (unlikely(!__pyx_t_7)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 48; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_7);
+  __Pyx_DECREF(__pyx_t_11); __pyx_t_11 = 0;
+  __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  __pyx_v_output_table = __pyx_t_7;
+  __pyx_t_7 = 0;
+
+  /* "py_stringsimjoin/sampler/sample.pyx":51
+ * 
+ *     # add an id column named '_id' to the output table.
+ *     output_table.insert(0, '_id', range(0, len(output_table)))             # <<<<<<<<<<<<<<
+ * 
+ *     return output_table
+ */
+  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_output_table, __pyx_n_s_insert); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 51; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_1);
+  __pyx_t_9 = PyObject_Length(__pyx_v_output_table); if (unlikely(__pyx_t_9 == -1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 51; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_6 = PyInt_FromSsize_t(__pyx_t_9); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 51; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_6);
+  __pyx_t_11 = PyTuple_New(2); if (unlikely(!__pyx_t_11)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 51; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_11);
+  __Pyx_INCREF(__pyx_int_0);
+  __Pyx_GIVEREF(__pyx_int_0);
+  PyTuple_SET_ITEM(__pyx_t_11, 0, __pyx_int_0);
+  __Pyx_GIVEREF(__pyx_t_6);
+  PyTuple_SET_ITEM(__pyx_t_11, 1, __pyx_t_6);
+  __pyx_t_6 = 0;
+  __pyx_t_6 = __Pyx_PyObject_Call(__pyx_builtin_range, __pyx_t_11, NULL); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 51; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_6);
+  __Pyx_DECREF(__pyx_t_11); __pyx_t_11 = 0;
+  __pyx_t_11 = NULL;
+  __pyx_t_9 = 0;
+  if (CYTHON_COMPILING_IN_CPYTHON && likely(PyMethod_Check(__pyx_t_1))) {
+    __pyx_t_11 = PyMethod_GET_SELF(__pyx_t_1);
+    if (likely(__pyx_t_11)) {
+      PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_1);
+      __Pyx_INCREF(__pyx_t_11);
+      __Pyx_INCREF(function);
+      __Pyx_DECREF_SET(__pyx_t_1, function);
+      __pyx_t_9 = 1;
+    }
+  }
+  __pyx_t_12 = PyTuple_New(3+__pyx_t_9); if (unlikely(!__pyx_t_12)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 51; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_12);
+  if (__pyx_t_11) {
+    __Pyx_GIVEREF(__pyx_t_11); PyTuple_SET_ITEM(__pyx_t_12, 0, __pyx_t_11); __pyx_t_11 = NULL;
+  }
+  __Pyx_INCREF(__pyx_int_0);
+  __Pyx_GIVEREF(__pyx_int_0);
+  PyTuple_SET_ITEM(__pyx_t_12, 0+__pyx_t_9, __pyx_int_0);
+  __Pyx_INCREF(__pyx_n_s_id);
+  __Pyx_GIVEREF(__pyx_n_s_id);
+  PyTuple_SET_ITEM(__pyx_t_12, 1+__pyx_t_9, __pyx_n_s_id);
+  __Pyx_GIVEREF(__pyx_t_6);
+  PyTuple_SET_ITEM(__pyx_t_12, 2+__pyx_t_9, __pyx_t_6);
+  __pyx_t_6 = 0;
+  __pyx_t_7 = __Pyx_PyObject_Call(__pyx_t_1, __pyx_t_12, NULL); if (unlikely(!__pyx_t_7)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 51; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_7);
+  __Pyx_DECREF(__pyx_t_12); __pyx_t_12 = 0;
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
+
+  /* "py_stringsimjoin/sampler/sample.pyx":53
+ *     output_table.insert(0, '_id', range(0, len(output_table)))
+ * 
+ *     return output_table             # <<<<<<<<<<<<<<
+ * 
+ * cdef void convert_to_string_vector(string_col, vector[string]& string_vector):
+ */
+  __Pyx_XDECREF(__pyx_r);
+  __Pyx_INCREF(__pyx_v_output_table);
+  __pyx_r = __pyx_v_output_table;
   goto __pyx_L0;
+
+  /* "py_stringsimjoin/sampler/sample.pyx":23
+ * from py_stringsimjoin.apply_rf.tokenizers cimport tokenize_without_materializing
+ * 
+ * def sample_cython(ltable, rtable, l_key_attr, r_key_attr,             # <<<<<<<<<<<<<<
+ *                  l_join_attr, r_join_attr, sample_size, y_param, seed, l_out_prefix='l_', r_out_prefix='r_'):
+ * 
+ */
 
   /* function exit code */
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
-  __Pyx_AddTraceback("py_stringsimjoin.apply_rf.overlap_coefficient_join.ov_coeff_join", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_XDECREF(__pyx_t_6);
+  __Pyx_XDECREF(__pyx_t_7);
+  __Pyx_XDECREF(__pyx_t_11);
+  __Pyx_XDECREF(__pyx_t_12);
+  __Pyx_AddTraceback("py_stringsimjoin.sampler.sample.sample_cython", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
+  __Pyx_XDECREF(__pyx_v_output_rows);
+  __Pyx_XDECREF(__pyx_v_seed_pair_row);
+  __Pyx_XDECREF(__pyx_v_output_header);
+  __Pyx_XDECREF(__pyx_v_output_table);
   __Pyx_XGIVEREF(__pyx_r);
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-/* "py_stringsimjoin/apply_rf/overlap_coefficient_join.pyx":43
- *     return final_output_pairs
+/* "py_stringsimjoin/sampler/sample.pyx":55
+ *     return output_table
  * 
- * cdef inline int int_min(int a, int b) nogil: return a if a <= b else b             # <<<<<<<<<<<<<<
- * 
- * cdef void ov_coeff_join_part(pair[int, int] partition,
+ * cdef void convert_to_string_vector(string_col, vector[string]& string_vector):             # <<<<<<<<<<<<<<
+ *     for val in string_col:
+ *         string_vector.push_back(val)
  */
 
-static CYTHON_INLINE int __pyx_f_16py_stringsimjoin_8apply_rf_24overlap_coefficient_join_int_min(int __pyx_v_a, int __pyx_v_b) {
-  int __pyx_r;
-  int __pyx_t_1;
-  if (((__pyx_v_a <= __pyx_v_b) != 0)) {
-    __pyx_t_1 = __pyx_v_a;
-  } else {
-    __pyx_t_1 = __pyx_v_b;
-  }
-  __pyx_r = __pyx_t_1;
-  goto __pyx_L0;
-
-  /* function exit code */
-  __pyx_L0:;
-  return __pyx_r;
-}
-
-/* "py_stringsimjoin/apply_rf/overlap_coefficient_join.pyx":45
- * cdef inline int int_min(int a, int b) nogil: return a if a <= b else b
- * 
- * cdef void ov_coeff_join_part(pair[int, int] partition,             # <<<<<<<<<<<<<<
- *                              vector[vector[int]]& ltokens,
- *                              vector[vector[int]]& rtokens,
- */
-
-static void __pyx_f_16py_stringsimjoin_8apply_rf_24overlap_coefficient_join_ov_coeff_join_part(std::pair<int,int>  __pyx_v_partition, CYTHON_UNUSED std::vector<std::vector<int> >  &__pyx_v_ltokens, std::vector<std::vector<int> >  &__pyx_v_rtokens, double __pyx_v_threshold, InvertedIndex &__pyx_v_index, std::vector<std::pair<int,int> >  &__pyx_v_output_pairs) {
-  std::map<int,int>  __pyx_v_candidate_overlap;
-  std::vector<int>  __pyx_v_candidates;
-  std::vector<int>  __pyx_v_tokens;
-  std::pair<int,int>  __pyx_v_entry;
-  int __pyx_v_j;
-  int __pyx_v_m;
-  int __pyx_v_i;
-  int __pyx_v_cand;
-  double __pyx_v_sim_score;
-  int __pyx_t_1;
-  int __pyx_t_2;
-  int __pyx_t_3;
-  int __pyx_t_4;
-  std::vector<int> ::iterator __pyx_t_5;
-  int __pyx_t_6;
-  std::map<int,int> ::iterator __pyx_t_7;
-  std::pair<int,int>  __pyx_t_8;
-  double __pyx_t_9;
-  int __pyx_t_10;
-  std::pair<int,int>  __pyx_t_11;
+static void __pyx_f_16py_stringsimjoin_7sampler_6sample_convert_to_string_vector(PyObject *__pyx_v_string_col, std::vector<std::string>  &__pyx_v_string_vector) {
+  PyObject *__pyx_v_val = NULL;
+  __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
+  Py_ssize_t __pyx_t_2;
+  PyObject *(*__pyx_t_3)(PyObject *);
+  PyObject *__pyx_t_4 = NULL;
+  std::string __pyx_t_5;
   int __pyx_lineno = 0;
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
+  __Pyx_RefNannySetupContext("convert_to_string_vector", 0);
 
-  /* "py_stringsimjoin/apply_rf/overlap_coefficient_join.pyx":54
- *     cdef vector[int] tokens
- *     cdef pair[int, int] entry
- *     cdef int j=0, m, i, cand             # <<<<<<<<<<<<<<
- *     cdef double sim_score
+  /* "py_stringsimjoin/sampler/sample.pyx":56
+ * 
+ * cdef void convert_to_string_vector(string_col, vector[string]& string_vector):
+ *     for val in string_col:             # <<<<<<<<<<<<<<
+ *         string_vector.push_back(val)
  * 
  */
-  __pyx_v_j = 0;
-
-  /* "py_stringsimjoin/apply_rf/overlap_coefficient_join.pyx":57
- *     cdef double sim_score
- * 
- *     for i in range(partition.first, partition.second):             # <<<<<<<<<<<<<<
- *         tokens = rtokens[i]
- *         m = tokens.size()
- */
-  __pyx_t_1 = __pyx_v_partition.second;
-  for (__pyx_t_2 = __pyx_v_partition.first; __pyx_t_2 < __pyx_t_1; __pyx_t_2+=1) {
-    __pyx_v_i = __pyx_t_2;
-
-    /* "py_stringsimjoin/apply_rf/overlap_coefficient_join.pyx":58
- * 
- *     for i in range(partition.first, partition.second):
- *         tokens = rtokens[i]             # <<<<<<<<<<<<<<
- *         m = tokens.size()
- * 
- */
-    __pyx_v_tokens = (__pyx_v_rtokens[__pyx_v_i]);
-
-    /* "py_stringsimjoin/apply_rf/overlap_coefficient_join.pyx":59
- *     for i in range(partition.first, partition.second):
- *         tokens = rtokens[i]
- *         m = tokens.size()             # <<<<<<<<<<<<<<
- * 
- *         for j in range(m):
- */
-    __pyx_v_m = __pyx_v_tokens.size();
-
-    /* "py_stringsimjoin/apply_rf/overlap_coefficient_join.pyx":61
- *         m = tokens.size()
- * 
- *         for j in range(m):             # <<<<<<<<<<<<<<
- *             candidates = index.index[tokens[j]]
- *             for cand in candidates:
- */
-    __pyx_t_3 = __pyx_v_m;
-    for (__pyx_t_4 = 0; __pyx_t_4 < __pyx_t_3; __pyx_t_4+=1) {
-      __pyx_v_j = __pyx_t_4;
-
-      /* "py_stringsimjoin/apply_rf/overlap_coefficient_join.pyx":62
- * 
- *         for j in range(m):
- *             candidates = index.index[tokens[j]]             # <<<<<<<<<<<<<<
- *             for cand in candidates:
- *                 candidate_overlap[cand] += 1
- */
-      __pyx_v_candidates = (__pyx_v_index.index[(__pyx_v_tokens[__pyx_v_j])]);
-
-      /* "py_stringsimjoin/apply_rf/overlap_coefficient_join.pyx":63
- *         for j in range(m):
- *             candidates = index.index[tokens[j]]
- *             for cand in candidates:             # <<<<<<<<<<<<<<
- *                 candidate_overlap[cand] += 1
- * 
- */
-      __pyx_t_5 = __pyx_v_candidates.begin();
-      for (;;) {
-        if (!(__pyx_t_5 != __pyx_v_candidates.end())) break;
-        __pyx_t_6 = *__pyx_t_5;
-        ++__pyx_t_5;
-        __pyx_v_cand = __pyx_t_6;
-
-        /* "py_stringsimjoin/apply_rf/overlap_coefficient_join.pyx":64
- *             candidates = index.index[tokens[j]]
- *             for cand in candidates:
- *                 candidate_overlap[cand] += 1             # <<<<<<<<<<<<<<
- * 
- * #        print i, candidate_overlap.size()
- */
-        __pyx_t_6 = __pyx_v_cand;
-        (__pyx_v_candidate_overlap[__pyx_t_6]) = ((__pyx_v_candidate_overlap[__pyx_t_6]) + 1);
-
-        /* "py_stringsimjoin/apply_rf/overlap_coefficient_join.pyx":63
- *         for j in range(m):
- *             candidates = index.index[tokens[j]]
- *             for cand in candidates:             # <<<<<<<<<<<<<<
- *                 candidate_overlap[cand] += 1
- * 
- */
-      }
-    }
-
-    /* "py_stringsimjoin/apply_rf/overlap_coefficient_join.pyx":67
- * 
- * #        print i, candidate_overlap.size()
- *         for entry in candidate_overlap:             # <<<<<<<<<<<<<<
- *             sim_score = <double>entry.second / <double>int_min(m, index.size_vector[entry.first])
- *             #print ltokens[entry.first], rtokens[i], entry.second, sim_score
- */
-    __pyx_t_7 = __pyx_v_candidate_overlap.begin();
-    for (;;) {
-      if (!(__pyx_t_7 != __pyx_v_candidate_overlap.end())) break;
-      __pyx_t_8 = *__pyx_t_7;
-      ++__pyx_t_7;
-      __pyx_v_entry = __pyx_t_8;
-
-      /* "py_stringsimjoin/apply_rf/overlap_coefficient_join.pyx":68
- * #        print i, candidate_overlap.size()
- *         for entry in candidate_overlap:
- *             sim_score = <double>entry.second / <double>int_min(m, index.size_vector[entry.first])             # <<<<<<<<<<<<<<
- *             #print ltokens[entry.first], rtokens[i], entry.second, sim_score
- *             if sim_score > threshold:
- */
-      __pyx_t_9 = ((double)__pyx_f_16py_stringsimjoin_8apply_rf_24overlap_coefficient_join_int_min(__pyx_v_m, (__pyx_v_index.size_vector[__pyx_v_entry.first])));
-      if (unlikely(__pyx_t_9 == 0)) {
-        #ifdef WITH_THREAD
-        PyGILState_STATE __pyx_gilstate_save = PyGILState_Ensure();
-        #endif
-        PyErr_SetString(PyExc_ZeroDivisionError, "float division");
-        #ifdef WITH_THREAD
-        PyGILState_Release(__pyx_gilstate_save);
-        #endif
-        {__pyx_filename = __pyx_f[0]; __pyx_lineno = 68; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-      }
-      __pyx_v_sim_score = (((double)__pyx_v_entry.second) / __pyx_t_9);
-
-      /* "py_stringsimjoin/apply_rf/overlap_coefficient_join.pyx":70
- *             sim_score = <double>entry.second / <double>int_min(m, index.size_vector[entry.first])
- *             #print ltokens[entry.first], rtokens[i], entry.second, sim_score
- *             if sim_score > threshold:             # <<<<<<<<<<<<<<
- *                 output_pairs.push_back(pair[int, int](entry.first, i))
- * 
- */
-      __pyx_t_10 = ((__pyx_v_sim_score > __pyx_v_threshold) != 0);
-      if (__pyx_t_10) {
-
-        /* "py_stringsimjoin/apply_rf/overlap_coefficient_join.pyx":71
- *             #print ltokens[entry.first], rtokens[i], entry.second, sim_score
- *             if sim_score > threshold:
- *                 output_pairs.push_back(pair[int, int](entry.first, i))             # <<<<<<<<<<<<<<
- * 
- * 
- */
-        try {
-          __pyx_t_11 = std::pair<int,int> (__pyx_v_entry.first, __pyx_v_i);
-        } catch(...) {
-          #ifdef WITH_THREAD
-          PyGILState_STATE __pyx_gilstate_save = PyGILState_Ensure();
-          #endif
-          __Pyx_CppExn2PyErr();
-          #ifdef WITH_THREAD
-          PyGILState_Release(__pyx_gilstate_save);
-          #endif
-          {__pyx_filename = __pyx_f[0]; __pyx_lineno = 71; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-        }
-        try {
-          __pyx_v_output_pairs.push_back(__pyx_t_11);
-        } catch(...) {
-          #ifdef WITH_THREAD
-          PyGILState_STATE __pyx_gilstate_save = PyGILState_Ensure();
-          #endif
-          __Pyx_CppExn2PyErr();
-          #ifdef WITH_THREAD
-          PyGILState_Release(__pyx_gilstate_save);
-          #endif
-          {__pyx_filename = __pyx_f[0]; __pyx_lineno = 71; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-        }
-
-        /* "py_stringsimjoin/apply_rf/overlap_coefficient_join.pyx":70
- *             sim_score = <double>entry.second / <double>int_min(m, index.size_vector[entry.first])
- *             #print ltokens[entry.first], rtokens[i], entry.second, sim_score
- *             if sim_score > threshold:             # <<<<<<<<<<<<<<
- *                 output_pairs.push_back(pair[int, int](entry.first, i))
- * 
- */
-      }
-
-      /* "py_stringsimjoin/apply_rf/overlap_coefficient_join.pyx":67
- * 
- * #        print i, candidate_overlap.size()
- *         for entry in candidate_overlap:             # <<<<<<<<<<<<<<
- *             sim_score = <double>entry.second / <double>int_min(m, index.size_vector[entry.first])
- *             #print ltokens[entry.first], rtokens[i], entry.second, sim_score
- */
-    }
+  if (likely(PyList_CheckExact(__pyx_v_string_col)) || PyTuple_CheckExact(__pyx_v_string_col)) {
+    __pyx_t_1 = __pyx_v_string_col; __Pyx_INCREF(__pyx_t_1); __pyx_t_2 = 0;
+    __pyx_t_3 = NULL;
+  } else {
+    __pyx_t_2 = -1; __pyx_t_1 = PyObject_GetIter(__pyx_v_string_col); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 56; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __Pyx_GOTREF(__pyx_t_1);
+    __pyx_t_3 = Py_TYPE(__pyx_t_1)->tp_iternext; if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 56; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   }
+  for (;;) {
+    if (likely(!__pyx_t_3)) {
+      if (likely(PyList_CheckExact(__pyx_t_1))) {
+        if (__pyx_t_2 >= PyList_GET_SIZE(__pyx_t_1)) break;
+        #if CYTHON_COMPILING_IN_CPYTHON
+        __pyx_t_4 = PyList_GET_ITEM(__pyx_t_1, __pyx_t_2); __Pyx_INCREF(__pyx_t_4); __pyx_t_2++; if (unlikely(0 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 56; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        #else
+        __pyx_t_4 = PySequence_ITEM(__pyx_t_1, __pyx_t_2); __pyx_t_2++; if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 56; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        __Pyx_GOTREF(__pyx_t_4);
+        #endif
+      } else {
+        if (__pyx_t_2 >= PyTuple_GET_SIZE(__pyx_t_1)) break;
+        #if CYTHON_COMPILING_IN_CPYTHON
+        __pyx_t_4 = PyTuple_GET_ITEM(__pyx_t_1, __pyx_t_2); __Pyx_INCREF(__pyx_t_4); __pyx_t_2++; if (unlikely(0 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 56; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        #else
+        __pyx_t_4 = PySequence_ITEM(__pyx_t_1, __pyx_t_2); __pyx_t_2++; if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 56; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        __Pyx_GOTREF(__pyx_t_4);
+        #endif
+      }
+    } else {
+      __pyx_t_4 = __pyx_t_3(__pyx_t_1);
+      if (unlikely(!__pyx_t_4)) {
+        PyObject* exc_type = PyErr_Occurred();
+        if (exc_type) {
+          if (likely(exc_type == PyExc_StopIteration || PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) PyErr_Clear();
+          else {__pyx_filename = __pyx_f[0]; __pyx_lineno = 56; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        }
+        break;
+      }
+      __Pyx_GOTREF(__pyx_t_4);
+    }
+    __Pyx_XDECREF_SET(__pyx_v_val, __pyx_t_4);
+    __pyx_t_4 = 0;
 
-  /* "py_stringsimjoin/apply_rf/overlap_coefficient_join.pyx":45
- * cdef inline int int_min(int a, int b) nogil: return a if a <= b else b
+    /* "py_stringsimjoin/sampler/sample.pyx":57
+ * cdef void convert_to_string_vector(string_col, vector[string]& string_vector):
+ *     for val in string_col:
+ *         string_vector.push_back(val)             # <<<<<<<<<<<<<<
  * 
- * cdef void ov_coeff_join_part(pair[int, int] partition,             # <<<<<<<<<<<<<<
- *                              vector[vector[int]]& ltokens,
- *                              vector[vector[int]]& rtokens,
+ * cdef void convert_to_int_vector(int_col, vector[int]& int_vector):
+ */
+    __pyx_t_5 = __pyx_convert_string_from_py_std__in_string(__pyx_v_val); if (unlikely(PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 57; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    try {
+      __pyx_v_string_vector.push_back(__pyx_t_5);
+    } catch(...) {
+      __Pyx_CppExn2PyErr();
+      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 57; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    }
+
+    /* "py_stringsimjoin/sampler/sample.pyx":56
+ * 
+ * cdef void convert_to_string_vector(string_col, vector[string]& string_vector):
+ *     for val in string_col:             # <<<<<<<<<<<<<<
+ *         string_vector.push_back(val)
+ * 
+ */
+  }
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+
+  /* "py_stringsimjoin/sampler/sample.pyx":55
+ *     return output_table
+ * 
+ * cdef void convert_to_string_vector(string_col, vector[string]& string_vector):             # <<<<<<<<<<<<<<
+ *     for val in string_col:
+ *         string_vector.push_back(val)
  */
 
   /* function exit code */
   goto __pyx_L0;
   __pyx_L1_error:;
-  __Pyx_WriteUnraisable("py_stringsimjoin.apply_rf.overlap_coefficient_join.ov_coeff_join_part", __pyx_clineno, __pyx_lineno, __pyx_filename, 0, 1);
+  __Pyx_XDECREF(__pyx_t_1);
+  __Pyx_XDECREF(__pyx_t_4);
+  __Pyx_WriteUnraisable("py_stringsimjoin.sampler.sample.convert_to_string_vector", __pyx_clineno, __pyx_lineno, __pyx_filename, 0, 0);
   __pyx_L0:;
+  __Pyx_XDECREF(__pyx_v_val);
+  __Pyx_RefNannyFinishContext();
 }
 
-/* "vector.from_py":49
+/* "py_stringsimjoin/sampler/sample.pyx":59
+ *         string_vector.push_back(val)
  * 
- * @cname("__pyx_convert_vector_from_py_int")
- * cdef vector[X] __pyx_convert_vector_from_py_int(object o) except *:             # <<<<<<<<<<<<<<
- *     cdef vector[X] v
- *     for item in o:
+ * cdef void convert_to_int_vector(int_col, vector[int]& int_vector):             # <<<<<<<<<<<<<<
+ *     for val in int_col:
+ *         int_vector.push_back(int(val))
  */
 
-static std::vector<int>  __pyx_convert_vector_from_py_int(PyObject *__pyx_v_o) {
-  std::vector<int>  __pyx_v_v;
-  PyObject *__pyx_v_item = NULL;
-  std::vector<int>  __pyx_r;
+static void __pyx_f_16py_stringsimjoin_7sampler_6sample_convert_to_int_vector(PyObject *__pyx_v_int_col, std::vector<int>  &__pyx_v_int_vector) {
+  PyObject *__pyx_v_val = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
   Py_ssize_t __pyx_t_2;
@@ -1547,39 +1579,39 @@ static std::vector<int>  __pyx_convert_vector_from_py_int(PyObject *__pyx_v_o) {
   int __pyx_lineno = 0;
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
-  __Pyx_RefNannySetupContext("__pyx_convert_vector_from_py_int", 0);
+  __Pyx_RefNannySetupContext("convert_to_int_vector", 0);
 
-  /* "vector.from_py":51
- * cdef vector[X] __pyx_convert_vector_from_py_int(object o) except *:
- *     cdef vector[X] v
- *     for item in o:             # <<<<<<<<<<<<<<
- *         v.push_back(X_from_py(item))
- *     return v
+  /* "py_stringsimjoin/sampler/sample.pyx":60
+ * 
+ * cdef void convert_to_int_vector(int_col, vector[int]& int_vector):
+ *     for val in int_col:             # <<<<<<<<<<<<<<
+ *         int_vector.push_back(int(val))
+ * 
  */
-  if (likely(PyList_CheckExact(__pyx_v_o)) || PyTuple_CheckExact(__pyx_v_o)) {
-    __pyx_t_1 = __pyx_v_o; __Pyx_INCREF(__pyx_t_1); __pyx_t_2 = 0;
+  if (likely(PyList_CheckExact(__pyx_v_int_col)) || PyTuple_CheckExact(__pyx_v_int_col)) {
+    __pyx_t_1 = __pyx_v_int_col; __Pyx_INCREF(__pyx_t_1); __pyx_t_2 = 0;
     __pyx_t_3 = NULL;
   } else {
-    __pyx_t_2 = -1; __pyx_t_1 = PyObject_GetIter(__pyx_v_o); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[1]; __pyx_lineno = 51; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_2 = -1; __pyx_t_1 = PyObject_GetIter(__pyx_v_int_col); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 60; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_1);
-    __pyx_t_3 = Py_TYPE(__pyx_t_1)->tp_iternext; if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[1]; __pyx_lineno = 51; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_3 = Py_TYPE(__pyx_t_1)->tp_iternext; if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 60; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   }
   for (;;) {
     if (likely(!__pyx_t_3)) {
       if (likely(PyList_CheckExact(__pyx_t_1))) {
         if (__pyx_t_2 >= PyList_GET_SIZE(__pyx_t_1)) break;
         #if CYTHON_COMPILING_IN_CPYTHON
-        __pyx_t_4 = PyList_GET_ITEM(__pyx_t_1, __pyx_t_2); __Pyx_INCREF(__pyx_t_4); __pyx_t_2++; if (unlikely(0 < 0)) {__pyx_filename = __pyx_f[1]; __pyx_lineno = 51; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        __pyx_t_4 = PyList_GET_ITEM(__pyx_t_1, __pyx_t_2); __Pyx_INCREF(__pyx_t_4); __pyx_t_2++; if (unlikely(0 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 60; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
         #else
-        __pyx_t_4 = PySequence_ITEM(__pyx_t_1, __pyx_t_2); __pyx_t_2++; if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[1]; __pyx_lineno = 51; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        __pyx_t_4 = PySequence_ITEM(__pyx_t_1, __pyx_t_2); __pyx_t_2++; if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 60; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
         __Pyx_GOTREF(__pyx_t_4);
         #endif
       } else {
         if (__pyx_t_2 >= PyTuple_GET_SIZE(__pyx_t_1)) break;
         #if CYTHON_COMPILING_IN_CPYTHON
-        __pyx_t_4 = PyTuple_GET_ITEM(__pyx_t_1, __pyx_t_2); __Pyx_INCREF(__pyx_t_4); __pyx_t_2++; if (unlikely(0 < 0)) {__pyx_filename = __pyx_f[1]; __pyx_lineno = 51; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        __pyx_t_4 = PyTuple_GET_ITEM(__pyx_t_1, __pyx_t_2); __Pyx_INCREF(__pyx_t_4); __pyx_t_2++; if (unlikely(0 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 60; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
         #else
-        __pyx_t_4 = PySequence_ITEM(__pyx_t_1, __pyx_t_2); __pyx_t_2++; if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[1]; __pyx_lineno = 51; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        __pyx_t_4 = PySequence_ITEM(__pyx_t_1, __pyx_t_2); __pyx_t_2++; if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 60; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
         __Pyx_GOTREF(__pyx_t_4);
         #endif
       }
@@ -1589,314 +1621,319 @@ static std::vector<int>  __pyx_convert_vector_from_py_int(PyObject *__pyx_v_o) {
         PyObject* exc_type = PyErr_Occurred();
         if (exc_type) {
           if (likely(exc_type == PyExc_StopIteration || PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) PyErr_Clear();
-          else {__pyx_filename = __pyx_f[1]; __pyx_lineno = 51; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+          else {__pyx_filename = __pyx_f[0]; __pyx_lineno = 60; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
         }
         break;
       }
       __Pyx_GOTREF(__pyx_t_4);
     }
-    __Pyx_XDECREF_SET(__pyx_v_item, __pyx_t_4);
+    __Pyx_XDECREF_SET(__pyx_v_val, __pyx_t_4);
     __pyx_t_4 = 0;
 
-    /* "vector.from_py":52
- *     cdef vector[X] v
- *     for item in o:
- *         v.push_back(X_from_py(item))             # <<<<<<<<<<<<<<
- *     return v
+    /* "py_stringsimjoin/sampler/sample.pyx":61
+ * cdef void convert_to_int_vector(int_col, vector[int]& int_vector):
+ *     for val in int_col:
+ *         int_vector.push_back(int(val))             # <<<<<<<<<<<<<<
  * 
+ * cdef void sample_pairs(vector[string]& lstrings, vector[string]& rstrings,
  */
-    __pyx_t_5 = __Pyx_PyInt_As_int(__pyx_v_item); if (unlikely(__pyx_t_5 == -1 && PyErr_Occurred())) {__pyx_filename = __pyx_f[1]; __pyx_lineno = 52; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-    __pyx_v_v.push_back(__pyx_t_5);
-
-    /* "vector.from_py":51
- * cdef vector[X] __pyx_convert_vector_from_py_int(object o) except *:
- *     cdef vector[X] v
- *     for item in o:             # <<<<<<<<<<<<<<
- *         v.push_back(X_from_py(item))
- *     return v
- */
-  }
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-
-  /* "vector.from_py":53
- *     for item in o:
- *         v.push_back(X_from_py(item))
- *     return v             # <<<<<<<<<<<<<<
- * 
- * 
- */
-  __pyx_r = __pyx_v_v;
-  goto __pyx_L0;
-
-  /* "vector.from_py":49
- * 
- * @cname("__pyx_convert_vector_from_py_int")
- * cdef vector[X] __pyx_convert_vector_from_py_int(object o) except *:             # <<<<<<<<<<<<<<
- *     cdef vector[X] v
- *     for item in o:
- */
-
-  /* function exit code */
-  __pyx_L1_error:;
-  __Pyx_XDECREF(__pyx_t_1);
-  __Pyx_XDECREF(__pyx_t_4);
-  __Pyx_AddTraceback("vector.from_py.__pyx_convert_vector_from_py_int", __pyx_clineno, __pyx_lineno, __pyx_filename);
-  __pyx_L0:;
-  __Pyx_XDECREF(__pyx_v_item);
-  __Pyx_RefNannyFinishContext();
-  return __pyx_r;
-}
-
-/* "vector.from_py":50
- * 
- * @cname("__pyx_convert_vector_from_py_std_3a__3a_vector_3c_int_3e___")
- * cdef vector[X] __pyx_convert_vector_from_py_std_3a__3a_vector_3c_int_3e___(object o) except *:             # <<<<<<<<<<<<<<
- *     cdef vector[X] v
- *     for item in o:
- */
-
-static std::vector<std::vector<int> >  __pyx_convert_vector_from_py_std_3a__3a_vector_3c_int_3e___(PyObject *__pyx_v_o) {
-  std::vector<std::vector<int> >  __pyx_v_v;
-  PyObject *__pyx_v_item = NULL;
-  std::vector<std::vector<int> >  __pyx_r;
-  __Pyx_RefNannyDeclarations
-  PyObject *__pyx_t_1 = NULL;
-  Py_ssize_t __pyx_t_2;
-  PyObject *(*__pyx_t_3)(PyObject *);
-  PyObject *__pyx_t_4 = NULL;
-  std::vector<int>  __pyx_t_5;
-  int __pyx_lineno = 0;
-  const char *__pyx_filename = NULL;
-  int __pyx_clineno = 0;
-  __Pyx_RefNannySetupContext("__pyx_convert_vector_from_py_std_3a__3a_vector_3c_int_3e___", 0);
-
-  /* "vector.from_py":52
- * cdef vector[X] __pyx_convert_vector_from_py_std_3a__3a_vector_3c_int_3e___(object o) except *:
- *     cdef vector[X] v
- *     for item in o:             # <<<<<<<<<<<<<<
- *         v.push_back(X_from_py(item))
- *     return v
- */
-  if (likely(PyList_CheckExact(__pyx_v_o)) || PyTuple_CheckExact(__pyx_v_o)) {
-    __pyx_t_1 = __pyx_v_o; __Pyx_INCREF(__pyx_t_1); __pyx_t_2 = 0;
-    __pyx_t_3 = NULL;
-  } else {
-    __pyx_t_2 = -1; __pyx_t_1 = PyObject_GetIter(__pyx_v_o); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[1]; __pyx_lineno = 52; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-    __Pyx_GOTREF(__pyx_t_1);
-    __pyx_t_3 = Py_TYPE(__pyx_t_1)->tp_iternext; if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[1]; __pyx_lineno = 52; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  }
-  for (;;) {
-    if (likely(!__pyx_t_3)) {
-      if (likely(PyList_CheckExact(__pyx_t_1))) {
-        if (__pyx_t_2 >= PyList_GET_SIZE(__pyx_t_1)) break;
-        #if CYTHON_COMPILING_IN_CPYTHON
-        __pyx_t_4 = PyList_GET_ITEM(__pyx_t_1, __pyx_t_2); __Pyx_INCREF(__pyx_t_4); __pyx_t_2++; if (unlikely(0 < 0)) {__pyx_filename = __pyx_f[1]; __pyx_lineno = 52; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-        #else
-        __pyx_t_4 = PySequence_ITEM(__pyx_t_1, __pyx_t_2); __pyx_t_2++; if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[1]; __pyx_lineno = 52; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-        __Pyx_GOTREF(__pyx_t_4);
-        #endif
-      } else {
-        if (__pyx_t_2 >= PyTuple_GET_SIZE(__pyx_t_1)) break;
-        #if CYTHON_COMPILING_IN_CPYTHON
-        __pyx_t_4 = PyTuple_GET_ITEM(__pyx_t_1, __pyx_t_2); __Pyx_INCREF(__pyx_t_4); __pyx_t_2++; if (unlikely(0 < 0)) {__pyx_filename = __pyx_f[1]; __pyx_lineno = 52; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-        #else
-        __pyx_t_4 = PySequence_ITEM(__pyx_t_1, __pyx_t_2); __pyx_t_2++; if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[1]; __pyx_lineno = 52; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-        __Pyx_GOTREF(__pyx_t_4);
-        #endif
-      }
-    } else {
-      __pyx_t_4 = __pyx_t_3(__pyx_t_1);
-      if (unlikely(!__pyx_t_4)) {
-        PyObject* exc_type = PyErr_Occurred();
-        if (exc_type) {
-          if (likely(exc_type == PyExc_StopIteration || PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) PyErr_Clear();
-          else {__pyx_filename = __pyx_f[1]; __pyx_lineno = 52; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-        }
-        break;
-      }
-      __Pyx_GOTREF(__pyx_t_4);
+    __pyx_t_4 = PyNumber_Int(__pyx_v_val); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 61; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __Pyx_GOTREF(__pyx_t_4);
+    __pyx_t_5 = __Pyx_PyInt_As_int(__pyx_t_4); if (unlikely((__pyx_t_5 == (int)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 61; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+    try {
+      __pyx_v_int_vector.push_back(__pyx_t_5);
+    } catch(...) {
+      __Pyx_CppExn2PyErr();
+      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 61; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     }
-    __Pyx_XDECREF_SET(__pyx_v_item, __pyx_t_4);
-    __pyx_t_4 = 0;
 
-    /* "vector.from_py":53
- *     cdef vector[X] v
- *     for item in o:
- *         v.push_back(X_from_py(item))             # <<<<<<<<<<<<<<
- *     return v
+    /* "py_stringsimjoin/sampler/sample.pyx":60
  * 
- */
-    __pyx_t_5 = __pyx_convert_vector_from_py_int(__pyx_v_item); if (unlikely(PyErr_Occurred())) {__pyx_filename = __pyx_f[1]; __pyx_lineno = 53; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-    __pyx_v_v.push_back(__pyx_t_5);
-
-    /* "vector.from_py":52
- * cdef vector[X] __pyx_convert_vector_from_py_std_3a__3a_vector_3c_int_3e___(object o) except *:
- *     cdef vector[X] v
- *     for item in o:             # <<<<<<<<<<<<<<
- *         v.push_back(X_from_py(item))
- *     return v
+ * cdef void convert_to_int_vector(int_col, vector[int]& int_vector):
+ *     for val in int_col:             # <<<<<<<<<<<<<<
+ *         int_vector.push_back(int(val))
+ * 
  */
   }
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "vector.from_py":54
- *     for item in o:
- *         v.push_back(X_from_py(item))
- *     return v             # <<<<<<<<<<<<<<
+  /* "py_stringsimjoin/sampler/sample.pyx":59
+ *         string_vector.push_back(val)
  * 
- * 
- */
-  __pyx_r = __pyx_v_v;
-  goto __pyx_L0;
-
-  /* "vector.from_py":50
- * 
- * @cname("__pyx_convert_vector_from_py_std_3a__3a_vector_3c_int_3e___")
- * cdef vector[X] __pyx_convert_vector_from_py_std_3a__3a_vector_3c_int_3e___(object o) except *:             # <<<<<<<<<<<<<<
- *     cdef vector[X] v
- *     for item in o:
+ * cdef void convert_to_int_vector(int_col, vector[int]& int_vector):             # <<<<<<<<<<<<<<
+ *     for val in int_col:
+ *         int_vector.push_back(int(val))
  */
 
   /* function exit code */
+  goto __pyx_L0;
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
   __Pyx_XDECREF(__pyx_t_4);
-  __Pyx_AddTraceback("vector.from_py.__pyx_convert_vector_from_py_std_3a__3a_vector_3c_int_3e___", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_WriteUnraisable("py_stringsimjoin.sampler.sample.convert_to_int_vector", __pyx_clineno, __pyx_lineno, __pyx_filename, 0, 0);
   __pyx_L0:;
-  __Pyx_XDECREF(__pyx_v_item);
+  __Pyx_XDECREF(__pyx_v_val);
   __Pyx_RefNannyFinishContext();
-  return __pyx_r;
 }
 
-/* "pair.to_py":180
+/* "py_stringsimjoin/sampler/sample.pyx":63
+ *         int_vector.push_back(int(val))
  * 
- * @cname("__pyx_convert_pair_to_py_int____int")
- * cdef object __pyx_convert_pair_to_py_int____int(const pair[X,Y]& p):             # <<<<<<<<<<<<<<
- *     return X_to_py(p.first), Y_to_py(p.second)
- * 
+ * cdef void sample_pairs(vector[string]& lstrings, vector[string]& rstrings,             # <<<<<<<<<<<<<<
+ *                   int sample_size, int y_param, vector[pair[int, int]]& sample):
+ *     cdef vector[vector[int]] ltokens, rtokens
  */
 
-static PyObject *__pyx_convert_pair_to_py_int____int(std::pair<int,int>  const &__pyx_v_p) {
-  PyObject *__pyx_r = NULL;
+static void __pyx_f_16py_stringsimjoin_7sampler_6sample_sample_pairs(std::vector<std::string>  &__pyx_v_lstrings, std::vector<std::string>  &__pyx_v_rstrings, int __pyx_v_sample_size, int __pyx_v_y_param, CYTHON_UNUSED std::vector<std::pair<int,int> >  &__pyx_v_sample) {
+  std::vector<std::vector<int> >  __pyx_v_ltokens;
+  std::vector<std::vector<int> >  __pyx_v_rtokens;
+  std::string __pyx_v_tok_type;
+  int __pyx_v_number_of_r_tuples_to_sample;
+  CYTHON_UNUSED PyObject *__pyx_v_sample_rtable_indices = NULL;
+  CYTHON_UNUSED int __pyx_v_cand_pos_ltuples_required;
+  InvertedIndex __pyx_v_index;
   __Pyx_RefNannyDeclarations
-  PyObject *__pyx_t_1 = NULL;
+  std::string __pyx_t_1;
   PyObject *__pyx_t_2 = NULL;
   PyObject *__pyx_t_3 = NULL;
+  PyObject *__pyx_t_4 = NULL;
+  PyObject *__pyx_t_5 = NULL;
+  PyObject *__pyx_t_6 = NULL;
+  Py_ssize_t __pyx_t_7;
+  PyObject *__pyx_t_8 = NULL;
   int __pyx_lineno = 0;
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
-  __Pyx_RefNannySetupContext("__pyx_convert_pair_to_py_int____int", 0);
+  __Pyx_RefNannySetupContext("sample_pairs", 0);
 
-  /* "pair.to_py":181
- * @cname("__pyx_convert_pair_to_py_int____int")
- * cdef object __pyx_convert_pair_to_py_int____int(const pair[X,Y]& p):
- *     return X_to_py(p.first), Y_to_py(p.second)             # <<<<<<<<<<<<<<
+  /* "py_stringsimjoin/sampler/sample.pyx":66
+ *                   int sample_size, int y_param, vector[pair[int, int]]& sample):
+ *     cdef vector[vector[int]] ltokens, rtokens
+ *     cdef string tok_type = "ws"             # <<<<<<<<<<<<<<
  * 
+ *     # tokenize input strings using whitespace tokenizer
+ */
+  __pyx_t_1 = __pyx_convert_string_from_py_std__in_string(__pyx_n_b_ws); if (unlikely(PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 66; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_v_tok_type = __pyx_t_1;
+
+  /* "py_stringsimjoin/sampler/sample.pyx":69
+ * 
+ *     # tokenize input strings using whitespace tokenizer
+ *     tokenize_without_materializing(lstrings, rstrings, tok_type,             # <<<<<<<<<<<<<<
+ *                                    ltokens, rtokens)
  * 
  */
-  __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_v_p.first); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[1]; __pyx_lineno = 181; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = __Pyx_PyInt_From_int(__pyx_v_p.second); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[1]; __pyx_lineno = 181; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_3 = PyTuple_New(2); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[1]; __pyx_lineno = 181; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_GOTREF(__pyx_t_3);
-  __Pyx_GIVEREF(__pyx_t_1);
-  PyTuple_SET_ITEM(__pyx_t_3, 0, __pyx_t_1);
-  __Pyx_GIVEREF(__pyx_t_2);
-  PyTuple_SET_ITEM(__pyx_t_3, 1, __pyx_t_2);
-  __pyx_t_1 = 0;
-  __pyx_t_2 = 0;
-  __pyx_r = __pyx_t_3;
-  __pyx_t_3 = 0;
-  goto __pyx_L0;
+  __pyx_f_16py_stringsimjoin_8apply_rf_10tokenizers_tokenize_without_materializing(__pyx_v_lstrings, __pyx_v_rstrings, __pyx_v_tok_type, __pyx_v_ltokens, __pyx_v_rtokens);
 
-  /* "pair.to_py":180
+  /* "py_stringsimjoin/sampler/sample.pyx":72
+ *                                    ltokens, rtokens)
  * 
- * @cname("__pyx_convert_pair_to_py_int____int")
- * cdef object __pyx_convert_pair_to_py_int____int(const pair[X,Y]& p):             # <<<<<<<<<<<<<<
- *     return X_to_py(p.first), Y_to_py(p.second)
+ *     cdef int number_of_r_tuples_to_sample = <int>ceil(<float>sample_size / <float>y_param)             # <<<<<<<<<<<<<<
+ *     sample_rtable_indices = random.sample(range(0, rstrings.size()),
+ *                                           number_of_r_tuples_to_sample)
+ */
+  if (unlikely(((float)__pyx_v_y_param) == 0)) {
+    PyErr_SetString(PyExc_ZeroDivisionError, "float division");
+    {__pyx_filename = __pyx_f[0]; __pyx_lineno = 72; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  }
+  __pyx_v_number_of_r_tuples_to_sample = ((int)ceil((((float)__pyx_v_sample_size) / ((float)__pyx_v_y_param))));
+
+  /* "py_stringsimjoin/sampler/sample.pyx":73
  * 
+ *     cdef int number_of_r_tuples_to_sample = <int>ceil(<float>sample_size / <float>y_param)
+ *     sample_rtable_indices = random.sample(range(0, rstrings.size()),             # <<<<<<<<<<<<<<
+ *                                           number_of_r_tuples_to_sample)
+ *     cdef int cand_pos_ltuples_required = <int>ceil(y_param / 2.0)
+ */
+  __pyx_t_3 = __Pyx_GetModuleGlobalName(__pyx_n_s_random); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 73; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_3);
+  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_sample); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 73; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_4);
+  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+  __pyx_t_3 = __Pyx_PyInt_FromSize_t(__pyx_v_rstrings.size()); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 73; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_3);
+  __pyx_t_5 = PyTuple_New(2); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 73; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_5);
+  __Pyx_INCREF(__pyx_int_0);
+  __Pyx_GIVEREF(__pyx_int_0);
+  PyTuple_SET_ITEM(__pyx_t_5, 0, __pyx_int_0);
+  __Pyx_GIVEREF(__pyx_t_3);
+  PyTuple_SET_ITEM(__pyx_t_5, 1, __pyx_t_3);
+  __pyx_t_3 = 0;
+  __pyx_t_3 = __Pyx_PyObject_Call(__pyx_builtin_range, __pyx_t_5, NULL); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 73; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_3);
+  __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
+
+  /* "py_stringsimjoin/sampler/sample.pyx":74
+ *     cdef int number_of_r_tuples_to_sample = <int>ceil(<float>sample_size / <float>y_param)
+ *     sample_rtable_indices = random.sample(range(0, rstrings.size()),
+ *                                           number_of_r_tuples_to_sample)             # <<<<<<<<<<<<<<
+ *     cdef int cand_pos_ltuples_required = <int>ceil(y_param / 2.0)
+ * 
+ */
+  __pyx_t_5 = __Pyx_PyInt_From_int(__pyx_v_number_of_r_tuples_to_sample); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 74; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_5);
+  __pyx_t_6 = NULL;
+  __pyx_t_7 = 0;
+  if (CYTHON_COMPILING_IN_CPYTHON && unlikely(PyMethod_Check(__pyx_t_4))) {
+    __pyx_t_6 = PyMethod_GET_SELF(__pyx_t_4);
+    if (likely(__pyx_t_6)) {
+      PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_4);
+      __Pyx_INCREF(__pyx_t_6);
+      __Pyx_INCREF(function);
+      __Pyx_DECREF_SET(__pyx_t_4, function);
+      __pyx_t_7 = 1;
+    }
+  }
+  __pyx_t_8 = PyTuple_New(2+__pyx_t_7); if (unlikely(!__pyx_t_8)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 73; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_8);
+  if (__pyx_t_6) {
+    __Pyx_GIVEREF(__pyx_t_6); PyTuple_SET_ITEM(__pyx_t_8, 0, __pyx_t_6); __pyx_t_6 = NULL;
+  }
+  __Pyx_GIVEREF(__pyx_t_3);
+  PyTuple_SET_ITEM(__pyx_t_8, 0+__pyx_t_7, __pyx_t_3);
+  __Pyx_GIVEREF(__pyx_t_5);
+  PyTuple_SET_ITEM(__pyx_t_8, 1+__pyx_t_7, __pyx_t_5);
+  __pyx_t_3 = 0;
+  __pyx_t_5 = 0;
+  __pyx_t_2 = __Pyx_PyObject_Call(__pyx_t_4, __pyx_t_8, NULL); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 73; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_2);
+  __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+  __pyx_v_sample_rtable_indices = __pyx_t_2;
+  __pyx_t_2 = 0;
+
+  /* "py_stringsimjoin/sampler/sample.pyx":75
+ *     sample_rtable_indices = random.sample(range(0, rstrings.size()),
+ *                                           number_of_r_tuples_to_sample)
+ *     cdef int cand_pos_ltuples_required = <int>ceil(y_param / 2.0)             # <<<<<<<<<<<<<<
+ * 
+ *     # create inverted index over tokens in lstrings
+ */
+  __pyx_v_cand_pos_ltuples_required = ((int)ceil((__pyx_v_y_param / 2.0)));
+
+  /* "py_stringsimjoin/sampler/sample.pyx":79
+ *     # create inverted index over tokens in lstrings
+ *     cdef InvertedIndex index
+ *     build_inverted_index(ltokens, index)             # <<<<<<<<<<<<<<
+ * '''
+ *     cdef oset[int] sample_ltable_indices
+ */
+  __pyx_f_16py_stringsimjoin_8apply_rf_5utils_build_inverted_index(__pyx_v_ltokens, __pyx_v_index);
+
+  /* "py_stringsimjoin/sampler/sample.pyx":63
+ *         int_vector.push_back(int(val))
+ * 
+ * cdef void sample_pairs(vector[string]& lstrings, vector[string]& rstrings,             # <<<<<<<<<<<<<<
+ *                   int sample_size, int y_param, vector[pair[int, int]]& sample):
+ *     cdef vector[vector[int]] ltokens, rtokens
  */
 
   /* function exit code */
+  goto __pyx_L0;
   __pyx_L1_error:;
-  __Pyx_XDECREF(__pyx_t_1);
   __Pyx_XDECREF(__pyx_t_2);
   __Pyx_XDECREF(__pyx_t_3);
-  __Pyx_AddTraceback("pair.to_py.__pyx_convert_pair_to_py_int____int", __pyx_clineno, __pyx_lineno, __pyx_filename);
-  __pyx_r = 0;
+  __Pyx_XDECREF(__pyx_t_4);
+  __Pyx_XDECREF(__pyx_t_5);
+  __Pyx_XDECREF(__pyx_t_6);
+  __Pyx_XDECREF(__pyx_t_8);
+  __Pyx_WriteUnraisable("py_stringsimjoin.sampler.sample.sample_pairs", __pyx_clineno, __pyx_lineno, __pyx_filename, 0, 0);
   __pyx_L0:;
-  __Pyx_XGIVEREF(__pyx_r);
+  __Pyx_XDECREF(__pyx_v_sample_rtable_indices);
+  __Pyx_RefNannyFinishContext();
+}
+
+/* "py_stringsimjoin/sampler/sample.pyx":118
+ *         tmp.clear()
+ * '''
+ * cdef bool comp(const pair[int, int]& l, const pair[int, int]& r):             # <<<<<<<<<<<<<<
+ *     return l.second > r.second
+ */
+
+static bool __pyx_f_16py_stringsimjoin_7sampler_6sample_comp(std::pair<int,int>  const &__pyx_v_l, std::pair<int,int>  const &__pyx_v_r) {
+  bool __pyx_r;
+  __Pyx_RefNannyDeclarations
+  __Pyx_RefNannySetupContext("comp", 0);
+
+  /* "py_stringsimjoin/sampler/sample.pyx":119
+ * '''
+ * cdef bool comp(const pair[int, int]& l, const pair[int, int]& r):
+ *     return l.second > r.second             # <<<<<<<<<<<<<<
+ */
+  __pyx_r = (__pyx_v_l.second > __pyx_v_r.second);
+  goto __pyx_L0;
+
+  /* "py_stringsimjoin/sampler/sample.pyx":118
+ *         tmp.clear()
+ * '''
+ * cdef bool comp(const pair[int, int]& l, const pair[int, int]& r):             # <<<<<<<<<<<<<<
+ *     return l.second > r.second
+ */
+
+  /* function exit code */
+  __pyx_L0:;
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-/* "vector.to_py":67
+/* "string.from_py":13
  * 
- * @cname("__pyx_convert_vector_to_py_std_3a__3a_pair_3c_int_2c_int_3e___")
- * cdef object __pyx_convert_vector_to_py_std_3a__3a_pair_3c_int_2c_int_3e___(vector[X]& v):             # <<<<<<<<<<<<<<
- *     return [X_to_py(v[i]) for i in range(v.size())]
- * 
+ * @cname("__pyx_convert_string_from_py_std__in_string")
+ * cdef string __pyx_convert_string_from_py_std__in_string(object o) except *:             # <<<<<<<<<<<<<<
+ *     cdef Py_ssize_t length
+ *     cdef char* data = __Pyx_PyObject_AsStringAndSize(o, &length)
  */
 
-static PyObject *__pyx_convert_vector_to_py_std_3a__3a_pair_3c_int_2c_int_3e___(const std::vector<std::pair<int,int> >  &__pyx_v_v) {
-  size_t __pyx_v_i;
-  PyObject *__pyx_r = NULL;
+static std::string __pyx_convert_string_from_py_std__in_string(PyObject *__pyx_v_o) {
+  Py_ssize_t __pyx_v_length;
+  char *__pyx_v_data;
+  std::string __pyx_r;
   __Pyx_RefNannyDeclarations
-  PyObject *__pyx_t_1 = NULL;
-  size_t __pyx_t_2;
-  size_t __pyx_t_3;
-  PyObject *__pyx_t_4 = NULL;
+  char *__pyx_t_1;
   int __pyx_lineno = 0;
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
-  __Pyx_RefNannySetupContext("__pyx_convert_vector_to_py_std_3a__3a_pair_3c_int_2c_int_3e___", 0);
+  __Pyx_RefNannySetupContext("__pyx_convert_string_from_py_std__in_string", 0);
 
-  /* "vector.to_py":68
- * @cname("__pyx_convert_vector_to_py_std_3a__3a_pair_3c_int_2c_int_3e___")
- * cdef object __pyx_convert_vector_to_py_std_3a__3a_pair_3c_int_2c_int_3e___(vector[X]& v):
- *     return [X_to_py(v[i]) for i in range(v.size())]             # <<<<<<<<<<<<<<
+  /* "string.from_py":15
+ * cdef string __pyx_convert_string_from_py_std__in_string(object o) except *:
+ *     cdef Py_ssize_t length
+ *     cdef char* data = __Pyx_PyObject_AsStringAndSize(o, &length)             # <<<<<<<<<<<<<<
+ *     return string(data, length)
+ * 
+ */
+  __pyx_t_1 = __Pyx_PyObject_AsStringAndSize(__pyx_v_o, (&__pyx_v_length)); if (unlikely(__pyx_t_1 == NULL)) {__pyx_filename = __pyx_f[1]; __pyx_lineno = 15; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_v_data = __pyx_t_1;
+
+  /* "string.from_py":16
+ *     cdef Py_ssize_t length
+ *     cdef char* data = __Pyx_PyObject_AsStringAndSize(o, &length)
+ *     return string(data, length)             # <<<<<<<<<<<<<<
  * 
  * 
  */
-  __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = PyList_New(0); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[1]; __pyx_lineno = 68; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = __pyx_v_v.size();
-  for (__pyx_t_3 = 0; __pyx_t_3 < __pyx_t_2; __pyx_t_3+=1) {
-    __pyx_v_i = __pyx_t_3;
-    __pyx_t_4 = __pyx_convert_pair_to_py_int____int((__pyx_v_v[__pyx_v_i])); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[1]; __pyx_lineno = 68; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-    __Pyx_GOTREF(__pyx_t_4);
-    if (unlikely(__Pyx_ListComp_Append(__pyx_t_1, (PyObject*)__pyx_t_4))) {__pyx_filename = __pyx_f[1]; __pyx_lineno = 68; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-    __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-  }
-  __pyx_r = __pyx_t_1;
-  __pyx_t_1 = 0;
+  __pyx_r = std::string(__pyx_v_data, __pyx_v_length);
   goto __pyx_L0;
 
-  /* "vector.to_py":67
+  /* "string.from_py":13
  * 
- * @cname("__pyx_convert_vector_to_py_std_3a__3a_pair_3c_int_2c_int_3e___")
- * cdef object __pyx_convert_vector_to_py_std_3a__3a_pair_3c_int_2c_int_3e___(vector[X]& v):             # <<<<<<<<<<<<<<
- *     return [X_to_py(v[i]) for i in range(v.size())]
- * 
+ * @cname("__pyx_convert_string_from_py_std__in_string")
+ * cdef string __pyx_convert_string_from_py_std__in_string(object o) except *:             # <<<<<<<<<<<<<<
+ *     cdef Py_ssize_t length
+ *     cdef char* data = __Pyx_PyObject_AsStringAndSize(o, &length)
  */
 
   /* function exit code */
   __pyx_L1_error:;
-  __Pyx_XDECREF(__pyx_t_1);
-  __Pyx_XDECREF(__pyx_t_4);
-  __Pyx_AddTraceback("vector.to_py.__pyx_convert_vector_to_py_std_3a__3a_pair_3c_int_2c_int_3e___", __pyx_clineno, __pyx_lineno, __pyx_filename);
-  __pyx_r = 0;
+  __Pyx_AddTraceback("string.from_py.__pyx_convert_string_from_py_std__in_string", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_L0:;
-  __Pyx_XGIVEREF(__pyx_r);
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
 static PyMethodDef __pyx_methods[] = {
-  {"ov_coeff_join", (PyCFunction)__pyx_pw_16py_stringsimjoin_8apply_rf_24overlap_coefficient_join_1ov_coeff_join, METH_VARARGS|METH_KEYWORDS, 0},
   {0, 0, 0, 0}
 };
 
@@ -1907,7 +1944,7 @@ static struct PyModuleDef __pyx_moduledef = {
   #else
     PyModuleDef_HEAD_INIT,
   #endif
-    "overlap_coefficient_join",
+    "sample",
     0, /* m_doc */
     -1, /* m_size */
     __pyx_methods /* m_methods */,
@@ -1919,22 +1956,52 @@ static struct PyModuleDef __pyx_moduledef = {
 #endif
 
 static __Pyx_StringTabEntry __pyx_string_tab[] = {
-  {&__pyx_n_s_end, __pyx_k_end, sizeof(__pyx_k_end), 0, 0, 1, 1},
-  {&__pyx_n_s_file, __pyx_k_file, sizeof(__pyx_k_file), 0, 0, 1, 1},
-  {&__pyx_kp_s_l_size, __pyx_k_l_size, sizeof(__pyx_k_l_size), 0, 0, 1, 0},
-  {&__pyx_n_s_ltokens, __pyx_k_ltokens, sizeof(__pyx_k_ltokens), 0, 0, 1, 1},
+  {&__pyx_n_s_DataFrame, __pyx_k_DataFrame, sizeof(__pyx_k_DataFrame), 0, 0, 1, 1},
+  {&__pyx_kp_s_afs_cs_wisc_edu_u_p_a_paulgc_gi, __pyx_k_afs_cs_wisc_edu_u_p_a_paulgc_gi, sizeof(__pyx_k_afs_cs_wisc_edu_u_p_a_paulgc_gi), 0, 0, 1, 0},
+  {&__pyx_n_s_columns, __pyx_k_columns, sizeof(__pyx_k_columns), 0, 0, 1, 1},
+  {&__pyx_n_s_entry, __pyx_k_entry, sizeof(__pyx_k_entry), 0, 0, 1, 1},
+  {&__pyx_n_s_get_output_header_from_tables, __pyx_k_get_output_header_from_tables, sizeof(__pyx_k_get_output_header_from_tables), 0, 0, 1, 1},
+  {&__pyx_n_s_id, __pyx_k_id, sizeof(__pyx_k_id), 0, 0, 1, 1},
+  {&__pyx_n_s_import, __pyx_k_import, sizeof(__pyx_k_import), 0, 0, 1, 1},
+  {&__pyx_n_s_index, __pyx_k_index, sizeof(__pyx_k_index), 0, 0, 1, 1},
+  {&__pyx_n_s_insert, __pyx_k_insert, sizeof(__pyx_k_insert), 0, 0, 1, 1},
+  {&__pyx_n_s_itertuples, __pyx_k_itertuples, sizeof(__pyx_k_itertuples), 0, 0, 1, 1},
+  {&__pyx_n_s_l, __pyx_k_l, sizeof(__pyx_k_l), 0, 0, 1, 1},
+  {&__pyx_n_s_l_ids, __pyx_k_l_ids, sizeof(__pyx_k_l_ids), 0, 0, 1, 1},
+  {&__pyx_n_s_l_join_attr, __pyx_k_l_join_attr, sizeof(__pyx_k_l_join_attr), 0, 0, 1, 1},
+  {&__pyx_n_s_l_key_attr, __pyx_k_l_key_attr, sizeof(__pyx_k_l_key_attr), 0, 0, 1, 1},
+  {&__pyx_n_s_l_out_prefix, __pyx_k_l_out_prefix, sizeof(__pyx_k_l_out_prefix), 0, 0, 1, 1},
+  {&__pyx_n_s_lstrings, __pyx_k_lstrings, sizeof(__pyx_k_lstrings), 0, 0, 1, 1},
+  {&__pyx_n_s_ltable, __pyx_k_ltable, sizeof(__pyx_k_ltable), 0, 0, 1, 1},
   {&__pyx_n_s_main, __pyx_k_main, sizeof(__pyx_k_main), 0, 0, 1, 1},
-  {&__pyx_kp_s_part_size, __pyx_k_part_size, sizeof(__pyx_k_part_size), 0, 0, 1, 0},
-  {&__pyx_n_s_print, __pyx_k_print, sizeof(__pyx_k_print), 0, 0, 1, 1},
-  {&__pyx_kp_s_r_size, __pyx_k_r_size, sizeof(__pyx_k_r_size), 0, 0, 1, 0},
+  {&__pyx_n_s_output_header, __pyx_k_output_header, sizeof(__pyx_k_output_header), 0, 0, 1, 1},
+  {&__pyx_n_s_output_rows, __pyx_k_output_rows, sizeof(__pyx_k_output_rows), 0, 0, 1, 1},
+  {&__pyx_n_s_output_table, __pyx_k_output_table, sizeof(__pyx_k_output_table), 0, 0, 1, 1},
+  {&__pyx_n_s_pandas, __pyx_k_pandas, sizeof(__pyx_k_pandas), 0, 0, 1, 1},
+  {&__pyx_n_s_pd, __pyx_k_pd, sizeof(__pyx_k_pd), 0, 0, 1, 1},
+  {&__pyx_n_s_py_stringsimjoin_sampler_sample, __pyx_k_py_stringsimjoin_sampler_sample, sizeof(__pyx_k_py_stringsimjoin_sampler_sample), 0, 0, 1, 1},
+  {&__pyx_n_s_py_stringsimjoin_utils_generic_h, __pyx_k_py_stringsimjoin_utils_generic_h, sizeof(__pyx_k_py_stringsimjoin_utils_generic_h), 0, 0, 1, 1},
+  {&__pyx_n_s_r, __pyx_k_r, sizeof(__pyx_k_r), 0, 0, 1, 1},
+  {&__pyx_n_s_r_ids, __pyx_k_r_ids, sizeof(__pyx_k_r_ids), 0, 0, 1, 1},
+  {&__pyx_n_s_r_join_attr, __pyx_k_r_join_attr, sizeof(__pyx_k_r_join_attr), 0, 0, 1, 1},
+  {&__pyx_n_s_r_key_attr, __pyx_k_r_key_attr, sizeof(__pyx_k_r_key_attr), 0, 0, 1, 1},
+  {&__pyx_n_s_r_out_prefix, __pyx_k_r_out_prefix, sizeof(__pyx_k_r_out_prefix), 0, 0, 1, 1},
+  {&__pyx_n_s_random, __pyx_k_random, sizeof(__pyx_k_random), 0, 0, 1, 1},
   {&__pyx_n_s_range, __pyx_k_range, sizeof(__pyx_k_range), 0, 0, 1, 1},
-  {&__pyx_n_s_rtokens, __pyx_k_rtokens, sizeof(__pyx_k_rtokens), 0, 0, 1, 1},
+  {&__pyx_n_s_rstrings, __pyx_k_rstrings, sizeof(__pyx_k_rstrings), 0, 0, 1, 1},
+  {&__pyx_n_s_rtable, __pyx_k_rtable, sizeof(__pyx_k_rtable), 0, 0, 1, 1},
+  {&__pyx_n_s_sample, __pyx_k_sample, sizeof(__pyx_k_sample), 0, 0, 1, 1},
+  {&__pyx_n_s_sample_cython, __pyx_k_sample_cython, sizeof(__pyx_k_sample_cython), 0, 0, 1, 1},
+  {&__pyx_n_s_sample_size, __pyx_k_sample_size, sizeof(__pyx_k_sample_size), 0, 0, 1, 1},
+  {&__pyx_n_s_seed, __pyx_k_seed, sizeof(__pyx_k_seed), 0, 0, 1, 1},
+  {&__pyx_n_s_seed_pair_row, __pyx_k_seed_pair_row, sizeof(__pyx_k_seed_pair_row), 0, 0, 1, 1},
   {&__pyx_n_s_test, __pyx_k_test, sizeof(__pyx_k_test), 0, 0, 1, 1},
-  {&__pyx_n_s_threshold, __pyx_k_threshold, sizeof(__pyx_k_threshold), 0, 0, 1, 1},
+  {&__pyx_n_b_ws, __pyx_k_ws, sizeof(__pyx_k_ws), 0, 0, 0, 1},
+  {&__pyx_n_s_y_param, __pyx_k_y_param, sizeof(__pyx_k_y_param), 0, 0, 1, 1},
   {0, 0, 0, 0, 0, 0, 0}
 };
 static int __Pyx_InitCachedBuiltins(void) {
-  __pyx_builtin_range = __Pyx_GetBuiltinName(__pyx_n_s_range); if (!__pyx_builtin_range) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 26; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_builtin_range = __Pyx_GetBuiltinName(__pyx_n_s_range); if (!__pyx_builtin_range) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 51; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   return 0;
   __pyx_L1_error:;
   return -1;
@@ -1943,8 +2010,23 @@ static int __Pyx_InitCachedBuiltins(void) {
 static int __Pyx_InitCachedConstants(void) {
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__Pyx_InitCachedConstants", 0);
+
+  /* "py_stringsimjoin/sampler/sample.pyx":23
+ * from py_stringsimjoin.apply_rf.tokenizers cimport tokenize_without_materializing
+ * 
+ * def sample_cython(ltable, rtable, l_key_attr, r_key_attr,             # <<<<<<<<<<<<<<
+ *                  l_join_attr, r_join_attr, sample_size, y_param, seed, l_out_prefix='l_', r_out_prefix='r_'):
+ * 
+ */
+  __pyx_tuple_ = PyTuple_Pack(21, __pyx_n_s_ltable, __pyx_n_s_rtable, __pyx_n_s_l_key_attr, __pyx_n_s_r_key_attr, __pyx_n_s_l_join_attr, __pyx_n_s_r_join_attr, __pyx_n_s_sample_size, __pyx_n_s_y_param, __pyx_n_s_seed, __pyx_n_s_l_out_prefix, __pyx_n_s_r_out_prefix, __pyx_n_s_sample, __pyx_n_s_lstrings, __pyx_n_s_rstrings, __pyx_n_s_l_ids, __pyx_n_s_r_ids, __pyx_n_s_output_rows, __pyx_n_s_entry, __pyx_n_s_seed_pair_row, __pyx_n_s_output_header, __pyx_n_s_output_table); if (unlikely(!__pyx_tuple_)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 23; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_tuple_);
+  __Pyx_GIVEREF(__pyx_tuple_);
+  __pyx_codeobj__2 = (PyObject*)__Pyx_PyCode_New(11, 0, 21, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple_, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_afs_cs_wisc_edu_u_p_a_paulgc_gi, __pyx_n_s_sample_cython, 23, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 23; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_RefNannyFinishContext();
   return 0;
+  __pyx_L1_error:;
+  __Pyx_RefNannyFinishContext();
+  return -1;
 }
 
 static int __Pyx_InitGlobals(void) {
@@ -1956,21 +2038,24 @@ PyEval_InitThreads();
 if (unlikely(PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 2; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
 
   if (__Pyx_InitStrings(__pyx_string_tab) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 2; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
+  __pyx_int_0 = PyInt_FromLong(0); if (unlikely(!__pyx_int_0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 2; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   return 0;
   __pyx_L1_error:;
   return -1;
 }
 
 #if PY_MAJOR_VERSION < 3
-PyMODINIT_FUNC initoverlap_coefficient_join(void); /*proto*/
-PyMODINIT_FUNC initoverlap_coefficient_join(void)
+PyMODINIT_FUNC initsample(void); /*proto*/
+PyMODINIT_FUNC initsample(void)
 #else
-PyMODINIT_FUNC PyInit_overlap_coefficient_join(void); /*proto*/
-PyMODINIT_FUNC PyInit_overlap_coefficient_join(void)
+PyMODINIT_FUNC PyInit_sample(void); /*proto*/
+PyMODINIT_FUNC PyInit_sample(void)
 #endif
 {
   PyObject *__pyx_t_1 = NULL;
   PyObject *__pyx_t_2 = NULL;
+  PyObject *__pyx_t_3 = NULL;
+  PyObject *__pyx_t_4 = NULL;
   int __pyx_lineno = 0;
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
@@ -1984,7 +2069,7 @@ PyMODINIT_FUNC PyInit_overlap_coefficient_join(void)
           Py_FatalError("failed to import 'refnanny' module");
   }
   #endif
-  __Pyx_RefNannySetupContext("PyMODINIT_FUNC PyInit_overlap_coefficient_join(void)", 0);
+  __Pyx_RefNannySetupContext("PyMODINIT_FUNC PyInit_sample(void)", 0);
   if (__Pyx_check_binary_version() < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 2; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_empty_tuple = PyTuple_New(0); if (unlikely(!__pyx_empty_tuple)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 2; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_empty_bytes = PyBytes_FromStringAndSize("", 0); if (unlikely(!__pyx_empty_bytes)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 2; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
@@ -2012,7 +2097,7 @@ PyMODINIT_FUNC PyInit_overlap_coefficient_join(void)
   #endif
   /*--- Module creation code ---*/
   #if PY_MAJOR_VERSION < 3
-  __pyx_m = Py_InitModule4("overlap_coefficient_join", __pyx_methods, 0, 0, PYTHON_API_VERSION); Py_XINCREF(__pyx_m);
+  __pyx_m = Py_InitModule4("sample", __pyx_methods, 0, 0, PYTHON_API_VERSION); Py_XINCREF(__pyx_m);
   #else
   __pyx_m = PyModule_Create(&__pyx_moduledef);
   #endif
@@ -2029,14 +2114,14 @@ PyMODINIT_FUNC PyInit_overlap_coefficient_join(void)
   #if PY_MAJOR_VERSION < 3 && (__PYX_DEFAULT_STRING_ENCODING_IS_ASCII || __PYX_DEFAULT_STRING_ENCODING_IS_DEFAULT)
   if (__Pyx_init_sys_getdefaultencoding_params() < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 2; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   #endif
-  if (__pyx_module_is_main_py_stringsimjoin__apply_rf__overlap_coefficient_join) {
+  if (__pyx_module_is_main_py_stringsimjoin__sampler__sample) {
     if (PyObject_SetAttrString(__pyx_m, "__name__", __pyx_n_s_main) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 2; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   }
   #if PY_MAJOR_VERSION >= 3
   {
     PyObject *modules = PyImport_GetModuleDict(); if (unlikely(!modules)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 2; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-    if (!PyDict_GetItemString(modules, "py_stringsimjoin.apply_rf.overlap_coefficient_join")) {
-      if (unlikely(PyDict_SetItemString(modules, "py_stringsimjoin.apply_rf.overlap_coefficient_join", __pyx_m) < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 2; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    if (!PyDict_GetItemString(modules, "py_stringsimjoin.sampler.sample")) {
+      if (unlikely(PyDict_SetItemString(modules, "py_stringsimjoin.sampler.sample", __pyx_m) < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 2; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     }
   }
   #endif
@@ -2047,7 +2132,6 @@ PyMODINIT_FUNC PyInit_overlap_coefficient_join(void)
   /*--- Global init code ---*/
   /*--- Variable export code ---*/
   /*--- Function export code ---*/
-  if (__Pyx_ExportFunction("ov_coeff_join", (void (*)(void))__pyx_f_16py_stringsimjoin_8apply_rf_24overlap_coefficient_join_ov_coeff_join, "std::vector<std::pair<int,int> >  (std::vector<std::vector<int> >  &, std::vector<std::vector<int> >  &, double, int __pyx_skip_dispatch)") < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 2; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   /*--- Type init code ---*/
   /*--- Type import code ---*/
   /*--- Variable import code ---*/
@@ -2055,28 +2139,87 @@ PyMODINIT_FUNC PyInit_overlap_coefficient_join(void)
   __pyx_t_1 = __Pyx_ImportModule("py_stringsimjoin.apply_rf.utils"); if (!__pyx_t_1) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 2; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   if (__Pyx_ImportFunction(__pyx_t_1, "build_inverted_index", (void (**)(void))&__pyx_f_16py_stringsimjoin_8apply_rf_5utils_build_inverted_index, "void (std::vector<std::vector<int> >  &, InvertedIndex &)") < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 2; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   Py_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  __pyx_t_2 = __Pyx_ImportModule("py_stringsimjoin.apply_rf.tokenizers"); if (!__pyx_t_2) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 2; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (__Pyx_ImportFunction(__pyx_t_2, "tokenize_without_materializing", (void (**)(void))&__pyx_f_16py_stringsimjoin_8apply_rf_10tokenizers_tokenize_without_materializing, "void (std::vector<std::string>  const &, std::vector<std::string>  const &, std::string const &, std::vector<std::vector<int> >  &, std::vector<std::vector<int> >  &)") < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 2; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  Py_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   /*--- Execution code ---*/
   #if defined(__Pyx_Generator_USED) || defined(__Pyx_Coroutine_USED)
   if (__Pyx_patch_abc() < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 2; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   #endif
 
-  /* "py_stringsimjoin/apply_rf/overlap_coefficient_join.pyx":2
+  /* "py_stringsimjoin/sampler/sample.pyx":2
  * 
- * from cython.parallel import prange             # <<<<<<<<<<<<<<
+ * import random             # <<<<<<<<<<<<<<
  * 
- * from libcpp.vector cimport vector
+ * import pandas as pd
  */
-  __pyx_t_2 = PyDict_New(); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 2; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_GOTREF(__pyx_t_2);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_test, __pyx_t_2) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 2; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  __pyx_t_3 = __Pyx_Import(__pyx_n_s_random, 0, -1); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 2; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_3);
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_random, __pyx_t_3) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 2; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
-  /* "vector.to_py":67
+  /* "py_stringsimjoin/sampler/sample.pyx":4
+ * import random
  * 
- * @cname("__pyx_convert_vector_to_py_std_3a__3a_pair_3c_int_2c_int_3e___")
- * cdef object __pyx_convert_vector_to_py_std_3a__3a_pair_3c_int_2c_int_3e___(vector[X]& v):             # <<<<<<<<<<<<<<
- *     return [X_to_py(v[i]) for i in range(v.size())]
+ * import pandas as pd             # <<<<<<<<<<<<<<
  * 
+ * from py_stringsimjoin.utils.generic_helper import get_output_header_from_tables
+ */
+  __pyx_t_3 = __Pyx_Import(__pyx_n_s_pandas, 0, -1); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 4; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_3);
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_pd, __pyx_t_3) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 4; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+
+  /* "py_stringsimjoin/sampler/sample.pyx":6
+ * import pandas as pd
+ * 
+ * from py_stringsimjoin.utils.generic_helper import get_output_header_from_tables             # <<<<<<<<<<<<<<
+ * 
+ * from cython.parallel import prange
+ */
+  __pyx_t_3 = PyList_New(1); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 6; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_3);
+  __Pyx_INCREF(__pyx_n_s_get_output_header_from_tables);
+  __Pyx_GIVEREF(__pyx_n_s_get_output_header_from_tables);
+  PyList_SET_ITEM(__pyx_t_3, 0, __pyx_n_s_get_output_header_from_tables);
+  __pyx_t_4 = __Pyx_Import(__pyx_n_s_py_stringsimjoin_utils_generic_h, __pyx_t_3, -1); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 6; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_4);
+  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+  __pyx_t_3 = __Pyx_ImportFrom(__pyx_t_4, __pyx_n_s_get_output_header_from_tables); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 6; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_3);
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_get_output_header_from_tables, __pyx_t_3) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 6; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+
+  /* "py_stringsimjoin/sampler/sample.pyx":23
+ * from py_stringsimjoin.apply_rf.tokenizers cimport tokenize_without_materializing
+ * 
+ * def sample_cython(ltable, rtable, l_key_attr, r_key_attr,             # <<<<<<<<<<<<<<
+ *                  l_join_attr, r_join_attr, sample_size, y_param, seed, l_out_prefix='l_', r_out_prefix='r_'):
+ * 
+ */
+  __pyx_t_4 = PyCFunction_NewEx(&__pyx_mdef_16py_stringsimjoin_7sampler_6sample_1sample_cython, NULL, __pyx_n_s_py_stringsimjoin_sampler_sample); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 23; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_4);
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_sample_cython, __pyx_t_4) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 23; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+
+  /* "py_stringsimjoin/sampler/sample.pyx":2
+ * 
+ * import random             # <<<<<<<<<<<<<<
+ * 
+ * import pandas as pd
+ */
+  __pyx_t_4 = PyDict_New(); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 2; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_4);
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_test, __pyx_t_4) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 2; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+
+  /* "string.from_py":13
+ * 
+ * @cname("__pyx_convert_string_from_py_std__in_string")
+ * cdef string __pyx_convert_string_from_py_std__in_string(object o) except *:             # <<<<<<<<<<<<<<
+ *     cdef Py_ssize_t length
+ *     cdef char* data = __Pyx_PyObject_AsStringAndSize(o, &length)
  */
 
   /*--- Wrapped vars code ---*/
@@ -2085,13 +2228,15 @@ PyMODINIT_FUNC PyInit_overlap_coefficient_join(void)
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
   __Pyx_XDECREF(__pyx_t_2);
+  __Pyx_XDECREF(__pyx_t_3);
+  __Pyx_XDECREF(__pyx_t_4);
   if (__pyx_m) {
     if (__pyx_d) {
-      __Pyx_AddTraceback("init py_stringsimjoin.apply_rf.overlap_coefficient_join", __pyx_clineno, __pyx_lineno, __pyx_filename);
+      __Pyx_AddTraceback("init py_stringsimjoin.sampler.sample", __pyx_clineno, __pyx_lineno, __pyx_filename);
     }
     Py_DECREF(__pyx_m); __pyx_m = 0;
   } else if (!PyErr_Occurred()) {
-    PyErr_SetString(PyExc_ImportError, "init py_stringsimjoin.apply_rf.overlap_coefficient_join");
+    PyErr_SetString(PyExc_ImportError, "init py_stringsimjoin.sampler.sample");
   }
   __pyx_L0:;
   __Pyx_RefNannyFinishContext();
@@ -2130,73 +2275,6 @@ static PyObject *__Pyx_GetBuiltinName(PyObject *name) {
 #endif
     }
     return result;
-}
-
-static CYTHON_INLINE void __Pyx_ErrRestore(PyObject *type, PyObject *value, PyObject *tb) {
-#if CYTHON_COMPILING_IN_CPYTHON
-    PyObject *tmp_type, *tmp_value, *tmp_tb;
-    PyThreadState *tstate = PyThreadState_GET();
-    tmp_type = tstate->curexc_type;
-    tmp_value = tstate->curexc_value;
-    tmp_tb = tstate->curexc_traceback;
-    tstate->curexc_type = type;
-    tstate->curexc_value = value;
-    tstate->curexc_traceback = tb;
-    Py_XDECREF(tmp_type);
-    Py_XDECREF(tmp_value);
-    Py_XDECREF(tmp_tb);
-#else
-    PyErr_Restore(type, value, tb);
-#endif
-}
-static CYTHON_INLINE void __Pyx_ErrFetch(PyObject **type, PyObject **value, PyObject **tb) {
-#if CYTHON_COMPILING_IN_CPYTHON
-    PyThreadState *tstate = PyThreadState_GET();
-    *type = tstate->curexc_type;
-    *value = tstate->curexc_value;
-    *tb = tstate->curexc_traceback;
-    tstate->curexc_type = 0;
-    tstate->curexc_value = 0;
-    tstate->curexc_traceback = 0;
-#else
-    PyErr_Fetch(type, value, tb);
-#endif
-}
-
-static void __Pyx_WriteUnraisable(const char *name, CYTHON_UNUSED int clineno,
-                                  CYTHON_UNUSED int lineno, CYTHON_UNUSED const char *filename,
-                                  int full_traceback, CYTHON_UNUSED int nogil) {
-    PyObject *old_exc, *old_val, *old_tb;
-    PyObject *ctx;
-#ifdef WITH_THREAD
-    PyGILState_STATE state;
-    if (nogil)
-        state = PyGILState_Ensure();
-#endif
-    __Pyx_ErrFetch(&old_exc, &old_val, &old_tb);
-    if (full_traceback) {
-        Py_XINCREF(old_exc);
-        Py_XINCREF(old_val);
-        Py_XINCREF(old_tb);
-        __Pyx_ErrRestore(old_exc, old_val, old_tb);
-        PyErr_PrintEx(1);
-    }
-    #if PY_MAJOR_VERSION < 3
-    ctx = PyString_FromString(name);
-    #else
-    ctx = PyUnicode_FromString(name);
-    #endif
-    __Pyx_ErrRestore(old_exc, old_val, old_tb);
-    if (!ctx) {
-        PyErr_WriteUnraisable(Py_None);
-    } else {
-        PyErr_WriteUnraisable(ctx);
-        Py_DECREF(ctx);
-    }
-#ifdef WITH_THREAD
-    if (nogil)
-        PyGILState_Release(state);
-#endif
 }
 
 static void __Pyx_RaiseArgtupleInvalid(
@@ -2336,6 +2414,276 @@ invalid_keyword:
     #endif
 bad:
     return -1;
+}
+
+#if CYTHON_COMPILING_IN_CPYTHON
+static CYTHON_INLINE PyObject* __Pyx_PyObject_Call(PyObject *func, PyObject *arg, PyObject *kw) {
+    PyObject *result;
+    ternaryfunc call = func->ob_type->tp_call;
+    if (unlikely(!call))
+        return PyObject_Call(func, arg, kw);
+    if (unlikely(Py_EnterRecursiveCall((char*)" while calling a Python object")))
+        return NULL;
+    result = (*call)(func, arg, kw);
+    Py_LeaveRecursiveCall();
+    if (unlikely(!result) && unlikely(!PyErr_Occurred())) {
+        PyErr_SetString(
+            PyExc_SystemError,
+            "NULL result without error in PyObject_Call");
+    }
+    return result;
+}
+#endif
+
+static CYTHON_INLINE PyObject *__Pyx_GetItemInt_Generic(PyObject *o, PyObject* j) {
+    PyObject *r;
+    if (!j) return NULL;
+    r = PyObject_GetItem(o, j);
+    Py_DECREF(j);
+    return r;
+}
+static CYTHON_INLINE PyObject *__Pyx_GetItemInt_List_Fast(PyObject *o, Py_ssize_t i,
+                                                              CYTHON_NCP_UNUSED int wraparound,
+                                                              CYTHON_NCP_UNUSED int boundscheck) {
+#if CYTHON_COMPILING_IN_CPYTHON
+    if (wraparound & unlikely(i < 0)) i += PyList_GET_SIZE(o);
+    if ((!boundscheck) || likely((0 <= i) & (i < PyList_GET_SIZE(o)))) {
+        PyObject *r = PyList_GET_ITEM(o, i);
+        Py_INCREF(r);
+        return r;
+    }
+    return __Pyx_GetItemInt_Generic(o, PyInt_FromSsize_t(i));
+#else
+    return PySequence_GetItem(o, i);
+#endif
+}
+static CYTHON_INLINE PyObject *__Pyx_GetItemInt_Tuple_Fast(PyObject *o, Py_ssize_t i,
+                                                              CYTHON_NCP_UNUSED int wraparound,
+                                                              CYTHON_NCP_UNUSED int boundscheck) {
+#if CYTHON_COMPILING_IN_CPYTHON
+    if (wraparound & unlikely(i < 0)) i += PyTuple_GET_SIZE(o);
+    if ((!boundscheck) || likely((0 <= i) & (i < PyTuple_GET_SIZE(o)))) {
+        PyObject *r = PyTuple_GET_ITEM(o, i);
+        Py_INCREF(r);
+        return r;
+    }
+    return __Pyx_GetItemInt_Generic(o, PyInt_FromSsize_t(i));
+#else
+    return PySequence_GetItem(o, i);
+#endif
+}
+static CYTHON_INLINE PyObject *__Pyx_GetItemInt_Fast(PyObject *o, Py_ssize_t i, int is_list,
+                                                     CYTHON_NCP_UNUSED int wraparound,
+                                                     CYTHON_NCP_UNUSED int boundscheck) {
+#if CYTHON_COMPILING_IN_CPYTHON
+    if (is_list || PyList_CheckExact(o)) {
+        Py_ssize_t n = ((!wraparound) | likely(i >= 0)) ? i : i + PyList_GET_SIZE(o);
+        if ((!boundscheck) || (likely((n >= 0) & (n < PyList_GET_SIZE(o))))) {
+            PyObject *r = PyList_GET_ITEM(o, n);
+            Py_INCREF(r);
+            return r;
+        }
+    }
+    else if (PyTuple_CheckExact(o)) {
+        Py_ssize_t n = ((!wraparound) | likely(i >= 0)) ? i : i + PyTuple_GET_SIZE(o);
+        if ((!boundscheck) || likely((n >= 0) & (n < PyTuple_GET_SIZE(o)))) {
+            PyObject *r = PyTuple_GET_ITEM(o, n);
+            Py_INCREF(r);
+            return r;
+        }
+    } else {
+        PySequenceMethods *m = Py_TYPE(o)->tp_as_sequence;
+        if (likely(m && m->sq_item)) {
+            if (wraparound && unlikely(i < 0) && likely(m->sq_length)) {
+                Py_ssize_t l = m->sq_length(o);
+                if (likely(l >= 0)) {
+                    i += l;
+                } else {
+                    if (PyErr_ExceptionMatches(PyExc_OverflowError))
+                        PyErr_Clear();
+                    else
+                        return NULL;
+                }
+            }
+            return m->sq_item(o, i);
+        }
+    }
+#else
+    if (is_list || PySequence_Check(o)) {
+        return PySequence_GetItem(o, i);
+    }
+#endif
+    return __Pyx_GetItemInt_Generic(o, PyInt_FromSsize_t(i));
+}
+
+static CYTHON_INLINE PyObject *__Pyx_GetModuleGlobalName(PyObject *name) {
+    PyObject *result;
+#if CYTHON_COMPILING_IN_CPYTHON
+    result = PyDict_GetItem(__pyx_d, name);
+    if (likely(result)) {
+        Py_INCREF(result);
+    } else {
+#else
+    result = PyObject_GetItem(__pyx_d, name);
+    if (!result) {
+        PyErr_Clear();
+#endif
+        result = __Pyx_GetBuiltinName(name);
+    }
+    return result;
+}
+
+static CYTHON_INLINE void __Pyx_ErrRestore(PyObject *type, PyObject *value, PyObject *tb) {
+#if CYTHON_COMPILING_IN_CPYTHON
+    PyObject *tmp_type, *tmp_value, *tmp_tb;
+    PyThreadState *tstate = PyThreadState_GET();
+    tmp_type = tstate->curexc_type;
+    tmp_value = tstate->curexc_value;
+    tmp_tb = tstate->curexc_traceback;
+    tstate->curexc_type = type;
+    tstate->curexc_value = value;
+    tstate->curexc_traceback = tb;
+    Py_XDECREF(tmp_type);
+    Py_XDECREF(tmp_value);
+    Py_XDECREF(tmp_tb);
+#else
+    PyErr_Restore(type, value, tb);
+#endif
+}
+static CYTHON_INLINE void __Pyx_ErrFetch(PyObject **type, PyObject **value, PyObject **tb) {
+#if CYTHON_COMPILING_IN_CPYTHON
+    PyThreadState *tstate = PyThreadState_GET();
+    *type = tstate->curexc_type;
+    *value = tstate->curexc_value;
+    *tb = tstate->curexc_traceback;
+    tstate->curexc_type = 0;
+    tstate->curexc_value = 0;
+    tstate->curexc_traceback = 0;
+#else
+    PyErr_Fetch(type, value, tb);
+#endif
+}
+
+static void __Pyx_WriteUnraisable(const char *name, CYTHON_UNUSED int clineno,
+                                  CYTHON_UNUSED int lineno, CYTHON_UNUSED const char *filename,
+                                  int full_traceback, CYTHON_UNUSED int nogil) {
+    PyObject *old_exc, *old_val, *old_tb;
+    PyObject *ctx;
+#ifdef WITH_THREAD
+    PyGILState_STATE state;
+    if (nogil)
+        state = PyGILState_Ensure();
+#endif
+    __Pyx_ErrFetch(&old_exc, &old_val, &old_tb);
+    if (full_traceback) {
+        Py_XINCREF(old_exc);
+        Py_XINCREF(old_val);
+        Py_XINCREF(old_tb);
+        __Pyx_ErrRestore(old_exc, old_val, old_tb);
+        PyErr_PrintEx(1);
+    }
+    #if PY_MAJOR_VERSION < 3
+    ctx = PyString_FromString(name);
+    #else
+    ctx = PyUnicode_FromString(name);
+    #endif
+    __Pyx_ErrRestore(old_exc, old_val, old_tb);
+    if (!ctx) {
+        PyErr_WriteUnraisable(Py_None);
+    } else {
+        PyErr_WriteUnraisable(ctx);
+        Py_DECREF(ctx);
+    }
+#ifdef WITH_THREAD
+    if (nogil)
+        PyGILState_Release(state);
+#endif
+}
+
+static PyObject *__Pyx_Import(PyObject *name, PyObject *from_list, int level) {
+    PyObject *empty_list = 0;
+    PyObject *module = 0;
+    PyObject *global_dict = 0;
+    PyObject *empty_dict = 0;
+    PyObject *list;
+    #if PY_VERSION_HEX < 0x03030000
+    PyObject *py_import;
+    py_import = __Pyx_PyObject_GetAttrStr(__pyx_b, __pyx_n_s_import);
+    if (!py_import)
+        goto bad;
+    #endif
+    if (from_list)
+        list = from_list;
+    else {
+        empty_list = PyList_New(0);
+        if (!empty_list)
+            goto bad;
+        list = empty_list;
+    }
+    global_dict = PyModule_GetDict(__pyx_m);
+    if (!global_dict)
+        goto bad;
+    empty_dict = PyDict_New();
+    if (!empty_dict)
+        goto bad;
+    {
+        #if PY_MAJOR_VERSION >= 3
+        if (level == -1) {
+            if (strchr(__Pyx_MODULE_NAME, '.')) {
+                #if PY_VERSION_HEX < 0x03030000
+                PyObject *py_level = PyInt_FromLong(1);
+                if (!py_level)
+                    goto bad;
+                module = PyObject_CallFunctionObjArgs(py_import,
+                    name, global_dict, empty_dict, list, py_level, NULL);
+                Py_DECREF(py_level);
+                #else
+                module = PyImport_ImportModuleLevelObject(
+                    name, global_dict, empty_dict, list, 1);
+                #endif
+                if (!module) {
+                    if (!PyErr_ExceptionMatches(PyExc_ImportError))
+                        goto bad;
+                    PyErr_Clear();
+                }
+            }
+            level = 0;
+        }
+        #endif
+        if (!module) {
+            #if PY_VERSION_HEX < 0x03030000
+            PyObject *py_level = PyInt_FromLong(level);
+            if (!py_level)
+                goto bad;
+            module = PyObject_CallFunctionObjArgs(py_import,
+                name, global_dict, empty_dict, list, py_level, NULL);
+            Py_DECREF(py_level);
+            #else
+            module = PyImport_ImportModuleLevelObject(
+                name, global_dict, empty_dict, list, level);
+            #endif
+        }
+    }
+bad:
+    #if PY_VERSION_HEX < 0x03030000
+    Py_XDECREF(py_import);
+    #endif
+    Py_XDECREF(empty_list);
+    Py_XDECREF(empty_dict);
+    return module;
+}
+
+static PyObject* __Pyx_ImportFrom(PyObject* module, PyObject* name) {
+    PyObject* value = __Pyx_PyObject_GetAttrStr(module, name);
+    if (unlikely(!value) && PyErr_ExceptionMatches(PyExc_AttributeError)) {
+        PyErr_Format(PyExc_ImportError,
+        #if PY_MAJOR_VERSION < 3
+            "cannot import name %.230s", PyString_AS_STRING(name));
+        #else
+            "cannot import name %S", name);
+        #endif
+    }
+    return value;
 }
 
 static int __pyx_bisect_code_objects(__Pyx_CodeObjectCacheEntry* entries, int count, int code_line) {
@@ -2706,111 +3054,6 @@ raise_neg_overflow:
     return (int) -1;
 }
 
-#if !CYTHON_COMPILING_IN_PYPY && PY_MAJOR_VERSION < 3
-static PyObject *__Pyx_GetStdout(void) {
-    PyObject *f = PySys_GetObject((char *)"stdout");
-    if (!f) {
-        PyErr_SetString(PyExc_RuntimeError, "lost sys.stdout");
-    }
-    return f;
-}
-static int __Pyx_Print(PyObject* f, PyObject *arg_tuple, int newline) {
-    int i;
-    if (!f) {
-        if (!(f = __Pyx_GetStdout()))
-            return -1;
-    }
-    Py_INCREF(f);
-    for (i=0; i < PyTuple_GET_SIZE(arg_tuple); i++) {
-        PyObject* v;
-        if (PyFile_SoftSpace(f, 1)) {
-            if (PyFile_WriteString(" ", f) < 0)
-                goto error;
-        }
-        v = PyTuple_GET_ITEM(arg_tuple, i);
-        if (PyFile_WriteObject(v, f, Py_PRINT_RAW) < 0)
-            goto error;
-        if (PyString_Check(v)) {
-            char *s = PyString_AsString(v);
-            Py_ssize_t len = PyString_Size(v);
-            if (len > 0) {
-                switch (s[len-1]) {
-                    case ' ': break;
-                    case '\f': case '\r': case '\n': case '\t': case '\v':
-                        PyFile_SoftSpace(f, 0);
-                        break;
-                    default:  break;
-                }
-            }
-        }
-    }
-    if (newline) {
-        if (PyFile_WriteString("\n", f) < 0)
-            goto error;
-        PyFile_SoftSpace(f, 0);
-    }
-    Py_DECREF(f);
-    return 0;
-error:
-    Py_DECREF(f);
-    return -1;
-}
-#else
-static int __Pyx_Print(PyObject* stream, PyObject *arg_tuple, int newline) {
-    PyObject* kwargs = 0;
-    PyObject* result = 0;
-    PyObject* end_string;
-    if (unlikely(!__pyx_print)) {
-        __pyx_print = PyObject_GetAttr(__pyx_b, __pyx_n_s_print);
-        if (!__pyx_print)
-            return -1;
-    }
-    if (stream) {
-        kwargs = PyDict_New();
-        if (unlikely(!kwargs))
-            return -1;
-        if (unlikely(PyDict_SetItem(kwargs, __pyx_n_s_file, stream) < 0))
-            goto bad;
-        if (!newline) {
-            end_string = PyUnicode_FromStringAndSize(" ", 1);
-            if (unlikely(!end_string))
-                goto bad;
-            if (PyDict_SetItem(kwargs, __pyx_n_s_end, end_string) < 0) {
-                Py_DECREF(end_string);
-                goto bad;
-            }
-            Py_DECREF(end_string);
-        }
-    } else if (!newline) {
-        if (unlikely(!__pyx_print_kwargs)) {
-            __pyx_print_kwargs = PyDict_New();
-            if (unlikely(!__pyx_print_kwargs))
-                return -1;
-            end_string = PyUnicode_FromStringAndSize(" ", 1);
-            if (unlikely(!end_string))
-                return -1;
-            if (PyDict_SetItem(__pyx_print_kwargs, __pyx_n_s_end, end_string) < 0) {
-                Py_DECREF(end_string);
-                return -1;
-            }
-            Py_DECREF(end_string);
-        }
-        kwargs = __pyx_print_kwargs;
-    }
-    result = PyObject_Call(__pyx_print, arg_tuple, kwargs);
-    if (unlikely(kwargs) && (kwargs != __pyx_print_kwargs))
-        Py_DECREF(kwargs);
-    if (!result)
-        return -1;
-    Py_DECREF(result);
-    return 0;
-bad:
-    if (kwargs != __pyx_print_kwargs)
-        Py_XDECREF(kwargs);
-    return -1;
-}
-#endif
-
 static CYTHON_INLINE PyObject* __Pyx_PyInt_From_int(int value) {
     const int neg_one = (int) -1, const_zero = (int) 0;
     const int is_unsigned = neg_one > const_zero;
@@ -2835,190 +3078,6 @@ static CYTHON_INLINE PyObject* __Pyx_PyInt_From_int(int value) {
         return _PyLong_FromByteArray(bytes, sizeof(int),
                                      little, !is_unsigned);
     }
-}
-
-static CYTHON_INLINE size_t __Pyx_PyInt_As_size_t(PyObject *x) {
-    const size_t neg_one = (size_t) -1, const_zero = (size_t) 0;
-    const int is_unsigned = neg_one > const_zero;
-#if PY_MAJOR_VERSION < 3
-    if (likely(PyInt_Check(x))) {
-        if (sizeof(size_t) < sizeof(long)) {
-            __PYX_VERIFY_RETURN_INT(size_t, long, PyInt_AS_LONG(x))
-        } else {
-            long val = PyInt_AS_LONG(x);
-            if (is_unsigned && unlikely(val < 0)) {
-                goto raise_neg_overflow;
-            }
-            return (size_t) val;
-        }
-    } else
-#endif
-    if (likely(PyLong_Check(x))) {
-        if (is_unsigned) {
-#if CYTHON_USE_PYLONG_INTERNALS
-            const digit* digits = ((PyLongObject*)x)->ob_digit;
-            switch (Py_SIZE(x)) {
-                case  0: return (size_t) 0;
-                case  1: __PYX_VERIFY_RETURN_INT(size_t, digit, digits[0])
-                case 2:
-                    if (8 * sizeof(size_t) > 1 * PyLong_SHIFT) {
-                        if (8 * sizeof(unsigned long) > 2 * PyLong_SHIFT) {
-                            __PYX_VERIFY_RETURN_INT(size_t, unsigned long, (((((unsigned long)digits[1]) << PyLong_SHIFT) | (unsigned long)digits[0])))
-                        } else if (8 * sizeof(size_t) >= 2 * PyLong_SHIFT) {
-                            return (size_t) (((((size_t)digits[1]) << PyLong_SHIFT) | (size_t)digits[0]));
-                        }
-                    }
-                    break;
-                case 3:
-                    if (8 * sizeof(size_t) > 2 * PyLong_SHIFT) {
-                        if (8 * sizeof(unsigned long) > 3 * PyLong_SHIFT) {
-                            __PYX_VERIFY_RETURN_INT(size_t, unsigned long, (((((((unsigned long)digits[2]) << PyLong_SHIFT) | (unsigned long)digits[1]) << PyLong_SHIFT) | (unsigned long)digits[0])))
-                        } else if (8 * sizeof(size_t) >= 3 * PyLong_SHIFT) {
-                            return (size_t) (((((((size_t)digits[2]) << PyLong_SHIFT) | (size_t)digits[1]) << PyLong_SHIFT) | (size_t)digits[0]));
-                        }
-                    }
-                    break;
-                case 4:
-                    if (8 * sizeof(size_t) > 3 * PyLong_SHIFT) {
-                        if (8 * sizeof(unsigned long) > 4 * PyLong_SHIFT) {
-                            __PYX_VERIFY_RETURN_INT(size_t, unsigned long, (((((((((unsigned long)digits[3]) << PyLong_SHIFT) | (unsigned long)digits[2]) << PyLong_SHIFT) | (unsigned long)digits[1]) << PyLong_SHIFT) | (unsigned long)digits[0])))
-                        } else if (8 * sizeof(size_t) >= 4 * PyLong_SHIFT) {
-                            return (size_t) (((((((((size_t)digits[3]) << PyLong_SHIFT) | (size_t)digits[2]) << PyLong_SHIFT) | (size_t)digits[1]) << PyLong_SHIFT) | (size_t)digits[0]));
-                        }
-                    }
-                    break;
-            }
-#endif
-#if CYTHON_COMPILING_IN_CPYTHON
-            if (unlikely(Py_SIZE(x) < 0)) {
-                goto raise_neg_overflow;
-            }
-#else
-            {
-                int result = PyObject_RichCompareBool(x, Py_False, Py_LT);
-                if (unlikely(result < 0))
-                    return (size_t) -1;
-                if (unlikely(result == 1))
-                    goto raise_neg_overflow;
-            }
-#endif
-            if (sizeof(size_t) <= sizeof(unsigned long)) {
-                __PYX_VERIFY_RETURN_INT_EXC(size_t, unsigned long, PyLong_AsUnsignedLong(x))
-            } else if (sizeof(size_t) <= sizeof(unsigned PY_LONG_LONG)) {
-                __PYX_VERIFY_RETURN_INT_EXC(size_t, unsigned PY_LONG_LONG, PyLong_AsUnsignedLongLong(x))
-            }
-        } else {
-#if CYTHON_USE_PYLONG_INTERNALS
-            const digit* digits = ((PyLongObject*)x)->ob_digit;
-            switch (Py_SIZE(x)) {
-                case  0: return (size_t) 0;
-                case -1: __PYX_VERIFY_RETURN_INT(size_t, sdigit, -(sdigit) digits[0])
-                case  1: __PYX_VERIFY_RETURN_INT(size_t,  digit, +digits[0])
-                case -2:
-                    if (8 * sizeof(size_t) - 1 > 1 * PyLong_SHIFT) {
-                        if (8 * sizeof(unsigned long) > 2 * PyLong_SHIFT) {
-                            __PYX_VERIFY_RETURN_INT(size_t, long, -(long) (((((unsigned long)digits[1]) << PyLong_SHIFT) | (unsigned long)digits[0])))
-                        } else if (8 * sizeof(size_t) - 1 > 2 * PyLong_SHIFT) {
-                            return (size_t) (((size_t)-1)*(((((size_t)digits[1]) << PyLong_SHIFT) | (size_t)digits[0])));
-                        }
-                    }
-                    break;
-                case 2:
-                    if (8 * sizeof(size_t) > 1 * PyLong_SHIFT) {
-                        if (8 * sizeof(unsigned long) > 2 * PyLong_SHIFT) {
-                            __PYX_VERIFY_RETURN_INT(size_t, unsigned long, (((((unsigned long)digits[1]) << PyLong_SHIFT) | (unsigned long)digits[0])))
-                        } else if (8 * sizeof(size_t) - 1 > 2 * PyLong_SHIFT) {
-                            return (size_t) ((((((size_t)digits[1]) << PyLong_SHIFT) | (size_t)digits[0])));
-                        }
-                    }
-                    break;
-                case -3:
-                    if (8 * sizeof(size_t) - 1 > 2 * PyLong_SHIFT) {
-                        if (8 * sizeof(unsigned long) > 3 * PyLong_SHIFT) {
-                            __PYX_VERIFY_RETURN_INT(size_t, long, -(long) (((((((unsigned long)digits[2]) << PyLong_SHIFT) | (unsigned long)digits[1]) << PyLong_SHIFT) | (unsigned long)digits[0])))
-                        } else if (8 * sizeof(size_t) - 1 > 3 * PyLong_SHIFT) {
-                            return (size_t) (((size_t)-1)*(((((((size_t)digits[2]) << PyLong_SHIFT) | (size_t)digits[1]) << PyLong_SHIFT) | (size_t)digits[0])));
-                        }
-                    }
-                    break;
-                case 3:
-                    if (8 * sizeof(size_t) > 2 * PyLong_SHIFT) {
-                        if (8 * sizeof(unsigned long) > 3 * PyLong_SHIFT) {
-                            __PYX_VERIFY_RETURN_INT(size_t, unsigned long, (((((((unsigned long)digits[2]) << PyLong_SHIFT) | (unsigned long)digits[1]) << PyLong_SHIFT) | (unsigned long)digits[0])))
-                        } else if (8 * sizeof(size_t) - 1 > 3 * PyLong_SHIFT) {
-                            return (size_t) ((((((((size_t)digits[2]) << PyLong_SHIFT) | (size_t)digits[1]) << PyLong_SHIFT) | (size_t)digits[0])));
-                        }
-                    }
-                    break;
-                case -4:
-                    if (8 * sizeof(size_t) - 1 > 3 * PyLong_SHIFT) {
-                        if (8 * sizeof(unsigned long) > 4 * PyLong_SHIFT) {
-                            __PYX_VERIFY_RETURN_INT(size_t, long, -(long) (((((((((unsigned long)digits[3]) << PyLong_SHIFT) | (unsigned long)digits[2]) << PyLong_SHIFT) | (unsigned long)digits[1]) << PyLong_SHIFT) | (unsigned long)digits[0])))
-                        } else if (8 * sizeof(size_t) - 1 > 4 * PyLong_SHIFT) {
-                            return (size_t) (((size_t)-1)*(((((((((size_t)digits[3]) << PyLong_SHIFT) | (size_t)digits[2]) << PyLong_SHIFT) | (size_t)digits[1]) << PyLong_SHIFT) | (size_t)digits[0])));
-                        }
-                    }
-                    break;
-                case 4:
-                    if (8 * sizeof(size_t) > 3 * PyLong_SHIFT) {
-                        if (8 * sizeof(unsigned long) > 4 * PyLong_SHIFT) {
-                            __PYX_VERIFY_RETURN_INT(size_t, unsigned long, (((((((((unsigned long)digits[3]) << PyLong_SHIFT) | (unsigned long)digits[2]) << PyLong_SHIFT) | (unsigned long)digits[1]) << PyLong_SHIFT) | (unsigned long)digits[0])))
-                        } else if (8 * sizeof(size_t) - 1 > 4 * PyLong_SHIFT) {
-                            return (size_t) ((((((((((size_t)digits[3]) << PyLong_SHIFT) | (size_t)digits[2]) << PyLong_SHIFT) | (size_t)digits[1]) << PyLong_SHIFT) | (size_t)digits[0])));
-                        }
-                    }
-                    break;
-            }
-#endif
-            if (sizeof(size_t) <= sizeof(long)) {
-                __PYX_VERIFY_RETURN_INT_EXC(size_t, long, PyLong_AsLong(x))
-            } else if (sizeof(size_t) <= sizeof(PY_LONG_LONG)) {
-                __PYX_VERIFY_RETURN_INT_EXC(size_t, PY_LONG_LONG, PyLong_AsLongLong(x))
-            }
-        }
-        {
-#if CYTHON_COMPILING_IN_PYPY && !defined(_PyLong_AsByteArray)
-            PyErr_SetString(PyExc_RuntimeError,
-                            "_PyLong_AsByteArray() not available in PyPy, cannot convert large numbers");
-#else
-            size_t val;
-            PyObject *v = __Pyx_PyNumber_Int(x);
- #if PY_MAJOR_VERSION < 3
-            if (likely(v) && !PyLong_Check(v)) {
-                PyObject *tmp = v;
-                v = PyNumber_Long(tmp);
-                Py_DECREF(tmp);
-            }
- #endif
-            if (likely(v)) {
-                int one = 1; int is_little = (int)*(unsigned char *)&one;
-                unsigned char *bytes = (unsigned char *)&val;
-                int ret = _PyLong_AsByteArray((PyLongObject *)v,
-                                              bytes, sizeof(val),
-                                              is_little, !is_unsigned);
-                Py_DECREF(v);
-                if (likely(!ret))
-                    return val;
-            }
-#endif
-            return (size_t) -1;
-        }
-    } else {
-        size_t val;
-        PyObject *tmp = __Pyx_PyNumber_Int(x);
-        if (!tmp) return (size_t) -1;
-        val = __Pyx_PyInt_As_size_t(tmp);
-        Py_DECREF(tmp);
-        return val;
-    }
-raise_overflow:
-    PyErr_SetString(PyExc_OverflowError,
-        "value too large to convert to size_t");
-    return (size_t) -1;
-raise_neg_overflow:
-    PyErr_SetString(PyExc_OverflowError,
-        "can't convert negative value to size_t");
-    return (size_t) -1;
 }
 
 static CYTHON_INLINE PyObject* __Pyx_PyInt_From_long(long value) {
@@ -3244,42 +3303,6 @@ static int __Pyx_check_binary_version(void) {
         return PyErr_WarnEx(NULL, message, 1);
     }
     return 0;
-}
-
-static int __Pyx_ExportFunction(const char *name, void (*f)(void), const char *sig) {
-    PyObject *d = 0;
-    PyObject *cobj = 0;
-    union {
-        void (*fp)(void);
-        void *p;
-    } tmp;
-    d = PyObject_GetAttrString(__pyx_m, (char *)"__pyx_capi__");
-    if (!d) {
-        PyErr_Clear();
-        d = PyDict_New();
-        if (!d)
-            goto bad;
-        Py_INCREF(d);
-        if (PyModule_AddObject(__pyx_m, (char *)"__pyx_capi__", d) < 0)
-            goto bad;
-    }
-    tmp.fp = f;
-#if PY_VERSION_HEX >= 0x02070000
-    cobj = PyCapsule_New(tmp.p, sig, 0);
-#else
-    cobj = PyCObject_FromVoidPtrAndDesc(tmp.p, (void *)sig, 0);
-#endif
-    if (!cobj)
-        goto bad;
-    if (PyDict_SetItemString(d, name, cobj) < 0)
-        goto bad;
-    Py_DECREF(cobj);
-    Py_DECREF(d);
-    return 0;
-bad:
-    Py_XDECREF(cobj);
-    Py_XDECREF(d);
-    return -1;
 }
 
 #ifndef __PYX_HAVE_RT_ImportModule

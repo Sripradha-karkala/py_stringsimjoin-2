@@ -13,7 +13,13 @@ from py_stringsimjoin.apply_rf.coverage cimport Coverage
 cdef void compute_predicate_cost_and_coverage(vector[string]& lstrings, 
                                               vector[string]& rstrings, 
                                               vector[Tree]& trees, 
-                                              omap[string, Coverage]& coverage)
+                                              omap[string, Coverage]& coverage,
+                                              omap[int, Coverage]& tree_cov)
+
+cdef Node get_default_execution_plan(vector[Tree]& trees, 
+                                     omap[string, Coverage]& coverage,
+                                     omap[int, Coverage]& tree_cov, const int,
+                                     vector[Tree]& sel_trees, vector[Tree]& rem_trees)
 
 cdef vector[Tree] extract_pos_rules_from_rf(rf, feature_table)
 cdef void generate_local_optimal_plans(vector[Tree]& trees, omap[string, Coverage]& coverage, int sample_size, vector[Node]& plans)

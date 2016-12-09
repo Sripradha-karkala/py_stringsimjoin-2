@@ -8,6 +8,8 @@ from libcpp cimport bool
 from libcpp.map cimport map as omap                                             
 from libcpp.pair cimport pair     
 
+from py_stringsimjoin.apply_rf.inverted_index cimport InvertedIndex      
+from py_stringsimjoin.apply_rf.utils cimport build_inverted_index
 
 cpdef vector[pair[int, int]] ov_coeff_join(vector[vector[int]]& ltokens, 
                                            vector[vector[int]]& rtokens,
@@ -69,22 +71,3 @@ cdef void ov_coeff_join_part(pair[int, int] partition,
                 output_pairs.push_back(pair[int, int](entry.first, i))     
 
 
-cdef void build_inverted_index(vector[vector[int]]& token_vectors, InvertedIndex &inv_index):
-    cdef vector[int] tokens, size_vector                                                 
-    cdef int i, j, m, n=token_vectors.size()
-    cdef omap[int, vector[int]] index                                 
-    for i in range(n):                                                      
-        tokens = token_vectors[i]                                           
-        m = tokens.size()                                                   
-        size_vector.push_back(m)                                       
-        for j in range(m):                                      
-            index[tokens[j]].push_back(i)           
-    inv_index.set_fields(index, size_vector)
-
-cdef extern from "inverted_index.h" nogil:
-    cdef cppclass InvertedIndex nogil:
-        InvertedIndex()
-        InvertedIndex(omap[int, vector[int]]&, vector[int]&)
-        void set_fields(omap[int, vector[int]]&, vector[int]&)
-        omap[int, vector[int]] index
-        vector[int] size_vector

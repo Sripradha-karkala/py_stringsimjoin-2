@@ -2,8 +2,10 @@
 from libcpp cimport bool
 from libcpp.vector cimport vector                                               
 from libcpp.string cimport string                                              
+from libcpp.map cimport map as omap                                             
 
 from py_stringsimjoin.apply_rf.sim_functions cimport cosine, dice, jaccard, cosine_str, dice_str, jaccard_str      
+from py_stringsimjoin.apply_rf.inverted_index cimport InvertedIndex             
  
 
 cdef int get_sim_type(const string& sim_measure_type):                          
@@ -63,4 +65,36 @@ cdef compfnptr get_comparison_function(const int comp_type) nogil:
     elif comp_type == 2:                                                        
         return gt_compare                                                       
     elif comp_type == 3:                                                        
-        return ge_compare        
+        return ge_compare 
+
+cdef int int_min(int a, int b) nogil: 
+    return a if a <= b else b          
+
+cdef int int_max(int a, int b) nogil: 
+    return a if a >= b else b          
+
+cdef void build_inverted_index(vector[vector[int]]& token_vectors, InvertedIndex &inv_index):
+    cdef vector[int] tokens, size_vector                                        
+    cdef int i, j, m, n=token_vectors.size()                                    
+    cdef omap[int, vector[int]] index                                           
+    for i in range(n):                                                          
+        tokens = token_vectors[i]                                               
+        m = tokens.size()                                                       
+        size_vector.push_back(m)                                                
+        for j in range(m):                                                      
+            index[tokens[j]].push_back(i)                                       
+    inv_index.set_fields(index, size_vector)   
+ ##
+cdef void build_prefix_index(vector[vector[int]]& token_vectors, int qval, double threshold, InvertedIndex &inv_index):
+    cdef vector[int] tokens, size_vector                                        
+    cdef int i, j, m, n=token_vectors.size(), prefix_length                     
+    cdef omap[int, vector[int]] index                                           
+    for i in range(n):                                                          
+        tokens = token_vectors[i]                                               
+        m = tokens.size()                                                       
+        size_vector.push_back(m)                                                
+        prefix_length = int_min(<int>(qval * threshold + 1), m)                 
+                                                                                
+        for j in range(prefix_length):                                          
+            index[tokens[j]].push_back(i)                                       
+    inv_index.set_fields(index, size_vector)        

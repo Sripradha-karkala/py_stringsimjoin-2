@@ -9,7 +9,8 @@ from libcpp.map cimport map as omap
 from libcpp.pair cimport pair     
 
 from py_stringsimjoin.apply_rf.sim_functions cimport edit_distance
-
+from py_stringsimjoin.apply_rf.inverted_index cimport InvertedIndex             
+from py_stringsimjoin.apply_rf.utils cimport build_prefix_index   
 
 cpdef vector[pair[int, int]] ed_join(vector[vector[int]]& ltokens, 
                                      vector[vector[int]]& rtokens,
@@ -74,26 +75,3 @@ cdef void ed_join_part(pair[int, int] partition,
 
         candidates.clear()
 
-
-cdef void build_prefix_index(vector[vector[int]]& token_vectors, int qval, double threshold, InvertedIndex &inv_index):
-    cdef vector[int] tokens, size_vector                                                 
-    cdef int i, j, m, n=token_vectors.size(), prefix_length
-    cdef omap[int, vector[int]] index                                 
-    for i in range(n):                                                      
-        tokens = token_vectors[i]                                           
-        m = tokens.size()                                                   
-        size_vector.push_back(m)                                       
-        prefix_length = int_min(<int>(qval * threshold + 1), m)
-            
-        for j in range(prefix_length):                                      
-            index[tokens[j]].push_back(i)           
-    inv_index.set_fields(index, size_vector)
-
-
-cdef extern from "inverted_index.h" nogil:
-    cdef cppclass InvertedIndex nogil:
-        InvertedIndex()
-        InvertedIndex(omap[int, vector[int]]&, vector[int]&)
-        void set_fields(omap[int, vector[int]]&, vector[int]&)
-        omap[int, vector[int]] index
-        vector[int] size_vector

@@ -18,7 +18,7 @@ from py_stringsimjoin.apply_rf.execution_plan import get_predicate_dict
 from py_stringsimjoin.apply_rf.tokenizers cimport tokenize, load_tok, tokenize_str
 from py_stringsimjoin.apply_rf.set_sim_join cimport set_sim_join, set_sim_join1
 from py_stringsimjoin.apply_rf.overlap_coefficient_join cimport ov_coeff_join                
-from py_stringsimjoin.apply_rf.edit_distance_join cimport ed_join   
+#from py_stringsimjoin.apply_rf.edit_distance_join cimport ed_join   
 from py_stringsimjoin.apply_rf.sim_functions cimport cosine, dice, jaccard      
 from py_stringsimjoin.apply_rf.utils cimport compfnptr, simfnptr, get_comp_type, get_comparison_function, get_sim_type, get_sim_function, simfnptr_str, get_sim_function_str
 
@@ -27,7 +27,7 @@ from py_stringsimjoin.apply_rf.node cimport Node
 from py_stringsimjoin.apply_rf.coverage cimport Coverage         
 from py_stringsimjoin.apply_rf.rule cimport Rule                                
 from py_stringsimjoin.apply_rf.tree cimport Tree  
-from py_stringsimjoin.apply_rf.ex_plan cimport generate_ex_plan_for_stage2, compute_predicate_cost_and_coverage, extract_pos_rules_from_rf, generate_local_optimal_plans, generate_overall_plan  
+from py_stringsimjoin.apply_rf.ex_plan cimport get_default_execution_plan, generate_ex_plan_for_stage2, compute_predicate_cost_and_coverage, extract_pos_rules_from_rf, generate_local_optimal_plans, generate_overall_plan  
 
 cdef extern from "string.h" nogil:                                              
     char *strtok (char *inp_str, const char *delimiters)     
@@ -41,60 +41,55 @@ def test_execute_rf(rf, feature_table, l1, l2, path1, attr1, path2, attr2, worki
     cdef vector[Tree] trees, trees1, trees2                                     
     trees = extract_pos_rules_from_rf(rf, feature_table)                        
                                                                                 
-    cdef int i=0, num_total_trees = trees.size(), num_trees_processed           
-#    num_trees_processed = (num_total_trees / 2) + 1                             
-    num_trees_processed = 1                                                    
-    while i < num_trees_processed:                                              
-        trees1.push_back(trees[i])                                              
-        i += 1                                                                  
-                                                                                
-    while i < num_total_trees:                                                  
-        trees2.push_back(trees[i])                                              
-        i += 1                                                                  
-    print 'trees1 : ', trees1.size()                                            
-    print 'trees2 : ', trees2.size()                                            
-    print 'num trees : ', trees.size()                                          
-    num_rules = 0                                                               
-    num_preds = 0                                                               
-    cdef Tree tree                                                              
-    cdef Rule rule                                                              
-    for tree in trees:                                                          
-        num_rules += tree.rules.size()                                          
-        for rule in tree.rules:                                                 
-            num_preds += rule.predicates.size()                                 
-    print 'num rules : ', num_rules                                             
-    print 'num preds : ', num_preds                                             
+    cdef int i=0, num_total_trees = trees.size()      
                                                                                 
     cdef vector[string] lstrings, rstrings                                      
     load_strings(path1, attr1, lstrings)                                        
     load_strings(path2, attr2, rstrings)                                        
                                                                                 
     cdef omap[string, Coverage] coverage                                        
+    cdef omap[int, Coverage] tree_cov
     cdef vector[string] l, r                                                    
     for s in l1:                                                                
         l.push_back(lstrings[int(s) - 1])                                       
     for s in l2:                                                                
         r.push_back(rstrings[int(s) - 1])                                       
     print 'computing coverage'                                                  
-    compute_predicate_cost_and_coverage(l, r, trees1, coverage)                 
+    compute_predicate_cost_and_coverage(l, r, trees, coverage, tree_cov)                 
+    cdef Node global_plan
+    global_plan = get_default_execution_plan(trees, coverage, tree_cov, 
+                                             l.size(), trees1, trees2) 
+
+    print 'num join nodes : ', global_plan.children.size()
+    cdef Node h
+    for h in global_plan.children:
+        print 'filter nodes : ', h.children.size()
+    print 'tokenizing strings'                                                  
+#    tokenize_strings(trees, lstrings, rstrings, working_dir)                    
+    print 'finished tokenizing. executing plan'                                 
+    '''
+    execute_plan(global_plan, trees1, lstrings, rstrings, working_dir, n_jobs)  
                                                                                 
+    cdef pair[vector[pair[int, int]], vector[int]] candset_votes                
+    candset_votes = merge_candsets(num_total_trees, trees1.size(),        
+                                   working_dir)                                 
+    cdef int sample_size = 5000                                                 
+    print 'generating plan'
     cdef vector[Node] plans                                                     
-    generate_local_optimal_plans(trees1, coverage, l.size(), plans)             
-#    print 'num pl : ', plans.size()                                            
-                                                                                
-    cdef Node global_plan                                                       
-    global_plan = generate_overall_plan(plans)                                  
-                                                                                
-    print 'executing plan'                                                      
-    print 'num join nodes : ', global_plan.children.size()                      
-    cdef Node child_node, gn                                                    
-    for child_node in global_plan.children:                                     
-        print child_node.children.size()                                        
-        print '------B----'                                                     
-        for gn in child_node.children:                                          
-            print 'size : ', gn.children.size()                                 
-        print '------E----'                                                     
-    execute_plan(global_plan, trees1, lstrings, rstrings, working_dir, n_jobs)
+    plans = generate_ex_plan_for_stage2(candset_votes.first,                    
+                                        lstrings, rstrings,   
+                                        trees2, sample_size)  
+    print 'executing remaining trees'                                           
+    cdef int label = 1, num_trees_processed=trees1.size()                                                          
+    i = 0                                                                       
+    while candset_votes.first.size() > 0 and i < plans.size():                  
+        candset_votes = execute_tree_plan(candset_votes, lstrings, rstrings, plans[i],
+                                  num_total_trees, num_trees_processed, label,  
+                                  n_jobs, working_dir)                          
+        num_trees_processed += 1                                                
+        label += 1                                                              
+    '''
+    print 'total time : ', time.time() - start_time   
 
 
 def execute_rf(rf, feature_table, l1, l2, path1, attr1, path2, attr2, working_dir, n_jobs):                                          
@@ -137,7 +132,7 @@ def execute_rf(rf, feature_table, l1, l2, path1, attr1, path2, attr2, working_di
     for s in l2:                                                                
         r.push_back(rstrings[int(s) - 1])
     print 'computing coverage'                                           
-    compute_predicate_cost_and_coverage(l, r, trees1, coverage)    
+#    compute_predicate_cost_and_coverage(l, r, trees1, coverage)    
 
     cdef vector[Node] plans                                                     
     generate_local_optimal_plans(trees1, coverage, l.size(), plans)              
@@ -151,16 +146,6 @@ def execute_rf(rf, feature_table, l1, l2, path1, attr1, path2, attr2, working_di
     print 'finished tokenizing. executing plan'
     execute_plan(global_plan, trees1, lstrings, rstrings, working_dir, n_jobs)           
 
-#    cdef omap[string, int] merged_candset = merge_candsets(trees, working_dir)
-#    cdef pair[string, int] entry
-#    file_name = working_dir + "/output"
-#    f = open(file_name, 'w')
-#    for entry in merged_candset:
-#        if entry.second >= (trees.size()/2.0):
-#            f.write(entry.first + "\n")
-#    f.close()
-#    print 'num trees processed : ', num_trees_processed
-#    print 'merging candsets'
     cdef pair[vector[pair[int, int]], vector[int]] candset_votes                
     candset_votes = merge_candsets(num_total_trees, num_trees_processed,        
                                    working_dir)                                 
@@ -744,7 +729,7 @@ cdef vector[string] infer_tokenizers(plan, rule_sets):
         queue.extend(curr_node.children)
     return tokenizers
 
-def test_jac(df1, attr1, df2, attr2, sim_type, threshold):
+def test_jac(sim_type, threshold):
     st = time.time()
     print 'tokenizing'
     #test_tok1(df1, attr1, df2, attr2)
@@ -752,17 +737,17 @@ def test_jac(df1, attr1, df2, attr2, sim_type, threshold):
     cdef vector[vector[int]] ltokens, rtokens
     cdef vector[pair[int, int]] output
     cdef pair[vector[pair[int, int]], vector[double]] output1
-    load_tok('alph', 't1', ltokens, rtokens)
+    load_tok('alph_num', 't1', ltokens, rtokens)
     print 'loaded tok'
     cdef int i
-    for i in xrange(50):
-        print 'i= ', i
-        if sim_type == 3:
-            output = ov_coeff_join(ltokens, rtokens, threshold)             
-        else:
-            output1 = set_sim_join(ltokens, rtokens, sim_type, threshold)
-        print 'output size : ', output1.first.size()
-        print 'scores size : ', output1.second.size()
+#    for i in xrange(50):
+#        print 'i= ', i
+    if sim_type == 3:
+        output = ov_coeff_join(ltokens, rtokens, threshold)             
+    else:
+        output1 = set_sim_join(ltokens, rtokens, sim_type, threshold)
+    print 'output size : ', output1.first.size()
+    print 'scores size : ', output1.second.size()
 
 #    cdef pair[int, int] entry
 #    for i in xrange(output1.first.size()):
@@ -782,7 +767,7 @@ def test_ed(df1, attr1, df2, attr2, threshold):
     cdef vector[pair[int, int]] output                                          
     load_tok('qg2', 'gh1', ltokens, rtokens)                                      
     print 'loaded tok'                                                          
-    output = ed_join(ltokens, rtokens, 2, threshold, lstrings, rstrings)            
+    #output = ed_join(ltokens, rtokens, 2, threshold, lstrings, rstrings)            
     print 'output size : ', output.size()                                       
     print 'time : ', time.time() - st                                           
 

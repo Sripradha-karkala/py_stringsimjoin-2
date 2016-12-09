@@ -3,9 +3,7 @@
 /* BEGIN: Cython Metadata
 {
     "distutils": {
-        "depends": [
-            "inverted_index.h"
-        ], 
+        "depends": [], 
         "extra_compile_args": [
             "-O3", 
             "-ffast-math", 
@@ -490,6 +488,33 @@ static const char *__pyx_f[] = {
 
 /*--- Type declarations ---*/
 
+/* "py_stringsimjoin/apply_rf/utils.pxd":9
+ * 
+ * 
+ * ctypedef double (*simfnptr)(const vector[int]&, const vector[int]&) nogil             # <<<<<<<<<<<<<<
+ * ctypedef double (*simfnptr_str)(vector[string]&, vector[string]&) nogil
+ * ctypedef bool (*compfnptr)(double, double) nogil
+ */
+typedef double (*__pyx_t_16py_stringsimjoin_8apply_rf_5utils_simfnptr)(std::vector<int>  const &, std::vector<int>  const &);
+
+/* "py_stringsimjoin/apply_rf/utils.pxd":10
+ * 
+ * ctypedef double (*simfnptr)(const vector[int]&, const vector[int]&) nogil
+ * ctypedef double (*simfnptr_str)(vector[string]&, vector[string]&) nogil             # <<<<<<<<<<<<<<
+ * ctypedef bool (*compfnptr)(double, double) nogil
+ * 
+ */
+typedef double (*__pyx_t_16py_stringsimjoin_8apply_rf_5utils_simfnptr_str)(std::vector<std::string>  &, std::vector<std::string>  &);
+
+/* "py_stringsimjoin/apply_rf/utils.pxd":11
+ * ctypedef double (*simfnptr)(const vector[int]&, const vector[int]&) nogil
+ * ctypedef double (*simfnptr_str)(vector[string]&, vector[string]&) nogil
+ * ctypedef bool (*compfnptr)(double, double) nogil             # <<<<<<<<<<<<<<
+ * 
+ * cdef int get_sim_type(const string&)
+ */
+typedef bool (*__pyx_t_16py_stringsimjoin_8apply_rf_5utils_compfnptr)(double, double);
+
 /* --- Runtime support code (head) --- */
 #ifndef CYTHON_REFNANNY
   #define CYTHON_REFNANNY 0
@@ -716,11 +741,15 @@ static int __Pyx_InitStrings(__Pyx_StringTabEntry *t);
 /* Module declarations from 'py_stringsimjoin.apply_rf.sim_functions' */
 static double (*__pyx_f_16py_stringsimjoin_8apply_rf_13sim_functions_edit_distance)(std::string const &, std::string const &); /*proto*/
 
+/* Module declarations from 'py_stringsimjoin.apply_rf.inverted_index' */
+
+/* Module declarations from 'py_stringsimjoin.apply_rf.utils' */
+static void (*__pyx_f_16py_stringsimjoin_8apply_rf_5utils_build_prefix_index)(std::vector<std::vector<int> >  &, int, double, InvertedIndex &); /*proto*/
+
 /* Module declarations from 'py_stringsimjoin.apply_rf.edit_distance_join' */
 static std::vector<std::pair<int,int> >  __pyx_f_16py_stringsimjoin_8apply_rf_18edit_distance_join_ed_join(std::vector<std::vector<int> >  &, std::vector<std::vector<int> >  &, int, double, std::vector<std::string>  &, std::vector<std::string>  &, int __pyx_skip_dispatch); /*proto*/
 static CYTHON_INLINE int __pyx_f_16py_stringsimjoin_8apply_rf_18edit_distance_join_int_min(int, int); /*proto*/
 static void __pyx_f_16py_stringsimjoin_8apply_rf_18edit_distance_join_ed_join_part(std::pair<int,int> , std::vector<std::vector<int> >  &, std::vector<std::vector<int> >  &, int, double, InvertedIndex &, std::vector<std::string>  &, std::vector<std::string>  &, std::vector<std::pair<int,int> >  &); /*proto*/
-static void __pyx_f_16py_stringsimjoin_8apply_rf_18edit_distance_join_build_prefix_index(std::vector<std::vector<int> >  &, int, double, InvertedIndex &); /*proto*/
 static std::vector<int>  __pyx_convert_vector_from_py_int(PyObject *); /*proto*/
 static std::vector<std::vector<int> >  __pyx_convert_vector_from_py_std_3a__3a_vector_3c_int_3e___(PyObject *); /*proto*/
 static std::string __pyx_convert_string_from_py_std__in_string(PyObject *); /*proto*/
@@ -764,8 +793,8 @@ static PyObject *__pyx_n_s_test;
 static PyObject *__pyx_n_s_threshold;
 static PyObject *__pyx_pf_16py_stringsimjoin_8apply_rf_18edit_distance_join_ed_join(CYTHON_UNUSED PyObject *__pyx_self, std::vector<std::vector<int> >  __pyx_v_ltokens, std::vector<std::vector<int> >  __pyx_v_rtokens, int __pyx_v_qval, double __pyx_v_threshold, std::vector<std::string>  __pyx_v_lstrings, std::vector<std::string>  __pyx_v_rstrings); /* proto */
 
-/* "py_stringsimjoin/apply_rf/edit_distance_join.pyx":14
- * 
+/* "py_stringsimjoin/apply_rf/edit_distance_join.pyx":15
+ * from py_stringsimjoin.apply_rf.utils cimport build_prefix_index
  * 
  * cpdef vector[pair[int, int]] ed_join(vector[vector[int]]& ltokens,             # <<<<<<<<<<<<<<
  *                                      vector[vector[int]]& rtokens,
@@ -803,18 +832,18 @@ static std::vector<std::pair<int,int> >  __pyx_f_16py_stringsimjoin_8apply_rf_18
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("ed_join", 0);
 
-  /* "py_stringsimjoin/apply_rf/edit_distance_join.pyx":20
+  /* "py_stringsimjoin/apply_rf/edit_distance_join.pyx":21
  *                                      vector[string]& lstrings,
  *                                      vector[string]& rstrings):
  *     print 'l size. : ', ltokens.size(), ' , r size : ', rtokens.size()             # <<<<<<<<<<<<<<
  *     cdef vector[vector[pair[int, int]]] output_pairs
  *     cdef vector[pair[int, int]] partitions, final_output_pairs, part_pairs
  */
-  __pyx_t_1 = __Pyx_PyInt_FromSize_t(__pyx_v_ltokens.size()); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 20; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = __Pyx_PyInt_FromSize_t(__pyx_v_ltokens.size()); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 21; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = __Pyx_PyInt_FromSize_t(__pyx_v_rtokens.size()); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 20; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_2 = __Pyx_PyInt_FromSize_t(__pyx_v_rtokens.size()); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 21; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_3 = PyTuple_New(4); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 20; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_3 = PyTuple_New(4); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 21; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_INCREF(__pyx_kp_s_l_size);
   __Pyx_GIVEREF(__pyx_kp_s_l_size);
@@ -828,10 +857,10 @@ static std::vector<std::pair<int,int> >  __pyx_f_16py_stringsimjoin_8apply_rf_18
   PyTuple_SET_ITEM(__pyx_t_3, 3, __pyx_t_2);
   __pyx_t_1 = 0;
   __pyx_t_2 = 0;
-  if (__Pyx_Print(0, __pyx_t_3, 1) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 20; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (__Pyx_Print(0, __pyx_t_3, 1) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 21; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
-  /* "py_stringsimjoin/apply_rf/edit_distance_join.pyx":23
+  /* "py_stringsimjoin/apply_rf/edit_distance_join.pyx":24
  *     cdef vector[vector[pair[int, int]]] output_pairs
  *     cdef vector[pair[int, int]] partitions, final_output_pairs, part_pairs
  *     cdef int i, n=rtokens.size(), ncpus=4, partition_size, start=0, end             # <<<<<<<<<<<<<<
@@ -842,16 +871,16 @@ static std::vector<std::pair<int,int> >  __pyx_f_16py_stringsimjoin_8apply_rf_18
   __pyx_v_ncpus = 4;
   __pyx_v_start = 0;
 
-  /* "py_stringsimjoin/apply_rf/edit_distance_join.pyx":25
+  /* "py_stringsimjoin/apply_rf/edit_distance_join.pyx":26
  *     cdef int i, n=rtokens.size(), ncpus=4, partition_size, start=0, end
  *     cdef InvertedIndex index
  *     build_prefix_index(ltokens, qval, threshold, index)             # <<<<<<<<<<<<<<
  * 
  *     partition_size = <int>(<float> n / <float> ncpus)
  */
-  __pyx_f_16py_stringsimjoin_8apply_rf_18edit_distance_join_build_prefix_index(__pyx_v_ltokens, __pyx_v_qval, __pyx_v_threshold, __pyx_v_index);
+  __pyx_f_16py_stringsimjoin_8apply_rf_5utils_build_prefix_index(__pyx_v_ltokens, __pyx_v_qval, __pyx_v_threshold, __pyx_v_index);
 
-  /* "py_stringsimjoin/apply_rf/edit_distance_join.pyx":27
+  /* "py_stringsimjoin/apply_rf/edit_distance_join.pyx":28
  *     build_prefix_index(ltokens, qval, threshold, index)
  * 
  *     partition_size = <int>(<float> n / <float> ncpus)             # <<<<<<<<<<<<<<
@@ -860,20 +889,20 @@ static std::vector<std::pair<int,int> >  __pyx_f_16py_stringsimjoin_8apply_rf_18
  */
   if (unlikely(((float)__pyx_v_ncpus) == 0)) {
     PyErr_SetString(PyExc_ZeroDivisionError, "float division");
-    {__pyx_filename = __pyx_f[0]; __pyx_lineno = 27; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    {__pyx_filename = __pyx_f[0]; __pyx_lineno = 28; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   }
   __pyx_v_partition_size = ((int)(((float)__pyx_v_n) / ((float)__pyx_v_ncpus)));
 
-  /* "py_stringsimjoin/apply_rf/edit_distance_join.pyx":28
+  /* "py_stringsimjoin/apply_rf/edit_distance_join.pyx":29
  * 
  *     partition_size = <int>(<float> n / <float> ncpus)
  *     print 'part size : ', partition_size             # <<<<<<<<<<<<<<
  *     for i in range(ncpus):
  *         end = start + partition_size
  */
-  __pyx_t_3 = __Pyx_PyInt_From_int(__pyx_v_partition_size); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 28; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_3 = __Pyx_PyInt_From_int(__pyx_v_partition_size); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 29; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_2 = PyTuple_New(2); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 28; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_2 = PyTuple_New(2); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 29; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_INCREF(__pyx_kp_s_part_size);
   __Pyx_GIVEREF(__pyx_kp_s_part_size);
@@ -881,10 +910,10 @@ static std::vector<std::pair<int,int> >  __pyx_f_16py_stringsimjoin_8apply_rf_18
   __Pyx_GIVEREF(__pyx_t_3);
   PyTuple_SET_ITEM(__pyx_t_2, 1, __pyx_t_3);
   __pyx_t_3 = 0;
-  if (__Pyx_Print(0, __pyx_t_2, 1) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 28; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (__Pyx_Print(0, __pyx_t_2, 1) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 29; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "py_stringsimjoin/apply_rf/edit_distance_join.pyx":29
+  /* "py_stringsimjoin/apply_rf/edit_distance_join.pyx":30
  *     partition_size = <int>(<float> n / <float> ncpus)
  *     print 'part size : ', partition_size
  *     for i in range(ncpus):             # <<<<<<<<<<<<<<
@@ -895,7 +924,7 @@ static std::vector<std::pair<int,int> >  __pyx_f_16py_stringsimjoin_8apply_rf_18
   for (__pyx_t_5 = 0; __pyx_t_5 < __pyx_t_4; __pyx_t_5+=1) {
     __pyx_v_i = __pyx_t_5;
 
-    /* "py_stringsimjoin/apply_rf/edit_distance_join.pyx":30
+    /* "py_stringsimjoin/apply_rf/edit_distance_join.pyx":31
  *     print 'part size : ', partition_size
  *     for i in range(ncpus):
  *         end = start + partition_size             # <<<<<<<<<<<<<<
@@ -904,7 +933,7 @@ static std::vector<std::pair<int,int> >  __pyx_f_16py_stringsimjoin_8apply_rf_18
  */
     __pyx_v_end = (__pyx_v_start + __pyx_v_partition_size);
 
-    /* "py_stringsimjoin/apply_rf/edit_distance_join.pyx":31
+    /* "py_stringsimjoin/apply_rf/edit_distance_join.pyx":32
  *     for i in range(ncpus):
  *         end = start + partition_size
  *         if end > n or i == ncpus - 1:             # <<<<<<<<<<<<<<
@@ -922,7 +951,7 @@ static std::vector<std::pair<int,int> >  __pyx_f_16py_stringsimjoin_8apply_rf_18
     __pyx_L6_bool_binop_done:;
     if (__pyx_t_6) {
 
-      /* "py_stringsimjoin/apply_rf/edit_distance_join.pyx":32
+      /* "py_stringsimjoin/apply_rf/edit_distance_join.pyx":33
  *         end = start + partition_size
  *         if end > n or i == ncpus - 1:
  *             end = n             # <<<<<<<<<<<<<<
@@ -931,7 +960,7 @@ static std::vector<std::pair<int,int> >  __pyx_f_16py_stringsimjoin_8apply_rf_18
  */
       __pyx_v_end = __pyx_v_n;
 
-      /* "py_stringsimjoin/apply_rf/edit_distance_join.pyx":31
+      /* "py_stringsimjoin/apply_rf/edit_distance_join.pyx":32
  *     for i in range(ncpus):
  *         end = start + partition_size
  *         if end > n or i == ncpus - 1:             # <<<<<<<<<<<<<<
@@ -940,7 +969,7 @@ static std::vector<std::pair<int,int> >  __pyx_f_16py_stringsimjoin_8apply_rf_18
  */
     }
 
-    /* "py_stringsimjoin/apply_rf/edit_distance_join.pyx":33
+    /* "py_stringsimjoin/apply_rf/edit_distance_join.pyx":34
  *         if end > n or i == ncpus - 1:
  *             end = n
  *         partitions.push_back(pair[int, int](start, end))             # <<<<<<<<<<<<<<
@@ -951,27 +980,27 @@ static std::vector<std::pair<int,int> >  __pyx_f_16py_stringsimjoin_8apply_rf_18
       __pyx_t_8 = std::pair<int,int> (__pyx_v_start, __pyx_v_end);
     } catch(...) {
       __Pyx_CppExn2PyErr();
-      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 33; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 34; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     }
     try {
       __pyx_v_partitions.push_back(__pyx_t_8);
     } catch(...) {
       __Pyx_CppExn2PyErr();
-      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 33; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 34; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     }
 
-    /* "py_stringsimjoin/apply_rf/edit_distance_join.pyx":34
+    /* "py_stringsimjoin/apply_rf/edit_distance_join.pyx":35
  *             end = n
  *         partitions.push_back(pair[int, int](start, end))
  *         print start, end             # <<<<<<<<<<<<<<
  *         start = end
  *         output_pairs.push_back(vector[pair[int, int]]())
  */
-    __pyx_t_2 = __Pyx_PyInt_From_int(__pyx_v_start); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 34; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_2 = __Pyx_PyInt_From_int(__pyx_v_start); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 35; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_2);
-    __pyx_t_3 = __Pyx_PyInt_From_int(__pyx_v_end); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 34; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_3 = __Pyx_PyInt_From_int(__pyx_v_end); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 35; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_3);
-    __pyx_t_1 = PyTuple_New(2); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 34; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_1 = PyTuple_New(2); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 35; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_GIVEREF(__pyx_t_2);
     PyTuple_SET_ITEM(__pyx_t_1, 0, __pyx_t_2);
@@ -979,10 +1008,10 @@ static std::vector<std::pair<int,int> >  __pyx_f_16py_stringsimjoin_8apply_rf_18
     PyTuple_SET_ITEM(__pyx_t_1, 1, __pyx_t_3);
     __pyx_t_2 = 0;
     __pyx_t_3 = 0;
-    if (__Pyx_Print(0, __pyx_t_1, 1) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 34; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    if (__Pyx_Print(0, __pyx_t_1, 1) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 35; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-    /* "py_stringsimjoin/apply_rf/edit_distance_join.pyx":35
+    /* "py_stringsimjoin/apply_rf/edit_distance_join.pyx":36
  *         partitions.push_back(pair[int, int](start, end))
  *         print start, end
  *         start = end             # <<<<<<<<<<<<<<
@@ -991,7 +1020,7 @@ static std::vector<std::pair<int,int> >  __pyx_f_16py_stringsimjoin_8apply_rf_18
  */
     __pyx_v_start = __pyx_v_end;
 
-    /* "py_stringsimjoin/apply_rf/edit_distance_join.pyx":36
+    /* "py_stringsimjoin/apply_rf/edit_distance_join.pyx":37
  *         print start, end
  *         start = end
  *         output_pairs.push_back(vector[pair[int, int]]())             # <<<<<<<<<<<<<<
@@ -1002,17 +1031,17 @@ static std::vector<std::pair<int,int> >  __pyx_f_16py_stringsimjoin_8apply_rf_18
       __pyx_t_9 = std::vector<std::pair<int,int> > ();
     } catch(...) {
       __Pyx_CppExn2PyErr();
-      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 36; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 37; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     }
     try {
       __pyx_v_output_pairs.push_back(__pyx_t_9);
     } catch(...) {
       __Pyx_CppExn2PyErr();
-      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 36; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 37; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     }
   }
 
-  /* "py_stringsimjoin/apply_rf/edit_distance_join.pyx":38
+  /* "py_stringsimjoin/apply_rf/edit_distance_join.pyx":39
  *         output_pairs.push_back(vector[pair[int, int]]())
  * 
  *     for i in prange(ncpus, nogil=True):             # <<<<<<<<<<<<<<
@@ -1048,7 +1077,7 @@ static std::vector<std::pair<int,int> >  __pyx_f_16py_stringsimjoin_8apply_rf_18
                         {
                             __pyx_v_i = 0 + 1 * __pyx_t_5;
 
-                            /* "py_stringsimjoin/apply_rf/edit_distance_join.pyx":39
+                            /* "py_stringsimjoin/apply_rf/edit_distance_join.pyx":40
  * 
  *     for i in prange(ncpus, nogil=True):
  *         ed_join_part(partitions[i], ltokens, rtokens, qval, threshold, index, lstrings, rstrings, output_pairs[i])             # <<<<<<<<<<<<<<
@@ -1069,7 +1098,7 @@ static std::vector<std::pair<int,int> >  __pyx_f_16py_stringsimjoin_8apply_rf_18
         #endif
       }
 
-      /* "py_stringsimjoin/apply_rf/edit_distance_join.pyx":38
+      /* "py_stringsimjoin/apply_rf/edit_distance_join.pyx":39
  *         output_pairs.push_back(vector[pair[int, int]]())
  * 
  *     for i in prange(ncpus, nogil=True):             # <<<<<<<<<<<<<<
@@ -1087,7 +1116,7 @@ static std::vector<std::pair<int,int> >  __pyx_f_16py_stringsimjoin_8apply_rf_18
       }
   }
 
-  /* "py_stringsimjoin/apply_rf/edit_distance_join.pyx":41
+  /* "py_stringsimjoin/apply_rf/edit_distance_join.pyx":42
  *         ed_join_part(partitions[i], ltokens, rtokens, qval, threshold, index, lstrings, rstrings, output_pairs[i])
  * 
  *     for part_pairs in output_pairs:             # <<<<<<<<<<<<<<
@@ -1101,7 +1130,7 @@ static std::vector<std::pair<int,int> >  __pyx_f_16py_stringsimjoin_8apply_rf_18
     ++__pyx_t_11;
     __pyx_v_part_pairs = __pyx_t_9;
 
-    /* "py_stringsimjoin/apply_rf/edit_distance_join.pyx":42
+    /* "py_stringsimjoin/apply_rf/edit_distance_join.pyx":43
  * 
  *     for part_pairs in output_pairs:
  *         final_output_pairs.insert(final_output_pairs.end(), part_pairs.begin(), part_pairs.end())             # <<<<<<<<<<<<<<
@@ -1112,10 +1141,10 @@ static std::vector<std::pair<int,int> >  __pyx_f_16py_stringsimjoin_8apply_rf_18
       __pyx_v_final_output_pairs.insert(__pyx_v_final_output_pairs.end(), __pyx_v_part_pairs.begin(), __pyx_v_part_pairs.end());
     } catch(...) {
       __Pyx_CppExn2PyErr();
-      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 42; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 43; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     }
 
-    /* "py_stringsimjoin/apply_rf/edit_distance_join.pyx":41
+    /* "py_stringsimjoin/apply_rf/edit_distance_join.pyx":42
  *         ed_join_part(partitions[i], ltokens, rtokens, qval, threshold, index, lstrings, rstrings, output_pairs[i])
  * 
  *     for part_pairs in output_pairs:             # <<<<<<<<<<<<<<
@@ -1124,7 +1153,7 @@ static std::vector<std::pair<int,int> >  __pyx_f_16py_stringsimjoin_8apply_rf_18
  */
   }
 
-  /* "py_stringsimjoin/apply_rf/edit_distance_join.pyx":44
+  /* "py_stringsimjoin/apply_rf/edit_distance_join.pyx":45
  *         final_output_pairs.insert(final_output_pairs.end(), part_pairs.begin(), part_pairs.end())
  * 
  *     return final_output_pairs             # <<<<<<<<<<<<<<
@@ -1134,8 +1163,8 @@ static std::vector<std::pair<int,int> >  __pyx_f_16py_stringsimjoin_8apply_rf_18
   __pyx_r = __pyx_v_final_output_pairs;
   goto __pyx_L0;
 
-  /* "py_stringsimjoin/apply_rf/edit_distance_join.pyx":14
- * 
+  /* "py_stringsimjoin/apply_rf/edit_distance_join.pyx":15
+ * from py_stringsimjoin.apply_rf.utils cimport build_prefix_index
  * 
  * cpdef vector[pair[int, int]] ed_join(vector[vector[int]]& ltokens,             # <<<<<<<<<<<<<<
  *                                      vector[vector[int]]& rtokens,
@@ -1192,31 +1221,31 @@ static PyObject *__pyx_pw_16py_stringsimjoin_8apply_rf_18edit_distance_join_1ed_
         case  1:
         if (likely((values[1] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_rtokens)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("ed_join", 1, 6, 6, 1); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 14; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+          __Pyx_RaiseArgtupleInvalid("ed_join", 1, 6, 6, 1); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 15; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
         }
         case  2:
         if (likely((values[2] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_qval)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("ed_join", 1, 6, 6, 2); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 14; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+          __Pyx_RaiseArgtupleInvalid("ed_join", 1, 6, 6, 2); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 15; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
         }
         case  3:
         if (likely((values[3] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_threshold)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("ed_join", 1, 6, 6, 3); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 14; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+          __Pyx_RaiseArgtupleInvalid("ed_join", 1, 6, 6, 3); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 15; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
         }
         case  4:
         if (likely((values[4] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_lstrings)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("ed_join", 1, 6, 6, 4); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 14; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+          __Pyx_RaiseArgtupleInvalid("ed_join", 1, 6, 6, 4); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 15; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
         }
         case  5:
         if (likely((values[5] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_rstrings)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("ed_join", 1, 6, 6, 5); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 14; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+          __Pyx_RaiseArgtupleInvalid("ed_join", 1, 6, 6, 5); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 15; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "ed_join") < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 14; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "ed_join") < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 15; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 6) {
       goto __pyx_L5_argtuple_error;
@@ -1228,16 +1257,16 @@ static PyObject *__pyx_pw_16py_stringsimjoin_8apply_rf_18edit_distance_join_1ed_
       values[4] = PyTuple_GET_ITEM(__pyx_args, 4);
       values[5] = PyTuple_GET_ITEM(__pyx_args, 5);
     }
-    __pyx_v_ltokens = __pyx_convert_vector_from_py_std_3a__3a_vector_3c_int_3e___(values[0]); if (unlikely(PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 14; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
-    __pyx_v_rtokens = __pyx_convert_vector_from_py_std_3a__3a_vector_3c_int_3e___(values[1]); if (unlikely(PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 15; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
-    __pyx_v_qval = __Pyx_PyInt_As_int(values[2]); if (unlikely((__pyx_v_qval == (int)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 16; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
-    __pyx_v_threshold = __pyx_PyFloat_AsDouble(values[3]); if (unlikely((__pyx_v_threshold == (double)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 17; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
-    __pyx_v_lstrings = __pyx_convert_vector_from_py_std_3a__3a_string(values[4]); if (unlikely(PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 18; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
-    __pyx_v_rstrings = __pyx_convert_vector_from_py_std_3a__3a_string(values[5]); if (unlikely(PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 19; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+    __pyx_v_ltokens = __pyx_convert_vector_from_py_std_3a__3a_vector_3c_int_3e___(values[0]); if (unlikely(PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 15; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+    __pyx_v_rtokens = __pyx_convert_vector_from_py_std_3a__3a_vector_3c_int_3e___(values[1]); if (unlikely(PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 16; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+    __pyx_v_qval = __Pyx_PyInt_As_int(values[2]); if (unlikely((__pyx_v_qval == (int)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 17; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+    __pyx_v_threshold = __pyx_PyFloat_AsDouble(values[3]); if (unlikely((__pyx_v_threshold == (double)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 18; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+    __pyx_v_lstrings = __pyx_convert_vector_from_py_std_3a__3a_string(values[4]); if (unlikely(PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 19; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+    __pyx_v_rstrings = __pyx_convert_vector_from_py_std_3a__3a_string(values[5]); if (unlikely(PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 20; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("ed_join", 1, 6, 6, PyTuple_GET_SIZE(__pyx_args)); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 14; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
+  __Pyx_RaiseArgtupleInvalid("ed_join", 1, 6, 6, PyTuple_GET_SIZE(__pyx_args)); {__pyx_filename = __pyx_f[0]; __pyx_lineno = 15; __pyx_clineno = __LINE__; goto __pyx_L3_error;}
   __pyx_L3_error:;
   __Pyx_AddTraceback("py_stringsimjoin.apply_rf.edit_distance_join.ed_join", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
@@ -1259,7 +1288,7 @@ static PyObject *__pyx_pf_16py_stringsimjoin_8apply_rf_18edit_distance_join_ed_j
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("ed_join", 0);
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __pyx_convert_vector_to_py_std_3a__3a_pair_3c_int_2c_int_3e___(__pyx_f_16py_stringsimjoin_8apply_rf_18edit_distance_join_ed_join(__pyx_v_ltokens, __pyx_v_rtokens, __pyx_v_qval, __pyx_v_threshold, __pyx_v_lstrings, __pyx_v_rstrings, 0)); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 14; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = __pyx_convert_vector_to_py_std_3a__3a_pair_3c_int_2c_int_3e___(__pyx_f_16py_stringsimjoin_8apply_rf_18edit_distance_join_ed_join(__pyx_v_ltokens, __pyx_v_rtokens, __pyx_v_qval, __pyx_v_threshold, __pyx_v_lstrings, __pyx_v_rstrings, 0)); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 15; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
@@ -1276,7 +1305,7 @@ static PyObject *__pyx_pf_16py_stringsimjoin_8apply_rf_18edit_distance_join_ed_j
   return __pyx_r;
 }
 
-/* "py_stringsimjoin/apply_rf/edit_distance_join.pyx":46
+/* "py_stringsimjoin/apply_rf/edit_distance_join.pyx":47
  *     return final_output_pairs
  * 
  * cdef inline int int_min(int a, int b) nogil: return a if a <= b else b             # <<<<<<<<<<<<<<
@@ -1300,7 +1329,7 @@ static CYTHON_INLINE int __pyx_f_16py_stringsimjoin_8apply_rf_18edit_distance_jo
   return __pyx_r;
 }
 
-/* "py_stringsimjoin/apply_rf/edit_distance_join.pyx":48
+/* "py_stringsimjoin/apply_rf/edit_distance_join.pyx":49
  * cdef inline int int_min(int a, int b) nogil: return a if a <= b else b
  * 
  * cdef void ed_join_part(pair[int, int] partition,             # <<<<<<<<<<<<<<
@@ -1332,7 +1361,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_18edit_distance_join_ed_join_pa
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
 
-  /* "py_stringsimjoin/apply_rf/edit_distance_join.pyx":56
+  /* "py_stringsimjoin/apply_rf/edit_distance_join.pyx":57
  *     cdef oset[int] candidates
  *     cdef vector[int] tokens
  *     cdef int j=0, m, i, prefix_length, cand             # <<<<<<<<<<<<<<
@@ -1341,7 +1370,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_18edit_distance_join_ed_join_pa
  */
   __pyx_v_j = 0;
 
-  /* "py_stringsimjoin/apply_rf/edit_distance_join.pyx":59
+  /* "py_stringsimjoin/apply_rf/edit_distance_join.pyx":60
  *     cdef double edit_dist
  * 
  *     for i in range(partition.first, partition.second):             # <<<<<<<<<<<<<<
@@ -1352,7 +1381,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_18edit_distance_join_ed_join_pa
   for (__pyx_t_2 = __pyx_v_partition.first; __pyx_t_2 < __pyx_t_1; __pyx_t_2+=1) {
     __pyx_v_i = __pyx_t_2;
 
-    /* "py_stringsimjoin/apply_rf/edit_distance_join.pyx":60
+    /* "py_stringsimjoin/apply_rf/edit_distance_join.pyx":61
  * 
  *     for i in range(partition.first, partition.second):
  *         tokens = rtokens[i]             # <<<<<<<<<<<<<<
@@ -1361,7 +1390,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_18edit_distance_join_ed_join_pa
  */
     __pyx_v_tokens = (__pyx_v_rtokens[__pyx_v_i]);
 
-    /* "py_stringsimjoin/apply_rf/edit_distance_join.pyx":61
+    /* "py_stringsimjoin/apply_rf/edit_distance_join.pyx":62
  *     for i in range(partition.first, partition.second):
  *         tokens = rtokens[i]
  *         m = tokens.size()             # <<<<<<<<<<<<<<
@@ -1370,7 +1399,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_18edit_distance_join_ed_join_pa
  */
     __pyx_v_m = __pyx_v_tokens.size();
 
-    /* "py_stringsimjoin/apply_rf/edit_distance_join.pyx":62
+    /* "py_stringsimjoin/apply_rf/edit_distance_join.pyx":63
  *         tokens = rtokens[i]
  *         m = tokens.size()
  *         prefix_length = int_min(<int>(qval * threshold + 1), m)             # <<<<<<<<<<<<<<
@@ -1379,7 +1408,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_18edit_distance_join_ed_join_pa
  */
     __pyx_v_prefix_length = __pyx_f_16py_stringsimjoin_8apply_rf_18edit_distance_join_int_min(((int)((__pyx_v_qval * __pyx_v_threshold) + 1.0)), __pyx_v_m);
 
-    /* "py_stringsimjoin/apply_rf/edit_distance_join.pyx":64
+    /* "py_stringsimjoin/apply_rf/edit_distance_join.pyx":65
  *         prefix_length = int_min(<int>(qval * threshold + 1), m)
  * 
  *         for j in range(prefix_length):             # <<<<<<<<<<<<<<
@@ -1390,7 +1419,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_18edit_distance_join_ed_join_pa
     for (__pyx_t_4 = 0; __pyx_t_4 < __pyx_t_3; __pyx_t_4+=1) {
       __pyx_v_j = __pyx_t_4;
 
-      /* "py_stringsimjoin/apply_rf/edit_distance_join.pyx":65
+      /* "py_stringsimjoin/apply_rf/edit_distance_join.pyx":66
  * 
  *         for j in range(prefix_length):
  *             for cand in index.index[tokens[j]]:             # <<<<<<<<<<<<<<
@@ -1405,7 +1434,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_18edit_distance_join_ed_join_pa
         ++__pyx_t_5;
         __pyx_v_cand = __pyx_t_7;
 
-        /* "py_stringsimjoin/apply_rf/edit_distance_join.pyx":66
+        /* "py_stringsimjoin/apply_rf/edit_distance_join.pyx":67
  *         for j in range(prefix_length):
  *             for cand in index.index[tokens[j]]:
  *                 candidates.insert(cand)             # <<<<<<<<<<<<<<
@@ -1422,10 +1451,10 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_18edit_distance_join_ed_join_pa
           #ifdef WITH_THREAD
           PyGILState_Release(__pyx_gilstate_save);
           #endif
-          {__pyx_filename = __pyx_f[0]; __pyx_lineno = 66; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+          {__pyx_filename = __pyx_f[0]; __pyx_lineno = 67; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
         }
 
-        /* "py_stringsimjoin/apply_rf/edit_distance_join.pyx":65
+        /* "py_stringsimjoin/apply_rf/edit_distance_join.pyx":66
  * 
  *         for j in range(prefix_length):
  *             for cand in index.index[tokens[j]]:             # <<<<<<<<<<<<<<
@@ -1435,7 +1464,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_18edit_distance_join_ed_join_pa
       }
     }
 
-    /* "py_stringsimjoin/apply_rf/edit_distance_join.pyx":69
+    /* "py_stringsimjoin/apply_rf/edit_distance_join.pyx":70
  * 
  * #        print i, candidate_overlap.size()
  *         for cand in candidates:             # <<<<<<<<<<<<<<
@@ -1449,7 +1478,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_18edit_distance_join_ed_join_pa
       ++__pyx_t_8;
       __pyx_v_cand = __pyx_t_3;
 
-      /* "py_stringsimjoin/apply_rf/edit_distance_join.pyx":70
+      /* "py_stringsimjoin/apply_rf/edit_distance_join.pyx":71
  * #        print i, candidate_overlap.size()
  *         for cand in candidates:
  *             if m - threshold <= index.size_vector[cand] <= m + threshold:             # <<<<<<<<<<<<<<
@@ -1464,7 +1493,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_18edit_distance_join_ed_join_pa
       __pyx_t_10 = (__pyx_t_9 != 0);
       if (__pyx_t_10) {
 
-        /* "py_stringsimjoin/apply_rf/edit_distance_join.pyx":71
+        /* "py_stringsimjoin/apply_rf/edit_distance_join.pyx":72
  *         for cand in candidates:
  *             if m - threshold <= index.size_vector[cand] <= m + threshold:
  *                 edit_dist = edit_distance(lstrings[cand], rstrings[i])             # <<<<<<<<<<<<<<
@@ -1473,7 +1502,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_18edit_distance_join_ed_join_pa
  */
         __pyx_v_edit_dist = __pyx_f_16py_stringsimjoin_8apply_rf_13sim_functions_edit_distance((__pyx_v_lstrings[__pyx_v_cand]), (__pyx_v_rstrings[__pyx_v_i]));
 
-        /* "py_stringsimjoin/apply_rf/edit_distance_join.pyx":72
+        /* "py_stringsimjoin/apply_rf/edit_distance_join.pyx":73
  *             if m - threshold <= index.size_vector[cand] <= m + threshold:
  *                 edit_dist = edit_distance(lstrings[cand], rstrings[i])
  *                 if edit_dist <= threshold:             # <<<<<<<<<<<<<<
@@ -1483,7 +1512,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_18edit_distance_join_ed_join_pa
         __pyx_t_10 = ((__pyx_v_edit_dist <= __pyx_v_threshold) != 0);
         if (__pyx_t_10) {
 
-          /* "py_stringsimjoin/apply_rf/edit_distance_join.pyx":73
+          /* "py_stringsimjoin/apply_rf/edit_distance_join.pyx":74
  *                 edit_dist = edit_distance(lstrings[cand], rstrings[i])
  *                 if edit_dist <= threshold:
  *                     output_pairs.push_back(pair[int, int](cand, i))             # <<<<<<<<<<<<<<
@@ -1500,7 +1529,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_18edit_distance_join_ed_join_pa
             #ifdef WITH_THREAD
             PyGILState_Release(__pyx_gilstate_save);
             #endif
-            {__pyx_filename = __pyx_f[0]; __pyx_lineno = 73; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+            {__pyx_filename = __pyx_f[0]; __pyx_lineno = 74; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
           }
           try {
             __pyx_v_output_pairs.push_back(__pyx_t_11);
@@ -1512,10 +1541,10 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_18edit_distance_join_ed_join_pa
             #ifdef WITH_THREAD
             PyGILState_Release(__pyx_gilstate_save);
             #endif
-            {__pyx_filename = __pyx_f[0]; __pyx_lineno = 73; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+            {__pyx_filename = __pyx_f[0]; __pyx_lineno = 74; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
           }
 
-          /* "py_stringsimjoin/apply_rf/edit_distance_join.pyx":72
+          /* "py_stringsimjoin/apply_rf/edit_distance_join.pyx":73
  *             if m - threshold <= index.size_vector[cand] <= m + threshold:
  *                 edit_dist = edit_distance(lstrings[cand], rstrings[i])
  *                 if edit_dist <= threshold:             # <<<<<<<<<<<<<<
@@ -1524,7 +1553,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_18edit_distance_join_ed_join_pa
  */
         }
 
-        /* "py_stringsimjoin/apply_rf/edit_distance_join.pyx":70
+        /* "py_stringsimjoin/apply_rf/edit_distance_join.pyx":71
  * #        print i, candidate_overlap.size()
  *         for cand in candidates:
  *             if m - threshold <= index.size_vector[cand] <= m + threshold:             # <<<<<<<<<<<<<<
@@ -1533,7 +1562,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_18edit_distance_join_ed_join_pa
  */
       }
 
-      /* "py_stringsimjoin/apply_rf/edit_distance_join.pyx":69
+      /* "py_stringsimjoin/apply_rf/edit_distance_join.pyx":70
  * 
  * #        print i, candidate_overlap.size()
  *         for cand in candidates:             # <<<<<<<<<<<<<<
@@ -1542,17 +1571,16 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_18edit_distance_join_ed_join_pa
  */
     }
 
-    /* "py_stringsimjoin/apply_rf/edit_distance_join.pyx":75
+    /* "py_stringsimjoin/apply_rf/edit_distance_join.pyx":76
  *                     output_pairs.push_back(pair[int, int](cand, i))
  * 
  *         candidates.clear()             # <<<<<<<<<<<<<<
- * 
  * 
  */
     __pyx_v_candidates.clear();
   }
 
-  /* "py_stringsimjoin/apply_rf/edit_distance_join.pyx":48
+  /* "py_stringsimjoin/apply_rf/edit_distance_join.pyx":49
  * cdef inline int int_min(int a, int b) nogil: return a if a <= b else b
  * 
  * cdef void ed_join_part(pair[int, int] partition,             # <<<<<<<<<<<<<<
@@ -1565,146 +1593,6 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_18edit_distance_join_ed_join_pa
   __pyx_L1_error:;
   __Pyx_WriteUnraisable("py_stringsimjoin.apply_rf.edit_distance_join.ed_join_part", __pyx_clineno, __pyx_lineno, __pyx_filename, 0, 1);
   __pyx_L0:;
-}
-
-/* "py_stringsimjoin/apply_rf/edit_distance_join.pyx":78
- * 
- * 
- * cdef void build_prefix_index(vector[vector[int]]& token_vectors, int qval, double threshold, InvertedIndex &inv_index):             # <<<<<<<<<<<<<<
- *     cdef vector[int] tokens, size_vector
- *     cdef int i, j, m, n=token_vectors.size(), prefix_length
- */
-
-static void __pyx_f_16py_stringsimjoin_8apply_rf_18edit_distance_join_build_prefix_index(std::vector<std::vector<int> >  &__pyx_v_token_vectors, int __pyx_v_qval, double __pyx_v_threshold, InvertedIndex &__pyx_v_inv_index) {
-  std::vector<int>  __pyx_v_tokens;
-  std::vector<int>  __pyx_v_size_vector;
-  int __pyx_v_i;
-  int __pyx_v_j;
-  int __pyx_v_m;
-  int __pyx_v_n;
-  int __pyx_v_prefix_length;
-  std::map<int,std::vector<int> >  __pyx_v_index;
-  __Pyx_RefNannyDeclarations
-  int __pyx_t_1;
-  int __pyx_t_2;
-  int __pyx_t_3;
-  int __pyx_t_4;
-  int __pyx_lineno = 0;
-  const char *__pyx_filename = NULL;
-  int __pyx_clineno = 0;
-  __Pyx_RefNannySetupContext("build_prefix_index", 0);
-
-  /* "py_stringsimjoin/apply_rf/edit_distance_join.pyx":80
- * cdef void build_prefix_index(vector[vector[int]]& token_vectors, int qval, double threshold, InvertedIndex &inv_index):
- *     cdef vector[int] tokens, size_vector
- *     cdef int i, j, m, n=token_vectors.size(), prefix_length             # <<<<<<<<<<<<<<
- *     cdef omap[int, vector[int]] index
- *     for i in range(n):
- */
-  __pyx_v_n = __pyx_v_token_vectors.size();
-
-  /* "py_stringsimjoin/apply_rf/edit_distance_join.pyx":82
- *     cdef int i, j, m, n=token_vectors.size(), prefix_length
- *     cdef omap[int, vector[int]] index
- *     for i in range(n):             # <<<<<<<<<<<<<<
- *         tokens = token_vectors[i]
- *         m = tokens.size()
- */
-  __pyx_t_1 = __pyx_v_n;
-  for (__pyx_t_2 = 0; __pyx_t_2 < __pyx_t_1; __pyx_t_2+=1) {
-    __pyx_v_i = __pyx_t_2;
-
-    /* "py_stringsimjoin/apply_rf/edit_distance_join.pyx":83
- *     cdef omap[int, vector[int]] index
- *     for i in range(n):
- *         tokens = token_vectors[i]             # <<<<<<<<<<<<<<
- *         m = tokens.size()
- *         size_vector.push_back(m)
- */
-    __pyx_v_tokens = (__pyx_v_token_vectors[__pyx_v_i]);
-
-    /* "py_stringsimjoin/apply_rf/edit_distance_join.pyx":84
- *     for i in range(n):
- *         tokens = token_vectors[i]
- *         m = tokens.size()             # <<<<<<<<<<<<<<
- *         size_vector.push_back(m)
- *         prefix_length = int_min(<int>(qval * threshold + 1), m)
- */
-    __pyx_v_m = __pyx_v_tokens.size();
-
-    /* "py_stringsimjoin/apply_rf/edit_distance_join.pyx":85
- *         tokens = token_vectors[i]
- *         m = tokens.size()
- *         size_vector.push_back(m)             # <<<<<<<<<<<<<<
- *         prefix_length = int_min(<int>(qval * threshold + 1), m)
- * 
- */
-    try {
-      __pyx_v_size_vector.push_back(__pyx_v_m);
-    } catch(...) {
-      __Pyx_CppExn2PyErr();
-      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 85; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-    }
-
-    /* "py_stringsimjoin/apply_rf/edit_distance_join.pyx":86
- *         m = tokens.size()
- *         size_vector.push_back(m)
- *         prefix_length = int_min(<int>(qval * threshold + 1), m)             # <<<<<<<<<<<<<<
- * 
- *         for j in range(prefix_length):
- */
-    __pyx_v_prefix_length = __pyx_f_16py_stringsimjoin_8apply_rf_18edit_distance_join_int_min(((int)((__pyx_v_qval * __pyx_v_threshold) + 1.0)), __pyx_v_m);
-
-    /* "py_stringsimjoin/apply_rf/edit_distance_join.pyx":88
- *         prefix_length = int_min(<int>(qval * threshold + 1), m)
- * 
- *         for j in range(prefix_length):             # <<<<<<<<<<<<<<
- *             index[tokens[j]].push_back(i)
- *     inv_index.set_fields(index, size_vector)
- */
-    __pyx_t_3 = __pyx_v_prefix_length;
-    for (__pyx_t_4 = 0; __pyx_t_4 < __pyx_t_3; __pyx_t_4+=1) {
-      __pyx_v_j = __pyx_t_4;
-
-      /* "py_stringsimjoin/apply_rf/edit_distance_join.pyx":89
- * 
- *         for j in range(prefix_length):
- *             index[tokens[j]].push_back(i)             # <<<<<<<<<<<<<<
- *     inv_index.set_fields(index, size_vector)
- * 
- */
-      try {
-        (__pyx_v_index[(__pyx_v_tokens[__pyx_v_j])]).push_back(__pyx_v_i);
-      } catch(...) {
-        __Pyx_CppExn2PyErr();
-        {__pyx_filename = __pyx_f[0]; __pyx_lineno = 89; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-      }
-    }
-  }
-
-  /* "py_stringsimjoin/apply_rf/edit_distance_join.pyx":90
- *         for j in range(prefix_length):
- *             index[tokens[j]].push_back(i)
- *     inv_index.set_fields(index, size_vector)             # <<<<<<<<<<<<<<
- * 
- * 
- */
-  __pyx_v_inv_index.set_fields(__pyx_v_index, __pyx_v_size_vector);
-
-  /* "py_stringsimjoin/apply_rf/edit_distance_join.pyx":78
- * 
- * 
- * cdef void build_prefix_index(vector[vector[int]]& token_vectors, int qval, double threshold, InvertedIndex &inv_index):             # <<<<<<<<<<<<<<
- *     cdef vector[int] tokens, size_vector
- *     cdef int i, j, m, n=token_vectors.size(), prefix_length
- */
-
-  /* function exit code */
-  goto __pyx_L0;
-  __pyx_L1_error:;
-  __Pyx_WriteUnraisable("py_stringsimjoin.apply_rf.edit_distance_join.build_prefix_index", __pyx_clineno, __pyx_lineno, __pyx_filename, 0, 0);
-  __pyx_L0:;
-  __Pyx_RefNannyFinishContext();
 }
 
 /* "vector.from_py":49
@@ -2294,7 +2182,7 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {0, 0, 0, 0, 0, 0, 0}
 };
 static int __Pyx_InitCachedBuiltins(void) {
-  __pyx_builtin_range = __Pyx_GetBuiltinName(__pyx_n_s_range); if (!__pyx_builtin_range) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 29; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_builtin_range = __Pyx_GetBuiltinName(__pyx_n_s_range); if (!__pyx_builtin_range) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 30; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   return 0;
   __pyx_L1_error:;
   return -1;
@@ -2331,6 +2219,7 @@ PyMODINIT_FUNC PyInit_edit_distance_join(void)
 {
   PyObject *__pyx_t_1 = NULL;
   PyObject *__pyx_t_2 = NULL;
+  PyObject *__pyx_t_3 = NULL;
   int __pyx_lineno = 0;
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
@@ -2415,6 +2304,9 @@ PyMODINIT_FUNC PyInit_edit_distance_join(void)
   __pyx_t_1 = __Pyx_ImportModule("py_stringsimjoin.apply_rf.sim_functions"); if (!__pyx_t_1) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 2; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   if (__Pyx_ImportFunction(__pyx_t_1, "edit_distance", (void (**)(void))&__pyx_f_16py_stringsimjoin_8apply_rf_13sim_functions_edit_distance, "double (std::string const &, std::string const &)") < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 2; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   Py_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  __pyx_t_2 = __Pyx_ImportModule("py_stringsimjoin.apply_rf.utils"); if (!__pyx_t_2) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 2; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (__Pyx_ImportFunction(__pyx_t_2, "build_prefix_index", (void (**)(void))&__pyx_f_16py_stringsimjoin_8apply_rf_5utils_build_prefix_index, "void (std::vector<std::vector<int> >  &, int, double, InvertedIndex &)") < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 2; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  Py_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   /*--- Execution code ---*/
   #if defined(__Pyx_Generator_USED) || defined(__Pyx_Coroutine_USED)
   if (__Pyx_patch_abc() < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 2; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
@@ -2426,10 +2318,10 @@ PyMODINIT_FUNC PyInit_edit_distance_join(void)
  * 
  * from libcpp.vector cimport vector
  */
-  __pyx_t_2 = PyDict_New(); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 2; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_GOTREF(__pyx_t_2);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_test, __pyx_t_2) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 2; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  __pyx_t_3 = PyDict_New(); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 2; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_3);
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_test, __pyx_t_3) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 2; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
   /* "vector.to_py":67
  * 
@@ -2445,6 +2337,7 @@ PyMODINIT_FUNC PyInit_edit_distance_join(void)
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
   __Pyx_XDECREF(__pyx_t_2);
+  __Pyx_XDECREF(__pyx_t_3);
   if (__pyx_m) {
     if (__pyx_d) {
       __Pyx_AddTraceback("init py_stringsimjoin.apply_rf.edit_distance_join", __pyx_clineno, __pyx_lineno, __pyx_filename);

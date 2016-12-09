@@ -10,6 +10,7 @@ from libcpp.map cimport map as omap
 from libcpp.pair cimport pair     
 
 from py_stringsimjoin.apply_rf.sim_functions cimport cosine, dice, jaccard
+from py_stringsimjoin.apply_rf.utils cimport int_min, int_max
 
 cdef double mytrunc(double d) nogil:
     return (trunc(d * 10000) / 10000)
@@ -235,8 +236,10 @@ cdef void set_sim_join_part(pair[int, int] partition,
         tokens = rtokens[i]                        
         m = tokens.size()                                                      
         prefix_length = get_prefix_length(m, sim_type, threshold)                    
-        size_lower_bound = get_size_lower_bound(m, sim_type, threshold)                             
-        size_upper_bound = get_size_upper_bound(m, sim_type, threshold)                            
+        size_lower_bound = int_max(get_size_lower_bound(m, sim_type, threshold),
+                                   index.min_len)                             
+        size_upper_bound = int_min(get_size_upper_bound(m, sim_type, threshold),
+                                   index.max_len)                            
 #        print i, 'p1'                                                                        
         for size in range(size_lower_bound, size_upper_bound + 1):              
             overlap_threshold_cache[size] = get_overlap_threshold(size, m, sim_type, threshold)
