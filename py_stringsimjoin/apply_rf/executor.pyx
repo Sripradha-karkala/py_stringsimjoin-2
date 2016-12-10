@@ -61,13 +61,10 @@ def test_execute_rf(rf, feature_table, l1, l2, path1, attr1, path2, attr2, worki
                                              l.size(), trees1, trees2) 
 
     print 'num join nodes : ', global_plan.children.size()
-    cdef Node h
-    for h in global_plan.children:
-        print 'filter nodes : ', h.children.size()
     print 'tokenizing strings'                                                  
 #    tokenize_strings(trees, lstrings, rstrings, working_dir)                    
     print 'finished tokenizing. executing plan'                                 
-    '''
+
     execute_plan(global_plan, trees1, lstrings, rstrings, working_dir, n_jobs)  
                                                                                 
     cdef pair[vector[pair[int, int]], vector[int]] candset_votes                
@@ -88,7 +85,7 @@ def test_execute_rf(rf, feature_table, l1, l2, path1, attr1, path2, attr2, worki
                                   n_jobs, working_dir)                          
         num_trees_processed += 1                                                
         label += 1                                                              
-    '''
+
     print 'total time : ', time.time() - start_time   
 
 

@@ -473,21 +473,15 @@ cdef Node get_default_execution_plan(vector[Tree]& trees,
         else:
             sel_trees.push_back(trees[i])
             print i, plans[i].size()
+            k = 0
             if p == 0:
                 combined_plan = plans[i][0]
                 k = 1
                 p += 1
-            else:
-                k = 0
             while k < plans[i].size():
-                print plans[i][k].node_type
                 combined_plan = merge_plans(combined_plan, plans[i][k])
                 k += 1
-    print 'num join nodes : ', combined_plan.children.size()                      
-    cdef Node h                                                                 
-    for h in combined_plan.children:                                              
-        print 'filter nodes : ', h.children.size()     
-    return curr_global_plan 
+    return combined_plan 
 
 cdef void generate_local_optimal_plans(vector[Tree]& trees, omap[string, Coverage]& coverage, int sample_size, vector[Node]& plans):
     cdef Tree tree
@@ -688,7 +682,7 @@ cdef Node merge_plans(Node plan1, Node plan2):
     cdef Predicatecpp pred1, pred2
     cdef string node_type = "SELECT"
     pred2 = plan2_node.predicates[0]
-    cdef int i
+    cdef int i=0
 
     while i < plan1.children.size():
 #        print 'sib : ', plan1.children[i].node_type                              
