@@ -11,12 +11,13 @@ from libcpp.pair cimport pair
 from py_stringsimjoin.apply_rf.inverted_index cimport InvertedIndex      
 from py_stringsimjoin.apply_rf.utils cimport build_inverted_index
 
-cpdef vector[pair[int, int]] ov_coeff_join(vector[vector[int]]& ltokens, 
+cpdef pair[vector[pair[int, int]], vector[double]] ov_coeff_join(vector[vector[int]]& ltokens, 
                                            vector[vector[int]]& rtokens,
                                            double threshold):                                           
     print 'l size. : ', ltokens.size(), ' , r size : ', rtokens.size()          
     cdef vector[vector[pair[int, int]]] output_pairs
-    cdef vector[pair[int, int]] partitions, final_output_pairs, part_pairs
+    cdef vector[vector[double]] output_sim_scores                               
+    cdef vector[pair[int, int]] partitions
     cdef int i, n=rtokens.size(), ncpus=4, partition_size, start=0, end                                   
     cdef InvertedIndex index
     build_inverted_index(ltokens, index)                                 
@@ -31,14 +32,23 @@ cpdef vector[pair[int, int]] ov_coeff_join(vector[vector[int]]& ltokens,
         print start, end
         start = end            
         output_pairs.push_back(vector[pair[int, int]]())
+        output_sim_scores.push_back(vector[double]())                           
 
     for i in prange(ncpus, nogil=True):    
-        ov_coeff_join_part(partitions[i], ltokens, rtokens, threshold, index, output_pairs[i])
+        ov_coeff_join_part(partitions[i], ltokens, rtokens, threshold, index, 
+                           output_pairs[i], output_sim_scores[i])
 
-    for part_pairs in output_pairs:
-        final_output_pairs.insert(final_output_pairs.end(), part_pairs.begin(), part_pairs.end())
+    cdef pair[vector[pair[int, int]], vector[double]] output                    
 
-    return final_output_pairs
+    for i in xrange(ncpus):                                                     
+        output.first.insert(output.first.end(),                                 
+                            output_pairs[i].begin(), output_pairs[i].end())     
+        output.second.insert(output.second.end(),                               
+                             output_sim_scores[i].begin(),                      
+                             output_sim_scores[i].end())    
+
+    return output                                                               
+
 
 cdef inline int int_min(int a, int b) nogil: return a if a <= b else b
 
@@ -46,7 +56,8 @@ cdef void ov_coeff_join_part(pair[int, int] partition,
                              vector[vector[int]]& ltokens, 
                              vector[vector[int]]& rtokens, 
                              double threshold, InvertedIndex& index, 
-                             vector[pair[int, int]]& output_pairs) nogil:              
+                             vector[pair[int, int]]& output_pairs,
+                             vector[double]& output_sim_scores) nogil:              
     cdef omap[int, int] candidate_overlap              
     cdef vector[int] candidates                                      
     cdef vector[int] tokens
@@ -59,15 +70,19 @@ cdef void ov_coeff_join_part(pair[int, int] partition,
         m = tokens.size()                                                      
                                                                                 
         for j in range(m):                                          
+            if index.index.find(tokens[j]) == index.index.end():                
+                continue   
             candidates = index.index[tokens[j]]                                 
             for cand in candidates:                                             
                 candidate_overlap[cand] += 1                
 
-#        print i, candidate_overlap.size()                                      
+###        print i, candidate_overlap.size()                                      
         for entry in candidate_overlap:                                         
             sim_score = <double>entry.second / <double>int_min(m, index.size_vector[entry.first])           
             #print ltokens[entry.first], rtokens[i], entry.second, sim_score
             if sim_score > threshold:                                       
                 output_pairs.push_back(pair[int, int](entry.first, i))     
+                output_sim_scores.push_back(sim_score)                      
 
+        candidate_overlap.clear()                                               
 

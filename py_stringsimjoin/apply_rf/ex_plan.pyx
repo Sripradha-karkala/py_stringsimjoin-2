@@ -11,7 +11,9 @@ from libcpp.string cimport string
 
 from py_stringsimjoin.apply_rf.predicate import Predicate                       
 from py_stringsimjoin.apply_rf.tokenizers cimport tokenize_without_materializing
-from py_stringsimjoin.apply_rf.utils cimport compfnptr, simfnptr, get_comp_type, get_comparison_function, get_sim_type, get_sim_function
+from py_stringsimjoin.apply_rf.utils cimport compfnptr, str_simfnptr, \
+  token_simfnptr, get_comp_type, get_comparison_function, get_sim_type, \
+  get_token_sim_function, get_str_sim_function
 from py_stringsimjoin.apply_rf.predicatecpp cimport Predicatecpp
 from py_stringsimjoin.apply_rf.rule cimport Rule
 from py_stringsimjoin.apply_rf.tree cimport Tree                                
@@ -50,7 +52,8 @@ cdef void compute_predicate_cost_and_coverage(vector[string]& lstrings,
     cdef Predicatecpp predicate
     cdef oset[string] tok_types
     cdef double sim_score, start_time, end_time
-    cdef simfnptr sim_fn 
+    cdef token_simfnptr token_sim_fn
+    cdef str_simfnptr str_sim_fn  
     cdef compfnptr comp_fn
     cdef omap[string, vector[double]] feature_values 
 
@@ -58,7 +61,8 @@ cdef void compute_predicate_cost_and_coverage(vector[string]& lstrings,
         for rule in tree.rules:
             for predicate in rule.predicates:
                 feature_info[predicate.feat_name] = pair[string, string](predicate.sim_measure_type, predicate.tokenizer_type)
-                tok_types.insert(predicate.tokenizer_type)
+                if predicate.is_tok_sim_measure:
+                    tok_types.insert(predicate.tokenizer_type)
     print 't1'
     for tok_type in tok_types:
         ltokens[tok_type] = vector[vector[int]]()
@@ -67,17 +71,28 @@ cdef void compute_predicate_cost_and_coverage(vector[string]& lstrings,
                                        ltokens[tok_type], rtokens[tok_type]) 
         
     print 't2'
-    for feature in feature_info: 
-        sim_fn = get_sim_function(get_sim_type(feature.second.first))
-        cost[feature.first] = 0.0
-        for i in xrange(sample_size):
-            start_time = time.time()
-            sim_score = sim_fn(ltokens[feature.second.second][i], 
-                               rtokens[feature.second.second][i])
-            end_time = time.time()
-            cost[feature.first] += (end_time - start_time)
-            feature_values[feature.first].push_back(sim_score)
-        cost[feature.first] /= sample_size
+    for feature in feature_info:
+        if feature.second.second.compare('none') == 0:
+            str_sim_fn = get_str_sim_function(get_sim_type(feature.second.first))       
+            cost[feature.first] = 0.0                                           
+            for i in xrange(sample_size):                                       
+                start_time = time.time()                                        
+                sim_score = str_sim_fn(lstrings[i], rstrings[i])           
+                end_time = time.time()                                          
+                cost[feature.first] += (end_time - start_time)                  
+                feature_values[feature.first].push_back(sim_score)              
+            cost[feature.first] /= sample_size   
+        else: 
+            token_sim_fn = get_token_sim_function(get_sim_type(feature.second.first))
+            cost[feature.first] = 0.0
+            for i in xrange(sample_size):
+                start_time = time.time()
+                sim_score = token_sim_fn(ltokens[feature.second.second][i], 
+                                         rtokens[feature.second.second][i])
+                end_time = time.time()
+                cost[feature.first] += (end_time - start_time)
+                feature_values[feature.first].push_back(sim_score)
+            cost[feature.first] /= sample_size
      #   print feature.first, cost[feature.first]
     print 't3'
     cdef int max_size = 0
@@ -126,7 +141,8 @@ cdef vector[Node] generate_ex_plan_for_stage2(vector[pair[int, int]]& candset,
     cdef Predicatecpp predicate                                                 
     cdef oset[string] tok_types                                                 
     cdef double sim_score, start_time, end_time                                 
-    cdef simfnptr sim_fn                                                        
+    cdef token_simfnptr token_sim_fn                                            
+    cdef str_simfnptr str_sim_fn   
     cdef compfnptr comp_fn                                                      
     cdef omap[string, vector[double]] feature_values                            
                                                                                 
@@ -134,7 +150,8 @@ cdef vector[Node] generate_ex_plan_for_stage2(vector[pair[int, int]]& candset,
         for rule in tree.rules:                                                 
             for predicate in rule.predicates:                                   
                 feature_info[predicate.feat_name] = pair[string, string](predicate.sim_measure_type, predicate.tokenizer_type)
-                tok_types.insert(predicate.tokenizer_type)                      
+                if predicate.is_tok_sim_measure:
+                    tok_types.insert(predicate.tokenizer_type)                      
     print 't1'                                                                  
     for tok_type in tok_types:                                                  
         ltokens[tok_type] = vector[vector[int]]()                               
@@ -144,17 +161,27 @@ cdef vector[Node] generate_ex_plan_for_stage2(vector[pair[int, int]]& candset,
                                                                                 
     print 't2'                                                                  
     for feature in feature_info:                                                
-        sim_fn = get_sim_function(get_sim_type(feature.second.first))           
-        cost[feature.first] = 0.0                                               
-        for i in xrange(sample_size):                                           
-            start_time = time.time()                                            
-            sim_score = sim_fn(ltokens[feature.second.second][i],               
-                               rtokens[feature.second.second][i])               
-            end_time = time.time()                                              
-            cost[feature.first] += (end_time - start_time)                      
-            feature_values[feature.first].push_back(sim_score)                  
-        cost[feature.first] /= sample_size                                      
-     #   print feature.first, cost[feature.first]                               
+        if feature.second.second.compare('none') == 0:                          
+            str_sim_fn = get_str_sim_function(get_sim_type(feature.second.first))
+            cost[feature.first] = 0.0                                           
+            for i in xrange(sample_size):                                       
+                start_time = time.time()                                        
+                sim_score = str_sim_fn(lstrings[i], rstrings[i])                
+                end_time = time.time()                                          
+                cost[feature.first] += (end_time - start_time)                  
+                feature_values[feature.first].push_back(sim_score)              
+            cost[feature.first] /= sample_size                                  
+        else:                                                                   
+            token_sim_fn = get_token_sim_function(get_sim_type(feature.second.first))
+            cost[feature.first] = 0.0                                           
+            for i in xrange(sample_size):                                       
+                start_time = time.time()                                        
+                sim_score = token_sim_fn(ltokens[feature.second.second][i],     
+                                         rtokens[feature.second.second][i])     
+                end_time = time.time()                                          
+                cost[feature.first] += (end_time - start_time)                  
+                feature_values[feature.first].push_back(sim_score)              
+            cost[feature.first] /= sample_size  
     print 't3'                                                                  
     cdef int max_size = 0                                                       
     cdef omap[string, vector[bool]] cov                                         
@@ -514,7 +541,7 @@ cdef void generate_local_optimal_plans(vector[Tree]& trees, omap[string, Coverag
     
             node_type = "OUTPUT"
             new_node = Node(node_type)
-            new_node.set_tree_id(tree_id)
+            new_node.set_tree_id(tree.tree_id)
             new_node.set_rule_id(rule_id)
             nodes.push_back(new_node)
 #            print 'n ', nodes.size()
@@ -666,12 +693,13 @@ cdef vector[Tree] extract_pos_rules_from_rf(rf, feature_table):
     cdef Tree tree                                                             
     rule_id = 1                                                                 
     predicate_id = 1                                                            
-    tree_id = 1                                                                 
+    tree_id = 0                                                                 
     for dt in rf.estimators_:                                                   
         rules = extract_pos_rules_from_tree(dt, feature_table)                                                              
-        tree = Tree(rules)                                                          
+        tree = Tree(rules)
+        tree.set_tree_id(tree_id)                                                          
 #        rs.set_name('t'+str(tree_id))                                           
-#        tree_id += 1                                                            
+        tree_id += 1                                                            
 #        rule_id += tree.rules.size()                                             
         trees.push_back(tree)                                                    
     return trees

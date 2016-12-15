@@ -4,7 +4,8 @@ from libcpp.vector cimport vector
 from libcpp.string cimport string                                              
 from libcpp.map cimport map as omap                                             
 
-from py_stringsimjoin.apply_rf.sim_functions cimport cosine, dice, jaccard, cosine_str, dice_str, jaccard_str      
+from py_stringsimjoin.apply_rf.sim_functions cimport cosine, dice, jaccard, \
+  overlap, overlap_coefficient, edit_distance, cosine_str, dice_str, jaccard_str      
 from py_stringsimjoin.apply_rf.inverted_index cimport InvertedIndex             
  
 
@@ -13,8 +14,14 @@ cdef int get_sim_type(const string& sim_measure_type):
         return 0                                                                
     elif sim_measure_type.compare('DICE') == 0: # DICE                                                  
         return 1                                                                
-    elif sim_measure_type.compare("JACCARD") == 0: # JACCARD:                                              
-        return 2                                                                
+    elif sim_measure_type.compare('JACCARD') == 0: # JACCARD:                                              
+        return 2
+    elif sim_measure_type.compare('OVERLAP') == 0:
+        return 3
+    elif sim_measure_type.compare('OVERLAP_COEFFICIENT') == 0:
+        return 4
+    elif sim_measure_type.compare('EDIT_DISTANCE') == 0:
+        return 5                                                                
                                                                                 
 cdef simfnptr get_sim_function(const int sim_type) nogil:                       
     if sim_type == 0: # COSINE                                                  
@@ -23,6 +30,22 @@ cdef simfnptr get_sim_function(const int sim_type) nogil:
         return dice                                                             
     elif sim_type == 2: # JACCARD:                                              
         return jaccard  
+
+cdef token_simfnptr get_token_sim_function(const int sim_type) nogil:                       
+    if sim_type == 0: # COSINE                                                  
+        return cosine                                                           
+    elif sim_type == 1: # DICE                                                  
+        return dice                                                             
+    elif sim_type == 2: # JACCARD:                                              
+        return jaccard
+    elif sim_type == 3:
+        return overlap
+    elif sim_type == 4:
+        return overlap_coefficient
+
+cdef str_simfnptr get_str_sim_function(const int sim_type) nogil:     
+    if sim_type == 5: # EDIT_DISTANCE                                                  
+        return edit_distance                                  
 
 cdef simfnptr_str get_sim_function_str(const int sim_type) nogil:                       
     if sim_type == 0: # COSINE                                                  

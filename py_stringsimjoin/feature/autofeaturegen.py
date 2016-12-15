@@ -13,7 +13,7 @@ def get_features(sim_measures=None, tokenizers=None):
     ws_tok = WhitespaceTokenizer(return_set=True)
     if sim_measures is None:
         sim_measures = ['JACCARD', 'COSINE', 'DICE', 'OVERLAP', 
-                       'OVERLAP_COEFFICIENT']
+                       'OVERLAP_COEFFICIENT', 'EDIT_DISTANCE']
     if tokenizers is None:
         tokenizers = {'alph': AlphabeticTokenizer(return_set=True),
                       'alph_num': AlphanumericTokenizer(return_set=True),
@@ -22,9 +22,14 @@ def get_features(sim_measures=None, tokenizers=None):
                       'qg2': QgramTokenizer(qval=2, return_set=True),
                       'qg3': QgramTokenizer(qval=3, return_set=True)}
     for sim_measure_type in sim_measures:
+        if sim_measure_type == 'EDIT_DISTANCE':
+            features.append((sim_measure_type.lower(), 'none', sim_measure_type,
+                             None, get_sim_function(sim_measure_type)))
+            continue
         for tok_name in tokenizers.keys():
-            features.append((sim_measure_type.lower()+'_'+tok_name, tok_name, sim_measure_type, 
-                             tokenizers[tok_name], get_sim_function(sim_measure_type)))
+            features.append((sim_measure_type.lower()+'_'+tok_name, tok_name, 
+                             sim_measure_type, tokenizers[tok_name], 
+                             get_sim_function(sim_measure_type)))
 
     feature_table_header = ['feature_name', 'tokenizer_type', 'sim_measure_type', 
                             'tokenizer', 'sim_function']

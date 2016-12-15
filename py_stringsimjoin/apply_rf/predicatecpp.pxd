@@ -10,4 +10,4 @@ cdef extern from "predicatecpp.h" nogil:
         bool is_join_predicate()                                                
         string pred_name, feat_name, sim_measure_type, tokenizer_type, comp_op  
         double threshold, cost     
-
+        bool is_tok_sim_measure

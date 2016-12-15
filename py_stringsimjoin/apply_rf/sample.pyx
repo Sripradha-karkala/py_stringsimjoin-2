@@ -54,7 +54,7 @@ def sample_cython(ltable, rtable, l_key_attr, r_key_attr,
 
 cdef void convert_to_string_vector(string_col, vector[string]& string_vector):        
     for val in string_col:                                                      
-        string_vector.push_back(val)        
+        string_vector.push_back(str(val))        
 
 cdef void convert_to_int_vector(int_col, vector[int]& int_vector):  
     for val in int_col:                                                      

@@ -191,7 +191,9 @@ cdef vector[string] tokenize_str(string& inp_str, const string& tok_type):
     elif tok_type.compare('qg2') == 0:                                          
         tok = QgramTokenizer(2, True, ord('#'), ord('$'), True)                
     elif tok_type.compare('qg3') == 0:                                          
-        tok = QgramTokenizer(3, True, ord('#'), ord('$'), True)        
+        tok = QgramTokenizer(3, True, ord('#'), ord('$'), True)
+    elif tok_type.compare('qg2_bag') == 0:                                          
+        tok = QgramTokenizer(2, True, ord('#'), ord('$'), False)          
     return tok.tokenize(inp_str)
 
 cpdef void tokenize(vector[string]& lstrings, vector[string]& rstrings,          
@@ -209,6 +211,8 @@ cpdef void tokenize(vector[string]& lstrings, vector[string]& rstrings,
         tok = QgramTokenizer(2, True, ord('#'), ord('$'), True)      
     elif tok_type.compare('qg3') == 0:                                          
         tok = QgramTokenizer(3, True, ord('#'), ord('$'), True)      
+    elif tok_type.compare('qg2_bag') == 0:                                      
+        tok = QgramTokenizer(2, True, ord('#'), ord('$'), False)  
 
     #cdef AlphabeticTokenizer tok
 #    tok = AlphabeticTokenizer(True)                                                                                
@@ -301,6 +305,8 @@ cdef void tokenize_without_materializing(vector[string]& lstrings,
         tok = QgramTokenizer(2, True, ord('#'), ord('$'), True)                
     elif tok_type.compare('qg3') == 0:                                          
         tok = QgramTokenizer(3, True, ord('#'), ord('$'), True)                 
+    elif tok_type.compare('qg2_bag') == 0:                                      
+        tok = QgramTokenizer(2, True, ord('#'), ord('$'), False)  
                                                                                 
     #cdef AlphabeticTokenizer tok                                               
 #    tok = AlphabeticTokenizer(True)                                                                                

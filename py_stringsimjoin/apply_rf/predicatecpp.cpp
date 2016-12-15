@@ -8,6 +8,10 @@ Predicatecpp::Predicatecpp(std::string& p_name, std::string& f_name, std::string
   comp_op = cmp;
   threshold = t;
   cost = 0.0;
+  is_tok_sim_measure = true;
+  if (tokenizer_type.compare("none") == 0) {
+    is_tok_sim_measure = false;
+  }
 }
 
 Predicatecpp::Predicatecpp() {}
@@ -26,6 +30,11 @@ bool Predicatecpp::is_join_predicate() {
       sim_measure_type.compare("OVERLAP_COEFFICIENT") == 0) {
     if (comp_op.compare(">") == 0 || comp_op.compare(">=") == 0 || 
         comp_op.compare("=") == 0) {
+      return true;
+    }
+  }
+  else if(sim_measure_type.compare("EDIT_DISTANCE") == 0) {
+    if (comp_op.compare("<") == 0 || comp_op.compare("<=") == 0) {
       return true;
     }
   }

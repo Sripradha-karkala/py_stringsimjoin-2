@@ -491,13 +491,31 @@ static const char *__pyx_f[] = {
 /* "py_stringsimjoin/apply_rf/utils.pxd":9
  * 
  * 
+ * ctypedef double (*token_simfnptr)(const vector[int]&, const vector[int]&) nogil             # <<<<<<<<<<<<<<
+ * ctypedef double (*str_simfnptr)(const string&, const string&) nogil
+ * 
+ */
+typedef double (*__pyx_t_16py_stringsimjoin_8apply_rf_5utils_token_simfnptr)(std::vector<int>  const &, std::vector<int>  const &);
+
+/* "py_stringsimjoin/apply_rf/utils.pxd":10
+ * 
+ * ctypedef double (*token_simfnptr)(const vector[int]&, const vector[int]&) nogil
+ * ctypedef double (*str_simfnptr)(const string&, const string&) nogil             # <<<<<<<<<<<<<<
+ * 
+ * ctypedef double (*simfnptr)(const vector[int]&, const vector[int]&) nogil
+ */
+typedef double (*__pyx_t_16py_stringsimjoin_8apply_rf_5utils_str_simfnptr)(std::string const &, std::string const &);
+
+/* "py_stringsimjoin/apply_rf/utils.pxd":12
+ * ctypedef double (*str_simfnptr)(const string&, const string&) nogil
+ * 
  * ctypedef double (*simfnptr)(const vector[int]&, const vector[int]&) nogil             # <<<<<<<<<<<<<<
  * ctypedef double (*simfnptr_str)(vector[string]&, vector[string]&) nogil
  * ctypedef bool (*compfnptr)(double, double) nogil
  */
 typedef double (*__pyx_t_16py_stringsimjoin_8apply_rf_5utils_simfnptr)(std::vector<int>  const &, std::vector<int>  const &);
 
-/* "py_stringsimjoin/apply_rf/utils.pxd":10
+/* "py_stringsimjoin/apply_rf/utils.pxd":13
  * 
  * ctypedef double (*simfnptr)(const vector[int]&, const vector[int]&) nogil
  * ctypedef double (*simfnptr_str)(vector[string]&, vector[string]&) nogil             # <<<<<<<<<<<<<<
@@ -506,7 +524,7 @@ typedef double (*__pyx_t_16py_stringsimjoin_8apply_rf_5utils_simfnptr)(std::vect
  */
 typedef double (*__pyx_t_16py_stringsimjoin_8apply_rf_5utils_simfnptr_str)(std::vector<std::string>  &, std::vector<std::string>  &);
 
-/* "py_stringsimjoin/apply_rf/utils.pxd":11
+/* "py_stringsimjoin/apply_rf/utils.pxd":14
  * ctypedef double (*simfnptr)(const vector[int]&, const vector[int]&) nogil
  * ctypedef double (*simfnptr_str)(vector[string]&, vector[string]&) nogil
  * ctypedef bool (*compfnptr)(double, double) nogil             # <<<<<<<<<<<<<<
@@ -744,18 +762,21 @@ static int __Pyx_InitStrings(__Pyx_StringTabEntry *t);
 static void (*__pyx_f_16py_stringsimjoin_8apply_rf_5utils_build_inverted_index)(std::vector<std::vector<int> >  &, InvertedIndex &); /*proto*/
 
 /* Module declarations from 'py_stringsimjoin.apply_rf.overlap_coefficient_join' */
-static std::vector<std::pair<int,int> >  __pyx_f_16py_stringsimjoin_8apply_rf_24overlap_coefficient_join_ov_coeff_join(std::vector<std::vector<int> >  &, std::vector<std::vector<int> >  &, double, int __pyx_skip_dispatch); /*proto*/
+static std::pair<std::vector<std::pair<int,int> > ,std::vector<double> >  __pyx_f_16py_stringsimjoin_8apply_rf_24overlap_coefficient_join_ov_coeff_join(std::vector<std::vector<int> >  &, std::vector<std::vector<int> >  &, double, int __pyx_skip_dispatch); /*proto*/
 static CYTHON_INLINE int __pyx_f_16py_stringsimjoin_8apply_rf_24overlap_coefficient_join_int_min(int, int); /*proto*/
-static void __pyx_f_16py_stringsimjoin_8apply_rf_24overlap_coefficient_join_ov_coeff_join_part(std::pair<int,int> , std::vector<std::vector<int> >  &, std::vector<std::vector<int> >  &, double, InvertedIndex &, std::vector<std::pair<int,int> >  &); /*proto*/
+static void __pyx_f_16py_stringsimjoin_8apply_rf_24overlap_coefficient_join_ov_coeff_join_part(std::pair<int,int> , std::vector<std::vector<int> >  &, std::vector<std::vector<int> >  &, double, InvertedIndex &, std::vector<std::pair<int,int> >  &, std::vector<double>  &); /*proto*/
 static std::vector<int>  __pyx_convert_vector_from_py_int(PyObject *); /*proto*/
 static std::vector<std::vector<int> >  __pyx_convert_vector_from_py_std_3a__3a_vector_3c_int_3e___(PyObject *); /*proto*/
 static PyObject *__pyx_convert_pair_to_py_int____int(std::pair<int,int>  const &); /*proto*/
 static PyObject *__pyx_convert_vector_to_py_std_3a__3a_pair_3c_int_2c_int_3e___(const std::vector<std::pair<int,int> >  &); /*proto*/
+static PyObject *__pyx_convert_vector_to_py_double(const std::vector<double>  &); /*proto*/
+static PyObject *__pyx_convert_pair_to_py_std_3a__3a_vector_3c_std_3a__3a_pair_3c_int_2c_int_3e____3e_______std_3a__3a_vector_3c_double_3e___(std::pair<std::vector<std::pair<int,int> > ,std::vector<double> >  const &); /*proto*/
 #define __Pyx_MODULE_NAME "py_stringsimjoin.apply_rf.overlap_coefficient_join"
 int __pyx_module_is_main_py_stringsimjoin__apply_rf__overlap_coefficient_join = 0;
 
 /* Implementation of 'py_stringsimjoin.apply_rf.overlap_coefficient_join' */
 static PyObject *__pyx_builtin_range;
+static PyObject *__pyx_builtin_xrange;
 static char __pyx_k_end[] = "end";
 static char __pyx_k_file[] = "file";
 static char __pyx_k_main[] = "__main__";
@@ -764,6 +785,7 @@ static char __pyx_k_print[] = "print";
 static char __pyx_k_range[] = "range";
 static char __pyx_k_l_size[] = "l size. : ";
 static char __pyx_k_r_size[] = " , r size : ";
+static char __pyx_k_xrange[] = "xrange";
 static char __pyx_k_ltokens[] = "ltokens";
 static char __pyx_k_rtokens[] = "rtokens";
 static char __pyx_k_part_size[] = "part size : ";
@@ -780,22 +802,22 @@ static PyObject *__pyx_n_s_range;
 static PyObject *__pyx_n_s_rtokens;
 static PyObject *__pyx_n_s_test;
 static PyObject *__pyx_n_s_threshold;
+static PyObject *__pyx_n_s_xrange;
 static PyObject *__pyx_pf_16py_stringsimjoin_8apply_rf_24overlap_coefficient_join_ov_coeff_join(CYTHON_UNUSED PyObject *__pyx_self, std::vector<std::vector<int> >  __pyx_v_ltokens, std::vector<std::vector<int> >  __pyx_v_rtokens, double __pyx_v_threshold); /* proto */
 
 /* "py_stringsimjoin/apply_rf/overlap_coefficient_join.pyx":14
  * from py_stringsimjoin.apply_rf.utils cimport build_inverted_index
  * 
- * cpdef vector[pair[int, int]] ov_coeff_join(vector[vector[int]]& ltokens,             # <<<<<<<<<<<<<<
+ * cpdef pair[vector[pair[int, int]], vector[double]] ov_coeff_join(vector[vector[int]]& ltokens,             # <<<<<<<<<<<<<<
  *                                            vector[vector[int]]& rtokens,
  *                                            double threshold):
  */
 
 static PyObject *__pyx_pw_16py_stringsimjoin_8apply_rf_24overlap_coefficient_join_1ov_coeff_join(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static std::vector<std::pair<int,int> >  __pyx_f_16py_stringsimjoin_8apply_rf_24overlap_coefficient_join_ov_coeff_join(std::vector<std::vector<int> >  &__pyx_v_ltokens, std::vector<std::vector<int> >  &__pyx_v_rtokens, double __pyx_v_threshold, CYTHON_UNUSED int __pyx_skip_dispatch) {
+static std::pair<std::vector<std::pair<int,int> > ,std::vector<double> >  __pyx_f_16py_stringsimjoin_8apply_rf_24overlap_coefficient_join_ov_coeff_join(std::vector<std::vector<int> >  &__pyx_v_ltokens, std::vector<std::vector<int> >  &__pyx_v_rtokens, double __pyx_v_threshold, CYTHON_UNUSED int __pyx_skip_dispatch) {
   std::vector<std::vector<std::pair<int,int> > >  __pyx_v_output_pairs;
+  std::vector<std::vector<double> >  __pyx_v_output_sim_scores;
   std::vector<std::pair<int,int> >  __pyx_v_partitions;
-  std::vector<std::pair<int,int> >  __pyx_v_final_output_pairs;
-  std::vector<std::pair<int,int> >  __pyx_v_part_pairs;
   int __pyx_v_i;
   int __pyx_v_n;
   int __pyx_v_ncpus;
@@ -803,7 +825,8 @@ static std::vector<std::pair<int,int> >  __pyx_f_16py_stringsimjoin_8apply_rf_24
   int __pyx_v_start;
   int __pyx_v_end;
   InvertedIndex __pyx_v_index;
-  std::vector<std::pair<int,int> >  __pyx_r;
+  std::pair<std::vector<std::pair<int,int> > ,std::vector<double> >  __pyx_v_output;
+  std::pair<std::vector<std::pair<int,int> > ,std::vector<double> >  __pyx_r;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
   PyObject *__pyx_t_2 = NULL;
@@ -814,8 +837,8 @@ static std::vector<std::pair<int,int> >  __pyx_f_16py_stringsimjoin_8apply_rf_24
   int __pyx_t_7;
   std::pair<int,int>  __pyx_t_8;
   std::vector<std::pair<int,int> >  __pyx_t_9;
-  int __pyx_t_10;
-  std::vector<std::vector<std::pair<int,int> > > ::iterator __pyx_t_11;
+  std::vector<double>  __pyx_t_10;
+  int __pyx_t_11;
   int __pyx_lineno = 0;
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
@@ -826,7 +849,7 @@ static std::vector<std::pair<int,int> >  __pyx_f_16py_stringsimjoin_8apply_rf_24
  *                                            double threshold):
  *     print 'l size. : ', ltokens.size(), ' , r size : ', rtokens.size()             # <<<<<<<<<<<<<<
  *     cdef vector[vector[pair[int, int]]] output_pairs
- *     cdef vector[pair[int, int]] partitions, final_output_pairs, part_pairs
+ *     cdef vector[vector[double]] output_sim_scores
  */
   __pyx_t_1 = __Pyx_PyInt_FromSize_t(__pyx_v_ltokens.size()); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 17; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
@@ -849,9 +872,9 @@ static std::vector<std::pair<int,int> >  __pyx_f_16py_stringsimjoin_8apply_rf_24
   if (__Pyx_Print(0, __pyx_t_3, 1) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 17; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
-  /* "py_stringsimjoin/apply_rf/overlap_coefficient_join.pyx":20
- *     cdef vector[vector[pair[int, int]]] output_pairs
- *     cdef vector[pair[int, int]] partitions, final_output_pairs, part_pairs
+  /* "py_stringsimjoin/apply_rf/overlap_coefficient_join.pyx":21
+ *     cdef vector[vector[double]] output_sim_scores
+ *     cdef vector[pair[int, int]] partitions
  *     cdef int i, n=rtokens.size(), ncpus=4, partition_size, start=0, end             # <<<<<<<<<<<<<<
  *     cdef InvertedIndex index
  *     build_inverted_index(ltokens, index)
@@ -860,7 +883,7 @@ static std::vector<std::pair<int,int> >  __pyx_f_16py_stringsimjoin_8apply_rf_24
   __pyx_v_ncpus = 4;
   __pyx_v_start = 0;
 
-  /* "py_stringsimjoin/apply_rf/overlap_coefficient_join.pyx":22
+  /* "py_stringsimjoin/apply_rf/overlap_coefficient_join.pyx":23
  *     cdef int i, n=rtokens.size(), ncpus=4, partition_size, start=0, end
  *     cdef InvertedIndex index
  *     build_inverted_index(ltokens, index)             # <<<<<<<<<<<<<<
@@ -869,7 +892,7 @@ static std::vector<std::pair<int,int> >  __pyx_f_16py_stringsimjoin_8apply_rf_24
  */
   __pyx_f_16py_stringsimjoin_8apply_rf_5utils_build_inverted_index(__pyx_v_ltokens, __pyx_v_index);
 
-  /* "py_stringsimjoin/apply_rf/overlap_coefficient_join.pyx":24
+  /* "py_stringsimjoin/apply_rf/overlap_coefficient_join.pyx":25
  *     build_inverted_index(ltokens, index)
  * 
  *     partition_size = <int>(<float> n / <float> ncpus)             # <<<<<<<<<<<<<<
@@ -878,20 +901,20 @@ static std::vector<std::pair<int,int> >  __pyx_f_16py_stringsimjoin_8apply_rf_24
  */
   if (unlikely(((float)__pyx_v_ncpus) == 0)) {
     PyErr_SetString(PyExc_ZeroDivisionError, "float division");
-    {__pyx_filename = __pyx_f[0]; __pyx_lineno = 24; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    {__pyx_filename = __pyx_f[0]; __pyx_lineno = 25; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   }
   __pyx_v_partition_size = ((int)(((float)__pyx_v_n) / ((float)__pyx_v_ncpus)));
 
-  /* "py_stringsimjoin/apply_rf/overlap_coefficient_join.pyx":25
+  /* "py_stringsimjoin/apply_rf/overlap_coefficient_join.pyx":26
  * 
  *     partition_size = <int>(<float> n / <float> ncpus)
  *     print 'part size : ', partition_size             # <<<<<<<<<<<<<<
  *     for i in range(ncpus):
  *         end = start + partition_size
  */
-  __pyx_t_3 = __Pyx_PyInt_From_int(__pyx_v_partition_size); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 25; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_3 = __Pyx_PyInt_From_int(__pyx_v_partition_size); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 26; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_2 = PyTuple_New(2); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 25; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_2 = PyTuple_New(2); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 26; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_INCREF(__pyx_kp_s_part_size);
   __Pyx_GIVEREF(__pyx_kp_s_part_size);
@@ -899,10 +922,10 @@ static std::vector<std::pair<int,int> >  __pyx_f_16py_stringsimjoin_8apply_rf_24
   __Pyx_GIVEREF(__pyx_t_3);
   PyTuple_SET_ITEM(__pyx_t_2, 1, __pyx_t_3);
   __pyx_t_3 = 0;
-  if (__Pyx_Print(0, __pyx_t_2, 1) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 25; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (__Pyx_Print(0, __pyx_t_2, 1) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 26; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "py_stringsimjoin/apply_rf/overlap_coefficient_join.pyx":26
+  /* "py_stringsimjoin/apply_rf/overlap_coefficient_join.pyx":27
  *     partition_size = <int>(<float> n / <float> ncpus)
  *     print 'part size : ', partition_size
  *     for i in range(ncpus):             # <<<<<<<<<<<<<<
@@ -913,7 +936,7 @@ static std::vector<std::pair<int,int> >  __pyx_f_16py_stringsimjoin_8apply_rf_24
   for (__pyx_t_5 = 0; __pyx_t_5 < __pyx_t_4; __pyx_t_5+=1) {
     __pyx_v_i = __pyx_t_5;
 
-    /* "py_stringsimjoin/apply_rf/overlap_coefficient_join.pyx":27
+    /* "py_stringsimjoin/apply_rf/overlap_coefficient_join.pyx":28
  *     print 'part size : ', partition_size
  *     for i in range(ncpus):
  *         end = start + partition_size             # <<<<<<<<<<<<<<
@@ -922,7 +945,7 @@ static std::vector<std::pair<int,int> >  __pyx_f_16py_stringsimjoin_8apply_rf_24
  */
     __pyx_v_end = (__pyx_v_start + __pyx_v_partition_size);
 
-    /* "py_stringsimjoin/apply_rf/overlap_coefficient_join.pyx":28
+    /* "py_stringsimjoin/apply_rf/overlap_coefficient_join.pyx":29
  *     for i in range(ncpus):
  *         end = start + partition_size
  *         if end > n or i == ncpus - 1:             # <<<<<<<<<<<<<<
@@ -940,7 +963,7 @@ static std::vector<std::pair<int,int> >  __pyx_f_16py_stringsimjoin_8apply_rf_24
     __pyx_L6_bool_binop_done:;
     if (__pyx_t_6) {
 
-      /* "py_stringsimjoin/apply_rf/overlap_coefficient_join.pyx":29
+      /* "py_stringsimjoin/apply_rf/overlap_coefficient_join.pyx":30
  *         end = start + partition_size
  *         if end > n or i == ncpus - 1:
  *             end = n             # <<<<<<<<<<<<<<
@@ -949,7 +972,7 @@ static std::vector<std::pair<int,int> >  __pyx_f_16py_stringsimjoin_8apply_rf_24
  */
       __pyx_v_end = __pyx_v_n;
 
-      /* "py_stringsimjoin/apply_rf/overlap_coefficient_join.pyx":28
+      /* "py_stringsimjoin/apply_rf/overlap_coefficient_join.pyx":29
  *     for i in range(ncpus):
  *         end = start + partition_size
  *         if end > n or i == ncpus - 1:             # <<<<<<<<<<<<<<
@@ -958,7 +981,7 @@ static std::vector<std::pair<int,int> >  __pyx_f_16py_stringsimjoin_8apply_rf_24
  */
     }
 
-    /* "py_stringsimjoin/apply_rf/overlap_coefficient_join.pyx":30
+    /* "py_stringsimjoin/apply_rf/overlap_coefficient_join.pyx":31
  *         if end > n or i == ncpus - 1:
  *             end = n
  *         partitions.push_back(pair[int, int](start, end))             # <<<<<<<<<<<<<<
@@ -969,27 +992,27 @@ static std::vector<std::pair<int,int> >  __pyx_f_16py_stringsimjoin_8apply_rf_24
       __pyx_t_8 = std::pair<int,int> (__pyx_v_start, __pyx_v_end);
     } catch(...) {
       __Pyx_CppExn2PyErr();
-      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 30; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 31; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     }
     try {
       __pyx_v_partitions.push_back(__pyx_t_8);
     } catch(...) {
       __Pyx_CppExn2PyErr();
-      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 30; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 31; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     }
 
-    /* "py_stringsimjoin/apply_rf/overlap_coefficient_join.pyx":31
+    /* "py_stringsimjoin/apply_rf/overlap_coefficient_join.pyx":32
  *             end = n
  *         partitions.push_back(pair[int, int](start, end))
  *         print start, end             # <<<<<<<<<<<<<<
  *         start = end
  *         output_pairs.push_back(vector[pair[int, int]]())
  */
-    __pyx_t_2 = __Pyx_PyInt_From_int(__pyx_v_start); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 31; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_2 = __Pyx_PyInt_From_int(__pyx_v_start); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 32; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_2);
-    __pyx_t_3 = __Pyx_PyInt_From_int(__pyx_v_end); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 31; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_3 = __Pyx_PyInt_From_int(__pyx_v_end); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 32; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_3);
-    __pyx_t_1 = PyTuple_New(2); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 31; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_1 = PyTuple_New(2); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 32; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_GIVEREF(__pyx_t_2);
     PyTuple_SET_ITEM(__pyx_t_1, 0, __pyx_t_2);
@@ -997,45 +1020,65 @@ static std::vector<std::pair<int,int> >  __pyx_f_16py_stringsimjoin_8apply_rf_24
     PyTuple_SET_ITEM(__pyx_t_1, 1, __pyx_t_3);
     __pyx_t_2 = 0;
     __pyx_t_3 = 0;
-    if (__Pyx_Print(0, __pyx_t_1, 1) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 31; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    if (__Pyx_Print(0, __pyx_t_1, 1) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 32; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-    /* "py_stringsimjoin/apply_rf/overlap_coefficient_join.pyx":32
+    /* "py_stringsimjoin/apply_rf/overlap_coefficient_join.pyx":33
  *         partitions.push_back(pair[int, int](start, end))
  *         print start, end
  *         start = end             # <<<<<<<<<<<<<<
  *         output_pairs.push_back(vector[pair[int, int]]())
- * 
+ *         output_sim_scores.push_back(vector[double]())
  */
     __pyx_v_start = __pyx_v_end;
 
-    /* "py_stringsimjoin/apply_rf/overlap_coefficient_join.pyx":33
+    /* "py_stringsimjoin/apply_rf/overlap_coefficient_join.pyx":34
  *         print start, end
  *         start = end
  *         output_pairs.push_back(vector[pair[int, int]]())             # <<<<<<<<<<<<<<
+ *         output_sim_scores.push_back(vector[double]())
  * 
- *     for i in prange(ncpus, nogil=True):
  */
     try {
       __pyx_t_9 = std::vector<std::pair<int,int> > ();
     } catch(...) {
       __Pyx_CppExn2PyErr();
-      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 33; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 34; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     }
     try {
       __pyx_v_output_pairs.push_back(__pyx_t_9);
     } catch(...) {
       __Pyx_CppExn2PyErr();
-      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 33; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 34; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    }
+
+    /* "py_stringsimjoin/apply_rf/overlap_coefficient_join.pyx":35
+ *         start = end
+ *         output_pairs.push_back(vector[pair[int, int]]())
+ *         output_sim_scores.push_back(vector[double]())             # <<<<<<<<<<<<<<
+ * 
+ *     for i in prange(ncpus, nogil=True):
+ */
+    try {
+      __pyx_t_10 = std::vector<double> ();
+    } catch(...) {
+      __Pyx_CppExn2PyErr();
+      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 35; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    }
+    try {
+      __pyx_v_output_sim_scores.push_back(__pyx_t_10);
+    } catch(...) {
+      __Pyx_CppExn2PyErr();
+      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 35; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     }
   }
 
-  /* "py_stringsimjoin/apply_rf/overlap_coefficient_join.pyx":35
- *         output_pairs.push_back(vector[pair[int, int]]())
+  /* "py_stringsimjoin/apply_rf/overlap_coefficient_join.pyx":37
+ *         output_sim_scores.push_back(vector[double]())
  * 
  *     for i in prange(ncpus, nogil=True):             # <<<<<<<<<<<<<<
- *         ov_coeff_join_part(partitions[i], ltokens, rtokens, threshold, index, output_pairs[i])
- * 
+ *         ov_coeff_join_part(partitions[i], ltokens, rtokens, threshold, index,
+ *                            output_pairs[i], output_sim_scores[i])
  */
   {
       #ifdef WITH_THREAD
@@ -1052,8 +1095,8 @@ static std::vector<std::pair<int,int> >  __pyx_f_16py_stringsimjoin_8apply_rf_24
                 #define likely(x)   (x)
                 #define unlikely(x) (x)
             #endif
-            __pyx_t_10 = (__pyx_t_4 - 0) / 1;
-            if (__pyx_t_10 > 0)
+            __pyx_t_11 = (__pyx_t_4 - 0) / 1;
+            if (__pyx_t_11 > 0)
             {
                 #ifdef _OPENMP
                 #pragma omp parallel
@@ -1062,18 +1105,18 @@ static std::vector<std::pair<int,int> >  __pyx_f_16py_stringsimjoin_8apply_rf_24
                     #ifdef _OPENMP
                     #pragma omp for firstprivate(__pyx_v_i) lastprivate(__pyx_v_i)
                     #endif /* _OPENMP */
-                    for (__pyx_t_5 = 0; __pyx_t_5 < __pyx_t_10; __pyx_t_5++){
+                    for (__pyx_t_5 = 0; __pyx_t_5 < __pyx_t_11; __pyx_t_5++){
                         {
                             __pyx_v_i = 0 + 1 * __pyx_t_5;
 
-                            /* "py_stringsimjoin/apply_rf/overlap_coefficient_join.pyx":36
+                            /* "py_stringsimjoin/apply_rf/overlap_coefficient_join.pyx":38
  * 
  *     for i in prange(ncpus, nogil=True):
- *         ov_coeff_join_part(partitions[i], ltokens, rtokens, threshold, index, output_pairs[i])             # <<<<<<<<<<<<<<
+ *         ov_coeff_join_part(partitions[i], ltokens, rtokens, threshold, index,             # <<<<<<<<<<<<<<
+ *                            output_pairs[i], output_sim_scores[i])
  * 
- *     for part_pairs in output_pairs:
  */
-                            __pyx_f_16py_stringsimjoin_8apply_rf_24overlap_coefficient_join_ov_coeff_join_part((__pyx_v_partitions[__pyx_v_i]), __pyx_v_ltokens, __pyx_v_rtokens, __pyx_v_threshold, __pyx_v_index, (__pyx_v_output_pairs[__pyx_v_i]));
+                            __pyx_f_16py_stringsimjoin_8apply_rf_24overlap_coefficient_join_ov_coeff_join_part((__pyx_v_partitions[__pyx_v_i]), __pyx_v_ltokens, __pyx_v_rtokens, __pyx_v_threshold, __pyx_v_index, (__pyx_v_output_pairs[__pyx_v_i]), (__pyx_v_output_sim_scores[__pyx_v_i]));
                         }
                     }
                 }
@@ -1087,12 +1130,12 @@ static std::vector<std::pair<int,int> >  __pyx_f_16py_stringsimjoin_8apply_rf_24
         #endif
       }
 
-      /* "py_stringsimjoin/apply_rf/overlap_coefficient_join.pyx":35
- *         output_pairs.push_back(vector[pair[int, int]]())
+      /* "py_stringsimjoin/apply_rf/overlap_coefficient_join.pyx":37
+ *         output_sim_scores.push_back(vector[double]())
  * 
  *     for i in prange(ncpus, nogil=True):             # <<<<<<<<<<<<<<
- *         ov_coeff_join_part(partitions[i], ltokens, rtokens, threshold, index, output_pairs[i])
- * 
+ *         ov_coeff_join_part(partitions[i], ltokens, rtokens, threshold, index,
+ *                            output_pairs[i], output_sim_scores[i])
  */
       /*finally:*/ {
         /*normal exit:*/{
@@ -1105,57 +1148,60 @@ static std::vector<std::pair<int,int> >  __pyx_f_16py_stringsimjoin_8apply_rf_24
       }
   }
 
-  /* "py_stringsimjoin/apply_rf/overlap_coefficient_join.pyx":38
- *         ov_coeff_join_part(partitions[i], ltokens, rtokens, threshold, index, output_pairs[i])
+  /* "py_stringsimjoin/apply_rf/overlap_coefficient_join.pyx":43
+ *     cdef pair[vector[pair[int, int]], vector[double]] output
  * 
- *     for part_pairs in output_pairs:             # <<<<<<<<<<<<<<
- *         final_output_pairs.insert(final_output_pairs.end(), part_pairs.begin(), part_pairs.end())
- * 
+ *     for i in xrange(ncpus):             # <<<<<<<<<<<<<<
+ *         output.first.insert(output.first.end(),
+ *                             output_pairs[i].begin(), output_pairs[i].end())
  */
-  __pyx_t_11 = __pyx_v_output_pairs.begin();
-  for (;;) {
-    if (!(__pyx_t_11 != __pyx_v_output_pairs.end())) break;
-    __pyx_t_9 = *__pyx_t_11;
-    ++__pyx_t_11;
-    __pyx_v_part_pairs = __pyx_t_9;
+  __pyx_t_11 = __pyx_v_ncpus;
+  for (__pyx_t_5 = 0; __pyx_t_5 < __pyx_t_11; __pyx_t_5+=1) {
+    __pyx_v_i = __pyx_t_5;
 
-    /* "py_stringsimjoin/apply_rf/overlap_coefficient_join.pyx":39
+    /* "py_stringsimjoin/apply_rf/overlap_coefficient_join.pyx":44
  * 
- *     for part_pairs in output_pairs:
- *         final_output_pairs.insert(final_output_pairs.end(), part_pairs.begin(), part_pairs.end())             # <<<<<<<<<<<<<<
- * 
- *     return final_output_pairs
+ *     for i in xrange(ncpus):
+ *         output.first.insert(output.first.end(),             # <<<<<<<<<<<<<<
+ *                             output_pairs[i].begin(), output_pairs[i].end())
+ *         output.second.insert(output.second.end(),
  */
     try {
-      __pyx_v_final_output_pairs.insert(__pyx_v_final_output_pairs.end(), __pyx_v_part_pairs.begin(), __pyx_v_part_pairs.end());
+      __pyx_v_output.first.insert(__pyx_v_output.first.end(), (__pyx_v_output_pairs[__pyx_v_i]).begin(), (__pyx_v_output_pairs[__pyx_v_i]).end());
     } catch(...) {
       __Pyx_CppExn2PyErr();
-      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 39; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 44; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     }
 
-    /* "py_stringsimjoin/apply_rf/overlap_coefficient_join.pyx":38
- *         ov_coeff_join_part(partitions[i], ltokens, rtokens, threshold, index, output_pairs[i])
- * 
- *     for part_pairs in output_pairs:             # <<<<<<<<<<<<<<
- *         final_output_pairs.insert(final_output_pairs.end(), part_pairs.begin(), part_pairs.end())
- * 
+    /* "py_stringsimjoin/apply_rf/overlap_coefficient_join.pyx":46
+ *         output.first.insert(output.first.end(),
+ *                             output_pairs[i].begin(), output_pairs[i].end())
+ *         output.second.insert(output.second.end(),             # <<<<<<<<<<<<<<
+ *                              output_sim_scores[i].begin(),
+ *                              output_sim_scores[i].end())
  */
+    try {
+      __pyx_v_output.second.insert(__pyx_v_output.second.end(), (__pyx_v_output_sim_scores[__pyx_v_i]).begin(), (__pyx_v_output_sim_scores[__pyx_v_i]).end());
+    } catch(...) {
+      __Pyx_CppExn2PyErr();
+      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 46; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    }
   }
 
-  /* "py_stringsimjoin/apply_rf/overlap_coefficient_join.pyx":41
- *         final_output_pairs.insert(final_output_pairs.end(), part_pairs.begin(), part_pairs.end())
+  /* "py_stringsimjoin/apply_rf/overlap_coefficient_join.pyx":50
+ *                              output_sim_scores[i].end())
  * 
- *     return final_output_pairs             # <<<<<<<<<<<<<<
+ *     return output             # <<<<<<<<<<<<<<
  * 
- * cdef inline int int_min(int a, int b) nogil: return a if a <= b else b
+ * 
  */
-  __pyx_r = __pyx_v_final_output_pairs;
+  __pyx_r = __pyx_v_output;
   goto __pyx_L0;
 
   /* "py_stringsimjoin/apply_rf/overlap_coefficient_join.pyx":14
  * from py_stringsimjoin.apply_rf.utils cimport build_inverted_index
  * 
- * cpdef vector[pair[int, int]] ov_coeff_join(vector[vector[int]]& ltokens,             # <<<<<<<<<<<<<<
+ * cpdef pair[vector[pair[int, int]], vector[double]] ov_coeff_join(vector[vector[int]]& ltokens,             # <<<<<<<<<<<<<<
  *                                            vector[vector[int]]& rtokens,
  *                                            double threshold):
  */
@@ -1250,7 +1296,7 @@ static PyObject *__pyx_pf_16py_stringsimjoin_8apply_rf_24overlap_coefficient_joi
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("ov_coeff_join", 0);
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __pyx_convert_vector_to_py_std_3a__3a_pair_3c_int_2c_int_3e___(__pyx_f_16py_stringsimjoin_8apply_rf_24overlap_coefficient_join_ov_coeff_join(__pyx_v_ltokens, __pyx_v_rtokens, __pyx_v_threshold, 0)); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 14; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = __pyx_convert_pair_to_py_std_3a__3a_vector_3c_std_3a__3a_pair_3c_int_2c_int_3e____3e_______std_3a__3a_vector_3c_double_3e___(__pyx_f_16py_stringsimjoin_8apply_rf_24overlap_coefficient_join_ov_coeff_join(__pyx_v_ltokens, __pyx_v_rtokens, __pyx_v_threshold, 0)); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 14; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
@@ -1267,8 +1313,8 @@ static PyObject *__pyx_pf_16py_stringsimjoin_8apply_rf_24overlap_coefficient_joi
   return __pyx_r;
 }
 
-/* "py_stringsimjoin/apply_rf/overlap_coefficient_join.pyx":43
- *     return final_output_pairs
+/* "py_stringsimjoin/apply_rf/overlap_coefficient_join.pyx":53
+ * 
  * 
  * cdef inline int int_min(int a, int b) nogil: return a if a <= b else b             # <<<<<<<<<<<<<<
  * 
@@ -1291,7 +1337,7 @@ static CYTHON_INLINE int __pyx_f_16py_stringsimjoin_8apply_rf_24overlap_coeffici
   return __pyx_r;
 }
 
-/* "py_stringsimjoin/apply_rf/overlap_coefficient_join.pyx":45
+/* "py_stringsimjoin/apply_rf/overlap_coefficient_join.pyx":55
  * cdef inline int int_min(int a, int b) nogil: return a if a <= b else b
  * 
  * cdef void ov_coeff_join_part(pair[int, int] partition,             # <<<<<<<<<<<<<<
@@ -1299,7 +1345,7 @@ static CYTHON_INLINE int __pyx_f_16py_stringsimjoin_8apply_rf_24overlap_coeffici
  *                              vector[vector[int]]& rtokens,
  */
 
-static void __pyx_f_16py_stringsimjoin_8apply_rf_24overlap_coefficient_join_ov_coeff_join_part(std::pair<int,int>  __pyx_v_partition, CYTHON_UNUSED std::vector<std::vector<int> >  &__pyx_v_ltokens, std::vector<std::vector<int> >  &__pyx_v_rtokens, double __pyx_v_threshold, InvertedIndex &__pyx_v_index, std::vector<std::pair<int,int> >  &__pyx_v_output_pairs) {
+static void __pyx_f_16py_stringsimjoin_8apply_rf_24overlap_coefficient_join_ov_coeff_join_part(std::pair<int,int>  __pyx_v_partition, CYTHON_UNUSED std::vector<std::vector<int> >  &__pyx_v_ltokens, std::vector<std::vector<int> >  &__pyx_v_rtokens, double __pyx_v_threshold, InvertedIndex &__pyx_v_index, std::vector<std::pair<int,int> >  &__pyx_v_output_pairs, std::vector<double>  &__pyx_v_output_sim_scores) {
   std::map<int,int>  __pyx_v_candidate_overlap;
   std::vector<int>  __pyx_v_candidates;
   std::vector<int>  __pyx_v_tokens;
@@ -1313,18 +1359,18 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_24overlap_coefficient_join_ov_c
   int __pyx_t_2;
   int __pyx_t_3;
   int __pyx_t_4;
-  std::vector<int> ::iterator __pyx_t_5;
-  int __pyx_t_6;
-  std::map<int,int> ::iterator __pyx_t_7;
-  std::pair<int,int>  __pyx_t_8;
-  double __pyx_t_9;
-  int __pyx_t_10;
+  int __pyx_t_5;
+  std::vector<int> ::iterator __pyx_t_6;
+  int __pyx_t_7;
+  std::map<int,int> ::iterator __pyx_t_8;
+  std::pair<int,int>  __pyx_t_9;
+  double __pyx_t_10;
   std::pair<int,int>  __pyx_t_11;
   int __pyx_lineno = 0;
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
 
-  /* "py_stringsimjoin/apply_rf/overlap_coefficient_join.pyx":54
+  /* "py_stringsimjoin/apply_rf/overlap_coefficient_join.pyx":65
  *     cdef vector[int] tokens
  *     cdef pair[int, int] entry
  *     cdef int j=0, m, i, cand             # <<<<<<<<<<<<<<
@@ -1333,7 +1379,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_24overlap_coefficient_join_ov_c
  */
   __pyx_v_j = 0;
 
-  /* "py_stringsimjoin/apply_rf/overlap_coefficient_join.pyx":57
+  /* "py_stringsimjoin/apply_rf/overlap_coefficient_join.pyx":68
  *     cdef double sim_score
  * 
  *     for i in range(partition.first, partition.second):             # <<<<<<<<<<<<<<
@@ -1344,7 +1390,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_24overlap_coefficient_join_ov_c
   for (__pyx_t_2 = __pyx_v_partition.first; __pyx_t_2 < __pyx_t_1; __pyx_t_2+=1) {
     __pyx_v_i = __pyx_t_2;
 
-    /* "py_stringsimjoin/apply_rf/overlap_coefficient_join.pyx":58
+    /* "py_stringsimjoin/apply_rf/overlap_coefficient_join.pyx":69
  * 
  *     for i in range(partition.first, partition.second):
  *         tokens = rtokens[i]             # <<<<<<<<<<<<<<
@@ -1353,7 +1399,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_24overlap_coefficient_join_ov_c
  */
     __pyx_v_tokens = (__pyx_v_rtokens[__pyx_v_i]);
 
-    /* "py_stringsimjoin/apply_rf/overlap_coefficient_join.pyx":59
+    /* "py_stringsimjoin/apply_rf/overlap_coefficient_join.pyx":70
  *     for i in range(partition.first, partition.second):
  *         tokens = rtokens[i]
  *         m = tokens.size()             # <<<<<<<<<<<<<<
@@ -1362,83 +1408,112 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_24overlap_coefficient_join_ov_c
  */
     __pyx_v_m = __pyx_v_tokens.size();
 
-    /* "py_stringsimjoin/apply_rf/overlap_coefficient_join.pyx":61
+    /* "py_stringsimjoin/apply_rf/overlap_coefficient_join.pyx":72
  *         m = tokens.size()
  * 
  *         for j in range(m):             # <<<<<<<<<<<<<<
- *             candidates = index.index[tokens[j]]
- *             for cand in candidates:
+ *             if index.index.find(tokens[j]) == index.index.end():
+ *                 continue
  */
     __pyx_t_3 = __pyx_v_m;
     for (__pyx_t_4 = 0; __pyx_t_4 < __pyx_t_3; __pyx_t_4+=1) {
       __pyx_v_j = __pyx_t_4;
 
-      /* "py_stringsimjoin/apply_rf/overlap_coefficient_join.pyx":62
+      /* "py_stringsimjoin/apply_rf/overlap_coefficient_join.pyx":73
  * 
  *         for j in range(m):
+ *             if index.index.find(tokens[j]) == index.index.end():             # <<<<<<<<<<<<<<
+ *                 continue
+ *             candidates = index.index[tokens[j]]
+ */
+      __pyx_t_5 = ((__pyx_v_index.index.find((__pyx_v_tokens[__pyx_v_j])) == __pyx_v_index.index.end()) != 0);
+      if (__pyx_t_5) {
+
+        /* "py_stringsimjoin/apply_rf/overlap_coefficient_join.pyx":74
+ *         for j in range(m):
+ *             if index.index.find(tokens[j]) == index.index.end():
+ *                 continue             # <<<<<<<<<<<<<<
+ *             candidates = index.index[tokens[j]]
+ *             for cand in candidates:
+ */
+        goto __pyx_L5_continue;
+
+        /* "py_stringsimjoin/apply_rf/overlap_coefficient_join.pyx":73
+ * 
+ *         for j in range(m):
+ *             if index.index.find(tokens[j]) == index.index.end():             # <<<<<<<<<<<<<<
+ *                 continue
+ *             candidates = index.index[tokens[j]]
+ */
+      }
+
+      /* "py_stringsimjoin/apply_rf/overlap_coefficient_join.pyx":75
+ *             if index.index.find(tokens[j]) == index.index.end():
+ *                 continue
  *             candidates = index.index[tokens[j]]             # <<<<<<<<<<<<<<
  *             for cand in candidates:
  *                 candidate_overlap[cand] += 1
  */
       __pyx_v_candidates = (__pyx_v_index.index[(__pyx_v_tokens[__pyx_v_j])]);
 
-      /* "py_stringsimjoin/apply_rf/overlap_coefficient_join.pyx":63
- *         for j in range(m):
+      /* "py_stringsimjoin/apply_rf/overlap_coefficient_join.pyx":76
+ *                 continue
  *             candidates = index.index[tokens[j]]
  *             for cand in candidates:             # <<<<<<<<<<<<<<
  *                 candidate_overlap[cand] += 1
  * 
  */
-      __pyx_t_5 = __pyx_v_candidates.begin();
+      __pyx_t_6 = __pyx_v_candidates.begin();
       for (;;) {
-        if (!(__pyx_t_5 != __pyx_v_candidates.end())) break;
-        __pyx_t_6 = *__pyx_t_5;
-        ++__pyx_t_5;
-        __pyx_v_cand = __pyx_t_6;
+        if (!(__pyx_t_6 != __pyx_v_candidates.end())) break;
+        __pyx_t_7 = *__pyx_t_6;
+        ++__pyx_t_6;
+        __pyx_v_cand = __pyx_t_7;
 
-        /* "py_stringsimjoin/apply_rf/overlap_coefficient_join.pyx":64
+        /* "py_stringsimjoin/apply_rf/overlap_coefficient_join.pyx":77
  *             candidates = index.index[tokens[j]]
  *             for cand in candidates:
  *                 candidate_overlap[cand] += 1             # <<<<<<<<<<<<<<
  * 
- * #        print i, candidate_overlap.size()
+ * ###        print i, candidate_overlap.size()
  */
-        __pyx_t_6 = __pyx_v_cand;
-        (__pyx_v_candidate_overlap[__pyx_t_6]) = ((__pyx_v_candidate_overlap[__pyx_t_6]) + 1);
+        __pyx_t_7 = __pyx_v_cand;
+        (__pyx_v_candidate_overlap[__pyx_t_7]) = ((__pyx_v_candidate_overlap[__pyx_t_7]) + 1);
 
-        /* "py_stringsimjoin/apply_rf/overlap_coefficient_join.pyx":63
- *         for j in range(m):
+        /* "py_stringsimjoin/apply_rf/overlap_coefficient_join.pyx":76
+ *                 continue
  *             candidates = index.index[tokens[j]]
  *             for cand in candidates:             # <<<<<<<<<<<<<<
  *                 candidate_overlap[cand] += 1
  * 
  */
       }
+      __pyx_L5_continue:;
     }
 
-    /* "py_stringsimjoin/apply_rf/overlap_coefficient_join.pyx":67
+    /* "py_stringsimjoin/apply_rf/overlap_coefficient_join.pyx":80
  * 
- * #        print i, candidate_overlap.size()
+ * ###        print i, candidate_overlap.size()
  *         for entry in candidate_overlap:             # <<<<<<<<<<<<<<
  *             sim_score = <double>entry.second / <double>int_min(m, index.size_vector[entry.first])
  *             #print ltokens[entry.first], rtokens[i], entry.second, sim_score
  */
-    __pyx_t_7 = __pyx_v_candidate_overlap.begin();
+    __pyx_t_8 = __pyx_v_candidate_overlap.begin();
     for (;;) {
-      if (!(__pyx_t_7 != __pyx_v_candidate_overlap.end())) break;
-      __pyx_t_8 = *__pyx_t_7;
-      ++__pyx_t_7;
-      __pyx_v_entry = __pyx_t_8;
+      if (!(__pyx_t_8 != __pyx_v_candidate_overlap.end())) break;
+      __pyx_t_9 = *__pyx_t_8;
+      ++__pyx_t_8;
+      __pyx_v_entry = __pyx_t_9;
 
-      /* "py_stringsimjoin/apply_rf/overlap_coefficient_join.pyx":68
- * #        print i, candidate_overlap.size()
+      /* "py_stringsimjoin/apply_rf/overlap_coefficient_join.pyx":81
+ * ###        print i, candidate_overlap.size()
  *         for entry in candidate_overlap:
  *             sim_score = <double>entry.second / <double>int_min(m, index.size_vector[entry.first])             # <<<<<<<<<<<<<<
  *             #print ltokens[entry.first], rtokens[i], entry.second, sim_score
  *             if sim_score > threshold:
  */
-      __pyx_t_9 = ((double)__pyx_f_16py_stringsimjoin_8apply_rf_24overlap_coefficient_join_int_min(__pyx_v_m, (__pyx_v_index.size_vector[__pyx_v_entry.first])));
-      if (unlikely(__pyx_t_9 == 0)) {
+      __pyx_t_10 = ((double)__pyx_f_16py_stringsimjoin_8apply_rf_24overlap_coefficient_join_int_min(__pyx_v_m, (__pyx_v_index.size_vector[__pyx_v_entry.first])));
+      if (unlikely(__pyx_t_10 == 0)) {
         #ifdef WITH_THREAD
         PyGILState_STATE __pyx_gilstate_save = PyGILState_Ensure();
         #endif
@@ -1446,25 +1521,25 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_24overlap_coefficient_join_ov_c
         #ifdef WITH_THREAD
         PyGILState_Release(__pyx_gilstate_save);
         #endif
-        {__pyx_filename = __pyx_f[0]; __pyx_lineno = 68; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        {__pyx_filename = __pyx_f[0]; __pyx_lineno = 81; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       }
-      __pyx_v_sim_score = (((double)__pyx_v_entry.second) / __pyx_t_9);
+      __pyx_v_sim_score = (((double)__pyx_v_entry.second) / __pyx_t_10);
 
-      /* "py_stringsimjoin/apply_rf/overlap_coefficient_join.pyx":70
+      /* "py_stringsimjoin/apply_rf/overlap_coefficient_join.pyx":83
  *             sim_score = <double>entry.second / <double>int_min(m, index.size_vector[entry.first])
  *             #print ltokens[entry.first], rtokens[i], entry.second, sim_score
  *             if sim_score > threshold:             # <<<<<<<<<<<<<<
  *                 output_pairs.push_back(pair[int, int](entry.first, i))
- * 
+ *                 output_sim_scores.push_back(sim_score)
  */
-      __pyx_t_10 = ((__pyx_v_sim_score > __pyx_v_threshold) != 0);
-      if (__pyx_t_10) {
+      __pyx_t_5 = ((__pyx_v_sim_score > __pyx_v_threshold) != 0);
+      if (__pyx_t_5) {
 
-        /* "py_stringsimjoin/apply_rf/overlap_coefficient_join.pyx":71
+        /* "py_stringsimjoin/apply_rf/overlap_coefficient_join.pyx":84
  *             #print ltokens[entry.first], rtokens[i], entry.second, sim_score
  *             if sim_score > threshold:
  *                 output_pairs.push_back(pair[int, int](entry.first, i))             # <<<<<<<<<<<<<<
- * 
+ *                 output_sim_scores.push_back(sim_score)
  * 
  */
         try {
@@ -1477,7 +1552,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_24overlap_coefficient_join_ov_c
           #ifdef WITH_THREAD
           PyGILState_Release(__pyx_gilstate_save);
           #endif
-          {__pyx_filename = __pyx_f[0]; __pyx_lineno = 71; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+          {__pyx_filename = __pyx_f[0]; __pyx_lineno = 84; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
         }
         try {
           __pyx_v_output_pairs.push_back(__pyx_t_11);
@@ -1489,29 +1564,57 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_24overlap_coefficient_join_ov_c
           #ifdef WITH_THREAD
           PyGILState_Release(__pyx_gilstate_save);
           #endif
-          {__pyx_filename = __pyx_f[0]; __pyx_lineno = 71; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+          {__pyx_filename = __pyx_f[0]; __pyx_lineno = 84; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
         }
 
-        /* "py_stringsimjoin/apply_rf/overlap_coefficient_join.pyx":70
+        /* "py_stringsimjoin/apply_rf/overlap_coefficient_join.pyx":85
+ *             if sim_score > threshold:
+ *                 output_pairs.push_back(pair[int, int](entry.first, i))
+ *                 output_sim_scores.push_back(sim_score)             # <<<<<<<<<<<<<<
+ * 
+ *         candidate_overlap.clear()
+ */
+        try {
+          __pyx_v_output_sim_scores.push_back(__pyx_v_sim_score);
+        } catch(...) {
+          #ifdef WITH_THREAD
+          PyGILState_STATE __pyx_gilstate_save = PyGILState_Ensure();
+          #endif
+          __Pyx_CppExn2PyErr();
+          #ifdef WITH_THREAD
+          PyGILState_Release(__pyx_gilstate_save);
+          #endif
+          {__pyx_filename = __pyx_f[0]; __pyx_lineno = 85; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        }
+
+        /* "py_stringsimjoin/apply_rf/overlap_coefficient_join.pyx":83
  *             sim_score = <double>entry.second / <double>int_min(m, index.size_vector[entry.first])
  *             #print ltokens[entry.first], rtokens[i], entry.second, sim_score
  *             if sim_score > threshold:             # <<<<<<<<<<<<<<
  *                 output_pairs.push_back(pair[int, int](entry.first, i))
- * 
+ *                 output_sim_scores.push_back(sim_score)
  */
       }
 
-      /* "py_stringsimjoin/apply_rf/overlap_coefficient_join.pyx":67
+      /* "py_stringsimjoin/apply_rf/overlap_coefficient_join.pyx":80
  * 
- * #        print i, candidate_overlap.size()
+ * ###        print i, candidate_overlap.size()
  *         for entry in candidate_overlap:             # <<<<<<<<<<<<<<
  *             sim_score = <double>entry.second / <double>int_min(m, index.size_vector[entry.first])
  *             #print ltokens[entry.first], rtokens[i], entry.second, sim_score
  */
     }
+
+    /* "py_stringsimjoin/apply_rf/overlap_coefficient_join.pyx":87
+ *                 output_sim_scores.push_back(sim_score)
+ * 
+ *         candidate_overlap.clear()             # <<<<<<<<<<<<<<
+ * 
+ */
+    __pyx_v_candidate_overlap.clear();
   }
 
-  /* "py_stringsimjoin/apply_rf/overlap_coefficient_join.pyx":45
+  /* "py_stringsimjoin/apply_rf/overlap_coefficient_join.pyx":55
  * cdef inline int int_min(int a, int b) nogil: return a if a <= b else b
  * 
  * cdef void ov_coeff_join_part(pair[int, int] partition,             # <<<<<<<<<<<<<<
@@ -1895,6 +1998,125 @@ static PyObject *__pyx_convert_vector_to_py_std_3a__3a_pair_3c_int_2c_int_3e___(
   return __pyx_r;
 }
 
+static PyObject *__pyx_convert_vector_to_py_double(const std::vector<double>  &__pyx_v_v) {
+  size_t __pyx_v_i;
+  PyObject *__pyx_r = NULL;
+  __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
+  size_t __pyx_t_2;
+  size_t __pyx_t_3;
+  PyObject *__pyx_t_4 = NULL;
+  int __pyx_lineno = 0;
+  const char *__pyx_filename = NULL;
+  int __pyx_clineno = 0;
+  __Pyx_RefNannySetupContext("__pyx_convert_vector_to_py_double", 0);
+
+  /* "vector.to_py":68
+ * @cname("__pyx_convert_vector_to_py_double")
+ * cdef object __pyx_convert_vector_to_py_double(vector[X]& v):
+ *     return [X_to_py(v[i]) for i in range(v.size())]             # <<<<<<<<<<<<<<
+ * 
+ * 
+ */
+  __Pyx_XDECREF(__pyx_r);
+  __pyx_t_1 = PyList_New(0); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[1]; __pyx_lineno = 68; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_1);
+  __pyx_t_2 = __pyx_v_v.size();
+  for (__pyx_t_3 = 0; __pyx_t_3 < __pyx_t_2; __pyx_t_3+=1) {
+    __pyx_v_i = __pyx_t_3;
+    __pyx_t_4 = PyFloat_FromDouble((__pyx_v_v[__pyx_v_i])); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[1]; __pyx_lineno = 68; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __Pyx_GOTREF(__pyx_t_4);
+    if (unlikely(__Pyx_ListComp_Append(__pyx_t_1, (PyObject*)__pyx_t_4))) {__pyx_filename = __pyx_f[1]; __pyx_lineno = 68; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+  }
+  __pyx_r = __pyx_t_1;
+  __pyx_t_1 = 0;
+  goto __pyx_L0;
+
+  /* "vector.to_py":67
+ * 
+ * @cname("__pyx_convert_vector_to_py_double")
+ * cdef object __pyx_convert_vector_to_py_double(vector[X]& v):             # <<<<<<<<<<<<<<
+ *     return [X_to_py(v[i]) for i in range(v.size())]
+ * 
+ */
+
+  /* function exit code */
+  __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
+  __Pyx_XDECREF(__pyx_t_4);
+  __Pyx_AddTraceback("vector.to_py.__pyx_convert_vector_to_py_double", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __pyx_r = 0;
+  __pyx_L0:;
+  __Pyx_XGIVEREF(__pyx_r);
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+/* "pair.to_py":180
+ * 
+ * @cname("__pyx_convert_pair_to_py_std_3a__3a_vector_3c_std_3a__3a_pair_3c_int_2c_int_3e____3e_______std_3a__3a_vector_3c_double_3e___")
+ * cdef object __pyx_convert_pair_to_py_std_3a__3a_vector_3c_std_3a__3a_pair_3c_int_2c_int_3e____3e_______std_3a__3a_vector_3c_double_3e___(const pair[X,Y]& p):             # <<<<<<<<<<<<<<
+ *     return X_to_py(p.first), Y_to_py(p.second)
+ * 
+ */
+
+static PyObject *__pyx_convert_pair_to_py_std_3a__3a_vector_3c_std_3a__3a_pair_3c_int_2c_int_3e____3e_______std_3a__3a_vector_3c_double_3e___(std::pair<std::vector<std::pair<int,int> > ,std::vector<double> >  const &__pyx_v_p) {
+  PyObject *__pyx_r = NULL;
+  __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
+  PyObject *__pyx_t_2 = NULL;
+  PyObject *__pyx_t_3 = NULL;
+  int __pyx_lineno = 0;
+  const char *__pyx_filename = NULL;
+  int __pyx_clineno = 0;
+  __Pyx_RefNannySetupContext("__pyx_convert_pair_to_py_std_3a__3a_vector_3c_std_3a__3a_pair_3c_int_2c_int_3e____3e_______std_3a__3a_vector_3c_double_3e___", 0);
+
+  /* "pair.to_py":181
+ * @cname("__pyx_convert_pair_to_py_std_3a__3a_vector_3c_std_3a__3a_pair_3c_int_2c_int_3e____3e_______std_3a__3a_vector_3c_double_3e___")
+ * cdef object __pyx_convert_pair_to_py_std_3a__3a_vector_3c_std_3a__3a_pair_3c_int_2c_int_3e____3e_______std_3a__3a_vector_3c_double_3e___(const pair[X,Y]& p):
+ *     return X_to_py(p.first), Y_to_py(p.second)             # <<<<<<<<<<<<<<
+ * 
+ * 
+ */
+  __Pyx_XDECREF(__pyx_r);
+  __pyx_t_1 = __pyx_convert_vector_to_py_std_3a__3a_pair_3c_int_2c_int_3e___(__pyx_v_p.first); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[1]; __pyx_lineno = 181; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_1);
+  __pyx_t_2 = __pyx_convert_vector_to_py_double(__pyx_v_p.second); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[1]; __pyx_lineno = 181; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_2);
+  __pyx_t_3 = PyTuple_New(2); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[1]; __pyx_lineno = 181; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_3);
+  __Pyx_GIVEREF(__pyx_t_1);
+  PyTuple_SET_ITEM(__pyx_t_3, 0, __pyx_t_1);
+  __Pyx_GIVEREF(__pyx_t_2);
+  PyTuple_SET_ITEM(__pyx_t_3, 1, __pyx_t_2);
+  __pyx_t_1 = 0;
+  __pyx_t_2 = 0;
+  __pyx_r = __pyx_t_3;
+  __pyx_t_3 = 0;
+  goto __pyx_L0;
+
+  /* "pair.to_py":180
+ * 
+ * @cname("__pyx_convert_pair_to_py_std_3a__3a_vector_3c_std_3a__3a_pair_3c_int_2c_int_3e____3e_______std_3a__3a_vector_3c_double_3e___")
+ * cdef object __pyx_convert_pair_to_py_std_3a__3a_vector_3c_std_3a__3a_pair_3c_int_2c_int_3e____3e_______std_3a__3a_vector_3c_double_3e___(const pair[X,Y]& p):             # <<<<<<<<<<<<<<
+ *     return X_to_py(p.first), Y_to_py(p.second)
+ * 
+ */
+
+  /* function exit code */
+  __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
+  __Pyx_XDECREF(__pyx_t_2);
+  __Pyx_XDECREF(__pyx_t_3);
+  __Pyx_AddTraceback("pair.to_py.__pyx_convert_pair_to_py_std_3a__3a_vector_3c_std_3a__3a_pair_3c_int_2c_int_3e____3e_______std_3a__3a_vector_3c_double_3e___", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __pyx_r = 0;
+  __pyx_L0:;
+  __Pyx_XGIVEREF(__pyx_r);
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
 static PyMethodDef __pyx_methods[] = {
   {"ov_coeff_join", (PyCFunction)__pyx_pw_16py_stringsimjoin_8apply_rf_24overlap_coefficient_join_1ov_coeff_join, METH_VARARGS|METH_KEYWORDS, 0},
   {0, 0, 0, 0}
@@ -1931,10 +2153,16 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_rtokens, __pyx_k_rtokens, sizeof(__pyx_k_rtokens), 0, 0, 1, 1},
   {&__pyx_n_s_test, __pyx_k_test, sizeof(__pyx_k_test), 0, 0, 1, 1},
   {&__pyx_n_s_threshold, __pyx_k_threshold, sizeof(__pyx_k_threshold), 0, 0, 1, 1},
+  {&__pyx_n_s_xrange, __pyx_k_xrange, sizeof(__pyx_k_xrange), 0, 0, 1, 1},
   {0, 0, 0, 0, 0, 0, 0}
 };
 static int __Pyx_InitCachedBuiltins(void) {
-  __pyx_builtin_range = __Pyx_GetBuiltinName(__pyx_n_s_range); if (!__pyx_builtin_range) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 26; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_builtin_range = __Pyx_GetBuiltinName(__pyx_n_s_range); if (!__pyx_builtin_range) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 27; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  #if PY_MAJOR_VERSION >= 3
+  __pyx_builtin_xrange = __Pyx_GetBuiltinName(__pyx_n_s_range); if (!__pyx_builtin_xrange) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 43; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  #else
+  __pyx_builtin_xrange = __Pyx_GetBuiltinName(__pyx_n_s_xrange); if (!__pyx_builtin_xrange) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 43; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  #endif
   return 0;
   __pyx_L1_error:;
   return -1;
@@ -2047,7 +2275,7 @@ PyMODINIT_FUNC PyInit_overlap_coefficient_join(void)
   /*--- Global init code ---*/
   /*--- Variable export code ---*/
   /*--- Function export code ---*/
-  if (__Pyx_ExportFunction("ov_coeff_join", (void (*)(void))__pyx_f_16py_stringsimjoin_8apply_rf_24overlap_coefficient_join_ov_coeff_join, "std::vector<std::pair<int,int> >  (std::vector<std::vector<int> >  &, std::vector<std::vector<int> >  &, double, int __pyx_skip_dispatch)") < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 2; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (__Pyx_ExportFunction("ov_coeff_join", (void (*)(void))__pyx_f_16py_stringsimjoin_8apply_rf_24overlap_coefficient_join_ov_coeff_join, "std::pair<std::vector<std::pair<int,int> > ,std::vector<double> >  (std::vector<std::vector<int> >  &, std::vector<std::vector<int> >  &, double, int __pyx_skip_dispatch)") < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 2; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   /*--- Type init code ---*/
   /*--- Type import code ---*/
   /*--- Variable import code ---*/
@@ -2071,11 +2299,11 @@ PyMODINIT_FUNC PyInit_overlap_coefficient_join(void)
   if (PyDict_SetItem(__pyx_d, __pyx_n_s_test, __pyx_t_2) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 2; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "vector.to_py":67
+  /* "pair.to_py":180
  * 
- * @cname("__pyx_convert_vector_to_py_std_3a__3a_pair_3c_int_2c_int_3e___")
- * cdef object __pyx_convert_vector_to_py_std_3a__3a_pair_3c_int_2c_int_3e___(vector[X]& v):             # <<<<<<<<<<<<<<
- *     return [X_to_py(v[i]) for i in range(v.size())]
+ * @cname("__pyx_convert_pair_to_py_std_3a__3a_vector_3c_std_3a__3a_pair_3c_int_2c_int_3e____3e_______std_3a__3a_vector_3c_double_3e___")
+ * cdef object __pyx_convert_pair_to_py_std_3a__3a_vector_3c_std_3a__3a_pair_3c_int_2c_int_3e____3e_______std_3a__3a_vector_3c_double_3e___(const pair[X,Y]& p):             # <<<<<<<<<<<<<<
+ *     return X_to_py(p.first), Y_to_py(p.second)
  * 
  */
 

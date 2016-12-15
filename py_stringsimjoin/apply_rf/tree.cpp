@@ -6,4 +6,8 @@ Tree::Tree(std::vector<Rule>& rls) {
 
 Tree::Tree() {}
 
-Tree::~Tree() {} 
+Tree::~Tree() {}
+
+void Tree::set_tree_id(int tid) {
+  tree_id = tid;
+} 

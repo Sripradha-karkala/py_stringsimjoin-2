@@ -18,10 +18,11 @@ from py_stringsimjoin.apply_rf.execution_plan import get_predicate_dict
 from py_stringsimjoin.apply_rf.tokenizers cimport tokenize, load_tok, tokenize_str
 from py_stringsimjoin.apply_rf.set_sim_join cimport set_sim_join, set_sim_join1
 from py_stringsimjoin.apply_rf.overlap_coefficient_join cimport ov_coeff_join                
-#from py_stringsimjoin.apply_rf.edit_distance_join cimport ed_join   
+from py_stringsimjoin.apply_rf.edit_distance_join cimport ed_join   
 from py_stringsimjoin.apply_rf.sim_functions cimport cosine, dice, jaccard      
-from py_stringsimjoin.apply_rf.utils cimport compfnptr, simfnptr, get_comp_type, get_comparison_function, get_sim_type, get_sim_function, simfnptr_str, get_sim_function_str
-
+from py_stringsimjoin.apply_rf.utils cimport compfnptr, str_simfnptr, \
+  token_simfnptr, get_comp_type, get_comparison_function, get_sim_type, \
+  get_str_sim_function, get_token_sim_function, simfnptr_str, get_sim_function_str
 from py_stringsimjoin.apply_rf.predicatecpp cimport Predicatecpp                
 from py_stringsimjoin.apply_rf.node cimport Node                                
 from py_stringsimjoin.apply_rf.coverage cimport Coverage         
@@ -51,9 +52,9 @@ def test_execute_rf(rf, feature_table, l1, l2, path1, attr1, path2, attr2, worki
     cdef omap[int, Coverage] tree_cov
     cdef vector[string] l, r                                                    
     for s in l1:                                                                
-        l.push_back(lstrings[int(s) - 1])                                       
+        l.push_back(lstrings[int(s)])                                       
     for s in l2:                                                                
-        r.push_back(rstrings[int(s) - 1])                                       
+        r.push_back(rstrings[int(s)])                                       
     print 'computing coverage'                                                  
     compute_predicate_cost_and_coverage(l, r, trees, coverage, tree_cov)                 
     cdef Node global_plan
@@ -62,13 +63,13 @@ def test_execute_rf(rf, feature_table, l1, l2, path1, attr1, path2, attr2, worki
 
     print 'num join nodes : ', global_plan.children.size()
     print 'tokenizing strings'                                                  
-#    tokenize_strings(trees, lstrings, rstrings, working_dir)                    
+    tokenize_strings(trees, lstrings, rstrings, working_dir)                    
     print 'finished tokenizing. executing plan'                                 
 
     execute_plan(global_plan, trees1, lstrings, rstrings, working_dir, n_jobs)  
                                                                                 
     cdef pair[vector[pair[int, int]], vector[int]] candset_votes                
-    candset_votes = merge_candsets(num_total_trees, trees1.size(),        
+    candset_votes = merge_candsets(num_total_trees, trees1,        
                                    working_dir)                                 
     cdef int sample_size = 5000                                                 
     print 'generating plan'
@@ -144,7 +145,7 @@ def execute_rf(rf, feature_table, l1, l2, path1, attr1, path2, attr2, working_di
     execute_plan(global_plan, trees1, lstrings, rstrings, working_dir, n_jobs)           
 
     cdef pair[vector[pair[int, int]], vector[int]] candset_votes                
-    candset_votes = merge_candsets(num_total_trees, num_trees_processed,        
+    candset_votes = merge_candsets(num_total_trees, trees1,        
                                    working_dir)                                 
     cdef int sample_size = 5000
     print 'generating plan'
@@ -285,16 +286,19 @@ cdef pair[vector[pair[int, int]], vector[int]] execute_join_subtree(
             curr_index += 1                                                     
 
 
-cdef pair[vector[pair[int, int]], vector[int]] merge_candsets(int num_total_trees,
-                                                    int num_trees_processed,
-                                                    const string& working_dir):
+cdef pair[vector[pair[int, int]], vector[int]] merge_candsets(
+                                           int num_total_trees, 
+                                           vector[Tree]& processed_trees,
+                                           const string& working_dir):
+
     cdef int i=0
     cdef string string_pair
     cdef oset[string] curr_pairs
     cdef omap[string, int] merged_candset
     cdef pair[string, int] entry
-    while i < num_trees_processed:
-        file_name = working_dir + "/tree_" + str(i)
+    cdef Tree tree
+    for tree in processed_trees:
+        file_name = working_dir + "/tree_" + str(tree.tree_id)
         print file_name
         f = open(file_name, 'r')
         for line in f:
@@ -302,7 +306,6 @@ cdef pair[vector[pair[int, int]], vector[int]] merge_candsets(int num_total_tree
         f.close()
         for string_pair in curr_pairs:
             merged_candset[string_pair] += 1
-        i += 1
         curr_pairs.clear()
     cnt = 0
     cdef vector[pair[int, int]] candset_to_be_processed, output_pairs
@@ -366,14 +369,21 @@ cdef pair[vector[pair[int, int]], vector[double]] execute_join_node(vector[strin
         output = set_sim_join(ltokens, rtokens, 1, predicate.threshold)                   
     elif predicate.sim_measure_type.compare('JACCARD') == 0:
         output = set_sim_join(ltokens, rtokens, 2, predicate.threshold)                   
+    elif predicate.sim_measure_type.compare('OVERLAP_COEFFICIENT') == 0:
+        output = ov_coeff_join(ltokens, rtokens, predicate.threshold)
+    elif predicate.sim_measure_type.compare('EDIT_DISTANCE') == 0:
+        output = ed_join(ltokens, rtokens, 2, predicate.threshold, 
+                         lstrings, rstrings)
     return output
 
-cdef vector[pair[int, int]] execute_filter_node(vector[pair[int, int]]& candset, vector[string]& lstrings, vector[string]& rstrings,
+cdef vector[pair[int, int]] execute_filter_node(vector[pair[int, int]]& candset, 
+                            vector[string]& lstrings, vector[string]& rstrings,
                             Predicatecpp predicate, int n_jobs, const string& working_dir):
     cdef vector[vector[int]] ltokens, rtokens
-    print 'before tok'                                   
-    load_tok(predicate.tokenizer_type, working_dir, ltokens, rtokens)           
-    print 'loaded tok'                                                                            
+    if predicate.is_tok_sim_measure:
+        print 'before tok'                                   
+        load_tok(predicate.tokenizer_type, working_dir, ltokens, rtokens)           
+        print 'loaded tok'                                                                            
     cdef vector[pair[int, int]] partitions, final_output_pairs, part_pairs                    
     cdef vector[vector[pair[int, int]]] output_pairs                            
     cdef int n = candset.size(), start=0, end, i
@@ -395,7 +405,8 @@ cdef vector[pair[int, int]] execute_filter_node(vector[pair[int, int]]& candset,
     comp_type = get_comp_type(predicate.comp_op)     
     print 'parallen begin'
     for i in prange(n_jobs, nogil=True):                                         
-        execute_filter_node_part(partitions[i], candset, ltokens, rtokens, 
+        execute_filter_node_part(partitions[i], candset, ltokens, rtokens,
+                                 lstrings, rstrings, 
                                  predicate, sim_type, comp_type, output_pairs[i])
     print 'parallen end'
     for part_pairs in output_pairs:                                             
@@ -406,7 +417,9 @@ cdef vector[pair[int, int]] execute_filter_node(vector[pair[int, int]]& candset,
 cdef void execute_filter_node_part(pair[int, int] partition,
                                    vector[pair[int, int]]& candset,                           
                                    vector[vector[int]]& ltokens, 
-                                   vector[vector[int]]& rtokens,                       
+                                   vector[vector[int]]& rtokens,          
+                                   vector[string]& lstrings,
+                                   vector[string]& rstrings,             
                                    Predicatecpp& predicate,
                                    int sim_type, int comp_type, 
                                    vector[pair[int, int]]& output_pairs) nogil:
@@ -414,13 +427,24 @@ cdef void execute_filter_node_part(pair[int, int] partition,
     cdef pair[int, int] cand                         
     cdef int i                           
     
-    cdef simfnptr sim_fn = get_sim_function(sim_type)
+    cdef token_simfnptr token_sim_fn
+    cdef str_simfnptr str_sim_fn
     cdef compfnptr comp_fn = get_comparison_function(comp_type)
-                                                      
-    for i in range(partition.first, partition.second):                                                        
-        cand  = candset[i]
-        if comp_fn(sim_fn(ltokens[cand.first], rtokens[cand.second]), predicate.threshold):
-            output_pairs.push_back(cand)         
+
+    if predicate.is_tok_sim_measure: 
+        token_sim_fn = get_token_sim_function(sim_type)                                                     
+        for i in range(partition.first, partition.second):                                                        
+            cand  = candset[i]
+            if comp_fn(token_sim_fn(ltokens[cand.first], rtokens[cand.second]), 
+                       predicate.threshold):
+                output_pairs.push_back(cand)         
+    else:
+        str_sim_fn = get_str_sim_function(sim_type)
+        for i in range(partition.first, partition.second):                      
+            cand  = candset[i]                                                  
+            if comp_fn(str_sim_fn(lstrings[cand.first], rstrings[cand.second]), 
+                       predicate.threshold):                                    
+                output_pairs.push_back(cand)                 
 
          
 cdef pair[vector[pair[int, int]], vector[int]] execute_tree_plan(
@@ -541,9 +565,12 @@ cdef vector[double] execute_feature_node(vector[pair[int, int]]& candset,
                                          Predicatecpp predicate, 
                                          int n_jobs, const string& working_dir):
     cdef vector[vector[int]] ltokens, rtokens                                   
-    print 'before tok'                                                          
-    load_tok(predicate.tokenizer_type, working_dir, ltokens, rtokens)           
-    print 'loaded tok'                                                          
+
+    if predicate.is_tok_sim_measure:
+        print 'before tok'                                                          
+        load_tok(predicate.tokenizer_type, working_dir, ltokens, rtokens)           
+        print 'loaded tok'                                                          
+
     cdef int n, sim_type, i        
     
     if top_level_node:
@@ -554,19 +581,36 @@ cdef vector[double] execute_feature_node(vector[pair[int, int]]& candset,
     cdef vector[double] feature_values = xrange(0, n)                                                                                    
                                                                                 
     sim_type = get_sim_type(predicate.sim_measure_type)                         
-    cdef simfnptr sim_fn = get_sim_function(sim_type)                           
+    cdef token_simfnptr token_sim_fn
+    cdef str_simfnptr str_sim_fn                           
     cdef pair[int, int] cand
 
-    if top_level_node:                                                
-        for i in prange(n, nogil=True, num_threads=n_jobs):
-            cand = candset[i]
-            feature_values[i] = sim_fn(ltokens[cand.first], rtokens[cand.second]) 
+    if predicate.is_tok_sim_measure:
+        token_sim_fn = get_token_sim_function(sim_type)                                 
+        if top_level_node:                                                
+            for i in prange(n, nogil=True, num_threads=n_jobs):
+                cand = candset[i]
+                feature_values[i] = token_sim_fn(ltokens[cand.first], 
+                                                 rtokens[cand.second]) 
+        else:
+            for i in prange(n, nogil=True, num_threads=n_jobs):                     
+                cand = candset[pair_ids[i]]                                                   
+                feature_values[i] = token_sim_fn(ltokens[cand.first], 
+                                                 rtokens[cand.second])
     else:
-        for i in prange(n, nogil=True, num_threads=n_jobs):                     
-            cand = candset[pair_ids[i]]                                                   
-            feature_values[i] = sim_fn(ltokens[cand.first], rtokens[cand.second])
-                                                                    
+        str_sim_fn = get_str_sim_function(sim_type)                         
+        if top_level_node:                                                      
+            for i in prange(n, nogil=True, num_threads=n_jobs):                 
+                cand = candset[i]                                               
+                feature_values[i] = str_sim_fn(lstrings[cand.first],           
+                                               rstrings[cand.second])          
+        else:                                                                   
+            for i in prange(n, nogil=True, num_threads=n_jobs):                 
+                cand = candset[pair_ids[i]]                                     
+                feature_values[i] = str_sim_fn(lstrings[cand.first],           
+                                               rstrings[cand.second])                                                                        
     return feature_values                                            
+
 
 cdef vector[int] execute_select_node(vector[int]& pair_ids,                 
                                      vector[double]& feature_values,              
@@ -606,9 +650,10 @@ cdef vector[int] execute_filter_node1(vector[pair[int, int]]& candset,
                                      Predicatecpp predicate, 
                                      int n_jobs, const string& working_dir):
     cdef vector[vector[int]] ltokens, rtokens                                   
-    print 'before tok'                                                          
-    load_tok(predicate.tokenizer_type, working_dir, ltokens, rtokens)           
-    print 'loaded tok'                                                          
+    if predicate.is_tok_sim_measure:
+        print 'before tok'                                                          
+        load_tok(predicate.tokenizer_type, working_dir, ltokens, rtokens)           
+        print 'loaded tok'                                                          
     cdef vector[pair[int, int]] partitions
     cdef vector[int] final_output_pairs, part_pairs      
     cdef vector[vector[int]] output_pairs                            
@@ -637,7 +682,7 @@ cdef vector[int] execute_filter_node1(vector[pair[int, int]]& candset,
     print 'parallen begin'                                                      
     for i in prange(n_jobs, nogil=True):                                        
         execute_filter_node_part1(partitions[i], candset, pair_ids, top_level_node, 
-                                  ltokens, rtokens,      
+                                  ltokens, rtokens, lstrings, rstrings,      
                                  predicate, sim_type, comp_type, output_pairs[i])
     print 'parallen end'                                                        
     for part_pairs in output_pairs:                                             
@@ -650,7 +695,9 @@ cdef void execute_filter_node_part1(pair[int, int] partition,
                                    vector[int]& pair_ids,   
                                    bool top_level_node,          
                                    vector[vector[int]]& ltokens,                
-                                   vector[vector[int]]& rtokens,                
+                                   vector[vector[int]]& rtokens,
+                                   vector[string]& lstrings,
+                                   vector[string]& rstrings,                
                                    Predicatecpp& predicate,                     
                                    int sim_type, int comp_type,                 
                                    vector[int]& output_pairs) nogil: 
@@ -658,20 +705,40 @@ cdef void execute_filter_node_part1(pair[int, int] partition,
     cdef pair[int, int] cand                                                    
     cdef int i                                                                  
                                                                                 
-    cdef simfnptr sim_fn = get_sim_function(sim_type)                           
+    cdef str_simfnptr str_sim_fn
+    cdef token_simfnptr token_sim_fn                                                                        
     cdef compfnptr comp_fn = get_comparison_function(comp_type)                 
 
-    if top_level_node:                 
-        for i in range(partition.first, partition.second):                      
-            cand  = candset[i]                                                  
-            if comp_fn(sim_fn(ltokens[cand.first], rtokens[cand.second]), predicate.threshold):
-                output_pairs.push_back(i)  
-    else:                                                               
-        for i in range(partition.first, partition.second):
-            cand  = candset[pair_ids[i]]                                                      
-            if comp_fn(sim_fn(ltokens[cand.first], rtokens[cand.second]), predicate.threshold):
-                output_pairs.push_back(pair_ids[i])
-                               
+    if predicate.is_tok_sim_measure:
+        token_sim_fn = get_token_sim_function(sim_type)                         
+        if top_level_node:                 
+            for i in range(partition.first, partition.second):                      
+                cand  = candset[i]                                                  
+                if comp_fn(token_sim_fn(ltokens[cand.first], rtokens[cand.second]), 
+                           predicate.threshold):
+                    output_pairs.push_back(i)  
+        else:                                                               
+            for i in range(partition.first, partition.second):
+                cand  = candset[pair_ids[i]]                                                      
+                if comp_fn(token_sim_fn(ltokens[cand.first], rtokens[cand.second]), 
+                           predicate.threshold):
+                    output_pairs.push_back(pair_ids[i])
+    else:
+        str_sim_fn = get_str_sim_function(sim_type)                         
+        if top_level_node:                                                      
+            for i in range(partition.first, partition.second):                  
+                cand  = candset[i]                                              
+                if comp_fn(str_sim_fn(lstrings[cand.first], rstrings[cand.second]), 
+                           predicate.threshold):                                
+                    output_pairs.push_back(i)                                   
+        else:                                                                   
+            for i in range(partition.first, partition.second):                  
+                cand  = candset[pair_ids[i]]                                    
+                if comp_fn(str_sim_fn(lstrings[cand.first], rstrings[cand.second]), 
+                           predicate.threshold):                                
+                    output_pairs.push_back(pair_ids[i])   
+           
+
 cdef vector[int] split(string inp_string) nogil:                                      
     cdef char* pch                                                              
     pch = strtok (<char*> inp_string.c_str(), ",")                              
@@ -704,7 +771,7 @@ def test_tok1(df1, attr1, df2, attr2):
   
 cdef void convert_to_vector1(string_col, vector[string]& string_vector):         
     for val in string_col:                                                      
-        string_vector.push_back(val)   
+        string_vector.push_back(str(val))   
 
 cdef vector[string] infer_tokenizers(plan, rule_sets):
     cdef vector[string] tokenizers
@@ -726,6 +793,55 @@ cdef vector[string] infer_tokenizers(plan, rule_sets):
         queue.extend(curr_node.children)
     return tokenizers
 
+def generate_tokens(ft, path1, attr1, path2, attr2, const string& working_dir):
+    cdef oset[string] tokenizers                                                
+    for idx, row in ft.iterrows():
+        if row['sim_measure_type'] == 'EDIT_DISTANCE':
+            tokenizers.insert('qg2_bag')
+            continue
+        tokenizers.insert(str(row['tokenizer_type']))
+
+    cdef vector[string] lstrings, rstrings                                      
+    load_strings(path1, attr1, lstrings)                                        
+    load_strings(path2, attr2, rstrings)   
+
+    cdef string tok_type                                                        
+    for tok_type in tokenizers:                                                 
+        tokenize(lstrings, rstrings, tok_type, working_dir)    
+
+def perform_join(path1, attr1, path2, attr2, tok_type, sim_type, threshold, const string& working_dir):
+    cdef vector[vector[int]] ltokens, rtokens                                   
+    cdef pair[vector[pair[int, int]], vector[double]] output   
+    cdef pair[int, int] entry
+    cdef vector[string] lstrings, rstrings                                      
+
+    if sim_type == 'COSINE':
+        load_tok(tok_type, working_dir, ltokens, rtokens)                           
+        threshold = threshold - 0.0001                                              
+        output = set_sim_join(ltokens, rtokens, 0, threshold)           
+    elif sim_type == 'DICE':
+        load_tok(tok_type, working_dir, ltokens, rtokens)                       
+        threshold = threshold - 0.0001                                          
+        output = set_sim_join(ltokens, rtokens, 1, threshold)   
+    elif sim_type == 'JACCARD':
+        load_tok(tok_type, working_dir, ltokens, rtokens)                       
+        threshold = threshold - 0.0001                                          
+        output = set_sim_join(ltokens, rtokens, 2, threshold)           
+    elif sim_type == 'OVERLAP_COEFFICIENT':
+        load_tok(tok_type, working_dir, ltokens, rtokens)                       
+        threshold = threshold - 0.0001
+        output = ov_coeff_join(ltokens, rtokens, threshold)
+    elif sim_type == 'EDIT_DISTANCE':
+        load_tok('qg2_bag', working_dir, ltokens, rtokens)
+        load_strings(path1, attr1, lstrings)                                        
+        load_strings(path2, attr2, rstrings)                         
+        output = ed_join(ltokens, rtokens, 2, threshold, lstrings, rstrings)
+   
+    output_pairs = {}
+    for entry in output.first:
+        output_pairs[str(entry.first) + ',' + str(entry.second)] = True
+    return output_pairs
+ 
 def test_jac(sim_type, threshold):
     st = time.time()
     print 'tokenizing'
@@ -734,17 +850,18 @@ def test_jac(sim_type, threshold):
     cdef vector[vector[int]] ltokens, rtokens
     cdef vector[pair[int, int]] output
     cdef pair[vector[pair[int, int]], vector[double]] output1
-    load_tok('alph_num', 't1', ltokens, rtokens)
+    load_tok('ws', 't5', ltokens, rtokens)
     print 'loaded tok'
     cdef int i
 #    for i in xrange(50):
 #        print 'i= ', i
-    if sim_type == 3:
-        output = ov_coeff_join(ltokens, rtokens, threshold)             
-    else:
-        output1 = set_sim_join(ltokens, rtokens, sim_type, threshold)
-    print 'output size : ', output1.first.size()
-    print 'scores size : ', output1.second.size()
+#    if sim_type == 3:
+    for i in xrange(50):
+        output1 = ov_coeff_join(ltokens, rtokens, threshold)             
+        print 'output size : ', output.size()                                       
+#    else:
+#        output1 = set_sim_join(ltokens, rtokens, sim_type, threshold)
+#    print 'scores size : ', output1.second.size()
 
 #    cdef pair[int, int] entry
 #    for i in xrange(output1.first.size()):
@@ -758,14 +875,16 @@ def test_ed(df1, attr1, df2, attr2, threshold):
     cdef vector[string] lstrings, rstrings                                      
     convert_to_vector1(df1[attr1], lstrings)                                    
     convert_to_vector1(df2[attr2], rstrings)  
-    tokenize(lstrings, rstrings, 'qg2', 'gh1')                                    
+#    tokenize(lstrings, rstrings, 'qg2', 'gh1')                                    
     print 'tokenizing done.'                                                    
     cdef vector[vector[int]] ltokens, rtokens                                   
-    cdef vector[pair[int, int]] output                                          
-    load_tok('qg2', 'gh1', ltokens, rtokens)                                      
-    print 'loaded tok'                                                          
-    #output = ed_join(ltokens, rtokens, 2, threshold, lstrings, rstrings)            
-    print 'output size : ', output.size()                                       
+    load_tok('qg2', 't5', ltokens, rtokens)                                      
+    print 'loaded tok'
+    cdef pair[vector[pair[int, int]], vector[double]] output
+    cdef int i
+    for i in xrange(50):                                                          
+        output = ed_join(ltokens, rtokens, 2, threshold, lstrings, rstrings)            
+        print 'output size : ', output.size()                                       
     print 'time : ', time.time() - st                                           
 
 

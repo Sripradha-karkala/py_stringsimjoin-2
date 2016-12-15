@@ -121,8 +121,8 @@ def _extract_feature_vecs_split(candset,
         l_id = candset_row[candset_l_key_attr_index]                            
         r_id = candset_row[candset_r_key_attr_index]                            
                                                                                 
-        l_string = ltable_dict[l_id][l_join_attr_index]                                               
-        r_string = rtable_dict[r_id][r_join_attr_index]                                               
+        l_string = str(ltable_dict[l_id][l_join_attr_index])                                              
+        r_string = str(rtable_dict[r_id][r_join_attr_index])                                               
 
         fv = []
         # append key attribute values

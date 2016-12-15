@@ -64,8 +64,7 @@ cpdef pair[vector[pair[int, int]], vector[double]] set_sim_join(vector[vector[in
     print 'l size. : ', ltokens.size(), ' , r size : ', rtokens.size()          
     cdef vector[vector[pair[int, int]]] output_pairs
     cdef vector[vector[double]] output_sim_scores
-    cdef vector[double] final_output_sim_scores
-    cdef vector[pair[int, int]] partitions, final_output_pairs
+    cdef vector[pair[int, int]] partitions
     cdef int i, n=rtokens.size(), ncpus=4, partition_size, start=0, end                                   
     cdef PositionIndex index
     build_index(ltokens, sim_type, threshold, index)                                 

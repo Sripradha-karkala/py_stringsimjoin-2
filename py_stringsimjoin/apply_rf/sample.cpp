@@ -493,13 +493,31 @@ static const char *__pyx_f[] = {
 /* "py_stringsimjoin/apply_rf/utils.pxd":9
  * 
  * 
+ * ctypedef double (*token_simfnptr)(const vector[int]&, const vector[int]&) nogil             # <<<<<<<<<<<<<<
+ * ctypedef double (*str_simfnptr)(const string&, const string&) nogil
+ * 
+ */
+typedef double (*__pyx_t_16py_stringsimjoin_8apply_rf_5utils_token_simfnptr)(std::vector<int>  const &, std::vector<int>  const &);
+
+/* "py_stringsimjoin/apply_rf/utils.pxd":10
+ * 
+ * ctypedef double (*token_simfnptr)(const vector[int]&, const vector[int]&) nogil
+ * ctypedef double (*str_simfnptr)(const string&, const string&) nogil             # <<<<<<<<<<<<<<
+ * 
+ * ctypedef double (*simfnptr)(const vector[int]&, const vector[int]&) nogil
+ */
+typedef double (*__pyx_t_16py_stringsimjoin_8apply_rf_5utils_str_simfnptr)(std::string const &, std::string const &);
+
+/* "py_stringsimjoin/apply_rf/utils.pxd":12
+ * ctypedef double (*str_simfnptr)(const string&, const string&) nogil
+ * 
  * ctypedef double (*simfnptr)(const vector[int]&, const vector[int]&) nogil             # <<<<<<<<<<<<<<
  * ctypedef double (*simfnptr_str)(vector[string]&, vector[string]&) nogil
  * ctypedef bool (*compfnptr)(double, double) nogil
  */
 typedef double (*__pyx_t_16py_stringsimjoin_8apply_rf_5utils_simfnptr)(std::vector<int>  const &, std::vector<int>  const &);
 
-/* "py_stringsimjoin/apply_rf/utils.pxd":10
+/* "py_stringsimjoin/apply_rf/utils.pxd":13
  * 
  * ctypedef double (*simfnptr)(const vector[int]&, const vector[int]&) nogil
  * ctypedef double (*simfnptr_str)(vector[string]&, vector[string]&) nogil             # <<<<<<<<<<<<<<
@@ -508,7 +526,7 @@ typedef double (*__pyx_t_16py_stringsimjoin_8apply_rf_5utils_simfnptr)(std::vect
  */
 typedef double (*__pyx_t_16py_stringsimjoin_8apply_rf_5utils_simfnptr_str)(std::vector<std::string>  &, std::vector<std::string>  &);
 
-/* "py_stringsimjoin/apply_rf/utils.pxd":11
+/* "py_stringsimjoin/apply_rf/utils.pxd":14
  * ctypedef double (*simfnptr)(const vector[int]&, const vector[int]&) nogil
  * ctypedef double (*simfnptr_str)(vector[string]&, vector[string]&) nogil
  * ctypedef bool (*compfnptr)(double, double) nogil             # <<<<<<<<<<<<<<
@@ -1463,7 +1481,7 @@ static PyObject *__pyx_pf_16py_stringsimjoin_8apply_rf_6sample_sample_cython(CYT
  * 
  * cdef void convert_to_string_vector(string_col, vector[string]& string_vector):             # <<<<<<<<<<<<<<
  *     for val in string_col:
- *         string_vector.push_back(val)
+ *         string_vector.push_back(str(val))
  */
 
 static void __pyx_f_16py_stringsimjoin_8apply_rf_6sample_convert_to_string_vector(PyObject *__pyx_v_string_col, std::vector<std::string>  &__pyx_v_string_vector) {
@@ -1473,7 +1491,8 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_6sample_convert_to_string_vecto
   Py_ssize_t __pyx_t_2;
   PyObject *(*__pyx_t_3)(PyObject *);
   PyObject *__pyx_t_4 = NULL;
-  std::string __pyx_t_5;
+  PyObject *__pyx_t_5 = NULL;
+  std::string __pyx_t_6;
   int __pyx_lineno = 0;
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
@@ -1483,7 +1502,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_6sample_convert_to_string_vecto
  * 
  * cdef void convert_to_string_vector(string_col, vector[string]& string_vector):
  *     for val in string_col:             # <<<<<<<<<<<<<<
- *         string_vector.push_back(val)
+ *         string_vector.push_back(str(val))
  * 
  */
   if (likely(PyList_CheckExact(__pyx_v_string_col)) || PyTuple_CheckExact(__pyx_v_string_col)) {
@@ -1531,13 +1550,22 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_6sample_convert_to_string_vecto
     /* "py_stringsimjoin/apply_rf/sample.pyx":57
  * cdef void convert_to_string_vector(string_col, vector[string]& string_vector):
  *     for val in string_col:
- *         string_vector.push_back(val)             # <<<<<<<<<<<<<<
+ *         string_vector.push_back(str(val))             # <<<<<<<<<<<<<<
  * 
  * cdef void convert_to_int_vector(int_col, vector[int]& int_vector):
  */
-    __pyx_t_5 = __pyx_convert_string_from_py_std__in_string(__pyx_v_val); if (unlikely(PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 57; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_4 = PyTuple_New(1); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 57; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __Pyx_GOTREF(__pyx_t_4);
+    __Pyx_INCREF(__pyx_v_val);
+    __Pyx_GIVEREF(__pyx_v_val);
+    PyTuple_SET_ITEM(__pyx_t_4, 0, __pyx_v_val);
+    __pyx_t_5 = __Pyx_PyObject_Call(((PyObject *)(&PyString_Type)), __pyx_t_4, NULL); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 57; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __Pyx_GOTREF(__pyx_t_5);
+    __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+    __pyx_t_6 = __pyx_convert_string_from_py_std__in_string(__pyx_t_5); if (unlikely(PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 57; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
     try {
-      __pyx_v_string_vector.push_back(__pyx_t_5);
+      __pyx_v_string_vector.push_back(__pyx_t_6);
     } catch(...) {
       __Pyx_CppExn2PyErr();
       {__pyx_filename = __pyx_f[0]; __pyx_lineno = 57; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
@@ -1547,7 +1575,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_6sample_convert_to_string_vecto
  * 
  * cdef void convert_to_string_vector(string_col, vector[string]& string_vector):
  *     for val in string_col:             # <<<<<<<<<<<<<<
- *         string_vector.push_back(val)
+ *         string_vector.push_back(str(val))
  * 
  */
   }
@@ -1558,7 +1586,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_6sample_convert_to_string_vecto
  * 
  * cdef void convert_to_string_vector(string_col, vector[string]& string_vector):             # <<<<<<<<<<<<<<
  *     for val in string_col:
- *         string_vector.push_back(val)
+ *         string_vector.push_back(str(val))
  */
 
   /* function exit code */
@@ -1566,6 +1594,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_6sample_convert_to_string_vecto
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
   __Pyx_XDECREF(__pyx_t_4);
+  __Pyx_XDECREF(__pyx_t_5);
   __Pyx_WriteUnraisable("py_stringsimjoin.apply_rf.sample.convert_to_string_vector", __pyx_clineno, __pyx_lineno, __pyx_filename, 0, 0);
   __pyx_L0:;
   __Pyx_XDECREF(__pyx_v_val);
@@ -1573,7 +1602,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_6sample_convert_to_string_vecto
 }
 
 /* "py_stringsimjoin/apply_rf/sample.pyx":59
- *         string_vector.push_back(val)
+ *         string_vector.push_back(str(val))
  * 
  * cdef void convert_to_int_vector(int_col, vector[int]& int_vector):             # <<<<<<<<<<<<<<
  *     for val in int_col:
@@ -1671,7 +1700,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_6sample_convert_to_int_vector(P
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
   /* "py_stringsimjoin/apply_rf/sample.pyx":59
- *         string_vector.push_back(val)
+ *         string_vector.push_back(str(val))
  * 
  * cdef void convert_to_int_vector(int_col, vector[int]& int_vector):             # <<<<<<<<<<<<<<
  *     for val in int_col:
