@@ -442,19 +442,17 @@ cdef Node get_default_execution_plan(vector[Tree]& trees,
     num_trees_to_select = (n / 2) + 1                                         
     for i in xrange(n):                                                         
         selected_trees.push_back(False)                                         
-                                                                                
+                                                                           
     for j in xrange(num_trees_to_select):                                                         
         max_score = 0.0                                                         
         max_tree = -1                                                           
-                                                                                
         for i in xrange(n):                                                     
             if selected_trees[i]:                                               
                 continue                                                        
-                                                                             
             if j == 0:
                 new_global_plan = plans[i][0]
                 k = 1
-                while k < plans[i].size():                       
+                while k < plans[i].size():
                     new_global_plan = merge_plans(new_global_plan, plans[i][k])
                     k += 1
                 plan_cost = compute_plan_cost(new_global_plan, coverage, sample_size)                                                             
@@ -472,7 +470,7 @@ cdef Node get_default_execution_plan(vector[Tree]& trees,
             if tree_score > max_score:                                          
                 max_score = tree_score                                          
                 max_tree = i                                                    
-                                                                                
+                                                                     
         if j == 0:
             curr_global_plan = plans[max_tree][0]                                   
             k = 1                                                           
@@ -483,7 +481,8 @@ cdef Node get_default_execution_plan(vector[Tree]& trees,
             k = 0                                                               
             while k < plans[max_tree].size():                                   
                 curr_global_plan = merge_plans(curr_global_plan, plans[max_tree][k])
-                k += 1   
+                k += 1
+
         selected_trees[max_tree] = True                                         
         if j == 0:                                                              
             prev_coverage.or_coverage(tree_cov[max_tree])                       
