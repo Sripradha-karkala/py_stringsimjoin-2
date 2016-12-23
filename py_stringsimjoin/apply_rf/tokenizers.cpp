@@ -5309,7 +5309,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_10tokenizers_tokenize(std::vect
  *         tok = QgramTokenizer(3, True, ord('#'), ord('$'), True)
  *     elif tok_type.compare('qg2_bag') == 0:             # <<<<<<<<<<<<<<
  *         tok = QgramTokenizer(2, True, ord('#'), ord('$'), False)
- * 
+ *     print tok_type
  */
   __pyx_t_1 = __pyx_convert_string_from_py_std__in_string(__pyx_n_b_qg2_bag); if (unlikely(PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 214; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_t_2 = ((__pyx_v_tok_type.compare(__pyx_t_1) == 0) != 0);
@@ -5319,7 +5319,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_10tokenizers_tokenize(std::vect
  *         tok = QgramTokenizer(3, True, ord('#'), ord('$'), True)
  *     elif tok_type.compare('qg2_bag') == 0:
  *         tok = QgramTokenizer(2, True, ord('#'), ord('$'), False)             # <<<<<<<<<<<<<<
- * 
+ *     print tok_type
  *     #cdef AlphabeticTokenizer tok
  */
     __pyx_t_4 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_16py_stringsimjoin_8apply_rf_10tokenizers_QgramTokenizer), __pyx_tuple__18, NULL); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 215; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
@@ -5332,10 +5332,22 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_10tokenizers_tokenize(std::vect
  *         tok = QgramTokenizer(3, True, ord('#'), ord('$'), True)
  *     elif tok_type.compare('qg2_bag') == 0:             # <<<<<<<<<<<<<<
  *         tok = QgramTokenizer(2, True, ord('#'), ord('$'), False)
- * 
+ *     print tok_type
  */
   }
   __pyx_L3:;
+
+  /* "py_stringsimjoin/apply_rf/tokenizers.pyx":216
+ *     elif tok_type.compare('qg2_bag') == 0:
+ *         tok = QgramTokenizer(2, True, ord('#'), ord('$'), False)
+ *     print tok_type             # <<<<<<<<<<<<<<
+ *     #cdef AlphabeticTokenizer tok
+ * #    tok = AlphabeticTokenizer(True)
+ */
+  __pyx_t_4 = __pyx_convert_PyBytes_string_to_py_std__in_string(__pyx_v_tok_type); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 216; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_4);
+  if (__Pyx_PrintOne(0, __pyx_t_4) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 216; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
   /* "py_stringsimjoin/apply_rf/tokenizers.pyx":223
  *     cdef omap[string, int] token_freq, token_ordering
@@ -8558,7 +8570,7 @@ static int __Pyx_InitCachedConstants(void) {
  *         tok = QgramTokenizer(3, True, ord('#'), ord('$'), True)
  *     elif tok_type.compare('qg2_bag') == 0:
  *         tok = QgramTokenizer(2, True, ord('#'), ord('$'), False)             # <<<<<<<<<<<<<<
- * 
+ *     print tok_type
  *     #cdef AlphabeticTokenizer tok
  */
   __pyx_tuple__18 = PyTuple_Pack(5, __pyx_int_2, Py_True, __pyx_int_35, __pyx_int_36, Py_False); if (unlikely(!__pyx_tuple__18)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 215; __pyx_clineno = __LINE__; goto __pyx_L1_error;}

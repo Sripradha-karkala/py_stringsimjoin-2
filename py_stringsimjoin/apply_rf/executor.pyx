@@ -359,19 +359,23 @@ cdef void write_output_pairs(vector[pair[int,int]]& output_pairs, const string& 
 cdef pair[vector[pair[int, int]], vector[double]] execute_join_node(vector[string]& lstrings, vector[string]& rstrings,
                             Predicatecpp predicate, int n_jobs, const string& working_dir):
     cdef vector[vector[int]] ltokens, rtokens
-    load_tok(predicate.tokenizer_type, working_dir, ltokens, rtokens)               
 
     cdef pair[vector[pair[int, int]], vector[double]] output
 
     if predicate.sim_measure_type.compare('COSINE') == 0:
+        load_tok(predicate.tokenizer_type, working_dir, ltokens, rtokens)           
         output = set_sim_join(ltokens, rtokens, 0, predicate.threshold)
     elif predicate.sim_measure_type.compare('DICE') == 0:
+        load_tok(predicate.tokenizer_type, working_dir, ltokens, rtokens)       
         output = set_sim_join(ltokens, rtokens, 1, predicate.threshold)                   
     elif predicate.sim_measure_type.compare('JACCARD') == 0:
+        load_tok(predicate.tokenizer_type, working_dir, ltokens, rtokens)       
         output = set_sim_join(ltokens, rtokens, 2, predicate.threshold)                   
     elif predicate.sim_measure_type.compare('OVERLAP_COEFFICIENT') == 0:
+        load_tok(predicate.tokenizer_type, working_dir, ltokens, rtokens)       
         output = ov_coeff_join(ltokens, rtokens, predicate.threshold)
     elif predicate.sim_measure_type.compare('EDIT_DISTANCE') == 0:
+        load_tok('qg2_bag', working_dir, ltokens, rtokens)       
         output = ed_join(ltokens, rtokens, 2, predicate.threshold, 
                          lstrings, rstrings)
     return output
@@ -757,6 +761,9 @@ cdef void tokenize_strings(vector[Tree]& trees, vector[string]& lstrings,
     for tree in trees:
         for rule in tree.rules:
             for predicate in rule.predicates:
+                if predicate.sim_measure_type.compare('EDIT_DISTANCE') == 0:
+                    tokenizers.insert('qg2_bag')
+                    continue 
                 tokenizers.insert(predicate.tokenizer_type)
  
     cdef string tok_type

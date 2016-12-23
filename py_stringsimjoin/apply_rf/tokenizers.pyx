@@ -213,7 +213,7 @@ cpdef void tokenize(vector[string]& lstrings, vector[string]& rstrings,
         tok = QgramTokenizer(3, True, ord('#'), ord('$'), True)      
     elif tok_type.compare('qg2_bag') == 0:                                      
         tok = QgramTokenizer(2, True, ord('#'), ord('$'), False)  
-
+    print tok_type
     #cdef AlphabeticTokenizer tok
 #    tok = AlphabeticTokenizer(True)                                                                                
     cdef string s, token                                                        
