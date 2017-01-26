@@ -22,7 +22,7 @@ cdef Node get_default_execution_plan(vector[Tree]& trees,
                                      vector[Tree]& sel_trees, vector[Tree]& rem_trees)
 
 cdef vector[Tree] extract_pos_rules_from_rf(rf, feature_table)
-cdef void generate_local_optimal_plans(vector[Tree]& trees, omap[string, Coverage]& coverage, int sample_size, vector[Node]& plans)
+cdef void generate_local_optimal_plans(vector[Tree]& trees, omap[string, Coverage]& coverage, int sample_size, vector[Node]& plans, vector[int]& num_join_nodes)
 cdef Node generate_overall_plan(vector[Node] plans)
 
 cdef vector[Node] generate_ex_plan_for_stage2(vector[pair[int, int]]&, vector[string]& lstrings,         

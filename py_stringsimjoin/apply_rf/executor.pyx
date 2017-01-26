@@ -57,13 +57,17 @@ def test_execute_rf(rf, feature_table, l1, l2, path1, attr1, path2, attr2, worki
         r.push_back(rstrings[int(s)])                                       
     print 'computing coverage'                                                  
     compute_predicate_cost_and_coverage(l, r, trees, coverage, tree_cov)                 
-    cdef Node global_plan
+    cdef Node global_plan, join_node
     global_plan = get_default_execution_plan(trees, coverage, tree_cov, 
                                              l.size(), trees1, trees2) 
 
     print 'num join nodes : ', global_plan.children.size()
+    for join_node in global_plan.children:                                             
+         print 'JOIN', join_node.predicates[0].pred_name
+
+    '''
     print 'tokenizing strings'                                                  
-#    tokenize_strings(trees, lstrings, rstrings, working_dir)                    
+    tokenize_strings(trees, lstrings, rstrings, working_dir)                    
     print 'finished tokenizing. executing plan'                                 
 
     execute_plan(global_plan, trees1, lstrings, rstrings, working_dir, n_jobs)  
@@ -86,7 +90,7 @@ def test_execute_rf(rf, feature_table, l1, l2, path1, attr1, path2, attr2, worki
                                   n_jobs, working_dir)                          
         num_trees_processed += 1                                                
         label += 1                                                              
-
+    '''
     print 'total time : ', time.time() - start_time   
 
 
@@ -133,7 +137,7 @@ def execute_rf(rf, feature_table, l1, l2, path1, attr1, path2, attr2, working_di
 #    compute_predicate_cost_and_coverage(l, r, trees1, coverage)    
 
     cdef vector[Node] plans                                                     
-    generate_local_optimal_plans(trees1, coverage, l.size(), plans)              
+#    generate_local_optimal_plans(trees1, coverage, l.size(), plans)              
 #    print 'num pl : ', plans.size()     
 
     cdef Node global_plan

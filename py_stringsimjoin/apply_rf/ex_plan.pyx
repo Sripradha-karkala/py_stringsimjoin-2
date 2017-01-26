@@ -422,13 +422,128 @@ cdef vector[int] get_optimal_tree_seq(vector[double] costs,
                                                                                 
     return optimal_seq 
 
+cdef Node optimize_plans(omap[int, vector[Node]]& plans, 
+                         omap[int, vector[int]]& num_join_nodes,
+                         vector[bool]& selected_trees):
+    py_map = {}
+    cdef int i, j,m=0,n,k
+
+    cdef vector[Node] plans_to_optimize, optimized_plans
+    cdef vector[int] num_join_nodes_to_optimize
+
+    selected_join_preds = {}
+    for i in range(selected_trees.size()):
+        if not selected_trees[i]:
+            continue
+        print i, plans[i].size()
+        for j in range(plans[i].size()):
+            if num_join_nodes[i][j] == 1:
+                optimized_plans.push_back(plans[i][j])
+                selected_join_preds[plans[i][j].children[0].predicates[0].feat_name] = True
+            else:
+                plans_to_optimize.push_back(plans[i][j])
+                num_join_nodes_to_optimize.push_back(num_join_nodes[i][j])
+                py_map[m] = plans[i][j].children[0].predicates[0].cost
+                m += 1
+
+    cdef Node curr_node
+    cdef bool flag
+    cdef vector[int] plans_to_update
+    cdef vector[int] pred_index
+    
+    pyl = sorted(py_map, key=py_map.get, reverse=True)
+    for k in pyl:
+        flag = True
+        curr_node = plans_to_optimize[k].children[0]
+        m = num_join_nodes_to_optimize[k] 
+        for n in range(1, m):
+            curr_node = curr_node.children[0]
+            if selected_join_preds.get(curr_node.predicates[0].feat_name) is not None:
+                plans_to_update.push_back(k)
+                pred_index.push_back(n)
+                flag = False
+                break
+        if flag:
+            optimized_plans.push_back(plans_to_optimize[k])
+            selected_join_preds[plans_to_optimize[k].children[0].predicates[0].feat_name] = True            
+    
+    generate_new_plans(plans_to_optimize, plans_to_update, pred_index, 
+                       optimized_plans)
+    print 'hello'
+    cdef Node optimized_plan
+    for i in range(optimized_plans.size()):                                                         
+        if i == 0:                                                          
+            optimized_plan = optimized_plans[i]
+        else:                                  
+            optimized_plan = merge_plans(optimized_plan, optimized_plans[i])         
+    return optimized_plan
+
+
+cdef void generate_new_plans(vector[Node]& old_plans,
+                             vector[int]& plans_to_update, 
+                             vector[int]& pred_index,
+                             vector[Node]& new_plans):    
+    cdef int i, j, k, pin, tree_id, rule_id
+    cdef vector[Predicatecpp] preds
+    cdef vector[Node] nodes
+    cdef Node curr_node, new_node
+    cdef bool join_pred
+    cdef string node_type
+    for i in range(pred_index.size()):
+        
+        preds.clear()
+        
+        tree_id = old_plans[plans_to_update[i]].tree_id
+        rule_id = old_plans[plans_to_update[i]].rule_id
+        curr_node = old_plans[plans_to_update[i]].children[0]
+        
+        while curr_node.node_type.compare("OUTPUT") != 0:
+            preds.push_back(curr_node.predicates[0])
+            curr_node = curr_node.children[0]
+        
+        nodes = vector[Node]()                                              
+        node_type = "ROOT"                                                  
+        new_node = Node(node_type)                                          
+        new_node.set_tree_id(tree_id)                                  
+        new_node.set_rule_id(rule_id)                                       
+        nodes.push_back(new_node)                                           
+        
+        join_pred = True                                                    
+                                                                        
+        for j in range(preds.size()):
+            pin = j
+            if j == 0:
+                pin = pred_index[i]
+            elif j == pred_index[i]:
+                pin = 0                                         
+            node_type = "FILTER"                                            
+            if join_pred:                                                   
+                node_type = "JOIN"                                          
+                join_pred = False                                           
+                                                                                            
+            new_node = Node(node_type)                                      
+            new_node.predicates.push_back(preds[pin])               
+            nodes.push_back(new_node)                                       
+                                                                      
+        node_type = "OUTPUT"                                                
+        new_node = Node(node_type)                                          
+        new_node.set_tree_id(tree_id)                                  
+        new_node.set_rule_id(rule_id)                                       
+        nodes.push_back(new_node)                                           
+        for k in xrange(nodes.size() - 2, -1, -1):                          
+            nodes[k].add_child(nodes[k+1])                                  
+        
+        new_plans.push_back(nodes[0])          
+        
+ 
 cdef Node get_default_execution_plan(vector[Tree]& trees,
                                      omap[string, Coverage]& coverage,
                                      omap[int, Coverage]& tree_cov,            
                                      const int sample_size,
                                      vector[Tree]& sel_trees, 
                                      vector[Tree]& rem_trees):                   
-    cdef omap[int, vector[Node]] plans                                                        
+    cdef omap[int, vector[Node]] plans
+    cdef omap[int, vector[int]] num_join_nodes                                                        
     cdef Node new_global_plan, curr_global_plan, tmp_node                                 
     cdef vector[int] optimal_seq                                                
     cdef vector[bool] selected_trees                                            
@@ -439,7 +554,7 @@ cdef Node get_default_execution_plan(vector[Tree]& trees,
     cdef vector[Tree] tmp_vec
     for i in xrange(n):
         tmp_vec.push_back(trees[i])
-        generate_local_optimal_plans(tmp_vec, coverage, sample_size, plans[i])           
+        generate_local_optimal_plans(tmp_vec, coverage, sample_size, plans[i], num_join_nodes[i])           
         tmp_vec.clear()
                                                               
     num_trees_to_select = (n / 2) + 1                                         
@@ -495,6 +610,7 @@ cdef Node get_default_execution_plan(vector[Tree]& trees,
                                                                                 
     print 'total number of trees : ' , n
     print 'selected trees : '
+    '''
     cdef Node combined_plan
     cdef int p = 0
     for i in xrange(n):
@@ -511,12 +627,17 @@ cdef Node get_default_execution_plan(vector[Tree]& trees,
             while k < plans[i].size():
                 combined_plan = merge_plans(combined_plan, plans[i][k])
                 k += 1
-    return combined_plan 
+    '''
+    return optimize_plans(plans, num_join_nodes, selected_trees)
+#    return combined_plan 
 
-cdef void generate_local_optimal_plans(vector[Tree]& trees, omap[string, Coverage]& coverage, int sample_size, vector[Node]& plans):
+cdef void generate_local_optimal_plans(vector[Tree]& trees, 
+                                       omap[string, Coverage]& coverage, 
+                                       int sample_size, 
+                                       vector[Node]& plans, vector[int]& num_join_nodes):
     cdef Tree tree
     cdef Rule rule
-    cdef vector[int] optimal_seq
+    cdef pair[vector[int], int] optimal_seq
     cdef vector[Node] nodes
     cdef Node root, new_node, curr_node
     cdef string node_type
@@ -529,10 +650,13 @@ cdef void generate_local_optimal_plans(vector[Tree]& trees, omap[string, Coverag
             nodes = vector[Node]()
             optimal_seq = get_optimal_predicate_seq(rule.predicates, coverage, sample_size)
             node_type = "ROOT"
-            nodes.push_back(Node(node_type))
+            new_node = Node(node_type)                                          
+            new_node.set_tree_id(tree.tree_id)                                  
+            new_node.set_rule_id(rule_id)   
+            nodes.push_back(new_node)
             join_pred = True
 
-            for i in optimal_seq:
+            for i in optimal_seq.first:
                 node_type = "FILTER"
                 if join_pred:
                     node_type = "JOIN"
@@ -547,27 +671,25 @@ cdef void generate_local_optimal_plans(vector[Tree]& trees, omap[string, Coverag
             new_node.set_tree_id(tree.tree_id)
             new_node.set_rule_id(rule_id)
             nodes.push_back(new_node)
-#            print 'n ', nodes.size()
             for i in xrange(nodes.size() - 2, -1, -1):
                 nodes[i].add_child(nodes[i+1])
             plans.push_back(nodes[0])
-#            if rule_id == 9:
-#                print '============================================================'
-#                print nodes[1].node_type, nodes[1].predicates[0].feat_name, nodes[1].predicates[0].comp_op, nodes[1].predicates[0].threshold
-#                print '============================================================'
+            num_join_nodes.push_back(optimal_seq.second)
             rule_id += 1
         tree_id += 1
 
 # Ordering a set of predicates            
-cdef vector[int] get_optimal_predicate_seq(vector[Predicatecpp]& predicates,
+cdef pair[vector[int], int] get_optimal_predicate_seq(
+                                           vector[Predicatecpp]& predicates,
                                            omap[string, Coverage]& coverage,
                                            const int sample_size):                                      
-    cdef vector[int] valid_predicates, invalid_predicates, optimal_seq
+    cdef vector[int] valid_predicates, invalid_predicates
+    cdef pair[vector[int], int] optimal_seq
     cdef vector[bool] selected_predicates
     cdef Predicatecpp predicate
     cdef int i, max_pred, j, n=0
     cdef double max_score, pred_score
-                                                  
+
     for i in xrange(predicates.size()):                                                
         if predicates[i].is_join_predicate():                                 
             valid_predicates.push_back(i)                                  
@@ -589,9 +711,9 @@ cdef vector[int] get_optimal_predicate_seq(vector[Predicatecpp]& predicates,
                                                                                 
         if pred_score > max_score:                                              
             max_score = pred_score                                              
-            max_pred = i                                                  
-                                                                                
-    optimal_seq.push_back(max_pred)              
+            max_pred = i                   
+                               
+    optimal_seq.first.push_back(max_pred)              
     selected_predicates[max_pred] = True                                  
 
     prev_coverage.or_coverage(coverage[predicates[max_pred].pred_name])                   
@@ -606,19 +728,17 @@ cdef vector[int] get_optimal_predicate_seq(vector[Predicatecpp]& predicates,
                 continue                                                        
                                                                                
             pred_score = (1.0 - (prev_coverage.and_sum(coverage[predicates[i].pred_name]) / sample_size)) / predicates[i].cost             
-#            print pred_score, max_score
-
             if pred_score > max_score:                                          
                 max_score = pred_score                                          
                 max_pred = i                                              
                                                                                 
-        optimal_seq.push_back(max_pred)          
+        optimal_seq.first.push_back(max_pred)
         selected_predicates[max_pred] = True                              
         prev_coverage.and_coverage(coverage[predicates[max_pred].pred_name])
         j += 1 
-                                                                                  
-    optimal_seq.insert(optimal_seq.end(), invalid_predicates.begin(),
-                       invalid_predicates.end())                            
+    optimal_seq.first.insert(optimal_seq.first.end(), invalid_predicates.begin(),
+                       invalid_predicates.end())
+    optimal_seq.second = valid_predicates.size()                            
     return optimal_seq         
 
 cdef vector[Rule] extract_pos_rules_from_tree(d_tree, feature_table):
