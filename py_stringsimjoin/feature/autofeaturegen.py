@@ -13,16 +13,16 @@ def get_features(sim_measures=None, tokenizers=None):
     ws_tok = WhitespaceTokenizer(return_set=True)
     if sim_measures is None:
         sim_measures = ['JACCARD', 'COSINE', 'DICE', 'OVERLAP', 
-                       'OVERLAP_COEFFICIENT', 'EDIT_DISTANCE']
+                       'OVERLAP_COEFFICIENT', 'EDIT_DISTANCE', 'LEFT_LENGTH', 'RIGHT_LENGTH', 'LENGTH_SUM', 'LENGTH_DIFF']
     if tokenizers is None:
         tokenizers = {'alph': AlphabeticTokenizer(return_set=True),
                       'alph_num': AlphanumericTokenizer(return_set=True),
                       'num': NumericTokenizer(return_set=True),
                       'ws': WhitespaceTokenizer(return_set=True),
-                      'qg2': QgramTokenizer(qval=2, return_set=True),
+#                      'qg2': QgramTokenizer(qval=2, return_set=True),
                       'qg3': QgramTokenizer(qval=3, return_set=True)}
     for sim_measure_type in sim_measures:
-        if sim_measure_type == 'EDIT_DISTANCE':
+        if sim_measure_type in ['EDIT_DISTANCE', 'LEFT_LENGTH', 'RIGHT_LENGTH', 'LENGTH_SUM', 'LENGTH_DIFF']:
             features.append((sim_measure_type.lower(), 'none', sim_measure_type,
                              None, get_sim_function(sim_measure_type)))
             continue

@@ -79,6 +79,6 @@ def split_train_test(labeled_data, target_attr, train_proportion=0.5,
     return result
 
 def get_threshold_from_matcher(matcher):
-    intercept = matcher.intercept_
-    intercept *= -1
-    return float(intercept)/float(matcher.coef_)
+#    intercept = matcher.intercept_
+#    intercept *= -1
+    return  - float(matcher.intercept_)/float(matcher.coef_)

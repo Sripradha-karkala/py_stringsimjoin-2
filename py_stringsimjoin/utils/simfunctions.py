@@ -21,7 +21,26 @@ def get_sim_function(sim_measure_type):
         return overlap
     elif sim_measure_type == 'OVERLAP_COEFFICIENT':
         return OverlapCoefficient().get_raw_score
+    elif sim_measure_type == 'LEFT_LENGTH':
+        return left_length
+    elif sim_measure_type == 'RIGHT_LENGTH':
+        return right_length
+    elif sim_measure_type == 'LENGTH_SUM':
+        return length_sum
+    elif sim_measure_type == 'LENGTH_DIFF':
+        return length_diff
 
+def left_length(str1, str2):
+    return len(str1)
+
+def right_length(str1, str2):                                                    
+    return len(str2)
+
+def length_sum(str1, str2):                                                    
+    return len(str1) + len(str2)  
+
+def length_diff(str1, str2):                                                     
+    return abs(len(str1) - len(str2))
 
 def overlap(set1, set2):
     """Computes the overlap between two sets.

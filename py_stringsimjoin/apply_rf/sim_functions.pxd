@@ -20,3 +20,7 @@ cdef double dice_str(vector[string]& tokens1, vector[string]& tokens2) nogil
                                                                                 
 cdef double cosine_str(vector[string]& tokens1, vector[string]& tokens2) nogil
 
+cdef double left_length(const string& str1, const string& str2) nogil
+cdef double right_length(const string& str1, const string& str2) nogil
+cdef double length_sum(const string& str1, const string& str2) nogil
+cdef double length_diff(const string& str1, const string& str2) nogil

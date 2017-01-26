@@ -726,6 +726,10 @@ static double (*__pyx_f_16py_stringsimjoin_8apply_rf_13sim_functions_edit_distan
 static double (*__pyx_f_16py_stringsimjoin_8apply_rf_13sim_functions_jaccard_str)(std::vector<std::string>  &, std::vector<std::string>  &); /*proto*/
 static double (*__pyx_f_16py_stringsimjoin_8apply_rf_13sim_functions_dice_str)(std::vector<std::string>  &, std::vector<std::string>  &); /*proto*/
 static double (*__pyx_f_16py_stringsimjoin_8apply_rf_13sim_functions_cosine_str)(std::vector<std::string>  &, std::vector<std::string>  &); /*proto*/
+static double (*__pyx_f_16py_stringsimjoin_8apply_rf_13sim_functions_left_length)(std::string const &, std::string const &); /*proto*/
+static double (*__pyx_f_16py_stringsimjoin_8apply_rf_13sim_functions_right_length)(std::string const &, std::string const &); /*proto*/
+static double (*__pyx_f_16py_stringsimjoin_8apply_rf_13sim_functions_length_sum)(std::string const &, std::string const &); /*proto*/
+static double (*__pyx_f_16py_stringsimjoin_8apply_rf_13sim_functions_length_diff)(std::string const &, std::string const &); /*proto*/
 
 /* Module declarations from 'py_stringsimjoin.apply_rf.utils' */
 static int __pyx_f_16py_stringsimjoin_8apply_rf_5utils_int_min(int, int); /*proto*/
@@ -750,6 +754,10 @@ static char __pyx_k_range[] = "range";
 static char __pyx_k_COSINE[] = "COSINE";
 static char __pyx_k_JACCARD[] = "JACCARD";
 static char __pyx_k_OVERLAP[] = "OVERLAP";
+static char __pyx_k_LENGTH_SUM[] = "LENGTH_SUM";
+static char __pyx_k_LEFT_LENGTH[] = "LEFT_LENGTH";
+static char __pyx_k_LENGTH_DIFF[] = "LENGTH_DIFF";
+static char __pyx_k_RIGHT_LENGTH[] = "RIGHT_LENGTH";
 static char __pyx_k_EDIT_DISTANCE[] = "EDIT_DISTANCE";
 static char __pyx_k_OVERLAP_COEFFICIENT[] = "OVERLAP_COEFFICIENT";
 static PyObject *__pyx_kp_b_;
@@ -757,8 +765,12 @@ static PyObject *__pyx_n_b_COSINE;
 static PyObject *__pyx_n_b_DICE;
 static PyObject *__pyx_n_b_EDIT_DISTANCE;
 static PyObject *__pyx_n_b_JACCARD;
+static PyObject *__pyx_n_b_LEFT_LENGTH;
+static PyObject *__pyx_n_b_LENGTH_DIFF;
+static PyObject *__pyx_n_b_LENGTH_SUM;
 static PyObject *__pyx_n_b_OVERLAP;
 static PyObject *__pyx_n_b_OVERLAP_COEFFICIENT;
+static PyObject *__pyx_n_b_RIGHT_LENGTH;
 static PyObject *__pyx_kp_b__2;
 static PyObject *__pyx_kp_b__3;
 static PyObject *__pyx_kp_b__4;
@@ -766,7 +778,7 @@ static PyObject *__pyx_n_s_main;
 static PyObject *__pyx_n_s_range;
 static PyObject *__pyx_n_s_test;
 
-/* "py_stringsimjoin/apply_rf/utils.pyx":12
+/* "py_stringsimjoin/apply_rf/utils.pyx":13
  * 
  * 
  * cdef int get_sim_type(const string& sim_measure_type):             # <<<<<<<<<<<<<<
@@ -784,18 +796,18 @@ static int __pyx_f_16py_stringsimjoin_8apply_rf_5utils_get_sim_type(std::string 
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("get_sim_type", 0);
 
-  /* "py_stringsimjoin/apply_rf/utils.pyx":13
+  /* "py_stringsimjoin/apply_rf/utils.pyx":14
  * 
  * cdef int get_sim_type(const string& sim_measure_type):
  *     if sim_measure_type.compare('COSINE') == 0: # COSINE             # <<<<<<<<<<<<<<
  *         return 0
  *     elif sim_measure_type.compare('DICE') == 0: # DICE
  */
-  __pyx_t_1 = __pyx_convert_string_from_py_std__in_string(__pyx_n_b_COSINE); if (unlikely(PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 13; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = __pyx_convert_string_from_py_std__in_string(__pyx_n_b_COSINE); if (unlikely(PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 14; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_t_2 = ((__pyx_v_sim_measure_type.compare(__pyx_t_1) == 0) != 0);
   if (__pyx_t_2) {
 
-    /* "py_stringsimjoin/apply_rf/utils.pyx":14
+    /* "py_stringsimjoin/apply_rf/utils.pyx":15
  * cdef int get_sim_type(const string& sim_measure_type):
  *     if sim_measure_type.compare('COSINE') == 0: # COSINE
  *         return 0             # <<<<<<<<<<<<<<
@@ -805,7 +817,7 @@ static int __pyx_f_16py_stringsimjoin_8apply_rf_5utils_get_sim_type(std::string 
     __pyx_r = 0;
     goto __pyx_L0;
 
-    /* "py_stringsimjoin/apply_rf/utils.pyx":13
+    /* "py_stringsimjoin/apply_rf/utils.pyx":14
  * 
  * cdef int get_sim_type(const string& sim_measure_type):
  *     if sim_measure_type.compare('COSINE') == 0: # COSINE             # <<<<<<<<<<<<<<
@@ -814,18 +826,18 @@ static int __pyx_f_16py_stringsimjoin_8apply_rf_5utils_get_sim_type(std::string 
  */
   }
 
-  /* "py_stringsimjoin/apply_rf/utils.pyx":15
+  /* "py_stringsimjoin/apply_rf/utils.pyx":16
  *     if sim_measure_type.compare('COSINE') == 0: # COSINE
  *         return 0
  *     elif sim_measure_type.compare('DICE') == 0: # DICE             # <<<<<<<<<<<<<<
  *         return 1
  *     elif sim_measure_type.compare('JACCARD') == 0: # JACCARD:
  */
-  __pyx_t_1 = __pyx_convert_string_from_py_std__in_string(__pyx_n_b_DICE); if (unlikely(PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 15; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = __pyx_convert_string_from_py_std__in_string(__pyx_n_b_DICE); if (unlikely(PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 16; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_t_2 = ((__pyx_v_sim_measure_type.compare(__pyx_t_1) == 0) != 0);
   if (__pyx_t_2) {
 
-    /* "py_stringsimjoin/apply_rf/utils.pyx":16
+    /* "py_stringsimjoin/apply_rf/utils.pyx":17
  *         return 0
  *     elif sim_measure_type.compare('DICE') == 0: # DICE
  *         return 1             # <<<<<<<<<<<<<<
@@ -835,7 +847,7 @@ static int __pyx_f_16py_stringsimjoin_8apply_rf_5utils_get_sim_type(std::string 
     __pyx_r = 1;
     goto __pyx_L0;
 
-    /* "py_stringsimjoin/apply_rf/utils.pyx":15
+    /* "py_stringsimjoin/apply_rf/utils.pyx":16
  *     if sim_measure_type.compare('COSINE') == 0: # COSINE
  *         return 0
  *     elif sim_measure_type.compare('DICE') == 0: # DICE             # <<<<<<<<<<<<<<
@@ -844,18 +856,18 @@ static int __pyx_f_16py_stringsimjoin_8apply_rf_5utils_get_sim_type(std::string 
  */
   }
 
-  /* "py_stringsimjoin/apply_rf/utils.pyx":17
+  /* "py_stringsimjoin/apply_rf/utils.pyx":18
  *     elif sim_measure_type.compare('DICE') == 0: # DICE
  *         return 1
  *     elif sim_measure_type.compare('JACCARD') == 0: # JACCARD:             # <<<<<<<<<<<<<<
  *         return 2
  *     elif sim_measure_type.compare('OVERLAP') == 0:
  */
-  __pyx_t_1 = __pyx_convert_string_from_py_std__in_string(__pyx_n_b_JACCARD); if (unlikely(PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 17; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = __pyx_convert_string_from_py_std__in_string(__pyx_n_b_JACCARD); if (unlikely(PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 18; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_t_2 = ((__pyx_v_sim_measure_type.compare(__pyx_t_1) == 0) != 0);
   if (__pyx_t_2) {
 
-    /* "py_stringsimjoin/apply_rf/utils.pyx":18
+    /* "py_stringsimjoin/apply_rf/utils.pyx":19
  *         return 1
  *     elif sim_measure_type.compare('JACCARD') == 0: # JACCARD:
  *         return 2             # <<<<<<<<<<<<<<
@@ -865,7 +877,7 @@ static int __pyx_f_16py_stringsimjoin_8apply_rf_5utils_get_sim_type(std::string 
     __pyx_r = 2;
     goto __pyx_L0;
 
-    /* "py_stringsimjoin/apply_rf/utils.pyx":17
+    /* "py_stringsimjoin/apply_rf/utils.pyx":18
  *     elif sim_measure_type.compare('DICE') == 0: # DICE
  *         return 1
  *     elif sim_measure_type.compare('JACCARD') == 0: # JACCARD:             # <<<<<<<<<<<<<<
@@ -874,18 +886,18 @@ static int __pyx_f_16py_stringsimjoin_8apply_rf_5utils_get_sim_type(std::string 
  */
   }
 
-  /* "py_stringsimjoin/apply_rf/utils.pyx":19
+  /* "py_stringsimjoin/apply_rf/utils.pyx":20
  *     elif sim_measure_type.compare('JACCARD') == 0: # JACCARD:
  *         return 2
  *     elif sim_measure_type.compare('OVERLAP') == 0:             # <<<<<<<<<<<<<<
  *         return 3
  *     elif sim_measure_type.compare('OVERLAP_COEFFICIENT') == 0:
  */
-  __pyx_t_1 = __pyx_convert_string_from_py_std__in_string(__pyx_n_b_OVERLAP); if (unlikely(PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 19; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = __pyx_convert_string_from_py_std__in_string(__pyx_n_b_OVERLAP); if (unlikely(PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 20; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_t_2 = ((__pyx_v_sim_measure_type.compare(__pyx_t_1) == 0) != 0);
   if (__pyx_t_2) {
 
-    /* "py_stringsimjoin/apply_rf/utils.pyx":20
+    /* "py_stringsimjoin/apply_rf/utils.pyx":21
  *         return 2
  *     elif sim_measure_type.compare('OVERLAP') == 0:
  *         return 3             # <<<<<<<<<<<<<<
@@ -895,7 +907,7 @@ static int __pyx_f_16py_stringsimjoin_8apply_rf_5utils_get_sim_type(std::string 
     __pyx_r = 3;
     goto __pyx_L0;
 
-    /* "py_stringsimjoin/apply_rf/utils.pyx":19
+    /* "py_stringsimjoin/apply_rf/utils.pyx":20
  *     elif sim_measure_type.compare('JACCARD') == 0: # JACCARD:
  *         return 2
  *     elif sim_measure_type.compare('OVERLAP') == 0:             # <<<<<<<<<<<<<<
@@ -904,18 +916,18 @@ static int __pyx_f_16py_stringsimjoin_8apply_rf_5utils_get_sim_type(std::string 
  */
   }
 
-  /* "py_stringsimjoin/apply_rf/utils.pyx":21
+  /* "py_stringsimjoin/apply_rf/utils.pyx":22
  *     elif sim_measure_type.compare('OVERLAP') == 0:
  *         return 3
  *     elif sim_measure_type.compare('OVERLAP_COEFFICIENT') == 0:             # <<<<<<<<<<<<<<
  *         return 4
  *     elif sim_measure_type.compare('EDIT_DISTANCE') == 0:
  */
-  __pyx_t_1 = __pyx_convert_string_from_py_std__in_string(__pyx_n_b_OVERLAP_COEFFICIENT); if (unlikely(PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 21; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = __pyx_convert_string_from_py_std__in_string(__pyx_n_b_OVERLAP_COEFFICIENT); if (unlikely(PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 22; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_t_2 = ((__pyx_v_sim_measure_type.compare(__pyx_t_1) == 0) != 0);
   if (__pyx_t_2) {
 
-    /* "py_stringsimjoin/apply_rf/utils.pyx":22
+    /* "py_stringsimjoin/apply_rf/utils.pyx":23
  *         return 3
  *     elif sim_measure_type.compare('OVERLAP_COEFFICIENT') == 0:
  *         return 4             # <<<<<<<<<<<<<<
@@ -925,7 +937,7 @@ static int __pyx_f_16py_stringsimjoin_8apply_rf_5utils_get_sim_type(std::string 
     __pyx_r = 4;
     goto __pyx_L0;
 
-    /* "py_stringsimjoin/apply_rf/utils.pyx":21
+    /* "py_stringsimjoin/apply_rf/utils.pyx":22
  *     elif sim_measure_type.compare('OVERLAP') == 0:
  *         return 3
  *     elif sim_measure_type.compare('OVERLAP_COEFFICIENT') == 0:             # <<<<<<<<<<<<<<
@@ -934,37 +946,157 @@ static int __pyx_f_16py_stringsimjoin_8apply_rf_5utils_get_sim_type(std::string 
  */
   }
 
-  /* "py_stringsimjoin/apply_rf/utils.pyx":23
+  /* "py_stringsimjoin/apply_rf/utils.pyx":24
  *     elif sim_measure_type.compare('OVERLAP_COEFFICIENT') == 0:
  *         return 4
  *     elif sim_measure_type.compare('EDIT_DISTANCE') == 0:             # <<<<<<<<<<<<<<
  *         return 5
- * 
+ *     elif sim_measure_type.compare('LEFT_LENGTH') == 0:
  */
-  __pyx_t_1 = __pyx_convert_string_from_py_std__in_string(__pyx_n_b_EDIT_DISTANCE); if (unlikely(PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 23; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = __pyx_convert_string_from_py_std__in_string(__pyx_n_b_EDIT_DISTANCE); if (unlikely(PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 24; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_t_2 = ((__pyx_v_sim_measure_type.compare(__pyx_t_1) == 0) != 0);
   if (__pyx_t_2) {
 
-    /* "py_stringsimjoin/apply_rf/utils.pyx":24
+    /* "py_stringsimjoin/apply_rf/utils.pyx":25
  *         return 4
  *     elif sim_measure_type.compare('EDIT_DISTANCE') == 0:
  *         return 5             # <<<<<<<<<<<<<<
- * 
- * cdef simfnptr get_sim_function(const int sim_type) nogil:
+ *     elif sim_measure_type.compare('LEFT_LENGTH') == 0:
+ *         return 6
  */
     __pyx_r = 5;
     goto __pyx_L0;
 
-    /* "py_stringsimjoin/apply_rf/utils.pyx":23
+    /* "py_stringsimjoin/apply_rf/utils.pyx":24
  *     elif sim_measure_type.compare('OVERLAP_COEFFICIENT') == 0:
  *         return 4
  *     elif sim_measure_type.compare('EDIT_DISTANCE') == 0:             # <<<<<<<<<<<<<<
  *         return 5
+ *     elif sim_measure_type.compare('LEFT_LENGTH') == 0:
+ */
+  }
+
+  /* "py_stringsimjoin/apply_rf/utils.pyx":26
+ *     elif sim_measure_type.compare('EDIT_DISTANCE') == 0:
+ *         return 5
+ *     elif sim_measure_type.compare('LEFT_LENGTH') == 0:             # <<<<<<<<<<<<<<
+ *         return 6
+ *     elif sim_measure_type.compare('RIGHT_LENGTH') == 0:
+ */
+  __pyx_t_1 = __pyx_convert_string_from_py_std__in_string(__pyx_n_b_LEFT_LENGTH); if (unlikely(PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 26; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_2 = ((__pyx_v_sim_measure_type.compare(__pyx_t_1) == 0) != 0);
+  if (__pyx_t_2) {
+
+    /* "py_stringsimjoin/apply_rf/utils.pyx":27
+ *         return 5
+ *     elif sim_measure_type.compare('LEFT_LENGTH') == 0:
+ *         return 6             # <<<<<<<<<<<<<<
+ *     elif sim_measure_type.compare('RIGHT_LENGTH') == 0:
+ *         return 7
+ */
+    __pyx_r = 6;
+    goto __pyx_L0;
+
+    /* "py_stringsimjoin/apply_rf/utils.pyx":26
+ *     elif sim_measure_type.compare('EDIT_DISTANCE') == 0:
+ *         return 5
+ *     elif sim_measure_type.compare('LEFT_LENGTH') == 0:             # <<<<<<<<<<<<<<
+ *         return 6
+ *     elif sim_measure_type.compare('RIGHT_LENGTH') == 0:
+ */
+  }
+
+  /* "py_stringsimjoin/apply_rf/utils.pyx":28
+ *     elif sim_measure_type.compare('LEFT_LENGTH') == 0:
+ *         return 6
+ *     elif sim_measure_type.compare('RIGHT_LENGTH') == 0:             # <<<<<<<<<<<<<<
+ *         return 7
+ *     elif sim_measure_type.compare('LENGTH_SUM') == 0:
+ */
+  __pyx_t_1 = __pyx_convert_string_from_py_std__in_string(__pyx_n_b_RIGHT_LENGTH); if (unlikely(PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 28; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_2 = ((__pyx_v_sim_measure_type.compare(__pyx_t_1) == 0) != 0);
+  if (__pyx_t_2) {
+
+    /* "py_stringsimjoin/apply_rf/utils.pyx":29
+ *         return 6
+ *     elif sim_measure_type.compare('RIGHT_LENGTH') == 0:
+ *         return 7             # <<<<<<<<<<<<<<
+ *     elif sim_measure_type.compare('LENGTH_SUM') == 0:
+ *         return 8
+ */
+    __pyx_r = 7;
+    goto __pyx_L0;
+
+    /* "py_stringsimjoin/apply_rf/utils.pyx":28
+ *     elif sim_measure_type.compare('LEFT_LENGTH') == 0:
+ *         return 6
+ *     elif sim_measure_type.compare('RIGHT_LENGTH') == 0:             # <<<<<<<<<<<<<<
+ *         return 7
+ *     elif sim_measure_type.compare('LENGTH_SUM') == 0:
+ */
+  }
+
+  /* "py_stringsimjoin/apply_rf/utils.pyx":30
+ *     elif sim_measure_type.compare('RIGHT_LENGTH') == 0:
+ *         return 7
+ *     elif sim_measure_type.compare('LENGTH_SUM') == 0:             # <<<<<<<<<<<<<<
+ *         return 8
+ *     elif sim_measure_type.compare('LENGTH_DIFF') == 0:
+ */
+  __pyx_t_1 = __pyx_convert_string_from_py_std__in_string(__pyx_n_b_LENGTH_SUM); if (unlikely(PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 30; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_2 = ((__pyx_v_sim_measure_type.compare(__pyx_t_1) == 0) != 0);
+  if (__pyx_t_2) {
+
+    /* "py_stringsimjoin/apply_rf/utils.pyx":31
+ *         return 7
+ *     elif sim_measure_type.compare('LENGTH_SUM') == 0:
+ *         return 8             # <<<<<<<<<<<<<<
+ *     elif sim_measure_type.compare('LENGTH_DIFF') == 0:
+ *         return 9
+ */
+    __pyx_r = 8;
+    goto __pyx_L0;
+
+    /* "py_stringsimjoin/apply_rf/utils.pyx":30
+ *     elif sim_measure_type.compare('RIGHT_LENGTH') == 0:
+ *         return 7
+ *     elif sim_measure_type.compare('LENGTH_SUM') == 0:             # <<<<<<<<<<<<<<
+ *         return 8
+ *     elif sim_measure_type.compare('LENGTH_DIFF') == 0:
+ */
+  }
+
+  /* "py_stringsimjoin/apply_rf/utils.pyx":32
+ *     elif sim_measure_type.compare('LENGTH_SUM') == 0:
+ *         return 8
+ *     elif sim_measure_type.compare('LENGTH_DIFF') == 0:             # <<<<<<<<<<<<<<
+ *         return 9
+ * 
+ */
+  __pyx_t_1 = __pyx_convert_string_from_py_std__in_string(__pyx_n_b_LENGTH_DIFF); if (unlikely(PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 32; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_2 = ((__pyx_v_sim_measure_type.compare(__pyx_t_1) == 0) != 0);
+  if (__pyx_t_2) {
+
+    /* "py_stringsimjoin/apply_rf/utils.pyx":33
+ *         return 8
+ *     elif sim_measure_type.compare('LENGTH_DIFF') == 0:
+ *         return 9             # <<<<<<<<<<<<<<
+ * 
+ * cdef simfnptr get_sim_function(const int sim_type) nogil:
+ */
+    __pyx_r = 9;
+    goto __pyx_L0;
+
+    /* "py_stringsimjoin/apply_rf/utils.pyx":32
+ *     elif sim_measure_type.compare('LENGTH_SUM') == 0:
+ *         return 8
+ *     elif sim_measure_type.compare('LENGTH_DIFF') == 0:             # <<<<<<<<<<<<<<
+ *         return 9
  * 
  */
   }
 
-  /* "py_stringsimjoin/apply_rf/utils.pyx":12
+  /* "py_stringsimjoin/apply_rf/utils.pyx":13
  * 
  * 
  * cdef int get_sim_type(const string& sim_measure_type):             # <<<<<<<<<<<<<<
@@ -983,8 +1115,8 @@ static int __pyx_f_16py_stringsimjoin_8apply_rf_5utils_get_sim_type(std::string 
   return __pyx_r;
 }
 
-/* "py_stringsimjoin/apply_rf/utils.pyx":26
- *         return 5
+/* "py_stringsimjoin/apply_rf/utils.pyx":35
+ *         return 9
  * 
  * cdef simfnptr get_sim_function(const int sim_type) nogil:             # <<<<<<<<<<<<<<
  *     if sim_type == 0: # COSINE
@@ -994,7 +1126,7 @@ static int __pyx_f_16py_stringsimjoin_8apply_rf_5utils_get_sim_type(std::string 
 static __pyx_t_16py_stringsimjoin_8apply_rf_5utils_simfnptr __pyx_f_16py_stringsimjoin_8apply_rf_5utils_get_sim_function(int const __pyx_v_sim_type) {
   __pyx_t_16py_stringsimjoin_8apply_rf_5utils_simfnptr __pyx_r;
 
-  /* "py_stringsimjoin/apply_rf/utils.pyx":27
+  /* "py_stringsimjoin/apply_rf/utils.pyx":36
  * 
  * cdef simfnptr get_sim_function(const int sim_type) nogil:
  *     if sim_type == 0: # COSINE             # <<<<<<<<<<<<<<
@@ -1004,7 +1136,7 @@ static __pyx_t_16py_stringsimjoin_8apply_rf_5utils_simfnptr __pyx_f_16py_strings
   switch (__pyx_v_sim_type) {
     case 0:
 
-    /* "py_stringsimjoin/apply_rf/utils.pyx":28
+    /* "py_stringsimjoin/apply_rf/utils.pyx":37
  * cdef simfnptr get_sim_function(const int sim_type) nogil:
  *     if sim_type == 0: # COSINE
  *         return cosine             # <<<<<<<<<<<<<<
@@ -1014,7 +1146,7 @@ static __pyx_t_16py_stringsimjoin_8apply_rf_5utils_simfnptr __pyx_f_16py_strings
     __pyx_r = __pyx_f_16py_stringsimjoin_8apply_rf_13sim_functions_cosine;
     goto __pyx_L0;
 
-    /* "py_stringsimjoin/apply_rf/utils.pyx":27
+    /* "py_stringsimjoin/apply_rf/utils.pyx":36
  * 
  * cdef simfnptr get_sim_function(const int sim_type) nogil:
  *     if sim_type == 0: # COSINE             # <<<<<<<<<<<<<<
@@ -1023,7 +1155,7 @@ static __pyx_t_16py_stringsimjoin_8apply_rf_5utils_simfnptr __pyx_f_16py_strings
  */
     break;
 
-    /* "py_stringsimjoin/apply_rf/utils.pyx":29
+    /* "py_stringsimjoin/apply_rf/utils.pyx":38
  *     if sim_type == 0: # COSINE
  *         return cosine
  *     elif sim_type == 1: # DICE             # <<<<<<<<<<<<<<
@@ -1032,7 +1164,7 @@ static __pyx_t_16py_stringsimjoin_8apply_rf_5utils_simfnptr __pyx_f_16py_strings
  */
     case 1:
 
-    /* "py_stringsimjoin/apply_rf/utils.pyx":30
+    /* "py_stringsimjoin/apply_rf/utils.pyx":39
  *         return cosine
  *     elif sim_type == 1: # DICE
  *         return dice             # <<<<<<<<<<<<<<
@@ -1042,7 +1174,7 @@ static __pyx_t_16py_stringsimjoin_8apply_rf_5utils_simfnptr __pyx_f_16py_strings
     __pyx_r = __pyx_f_16py_stringsimjoin_8apply_rf_13sim_functions_dice;
     goto __pyx_L0;
 
-    /* "py_stringsimjoin/apply_rf/utils.pyx":29
+    /* "py_stringsimjoin/apply_rf/utils.pyx":38
  *     if sim_type == 0: # COSINE
  *         return cosine
  *     elif sim_type == 1: # DICE             # <<<<<<<<<<<<<<
@@ -1051,7 +1183,7 @@ static __pyx_t_16py_stringsimjoin_8apply_rf_5utils_simfnptr __pyx_f_16py_strings
  */
     break;
 
-    /* "py_stringsimjoin/apply_rf/utils.pyx":31
+    /* "py_stringsimjoin/apply_rf/utils.pyx":40
  *     elif sim_type == 1: # DICE
  *         return dice
  *     elif sim_type == 2: # JACCARD:             # <<<<<<<<<<<<<<
@@ -1060,7 +1192,7 @@ static __pyx_t_16py_stringsimjoin_8apply_rf_5utils_simfnptr __pyx_f_16py_strings
  */
     case 2:
 
-    /* "py_stringsimjoin/apply_rf/utils.pyx":32
+    /* "py_stringsimjoin/apply_rf/utils.pyx":41
  *         return dice
  *     elif sim_type == 2: # JACCARD:
  *         return jaccard             # <<<<<<<<<<<<<<
@@ -1070,7 +1202,7 @@ static __pyx_t_16py_stringsimjoin_8apply_rf_5utils_simfnptr __pyx_f_16py_strings
     __pyx_r = __pyx_f_16py_stringsimjoin_8apply_rf_13sim_functions_jaccard;
     goto __pyx_L0;
 
-    /* "py_stringsimjoin/apply_rf/utils.pyx":31
+    /* "py_stringsimjoin/apply_rf/utils.pyx":40
  *     elif sim_type == 1: # DICE
  *         return dice
  *     elif sim_type == 2: # JACCARD:             # <<<<<<<<<<<<<<
@@ -1081,8 +1213,8 @@ static __pyx_t_16py_stringsimjoin_8apply_rf_5utils_simfnptr __pyx_f_16py_strings
     default: break;
   }
 
-  /* "py_stringsimjoin/apply_rf/utils.pyx":26
- *         return 5
+  /* "py_stringsimjoin/apply_rf/utils.pyx":35
+ *         return 9
  * 
  * cdef simfnptr get_sim_function(const int sim_type) nogil:             # <<<<<<<<<<<<<<
  *     if sim_type == 0: # COSINE
@@ -1095,7 +1227,7 @@ static __pyx_t_16py_stringsimjoin_8apply_rf_5utils_simfnptr __pyx_f_16py_strings
   return __pyx_r;
 }
 
-/* "py_stringsimjoin/apply_rf/utils.pyx":34
+/* "py_stringsimjoin/apply_rf/utils.pyx":43
  *         return jaccard
  * 
  * cdef token_simfnptr get_token_sim_function(const int sim_type) nogil:             # <<<<<<<<<<<<<<
@@ -1106,7 +1238,7 @@ static __pyx_t_16py_stringsimjoin_8apply_rf_5utils_simfnptr __pyx_f_16py_strings
 static __pyx_t_16py_stringsimjoin_8apply_rf_5utils_token_simfnptr __pyx_f_16py_stringsimjoin_8apply_rf_5utils_get_token_sim_function(int const __pyx_v_sim_type) {
   __pyx_t_16py_stringsimjoin_8apply_rf_5utils_token_simfnptr __pyx_r;
 
-  /* "py_stringsimjoin/apply_rf/utils.pyx":35
+  /* "py_stringsimjoin/apply_rf/utils.pyx":44
  * 
  * cdef token_simfnptr get_token_sim_function(const int sim_type) nogil:
  *     if sim_type == 0: # COSINE             # <<<<<<<<<<<<<<
@@ -1116,7 +1248,7 @@ static __pyx_t_16py_stringsimjoin_8apply_rf_5utils_token_simfnptr __pyx_f_16py_s
   switch (__pyx_v_sim_type) {
     case 0:
 
-    /* "py_stringsimjoin/apply_rf/utils.pyx":36
+    /* "py_stringsimjoin/apply_rf/utils.pyx":45
  * cdef token_simfnptr get_token_sim_function(const int sim_type) nogil:
  *     if sim_type == 0: # COSINE
  *         return cosine             # <<<<<<<<<<<<<<
@@ -1126,7 +1258,7 @@ static __pyx_t_16py_stringsimjoin_8apply_rf_5utils_token_simfnptr __pyx_f_16py_s
     __pyx_r = __pyx_f_16py_stringsimjoin_8apply_rf_13sim_functions_cosine;
     goto __pyx_L0;
 
-    /* "py_stringsimjoin/apply_rf/utils.pyx":35
+    /* "py_stringsimjoin/apply_rf/utils.pyx":44
  * 
  * cdef token_simfnptr get_token_sim_function(const int sim_type) nogil:
  *     if sim_type == 0: # COSINE             # <<<<<<<<<<<<<<
@@ -1135,7 +1267,7 @@ static __pyx_t_16py_stringsimjoin_8apply_rf_5utils_token_simfnptr __pyx_f_16py_s
  */
     break;
 
-    /* "py_stringsimjoin/apply_rf/utils.pyx":37
+    /* "py_stringsimjoin/apply_rf/utils.pyx":46
  *     if sim_type == 0: # COSINE
  *         return cosine
  *     elif sim_type == 1: # DICE             # <<<<<<<<<<<<<<
@@ -1144,7 +1276,7 @@ static __pyx_t_16py_stringsimjoin_8apply_rf_5utils_token_simfnptr __pyx_f_16py_s
  */
     case 1:
 
-    /* "py_stringsimjoin/apply_rf/utils.pyx":38
+    /* "py_stringsimjoin/apply_rf/utils.pyx":47
  *         return cosine
  *     elif sim_type == 1: # DICE
  *         return dice             # <<<<<<<<<<<<<<
@@ -1154,7 +1286,7 @@ static __pyx_t_16py_stringsimjoin_8apply_rf_5utils_token_simfnptr __pyx_f_16py_s
     __pyx_r = __pyx_f_16py_stringsimjoin_8apply_rf_13sim_functions_dice;
     goto __pyx_L0;
 
-    /* "py_stringsimjoin/apply_rf/utils.pyx":37
+    /* "py_stringsimjoin/apply_rf/utils.pyx":46
  *     if sim_type == 0: # COSINE
  *         return cosine
  *     elif sim_type == 1: # DICE             # <<<<<<<<<<<<<<
@@ -1163,7 +1295,7 @@ static __pyx_t_16py_stringsimjoin_8apply_rf_5utils_token_simfnptr __pyx_f_16py_s
  */
     break;
 
-    /* "py_stringsimjoin/apply_rf/utils.pyx":39
+    /* "py_stringsimjoin/apply_rf/utils.pyx":48
  *     elif sim_type == 1: # DICE
  *         return dice
  *     elif sim_type == 2: # JACCARD:             # <<<<<<<<<<<<<<
@@ -1172,7 +1304,7 @@ static __pyx_t_16py_stringsimjoin_8apply_rf_5utils_token_simfnptr __pyx_f_16py_s
  */
     case 2:
 
-    /* "py_stringsimjoin/apply_rf/utils.pyx":40
+    /* "py_stringsimjoin/apply_rf/utils.pyx":49
  *         return dice
  *     elif sim_type == 2: # JACCARD:
  *         return jaccard             # <<<<<<<<<<<<<<
@@ -1182,7 +1314,7 @@ static __pyx_t_16py_stringsimjoin_8apply_rf_5utils_token_simfnptr __pyx_f_16py_s
     __pyx_r = __pyx_f_16py_stringsimjoin_8apply_rf_13sim_functions_jaccard;
     goto __pyx_L0;
 
-    /* "py_stringsimjoin/apply_rf/utils.pyx":39
+    /* "py_stringsimjoin/apply_rf/utils.pyx":48
  *     elif sim_type == 1: # DICE
  *         return dice
  *     elif sim_type == 2: # JACCARD:             # <<<<<<<<<<<<<<
@@ -1191,7 +1323,7 @@ static __pyx_t_16py_stringsimjoin_8apply_rf_5utils_token_simfnptr __pyx_f_16py_s
  */
     break;
 
-    /* "py_stringsimjoin/apply_rf/utils.pyx":41
+    /* "py_stringsimjoin/apply_rf/utils.pyx":50
  *     elif sim_type == 2: # JACCARD:
  *         return jaccard
  *     elif sim_type == 3:             # <<<<<<<<<<<<<<
@@ -1200,7 +1332,7 @@ static __pyx_t_16py_stringsimjoin_8apply_rf_5utils_token_simfnptr __pyx_f_16py_s
  */
     case 3:
 
-    /* "py_stringsimjoin/apply_rf/utils.pyx":42
+    /* "py_stringsimjoin/apply_rf/utils.pyx":51
  *         return jaccard
  *     elif sim_type == 3:
  *         return overlap             # <<<<<<<<<<<<<<
@@ -1210,7 +1342,7 @@ static __pyx_t_16py_stringsimjoin_8apply_rf_5utils_token_simfnptr __pyx_f_16py_s
     __pyx_r = __pyx_f_16py_stringsimjoin_8apply_rf_13sim_functions_overlap;
     goto __pyx_L0;
 
-    /* "py_stringsimjoin/apply_rf/utils.pyx":41
+    /* "py_stringsimjoin/apply_rf/utils.pyx":50
  *     elif sim_type == 2: # JACCARD:
  *         return jaccard
  *     elif sim_type == 3:             # <<<<<<<<<<<<<<
@@ -1219,7 +1351,7 @@ static __pyx_t_16py_stringsimjoin_8apply_rf_5utils_token_simfnptr __pyx_f_16py_s
  */
     break;
 
-    /* "py_stringsimjoin/apply_rf/utils.pyx":43
+    /* "py_stringsimjoin/apply_rf/utils.pyx":52
  *     elif sim_type == 3:
  *         return overlap
  *     elif sim_type == 4:             # <<<<<<<<<<<<<<
@@ -1228,7 +1360,7 @@ static __pyx_t_16py_stringsimjoin_8apply_rf_5utils_token_simfnptr __pyx_f_16py_s
  */
     case 4:
 
-    /* "py_stringsimjoin/apply_rf/utils.pyx":44
+    /* "py_stringsimjoin/apply_rf/utils.pyx":53
  *         return overlap
  *     elif sim_type == 4:
  *         return overlap_coefficient             # <<<<<<<<<<<<<<
@@ -1238,7 +1370,7 @@ static __pyx_t_16py_stringsimjoin_8apply_rf_5utils_token_simfnptr __pyx_f_16py_s
     __pyx_r = __pyx_f_16py_stringsimjoin_8apply_rf_13sim_functions_overlap_coefficient;
     goto __pyx_L0;
 
-    /* "py_stringsimjoin/apply_rf/utils.pyx":43
+    /* "py_stringsimjoin/apply_rf/utils.pyx":52
  *     elif sim_type == 3:
  *         return overlap
  *     elif sim_type == 4:             # <<<<<<<<<<<<<<
@@ -1249,7 +1381,7 @@ static __pyx_t_16py_stringsimjoin_8apply_rf_5utils_token_simfnptr __pyx_f_16py_s
     default: break;
   }
 
-  /* "py_stringsimjoin/apply_rf/utils.pyx":34
+  /* "py_stringsimjoin/apply_rf/utils.pyx":43
  *         return jaccard
  * 
  * cdef token_simfnptr get_token_sim_function(const int sim_type) nogil:             # <<<<<<<<<<<<<<
@@ -1263,7 +1395,7 @@ static __pyx_t_16py_stringsimjoin_8apply_rf_5utils_token_simfnptr __pyx_f_16py_s
   return __pyx_r;
 }
 
-/* "py_stringsimjoin/apply_rf/utils.pyx":46
+/* "py_stringsimjoin/apply_rf/utils.pyx":55
  *         return overlap_coefficient
  * 
  * cdef str_simfnptr get_str_sim_function(const int sim_type) nogil:             # <<<<<<<<<<<<<<
@@ -1273,38 +1405,151 @@ static __pyx_t_16py_stringsimjoin_8apply_rf_5utils_token_simfnptr __pyx_f_16py_s
 
 static __pyx_t_16py_stringsimjoin_8apply_rf_5utils_str_simfnptr __pyx_f_16py_stringsimjoin_8apply_rf_5utils_get_str_sim_function(int const __pyx_v_sim_type) {
   __pyx_t_16py_stringsimjoin_8apply_rf_5utils_str_simfnptr __pyx_r;
-  int __pyx_t_1;
 
-  /* "py_stringsimjoin/apply_rf/utils.pyx":47
+  /* "py_stringsimjoin/apply_rf/utils.pyx":56
  * 
  * cdef str_simfnptr get_str_sim_function(const int sim_type) nogil:
  *     if sim_type == 5: # EDIT_DISTANCE             # <<<<<<<<<<<<<<
  *         return edit_distance
- * 
+ *     elif sim_type == 6:
  */
-  __pyx_t_1 = ((__pyx_v_sim_type == 5) != 0);
-  if (__pyx_t_1) {
+  switch (__pyx_v_sim_type) {
+    case 5:
 
-    /* "py_stringsimjoin/apply_rf/utils.pyx":48
+    /* "py_stringsimjoin/apply_rf/utils.pyx":57
  * cdef str_simfnptr get_str_sim_function(const int sim_type) nogil:
  *     if sim_type == 5: # EDIT_DISTANCE
  *         return edit_distance             # <<<<<<<<<<<<<<
- * 
- * cdef simfnptr_str get_sim_function_str(const int sim_type) nogil:
+ *     elif sim_type == 6:
+ *         return left_length
  */
     __pyx_r = __pyx_f_16py_stringsimjoin_8apply_rf_13sim_functions_edit_distance;
     goto __pyx_L0;
 
-    /* "py_stringsimjoin/apply_rf/utils.pyx":47
+    /* "py_stringsimjoin/apply_rf/utils.pyx":56
  * 
  * cdef str_simfnptr get_str_sim_function(const int sim_type) nogil:
  *     if sim_type == 5: # EDIT_DISTANCE             # <<<<<<<<<<<<<<
  *         return edit_distance
+ *     elif sim_type == 6:
+ */
+    break;
+
+    /* "py_stringsimjoin/apply_rf/utils.pyx":58
+ *     if sim_type == 5: # EDIT_DISTANCE
+ *         return edit_distance
+ *     elif sim_type == 6:             # <<<<<<<<<<<<<<
+ *         return left_length
+ *     elif sim_type == 7:
+ */
+    case 6:
+
+    /* "py_stringsimjoin/apply_rf/utils.pyx":59
+ *         return edit_distance
+ *     elif sim_type == 6:
+ *         return left_length             # <<<<<<<<<<<<<<
+ *     elif sim_type == 7:
+ *         return right_length
+ */
+    __pyx_r = __pyx_f_16py_stringsimjoin_8apply_rf_13sim_functions_left_length;
+    goto __pyx_L0;
+
+    /* "py_stringsimjoin/apply_rf/utils.pyx":58
+ *     if sim_type == 5: # EDIT_DISTANCE
+ *         return edit_distance
+ *     elif sim_type == 6:             # <<<<<<<<<<<<<<
+ *         return left_length
+ *     elif sim_type == 7:
+ */
+    break;
+
+    /* "py_stringsimjoin/apply_rf/utils.pyx":60
+ *     elif sim_type == 6:
+ *         return left_length
+ *     elif sim_type == 7:             # <<<<<<<<<<<<<<
+ *         return right_length
+ *     elif sim_type == 8:
+ */
+    case 7:
+
+    /* "py_stringsimjoin/apply_rf/utils.pyx":61
+ *         return left_length
+ *     elif sim_type == 7:
+ *         return right_length             # <<<<<<<<<<<<<<
+ *     elif sim_type == 8:
+ *         return length_sum
+ */
+    __pyx_r = __pyx_f_16py_stringsimjoin_8apply_rf_13sim_functions_right_length;
+    goto __pyx_L0;
+
+    /* "py_stringsimjoin/apply_rf/utils.pyx":60
+ *     elif sim_type == 6:
+ *         return left_length
+ *     elif sim_type == 7:             # <<<<<<<<<<<<<<
+ *         return right_length
+ *     elif sim_type == 8:
+ */
+    break;
+
+    /* "py_stringsimjoin/apply_rf/utils.pyx":62
+ *     elif sim_type == 7:
+ *         return right_length
+ *     elif sim_type == 8:             # <<<<<<<<<<<<<<
+ *         return length_sum
+ *     elif sim_type == 9:
+ */
+    case 8:
+
+    /* "py_stringsimjoin/apply_rf/utils.pyx":63
+ *         return right_length
+ *     elif sim_type == 8:
+ *         return length_sum             # <<<<<<<<<<<<<<
+ *     elif sim_type == 9:
+ *         return length_diff
+ */
+    __pyx_r = __pyx_f_16py_stringsimjoin_8apply_rf_13sim_functions_length_sum;
+    goto __pyx_L0;
+
+    /* "py_stringsimjoin/apply_rf/utils.pyx":62
+ *     elif sim_type == 7:
+ *         return right_length
+ *     elif sim_type == 8:             # <<<<<<<<<<<<<<
+ *         return length_sum
+ *     elif sim_type == 9:
+ */
+    break;
+
+    /* "py_stringsimjoin/apply_rf/utils.pyx":64
+ *     elif sim_type == 8:
+ *         return length_sum
+ *     elif sim_type == 9:             # <<<<<<<<<<<<<<
+ *         return length_diff
  * 
  */
+    case 9:
+
+    /* "py_stringsimjoin/apply_rf/utils.pyx":65
+ *         return length_sum
+ *     elif sim_type == 9:
+ *         return length_diff             # <<<<<<<<<<<<<<
+ * 
+ * cdef simfnptr_str get_sim_function_str(const int sim_type) nogil:
+ */
+    __pyx_r = __pyx_f_16py_stringsimjoin_8apply_rf_13sim_functions_length_diff;
+    goto __pyx_L0;
+
+    /* "py_stringsimjoin/apply_rf/utils.pyx":64
+ *     elif sim_type == 8:
+ *         return length_sum
+ *     elif sim_type == 9:             # <<<<<<<<<<<<<<
+ *         return length_diff
+ * 
+ */
+    break;
+    default: break;
   }
 
-  /* "py_stringsimjoin/apply_rf/utils.pyx":46
+  /* "py_stringsimjoin/apply_rf/utils.pyx":55
  *         return overlap_coefficient
  * 
  * cdef str_simfnptr get_str_sim_function(const int sim_type) nogil:             # <<<<<<<<<<<<<<
@@ -1318,8 +1563,8 @@ static __pyx_t_16py_stringsimjoin_8apply_rf_5utils_str_simfnptr __pyx_f_16py_str
   return __pyx_r;
 }
 
-/* "py_stringsimjoin/apply_rf/utils.pyx":50
- *         return edit_distance
+/* "py_stringsimjoin/apply_rf/utils.pyx":67
+ *         return length_diff
  * 
  * cdef simfnptr_str get_sim_function_str(const int sim_type) nogil:             # <<<<<<<<<<<<<<
  *     if sim_type == 0: # COSINE
@@ -1329,7 +1574,7 @@ static __pyx_t_16py_stringsimjoin_8apply_rf_5utils_str_simfnptr __pyx_f_16py_str
 static __pyx_t_16py_stringsimjoin_8apply_rf_5utils_simfnptr_str __pyx_f_16py_stringsimjoin_8apply_rf_5utils_get_sim_function_str(int const __pyx_v_sim_type) {
   __pyx_t_16py_stringsimjoin_8apply_rf_5utils_simfnptr_str __pyx_r;
 
-  /* "py_stringsimjoin/apply_rf/utils.pyx":51
+  /* "py_stringsimjoin/apply_rf/utils.pyx":68
  * 
  * cdef simfnptr_str get_sim_function_str(const int sim_type) nogil:
  *     if sim_type == 0: # COSINE             # <<<<<<<<<<<<<<
@@ -1339,7 +1584,7 @@ static __pyx_t_16py_stringsimjoin_8apply_rf_5utils_simfnptr_str __pyx_f_16py_str
   switch (__pyx_v_sim_type) {
     case 0:
 
-    /* "py_stringsimjoin/apply_rf/utils.pyx":52
+    /* "py_stringsimjoin/apply_rf/utils.pyx":69
  * cdef simfnptr_str get_sim_function_str(const int sim_type) nogil:
  *     if sim_type == 0: # COSINE
  *         return cosine_str             # <<<<<<<<<<<<<<
@@ -1349,7 +1594,7 @@ static __pyx_t_16py_stringsimjoin_8apply_rf_5utils_simfnptr_str __pyx_f_16py_str
     __pyx_r = __pyx_f_16py_stringsimjoin_8apply_rf_13sim_functions_cosine_str;
     goto __pyx_L0;
 
-    /* "py_stringsimjoin/apply_rf/utils.pyx":51
+    /* "py_stringsimjoin/apply_rf/utils.pyx":68
  * 
  * cdef simfnptr_str get_sim_function_str(const int sim_type) nogil:
  *     if sim_type == 0: # COSINE             # <<<<<<<<<<<<<<
@@ -1358,7 +1603,7 @@ static __pyx_t_16py_stringsimjoin_8apply_rf_5utils_simfnptr_str __pyx_f_16py_str
  */
     break;
 
-    /* "py_stringsimjoin/apply_rf/utils.pyx":53
+    /* "py_stringsimjoin/apply_rf/utils.pyx":70
  *     if sim_type == 0: # COSINE
  *         return cosine_str
  *     elif sim_type == 1: # DICE             # <<<<<<<<<<<<<<
@@ -1367,7 +1612,7 @@ static __pyx_t_16py_stringsimjoin_8apply_rf_5utils_simfnptr_str __pyx_f_16py_str
  */
     case 1:
 
-    /* "py_stringsimjoin/apply_rf/utils.pyx":54
+    /* "py_stringsimjoin/apply_rf/utils.pyx":71
  *         return cosine_str
  *     elif sim_type == 1: # DICE
  *         return dice_str             # <<<<<<<<<<<<<<
@@ -1377,7 +1622,7 @@ static __pyx_t_16py_stringsimjoin_8apply_rf_5utils_simfnptr_str __pyx_f_16py_str
     __pyx_r = __pyx_f_16py_stringsimjoin_8apply_rf_13sim_functions_dice_str;
     goto __pyx_L0;
 
-    /* "py_stringsimjoin/apply_rf/utils.pyx":53
+    /* "py_stringsimjoin/apply_rf/utils.pyx":70
  *     if sim_type == 0: # COSINE
  *         return cosine_str
  *     elif sim_type == 1: # DICE             # <<<<<<<<<<<<<<
@@ -1386,7 +1631,7 @@ static __pyx_t_16py_stringsimjoin_8apply_rf_5utils_simfnptr_str __pyx_f_16py_str
  */
     break;
 
-    /* "py_stringsimjoin/apply_rf/utils.pyx":55
+    /* "py_stringsimjoin/apply_rf/utils.pyx":72
  *     elif sim_type == 1: # DICE
  *         return dice_str
  *     elif sim_type == 2: # JACCARD:             # <<<<<<<<<<<<<<
@@ -1395,7 +1640,7 @@ static __pyx_t_16py_stringsimjoin_8apply_rf_5utils_simfnptr_str __pyx_f_16py_str
  */
     case 2:
 
-    /* "py_stringsimjoin/apply_rf/utils.pyx":56
+    /* "py_stringsimjoin/apply_rf/utils.pyx":73
  *         return dice_str
  *     elif sim_type == 2: # JACCARD:
  *         return jaccard_str             # <<<<<<<<<<<<<<
@@ -1405,7 +1650,7 @@ static __pyx_t_16py_stringsimjoin_8apply_rf_5utils_simfnptr_str __pyx_f_16py_str
     __pyx_r = __pyx_f_16py_stringsimjoin_8apply_rf_13sim_functions_jaccard_str;
     goto __pyx_L0;
 
-    /* "py_stringsimjoin/apply_rf/utils.pyx":55
+    /* "py_stringsimjoin/apply_rf/utils.pyx":72
  *     elif sim_type == 1: # DICE
  *         return dice_str
  *     elif sim_type == 2: # JACCARD:             # <<<<<<<<<<<<<<
@@ -1416,8 +1661,8 @@ static __pyx_t_16py_stringsimjoin_8apply_rf_5utils_simfnptr_str __pyx_f_16py_str
     default: break;
   }
 
-  /* "py_stringsimjoin/apply_rf/utils.pyx":50
- *         return edit_distance
+  /* "py_stringsimjoin/apply_rf/utils.pyx":67
+ *         return length_diff
  * 
  * cdef simfnptr_str get_sim_function_str(const int sim_type) nogil:             # <<<<<<<<<<<<<<
  *     if sim_type == 0: # COSINE
@@ -1430,7 +1675,7 @@ static __pyx_t_16py_stringsimjoin_8apply_rf_5utils_simfnptr_str __pyx_f_16py_str
   return __pyx_r;
 }
 
-/* "py_stringsimjoin/apply_rf/utils.pyx":58
+/* "py_stringsimjoin/apply_rf/utils.pyx":75
  *         return jaccard_str
  * 
  * cdef bool eq_compare(double val1, double val2) nogil:             # <<<<<<<<<<<<<<
@@ -1441,7 +1686,7 @@ static __pyx_t_16py_stringsimjoin_8apply_rf_5utils_simfnptr_str __pyx_f_16py_str
 static bool __pyx_f_16py_stringsimjoin_8apply_rf_5utils_eq_compare(double __pyx_v_val1, double __pyx_v_val2) {
   bool __pyx_r;
 
-  /* "py_stringsimjoin/apply_rf/utils.pyx":59
+  /* "py_stringsimjoin/apply_rf/utils.pyx":76
  * 
  * cdef bool eq_compare(double val1, double val2) nogil:
  *     return val1 == val2             # <<<<<<<<<<<<<<
@@ -1451,7 +1696,7 @@ static bool __pyx_f_16py_stringsimjoin_8apply_rf_5utils_eq_compare(double __pyx_
   __pyx_r = (__pyx_v_val1 == __pyx_v_val2);
   goto __pyx_L0;
 
-  /* "py_stringsimjoin/apply_rf/utils.pyx":58
+  /* "py_stringsimjoin/apply_rf/utils.pyx":75
  *         return jaccard_str
  * 
  * cdef bool eq_compare(double val1, double val2) nogil:             # <<<<<<<<<<<<<<
@@ -1464,7 +1709,7 @@ static bool __pyx_f_16py_stringsimjoin_8apply_rf_5utils_eq_compare(double __pyx_
   return __pyx_r;
 }
 
-/* "py_stringsimjoin/apply_rf/utils.pyx":61
+/* "py_stringsimjoin/apply_rf/utils.pyx":78
  *     return val1 == val2
  * 
  * cdef bool le_compare(double val1, double val2) nogil:             # <<<<<<<<<<<<<<
@@ -1475,7 +1720,7 @@ static bool __pyx_f_16py_stringsimjoin_8apply_rf_5utils_eq_compare(double __pyx_
 static bool __pyx_f_16py_stringsimjoin_8apply_rf_5utils_le_compare(double __pyx_v_val1, double __pyx_v_val2) {
   bool __pyx_r;
 
-  /* "py_stringsimjoin/apply_rf/utils.pyx":62
+  /* "py_stringsimjoin/apply_rf/utils.pyx":79
  * 
  * cdef bool le_compare(double val1, double val2) nogil:
  *     return val1 <= val2             # <<<<<<<<<<<<<<
@@ -1485,7 +1730,7 @@ static bool __pyx_f_16py_stringsimjoin_8apply_rf_5utils_le_compare(double __pyx_
   __pyx_r = (__pyx_v_val1 <= __pyx_v_val2);
   goto __pyx_L0;
 
-  /* "py_stringsimjoin/apply_rf/utils.pyx":61
+  /* "py_stringsimjoin/apply_rf/utils.pyx":78
  *     return val1 == val2
  * 
  * cdef bool le_compare(double val1, double val2) nogil:             # <<<<<<<<<<<<<<
@@ -1498,7 +1743,7 @@ static bool __pyx_f_16py_stringsimjoin_8apply_rf_5utils_le_compare(double __pyx_
   return __pyx_r;
 }
 
-/* "py_stringsimjoin/apply_rf/utils.pyx":64
+/* "py_stringsimjoin/apply_rf/utils.pyx":81
  *     return val1 <= val2
  * 
  * cdef bool lt_compare(double val1, double val2) nogil:             # <<<<<<<<<<<<<<
@@ -1509,7 +1754,7 @@ static bool __pyx_f_16py_stringsimjoin_8apply_rf_5utils_le_compare(double __pyx_
 static bool __pyx_f_16py_stringsimjoin_8apply_rf_5utils_lt_compare(double __pyx_v_val1, double __pyx_v_val2) {
   bool __pyx_r;
 
-  /* "py_stringsimjoin/apply_rf/utils.pyx":65
+  /* "py_stringsimjoin/apply_rf/utils.pyx":82
  * 
  * cdef bool lt_compare(double val1, double val2) nogil:
  *     return val1 < val2             # <<<<<<<<<<<<<<
@@ -1519,7 +1764,7 @@ static bool __pyx_f_16py_stringsimjoin_8apply_rf_5utils_lt_compare(double __pyx_
   __pyx_r = (__pyx_v_val1 < __pyx_v_val2);
   goto __pyx_L0;
 
-  /* "py_stringsimjoin/apply_rf/utils.pyx":64
+  /* "py_stringsimjoin/apply_rf/utils.pyx":81
  *     return val1 <= val2
  * 
  * cdef bool lt_compare(double val1, double val2) nogil:             # <<<<<<<<<<<<<<
@@ -1532,7 +1777,7 @@ static bool __pyx_f_16py_stringsimjoin_8apply_rf_5utils_lt_compare(double __pyx_
   return __pyx_r;
 }
 
-/* "py_stringsimjoin/apply_rf/utils.pyx":67
+/* "py_stringsimjoin/apply_rf/utils.pyx":84
  *     return val1 < val2
  * 
  * cdef bool ge_compare(double val1, double val2) nogil:             # <<<<<<<<<<<<<<
@@ -1543,7 +1788,7 @@ static bool __pyx_f_16py_stringsimjoin_8apply_rf_5utils_lt_compare(double __pyx_
 static bool __pyx_f_16py_stringsimjoin_8apply_rf_5utils_ge_compare(double __pyx_v_val1, double __pyx_v_val2) {
   bool __pyx_r;
 
-  /* "py_stringsimjoin/apply_rf/utils.pyx":68
+  /* "py_stringsimjoin/apply_rf/utils.pyx":85
  * 
  * cdef bool ge_compare(double val1, double val2) nogil:
  *     return val1 >= val2             # <<<<<<<<<<<<<<
@@ -1553,7 +1798,7 @@ static bool __pyx_f_16py_stringsimjoin_8apply_rf_5utils_ge_compare(double __pyx_
   __pyx_r = (__pyx_v_val1 >= __pyx_v_val2);
   goto __pyx_L0;
 
-  /* "py_stringsimjoin/apply_rf/utils.pyx":67
+  /* "py_stringsimjoin/apply_rf/utils.pyx":84
  *     return val1 < val2
  * 
  * cdef bool ge_compare(double val1, double val2) nogil:             # <<<<<<<<<<<<<<
@@ -1566,7 +1811,7 @@ static bool __pyx_f_16py_stringsimjoin_8apply_rf_5utils_ge_compare(double __pyx_
   return __pyx_r;
 }
 
-/* "py_stringsimjoin/apply_rf/utils.pyx":70
+/* "py_stringsimjoin/apply_rf/utils.pyx":87
  *     return val1 >= val2
  * 
  * cdef bool gt_compare(double val1, double val2) nogil:             # <<<<<<<<<<<<<<
@@ -1577,7 +1822,7 @@ static bool __pyx_f_16py_stringsimjoin_8apply_rf_5utils_ge_compare(double __pyx_
 static bool __pyx_f_16py_stringsimjoin_8apply_rf_5utils_gt_compare(double __pyx_v_val1, double __pyx_v_val2) {
   bool __pyx_r;
 
-  /* "py_stringsimjoin/apply_rf/utils.pyx":71
+  /* "py_stringsimjoin/apply_rf/utils.pyx":88
  * 
  * cdef bool gt_compare(double val1, double val2) nogil:
  *     return val1 > val2             # <<<<<<<<<<<<<<
@@ -1587,7 +1832,7 @@ static bool __pyx_f_16py_stringsimjoin_8apply_rf_5utils_gt_compare(double __pyx_
   __pyx_r = (__pyx_v_val1 > __pyx_v_val2);
   goto __pyx_L0;
 
-  /* "py_stringsimjoin/apply_rf/utils.pyx":70
+  /* "py_stringsimjoin/apply_rf/utils.pyx":87
  *     return val1 >= val2
  * 
  * cdef bool gt_compare(double val1, double val2) nogil:             # <<<<<<<<<<<<<<
@@ -1600,7 +1845,7 @@ static bool __pyx_f_16py_stringsimjoin_8apply_rf_5utils_gt_compare(double __pyx_
   return __pyx_r;
 }
 
-/* "py_stringsimjoin/apply_rf/utils.pyx":73
+/* "py_stringsimjoin/apply_rf/utils.pyx":90
  *     return val1 > val2
  * 
  * cdef int get_comp_type(const string& comp_op):             # <<<<<<<<<<<<<<
@@ -1618,18 +1863,18 @@ static int __pyx_f_16py_stringsimjoin_8apply_rf_5utils_get_comp_type(std::string
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("get_comp_type", 0);
 
-  /* "py_stringsimjoin/apply_rf/utils.pyx":74
+  /* "py_stringsimjoin/apply_rf/utils.pyx":91
  * 
  * cdef int get_comp_type(const string& comp_op):
  *     if comp_op.compare('<') == 0:             # <<<<<<<<<<<<<<
  *         return 0
  *     elif comp_op.compare('<=') == 0:
  */
-  __pyx_t_1 = __pyx_convert_string_from_py_std__in_string(__pyx_kp_b_); if (unlikely(PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 74; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = __pyx_convert_string_from_py_std__in_string(__pyx_kp_b_); if (unlikely(PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 91; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_t_2 = ((__pyx_v_comp_op.compare(__pyx_t_1) == 0) != 0);
   if (__pyx_t_2) {
 
-    /* "py_stringsimjoin/apply_rf/utils.pyx":75
+    /* "py_stringsimjoin/apply_rf/utils.pyx":92
  * cdef int get_comp_type(const string& comp_op):
  *     if comp_op.compare('<') == 0:
  *         return 0             # <<<<<<<<<<<<<<
@@ -1639,7 +1884,7 @@ static int __pyx_f_16py_stringsimjoin_8apply_rf_5utils_get_comp_type(std::string
     __pyx_r = 0;
     goto __pyx_L0;
 
-    /* "py_stringsimjoin/apply_rf/utils.pyx":74
+    /* "py_stringsimjoin/apply_rf/utils.pyx":91
  * 
  * cdef int get_comp_type(const string& comp_op):
  *     if comp_op.compare('<') == 0:             # <<<<<<<<<<<<<<
@@ -1648,18 +1893,18 @@ static int __pyx_f_16py_stringsimjoin_8apply_rf_5utils_get_comp_type(std::string
  */
   }
 
-  /* "py_stringsimjoin/apply_rf/utils.pyx":76
+  /* "py_stringsimjoin/apply_rf/utils.pyx":93
  *     if comp_op.compare('<') == 0:
  *         return 0
  *     elif comp_op.compare('<=') == 0:             # <<<<<<<<<<<<<<
  *         return 1
  *     elif comp_op.compare('>') == 0:
  */
-  __pyx_t_1 = __pyx_convert_string_from_py_std__in_string(__pyx_kp_b__2); if (unlikely(PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 76; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = __pyx_convert_string_from_py_std__in_string(__pyx_kp_b__2); if (unlikely(PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 93; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_t_2 = ((__pyx_v_comp_op.compare(__pyx_t_1) == 0) != 0);
   if (__pyx_t_2) {
 
-    /* "py_stringsimjoin/apply_rf/utils.pyx":77
+    /* "py_stringsimjoin/apply_rf/utils.pyx":94
  *         return 0
  *     elif comp_op.compare('<=') == 0:
  *         return 1             # <<<<<<<<<<<<<<
@@ -1669,7 +1914,7 @@ static int __pyx_f_16py_stringsimjoin_8apply_rf_5utils_get_comp_type(std::string
     __pyx_r = 1;
     goto __pyx_L0;
 
-    /* "py_stringsimjoin/apply_rf/utils.pyx":76
+    /* "py_stringsimjoin/apply_rf/utils.pyx":93
  *     if comp_op.compare('<') == 0:
  *         return 0
  *     elif comp_op.compare('<=') == 0:             # <<<<<<<<<<<<<<
@@ -1678,18 +1923,18 @@ static int __pyx_f_16py_stringsimjoin_8apply_rf_5utils_get_comp_type(std::string
  */
   }
 
-  /* "py_stringsimjoin/apply_rf/utils.pyx":78
+  /* "py_stringsimjoin/apply_rf/utils.pyx":95
  *     elif comp_op.compare('<=') == 0:
  *         return 1
  *     elif comp_op.compare('>') == 0:             # <<<<<<<<<<<<<<
  *         return 2
  *     elif comp_op.compare('>=') == 0:
  */
-  __pyx_t_1 = __pyx_convert_string_from_py_std__in_string(__pyx_kp_b__3); if (unlikely(PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 78; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = __pyx_convert_string_from_py_std__in_string(__pyx_kp_b__3); if (unlikely(PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 95; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_t_2 = ((__pyx_v_comp_op.compare(__pyx_t_1) == 0) != 0);
   if (__pyx_t_2) {
 
-    /* "py_stringsimjoin/apply_rf/utils.pyx":79
+    /* "py_stringsimjoin/apply_rf/utils.pyx":96
  *         return 1
  *     elif comp_op.compare('>') == 0:
  *         return 2             # <<<<<<<<<<<<<<
@@ -1699,7 +1944,7 @@ static int __pyx_f_16py_stringsimjoin_8apply_rf_5utils_get_comp_type(std::string
     __pyx_r = 2;
     goto __pyx_L0;
 
-    /* "py_stringsimjoin/apply_rf/utils.pyx":78
+    /* "py_stringsimjoin/apply_rf/utils.pyx":95
  *     elif comp_op.compare('<=') == 0:
  *         return 1
  *     elif comp_op.compare('>') == 0:             # <<<<<<<<<<<<<<
@@ -1708,18 +1953,18 @@ static int __pyx_f_16py_stringsimjoin_8apply_rf_5utils_get_comp_type(std::string
  */
   }
 
-  /* "py_stringsimjoin/apply_rf/utils.pyx":80
+  /* "py_stringsimjoin/apply_rf/utils.pyx":97
  *     elif comp_op.compare('>') == 0:
  *         return 2
  *     elif comp_op.compare('>=') == 0:             # <<<<<<<<<<<<<<
  *         return 3
  * 
  */
-  __pyx_t_1 = __pyx_convert_string_from_py_std__in_string(__pyx_kp_b__4); if (unlikely(PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 80; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = __pyx_convert_string_from_py_std__in_string(__pyx_kp_b__4); if (unlikely(PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 97; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_t_2 = ((__pyx_v_comp_op.compare(__pyx_t_1) == 0) != 0);
   if (__pyx_t_2) {
 
-    /* "py_stringsimjoin/apply_rf/utils.pyx":81
+    /* "py_stringsimjoin/apply_rf/utils.pyx":98
  *         return 2
  *     elif comp_op.compare('>=') == 0:
  *         return 3             # <<<<<<<<<<<<<<
@@ -1729,7 +1974,7 @@ static int __pyx_f_16py_stringsimjoin_8apply_rf_5utils_get_comp_type(std::string
     __pyx_r = 3;
     goto __pyx_L0;
 
-    /* "py_stringsimjoin/apply_rf/utils.pyx":80
+    /* "py_stringsimjoin/apply_rf/utils.pyx":97
  *     elif comp_op.compare('>') == 0:
  *         return 2
  *     elif comp_op.compare('>=') == 0:             # <<<<<<<<<<<<<<
@@ -1738,7 +1983,7 @@ static int __pyx_f_16py_stringsimjoin_8apply_rf_5utils_get_comp_type(std::string
  */
   }
 
-  /* "py_stringsimjoin/apply_rf/utils.pyx":73
+  /* "py_stringsimjoin/apply_rf/utils.pyx":90
  *     return val1 > val2
  * 
  * cdef int get_comp_type(const string& comp_op):             # <<<<<<<<<<<<<<
@@ -1757,7 +2002,7 @@ static int __pyx_f_16py_stringsimjoin_8apply_rf_5utils_get_comp_type(std::string
   return __pyx_r;
 }
 
-/* "py_stringsimjoin/apply_rf/utils.pyx":83
+/* "py_stringsimjoin/apply_rf/utils.pyx":100
  *         return 3
  * 
  * cdef compfnptr get_comparison_function(const int comp_type) nogil:             # <<<<<<<<<<<<<<
@@ -1768,7 +2013,7 @@ static int __pyx_f_16py_stringsimjoin_8apply_rf_5utils_get_comp_type(std::string
 static __pyx_t_16py_stringsimjoin_8apply_rf_5utils_compfnptr __pyx_f_16py_stringsimjoin_8apply_rf_5utils_get_comparison_function(int const __pyx_v_comp_type) {
   __pyx_t_16py_stringsimjoin_8apply_rf_5utils_compfnptr __pyx_r;
 
-  /* "py_stringsimjoin/apply_rf/utils.pyx":84
+  /* "py_stringsimjoin/apply_rf/utils.pyx":101
  * 
  * cdef compfnptr get_comparison_function(const int comp_type) nogil:
  *     if comp_type == 0:             # <<<<<<<<<<<<<<
@@ -1778,7 +2023,7 @@ static __pyx_t_16py_stringsimjoin_8apply_rf_5utils_compfnptr __pyx_f_16py_string
   switch (__pyx_v_comp_type) {
     case 0:
 
-    /* "py_stringsimjoin/apply_rf/utils.pyx":85
+    /* "py_stringsimjoin/apply_rf/utils.pyx":102
  * cdef compfnptr get_comparison_function(const int comp_type) nogil:
  *     if comp_type == 0:
  *         return lt_compare             # <<<<<<<<<<<<<<
@@ -1788,7 +2033,7 @@ static __pyx_t_16py_stringsimjoin_8apply_rf_5utils_compfnptr __pyx_f_16py_string
     __pyx_r = __pyx_f_16py_stringsimjoin_8apply_rf_5utils_lt_compare;
     goto __pyx_L0;
 
-    /* "py_stringsimjoin/apply_rf/utils.pyx":84
+    /* "py_stringsimjoin/apply_rf/utils.pyx":101
  * 
  * cdef compfnptr get_comparison_function(const int comp_type) nogil:
  *     if comp_type == 0:             # <<<<<<<<<<<<<<
@@ -1797,7 +2042,7 @@ static __pyx_t_16py_stringsimjoin_8apply_rf_5utils_compfnptr __pyx_f_16py_string
  */
     break;
 
-    /* "py_stringsimjoin/apply_rf/utils.pyx":86
+    /* "py_stringsimjoin/apply_rf/utils.pyx":103
  *     if comp_type == 0:
  *         return lt_compare
  *     elif comp_type == 1:             # <<<<<<<<<<<<<<
@@ -1806,7 +2051,7 @@ static __pyx_t_16py_stringsimjoin_8apply_rf_5utils_compfnptr __pyx_f_16py_string
  */
     case 1:
 
-    /* "py_stringsimjoin/apply_rf/utils.pyx":87
+    /* "py_stringsimjoin/apply_rf/utils.pyx":104
  *         return lt_compare
  *     elif comp_type == 1:
  *         return le_compare             # <<<<<<<<<<<<<<
@@ -1816,7 +2061,7 @@ static __pyx_t_16py_stringsimjoin_8apply_rf_5utils_compfnptr __pyx_f_16py_string
     __pyx_r = __pyx_f_16py_stringsimjoin_8apply_rf_5utils_le_compare;
     goto __pyx_L0;
 
-    /* "py_stringsimjoin/apply_rf/utils.pyx":86
+    /* "py_stringsimjoin/apply_rf/utils.pyx":103
  *     if comp_type == 0:
  *         return lt_compare
  *     elif comp_type == 1:             # <<<<<<<<<<<<<<
@@ -1825,7 +2070,7 @@ static __pyx_t_16py_stringsimjoin_8apply_rf_5utils_compfnptr __pyx_f_16py_string
  */
     break;
 
-    /* "py_stringsimjoin/apply_rf/utils.pyx":88
+    /* "py_stringsimjoin/apply_rf/utils.pyx":105
  *     elif comp_type == 1:
  *         return le_compare
  *     elif comp_type == 2:             # <<<<<<<<<<<<<<
@@ -1834,7 +2079,7 @@ static __pyx_t_16py_stringsimjoin_8apply_rf_5utils_compfnptr __pyx_f_16py_string
  */
     case 2:
 
-    /* "py_stringsimjoin/apply_rf/utils.pyx":89
+    /* "py_stringsimjoin/apply_rf/utils.pyx":106
  *         return le_compare
  *     elif comp_type == 2:
  *         return gt_compare             # <<<<<<<<<<<<<<
@@ -1844,7 +2089,7 @@ static __pyx_t_16py_stringsimjoin_8apply_rf_5utils_compfnptr __pyx_f_16py_string
     __pyx_r = __pyx_f_16py_stringsimjoin_8apply_rf_5utils_gt_compare;
     goto __pyx_L0;
 
-    /* "py_stringsimjoin/apply_rf/utils.pyx":88
+    /* "py_stringsimjoin/apply_rf/utils.pyx":105
  *     elif comp_type == 1:
  *         return le_compare
  *     elif comp_type == 2:             # <<<<<<<<<<<<<<
@@ -1853,7 +2098,7 @@ static __pyx_t_16py_stringsimjoin_8apply_rf_5utils_compfnptr __pyx_f_16py_string
  */
     break;
 
-    /* "py_stringsimjoin/apply_rf/utils.pyx":90
+    /* "py_stringsimjoin/apply_rf/utils.pyx":107
  *     elif comp_type == 2:
  *         return gt_compare
  *     elif comp_type == 3:             # <<<<<<<<<<<<<<
@@ -1862,7 +2107,7 @@ static __pyx_t_16py_stringsimjoin_8apply_rf_5utils_compfnptr __pyx_f_16py_string
  */
     case 3:
 
-    /* "py_stringsimjoin/apply_rf/utils.pyx":91
+    /* "py_stringsimjoin/apply_rf/utils.pyx":108
  *         return gt_compare
  *     elif comp_type == 3:
  *         return ge_compare             # <<<<<<<<<<<<<<
@@ -1872,7 +2117,7 @@ static __pyx_t_16py_stringsimjoin_8apply_rf_5utils_compfnptr __pyx_f_16py_string
     __pyx_r = __pyx_f_16py_stringsimjoin_8apply_rf_5utils_ge_compare;
     goto __pyx_L0;
 
-    /* "py_stringsimjoin/apply_rf/utils.pyx":90
+    /* "py_stringsimjoin/apply_rf/utils.pyx":107
  *     elif comp_type == 2:
  *         return gt_compare
  *     elif comp_type == 3:             # <<<<<<<<<<<<<<
@@ -1883,7 +2128,7 @@ static __pyx_t_16py_stringsimjoin_8apply_rf_5utils_compfnptr __pyx_f_16py_string
     default: break;
   }
 
-  /* "py_stringsimjoin/apply_rf/utils.pyx":83
+  /* "py_stringsimjoin/apply_rf/utils.pyx":100
  *         return 3
  * 
  * cdef compfnptr get_comparison_function(const int comp_type) nogil:             # <<<<<<<<<<<<<<
@@ -1897,7 +2142,7 @@ static __pyx_t_16py_stringsimjoin_8apply_rf_5utils_compfnptr __pyx_f_16py_string
   return __pyx_r;
 }
 
-/* "py_stringsimjoin/apply_rf/utils.pyx":93
+/* "py_stringsimjoin/apply_rf/utils.pyx":110
  *         return ge_compare
  * 
  * cdef int int_min(int a, int b) nogil:             # <<<<<<<<<<<<<<
@@ -1909,7 +2154,7 @@ static int __pyx_f_16py_stringsimjoin_8apply_rf_5utils_int_min(int __pyx_v_a, in
   int __pyx_r;
   int __pyx_t_1;
 
-  /* "py_stringsimjoin/apply_rf/utils.pyx":94
+  /* "py_stringsimjoin/apply_rf/utils.pyx":111
  * 
  * cdef int int_min(int a, int b) nogil:
  *     return a if a <= b else b             # <<<<<<<<<<<<<<
@@ -1924,7 +2169,7 @@ static int __pyx_f_16py_stringsimjoin_8apply_rf_5utils_int_min(int __pyx_v_a, in
   __pyx_r = __pyx_t_1;
   goto __pyx_L0;
 
-  /* "py_stringsimjoin/apply_rf/utils.pyx":93
+  /* "py_stringsimjoin/apply_rf/utils.pyx":110
  *         return ge_compare
  * 
  * cdef int int_min(int a, int b) nogil:             # <<<<<<<<<<<<<<
@@ -1937,7 +2182,7 @@ static int __pyx_f_16py_stringsimjoin_8apply_rf_5utils_int_min(int __pyx_v_a, in
   return __pyx_r;
 }
 
-/* "py_stringsimjoin/apply_rf/utils.pyx":96
+/* "py_stringsimjoin/apply_rf/utils.pyx":113
  *     return a if a <= b else b
  * 
  * cdef int int_max(int a, int b) nogil:             # <<<<<<<<<<<<<<
@@ -1949,7 +2194,7 @@ static int __pyx_f_16py_stringsimjoin_8apply_rf_5utils_int_max(int __pyx_v_a, in
   int __pyx_r;
   int __pyx_t_1;
 
-  /* "py_stringsimjoin/apply_rf/utils.pyx":97
+  /* "py_stringsimjoin/apply_rf/utils.pyx":114
  * 
  * cdef int int_max(int a, int b) nogil:
  *     return a if a >= b else b             # <<<<<<<<<<<<<<
@@ -1964,7 +2209,7 @@ static int __pyx_f_16py_stringsimjoin_8apply_rf_5utils_int_max(int __pyx_v_a, in
   __pyx_r = __pyx_t_1;
   goto __pyx_L0;
 
-  /* "py_stringsimjoin/apply_rf/utils.pyx":96
+  /* "py_stringsimjoin/apply_rf/utils.pyx":113
  *     return a if a <= b else b
  * 
  * cdef int int_max(int a, int b) nogil:             # <<<<<<<<<<<<<<
@@ -1977,7 +2222,7 @@ static int __pyx_f_16py_stringsimjoin_8apply_rf_5utils_int_max(int __pyx_v_a, in
   return __pyx_r;
 }
 
-/* "py_stringsimjoin/apply_rf/utils.pyx":99
+/* "py_stringsimjoin/apply_rf/utils.pyx":116
  *     return a if a >= b else b
  * 
  * cdef void build_inverted_index(vector[vector[int]]& token_vectors, InvertedIndex &inv_index):             # <<<<<<<<<<<<<<
@@ -2003,7 +2248,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_5utils_build_inverted_index(std
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("build_inverted_index", 0);
 
-  /* "py_stringsimjoin/apply_rf/utils.pyx":101
+  /* "py_stringsimjoin/apply_rf/utils.pyx":118
  * cdef void build_inverted_index(vector[vector[int]]& token_vectors, InvertedIndex &inv_index):
  *     cdef vector[int] tokens, size_vector
  *     cdef int i, j, m, n=token_vectors.size()             # <<<<<<<<<<<<<<
@@ -2012,7 +2257,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_5utils_build_inverted_index(std
  */
   __pyx_v_n = __pyx_v_token_vectors.size();
 
-  /* "py_stringsimjoin/apply_rf/utils.pyx":103
+  /* "py_stringsimjoin/apply_rf/utils.pyx":120
  *     cdef int i, j, m, n=token_vectors.size()
  *     cdef omap[int, vector[int]] index
  *     for i in range(n):             # <<<<<<<<<<<<<<
@@ -2023,7 +2268,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_5utils_build_inverted_index(std
   for (__pyx_t_2 = 0; __pyx_t_2 < __pyx_t_1; __pyx_t_2+=1) {
     __pyx_v_i = __pyx_t_2;
 
-    /* "py_stringsimjoin/apply_rf/utils.pyx":104
+    /* "py_stringsimjoin/apply_rf/utils.pyx":121
  *     cdef omap[int, vector[int]] index
  *     for i in range(n):
  *         tokens = token_vectors[i]             # <<<<<<<<<<<<<<
@@ -2032,7 +2277,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_5utils_build_inverted_index(std
  */
     __pyx_v_tokens = (__pyx_v_token_vectors[__pyx_v_i]);
 
-    /* "py_stringsimjoin/apply_rf/utils.pyx":105
+    /* "py_stringsimjoin/apply_rf/utils.pyx":122
  *     for i in range(n):
  *         tokens = token_vectors[i]
  *         m = tokens.size()             # <<<<<<<<<<<<<<
@@ -2041,7 +2286,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_5utils_build_inverted_index(std
  */
     __pyx_v_m = __pyx_v_tokens.size();
 
-    /* "py_stringsimjoin/apply_rf/utils.pyx":106
+    /* "py_stringsimjoin/apply_rf/utils.pyx":123
  *         tokens = token_vectors[i]
  *         m = tokens.size()
  *         size_vector.push_back(m)             # <<<<<<<<<<<<<<
@@ -2052,10 +2297,10 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_5utils_build_inverted_index(std
       __pyx_v_size_vector.push_back(__pyx_v_m);
     } catch(...) {
       __Pyx_CppExn2PyErr();
-      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 106; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 123; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     }
 
-    /* "py_stringsimjoin/apply_rf/utils.pyx":107
+    /* "py_stringsimjoin/apply_rf/utils.pyx":124
  *         m = tokens.size()
  *         size_vector.push_back(m)
  *         for j in range(m):             # <<<<<<<<<<<<<<
@@ -2066,7 +2311,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_5utils_build_inverted_index(std
     for (__pyx_t_4 = 0; __pyx_t_4 < __pyx_t_3; __pyx_t_4+=1) {
       __pyx_v_j = __pyx_t_4;
 
-      /* "py_stringsimjoin/apply_rf/utils.pyx":108
+      /* "py_stringsimjoin/apply_rf/utils.pyx":125
  *         size_vector.push_back(m)
  *         for j in range(m):
  *             index[tokens[j]].push_back(i)             # <<<<<<<<<<<<<<
@@ -2077,12 +2322,12 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_5utils_build_inverted_index(std
         (__pyx_v_index[(__pyx_v_tokens[__pyx_v_j])]).push_back(__pyx_v_i);
       } catch(...) {
         __Pyx_CppExn2PyErr();
-        {__pyx_filename = __pyx_f[0]; __pyx_lineno = 108; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        {__pyx_filename = __pyx_f[0]; __pyx_lineno = 125; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       }
     }
   }
 
-  /* "py_stringsimjoin/apply_rf/utils.pyx":109
+  /* "py_stringsimjoin/apply_rf/utils.pyx":126
  *         for j in range(m):
  *             index[tokens[j]].push_back(i)
  *     inv_index.set_fields(index, size_vector)             # <<<<<<<<<<<<<<
@@ -2091,7 +2336,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_5utils_build_inverted_index(std
  */
   __pyx_v_inv_index.set_fields(__pyx_v_index, __pyx_v_size_vector);
 
-  /* "py_stringsimjoin/apply_rf/utils.pyx":99
+  /* "py_stringsimjoin/apply_rf/utils.pyx":116
  *     return a if a >= b else b
  * 
  * cdef void build_inverted_index(vector[vector[int]]& token_vectors, InvertedIndex &inv_index):             # <<<<<<<<<<<<<<
@@ -2107,7 +2352,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_5utils_build_inverted_index(std
   __Pyx_RefNannyFinishContext();
 }
 
-/* "py_stringsimjoin/apply_rf/utils.pyx":111
+/* "py_stringsimjoin/apply_rf/utils.pyx":128
  *     inv_index.set_fields(index, size_vector)
  *  ##
  * cdef void build_prefix_index(vector[vector[int]]& token_vectors, int qval, double threshold, InvertedIndex &inv_index):             # <<<<<<<<<<<<<<
@@ -2134,7 +2379,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_5utils_build_prefix_index(std::
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("build_prefix_index", 0);
 
-  /* "py_stringsimjoin/apply_rf/utils.pyx":113
+  /* "py_stringsimjoin/apply_rf/utils.pyx":130
  * cdef void build_prefix_index(vector[vector[int]]& token_vectors, int qval, double threshold, InvertedIndex &inv_index):
  *     cdef vector[int] tokens, size_vector
  *     cdef int i, j, m, n=token_vectors.size(), prefix_length             # <<<<<<<<<<<<<<
@@ -2143,7 +2388,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_5utils_build_prefix_index(std::
  */
   __pyx_v_n = __pyx_v_token_vectors.size();
 
-  /* "py_stringsimjoin/apply_rf/utils.pyx":115
+  /* "py_stringsimjoin/apply_rf/utils.pyx":132
  *     cdef int i, j, m, n=token_vectors.size(), prefix_length
  *     cdef omap[int, vector[int]] index
  *     for i in range(n):             # <<<<<<<<<<<<<<
@@ -2154,7 +2399,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_5utils_build_prefix_index(std::
   for (__pyx_t_2 = 0; __pyx_t_2 < __pyx_t_1; __pyx_t_2+=1) {
     __pyx_v_i = __pyx_t_2;
 
-    /* "py_stringsimjoin/apply_rf/utils.pyx":116
+    /* "py_stringsimjoin/apply_rf/utils.pyx":133
  *     cdef omap[int, vector[int]] index
  *     for i in range(n):
  *         tokens = token_vectors[i]             # <<<<<<<<<<<<<<
@@ -2163,7 +2408,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_5utils_build_prefix_index(std::
  */
     __pyx_v_tokens = (__pyx_v_token_vectors[__pyx_v_i]);
 
-    /* "py_stringsimjoin/apply_rf/utils.pyx":117
+    /* "py_stringsimjoin/apply_rf/utils.pyx":134
  *     for i in range(n):
  *         tokens = token_vectors[i]
  *         m = tokens.size()             # <<<<<<<<<<<<<<
@@ -2172,7 +2417,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_5utils_build_prefix_index(std::
  */
     __pyx_v_m = __pyx_v_tokens.size();
 
-    /* "py_stringsimjoin/apply_rf/utils.pyx":118
+    /* "py_stringsimjoin/apply_rf/utils.pyx":135
  *         tokens = token_vectors[i]
  *         m = tokens.size()
  *         size_vector.push_back(m)             # <<<<<<<<<<<<<<
@@ -2183,10 +2428,10 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_5utils_build_prefix_index(std::
       __pyx_v_size_vector.push_back(__pyx_v_m);
     } catch(...) {
       __Pyx_CppExn2PyErr();
-      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 118; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 135; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     }
 
-    /* "py_stringsimjoin/apply_rf/utils.pyx":119
+    /* "py_stringsimjoin/apply_rf/utils.pyx":136
  *         m = tokens.size()
  *         size_vector.push_back(m)
  *         prefix_length = int_min(<int>(qval * threshold + 1), m)             # <<<<<<<<<<<<<<
@@ -2195,7 +2440,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_5utils_build_prefix_index(std::
  */
     __pyx_v_prefix_length = __pyx_f_16py_stringsimjoin_8apply_rf_5utils_int_min(((int)((__pyx_v_qval * __pyx_v_threshold) + 1.0)), __pyx_v_m);
 
-    /* "py_stringsimjoin/apply_rf/utils.pyx":121
+    /* "py_stringsimjoin/apply_rf/utils.pyx":138
  *         prefix_length = int_min(<int>(qval * threshold + 1), m)
  * 
  *         for j in range(prefix_length):             # <<<<<<<<<<<<<<
@@ -2206,7 +2451,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_5utils_build_prefix_index(std::
     for (__pyx_t_4 = 0; __pyx_t_4 < __pyx_t_3; __pyx_t_4+=1) {
       __pyx_v_j = __pyx_t_4;
 
-      /* "py_stringsimjoin/apply_rf/utils.pyx":122
+      /* "py_stringsimjoin/apply_rf/utils.pyx":139
  * 
  *         for j in range(prefix_length):
  *             index[tokens[j]].push_back(i)             # <<<<<<<<<<<<<<
@@ -2216,19 +2461,19 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_5utils_build_prefix_index(std::
         (__pyx_v_index[(__pyx_v_tokens[__pyx_v_j])]).push_back(__pyx_v_i);
       } catch(...) {
         __Pyx_CppExn2PyErr();
-        {__pyx_filename = __pyx_f[0]; __pyx_lineno = 122; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        {__pyx_filename = __pyx_f[0]; __pyx_lineno = 139; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       }
     }
   }
 
-  /* "py_stringsimjoin/apply_rf/utils.pyx":123
+  /* "py_stringsimjoin/apply_rf/utils.pyx":140
  *         for j in range(prefix_length):
  *             index[tokens[j]].push_back(i)
  *     inv_index.set_fields(index, size_vector)             # <<<<<<<<<<<<<<
  */
   __pyx_v_inv_index.set_fields(__pyx_v_index, __pyx_v_size_vector);
 
-  /* "py_stringsimjoin/apply_rf/utils.pyx":111
+  /* "py_stringsimjoin/apply_rf/utils.pyx":128
  *     inv_index.set_fields(index, size_vector)
  *  ##
  * cdef void build_prefix_index(vector[vector[int]]& token_vectors, int qval, double threshold, InvertedIndex &inv_index):             # <<<<<<<<<<<<<<
@@ -2327,8 +2572,12 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_b_DICE, __pyx_k_DICE, sizeof(__pyx_k_DICE), 0, 0, 0, 1},
   {&__pyx_n_b_EDIT_DISTANCE, __pyx_k_EDIT_DISTANCE, sizeof(__pyx_k_EDIT_DISTANCE), 0, 0, 0, 1},
   {&__pyx_n_b_JACCARD, __pyx_k_JACCARD, sizeof(__pyx_k_JACCARD), 0, 0, 0, 1},
+  {&__pyx_n_b_LEFT_LENGTH, __pyx_k_LEFT_LENGTH, sizeof(__pyx_k_LEFT_LENGTH), 0, 0, 0, 1},
+  {&__pyx_n_b_LENGTH_DIFF, __pyx_k_LENGTH_DIFF, sizeof(__pyx_k_LENGTH_DIFF), 0, 0, 0, 1},
+  {&__pyx_n_b_LENGTH_SUM, __pyx_k_LENGTH_SUM, sizeof(__pyx_k_LENGTH_SUM), 0, 0, 0, 1},
   {&__pyx_n_b_OVERLAP, __pyx_k_OVERLAP, sizeof(__pyx_k_OVERLAP), 0, 0, 0, 1},
   {&__pyx_n_b_OVERLAP_COEFFICIENT, __pyx_k_OVERLAP_COEFFICIENT, sizeof(__pyx_k_OVERLAP_COEFFICIENT), 0, 0, 0, 1},
+  {&__pyx_n_b_RIGHT_LENGTH, __pyx_k_RIGHT_LENGTH, sizeof(__pyx_k_RIGHT_LENGTH), 0, 0, 0, 1},
   {&__pyx_kp_b__2, __pyx_k__2, sizeof(__pyx_k__2), 0, 0, 0, 0},
   {&__pyx_kp_b__3, __pyx_k__3, sizeof(__pyx_k__3), 0, 0, 0, 0},
   {&__pyx_kp_b__4, __pyx_k__4, sizeof(__pyx_k__4), 0, 0, 0, 0},
@@ -2338,7 +2587,7 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {0, 0, 0, 0, 0, 0, 0}
 };
 static int __Pyx_InitCachedBuiltins(void) {
-  __pyx_builtin_range = __Pyx_GetBuiltinName(__pyx_n_s_range); if (!__pyx_builtin_range) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 103; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_builtin_range = __Pyx_GetBuiltinName(__pyx_n_s_range); if (!__pyx_builtin_range) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 120; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   return 0;
   __pyx_L1_error:;
   return -1;
@@ -2469,6 +2718,10 @@ PyMODINIT_FUNC PyInit_utils(void)
   if (__Pyx_ImportFunction(__pyx_t_1, "jaccard_str", (void (**)(void))&__pyx_f_16py_stringsimjoin_8apply_rf_13sim_functions_jaccard_str, "double (std::vector<std::string>  &, std::vector<std::string>  &)") < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 2; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   if (__Pyx_ImportFunction(__pyx_t_1, "dice_str", (void (**)(void))&__pyx_f_16py_stringsimjoin_8apply_rf_13sim_functions_dice_str, "double (std::vector<std::string>  &, std::vector<std::string>  &)") < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 2; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   if (__Pyx_ImportFunction(__pyx_t_1, "cosine_str", (void (**)(void))&__pyx_f_16py_stringsimjoin_8apply_rf_13sim_functions_cosine_str, "double (std::vector<std::string>  &, std::vector<std::string>  &)") < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 2; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (__Pyx_ImportFunction(__pyx_t_1, "left_length", (void (**)(void))&__pyx_f_16py_stringsimjoin_8apply_rf_13sim_functions_left_length, "double (std::string const &, std::string const &)") < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 2; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (__Pyx_ImportFunction(__pyx_t_1, "right_length", (void (**)(void))&__pyx_f_16py_stringsimjoin_8apply_rf_13sim_functions_right_length, "double (std::string const &, std::string const &)") < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 2; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (__Pyx_ImportFunction(__pyx_t_1, "length_sum", (void (**)(void))&__pyx_f_16py_stringsimjoin_8apply_rf_13sim_functions_length_sum, "double (std::string const &, std::string const &)") < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 2; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (__Pyx_ImportFunction(__pyx_t_1, "length_diff", (void (**)(void))&__pyx_f_16py_stringsimjoin_8apply_rf_13sim_functions_length_diff, "double (std::string const &, std::string const &)") < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 2; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   Py_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   /*--- Execution code ---*/
   #if defined(__Pyx_Generator_USED) || defined(__Pyx_Coroutine_USED)

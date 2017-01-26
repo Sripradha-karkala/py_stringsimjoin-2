@@ -5,7 +5,8 @@ from libcpp.string cimport string
 from libcpp.map cimport map as omap                                             
 
 from py_stringsimjoin.apply_rf.sim_functions cimport cosine, dice, jaccard, \
-  overlap, overlap_coefficient, edit_distance, cosine_str, dice_str, jaccard_str      
+  overlap, overlap_coefficient, edit_distance, cosine_str, dice_str, jaccard_str, \
+  left_length, right_length, length_sum, length_diff     
 from py_stringsimjoin.apply_rf.inverted_index cimport InvertedIndex             
  
 
@@ -21,7 +22,15 @@ cdef int get_sim_type(const string& sim_measure_type):
     elif sim_measure_type.compare('OVERLAP_COEFFICIENT') == 0:
         return 4
     elif sim_measure_type.compare('EDIT_DISTANCE') == 0:
-        return 5                                                                
+        return 5
+    elif sim_measure_type.compare('LEFT_LENGTH') == 0:                        
+        return 6
+    elif sim_measure_type.compare('RIGHT_LENGTH') == 0:                          
+        return 7   
+    elif sim_measure_type.compare('LENGTH_SUM') == 0:                          
+        return 8                                                                   
+    elif sim_measure_type.compare('LENGTH_DIFF') == 0:                           
+        return 9
                                                                                 
 cdef simfnptr get_sim_function(const int sim_type) nogil:                       
     if sim_type == 0: # COSINE                                                  
@@ -45,7 +54,15 @@ cdef token_simfnptr get_token_sim_function(const int sim_type) nogil:
 
 cdef str_simfnptr get_str_sim_function(const int sim_type) nogil:     
     if sim_type == 5: # EDIT_DISTANCE                                                  
-        return edit_distance                                  
+        return edit_distance
+    elif sim_type == 6:
+        return left_length
+    elif sim_type == 7:
+        return right_length
+    elif sim_type == 8:
+        return length_sum
+    elif sim_type == 9:
+        return length_diff                                  
 
 cdef simfnptr_str get_sim_function_str(const int sim_type) nogil:                       
     if sim_type == 0: # COSINE                                                  

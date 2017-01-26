@@ -1,6 +1,6 @@
 
 from libc.math cimport sqrt
-from libc.stdlib cimport malloc, free
+from libc.stdlib cimport malloc, free, abs
 from libcpp.vector cimport vector             
 from libcpp.set cimport set as oset                                             
                                   
@@ -104,6 +104,18 @@ cdef double overlap_coefficient(const vector[int]& tokens1, const vector[int]& t
         else:                                                                   
             j += 1                                                              
     return (overlap * 1.0) / <double>int_min(size1, size2)          
+
+cdef double left_length(const string& str1, const string& str2) nogil:
+    return <double>str1.length()
+
+cdef double right_length(const string& str1, const string& str2) nogil:          
+    return <double>str2.length()   
+
+cdef double length_sum(const string& str1, const string& str2) nogil:          
+    return <double>(str1.length() + str2.length())  
+
+cdef double length_diff(const string& str1, const string& str2) nogil:           
+    return <double>abs(str1.length() - str2.length())   
 
 cdef double edit_distance(const string& str1, const string& str2) nogil:
     cdef int len_str1 = str1.length(), len_str2 = str2.length()

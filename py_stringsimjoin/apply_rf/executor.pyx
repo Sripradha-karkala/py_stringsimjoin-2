@@ -63,7 +63,7 @@ def test_execute_rf(rf, feature_table, l1, l2, path1, attr1, path2, attr2, worki
 
     print 'num join nodes : ', global_plan.children.size()
     print 'tokenizing strings'                                                  
-    tokenize_strings(trees, lstrings, rstrings, working_dir)                    
+#    tokenize_strings(trees, lstrings, rstrings, working_dir)                    
     print 'finished tokenizing. executing plan'                                 
 
     execute_plan(global_plan, trees1, lstrings, rstrings, working_dir, n_jobs)  
@@ -844,10 +844,11 @@ def perform_join(path1, attr1, path2, attr2, tok_type, sim_type, threshold, cons
         load_strings(path2, attr2, rstrings)                         
         output = ed_join(ltokens, rtokens, 2, threshold, lstrings, rstrings)
    
-    output_pairs = {}
-    for entry in output.first:
-        output_pairs[str(entry.first) + ',' + str(entry.second)] = True
-    return output_pairs
+    output_pairs = []
+    for i in xrange(output.first.size()):
+        output_pairs.append([str(output.first[i].first) + ',' + str(output.first[i].second), output.second[i]])
+    output_df = pd.DataFrame(output_pairs, columns=['pair_id', 'score'])
+    return output_df
  
 def test_jac(sim_type, threshold):
     st = time.time()

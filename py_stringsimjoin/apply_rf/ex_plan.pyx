@@ -93,6 +93,8 @@ cdef void compute_predicate_cost_and_coverage(vector[string]& lstrings,
                 cost[feature.first] += (end_time - start_time)
                 feature_values[feature.first].push_back(sim_score)
             cost[feature.first] /= sample_size
+            if feature.second.first.compare('OVERLAP_COEFFICIENT') == 0:
+                cost[feature.first] = cost[feature.first] * 10
      #   print feature.first, cost[feature.first]
     print 't3'
     cdef int max_size = 0
@@ -103,7 +105,7 @@ cdef void compute_predicate_cost_and_coverage(vector[string]& lstrings,
         for y in xrange(trees[x].rules.size()):                                 
             c1.reset()                                                          
             for z in xrange(trees[x].rules[y].predicates.size()):               
-                predicate = trees[x].rules[y].predicates[z]                     
+                predicate = trees[x].rules[y].predicates[z]
                 trees[x].rules[y].predicates[z].set_cost(cost[predicate.feat_name])
                 if cov[predicate.pred_name].size() == 0:                        
                     comp_fn = get_comparison_function(get_comp_type(predicate.comp_op))
@@ -160,13 +162,14 @@ cdef vector[Node] generate_ex_plan_for_stage2(vector[pair[int, int]]& candset,
                                        ltokens[tok_type], rtokens[tok_type])    
                                                                                 
     print 't2'                                                                  
-    for feature in feature_info:                                                
+    for feature in feature_info:
+        print feature.first, feature.second.first, feature.second.second                                                
         if feature.second.second.compare('none') == 0:                          
             str_sim_fn = get_str_sim_function(get_sim_type(feature.second.first))
             cost[feature.first] = 0.0                                           
             for i in xrange(sample_size):                                       
                 start_time = time.time()                                        
-                sim_score = str_sim_fn(lstrings[i], rstrings[i])                
+                sim_score = str_sim_fn(sample.first[i], sample.second[i])                
                 end_time = time.time()                                          
                 cost[feature.first] += (end_time - start_time)                  
                 feature_values[feature.first].push_back(sim_score)              
@@ -437,16 +440,17 @@ cdef Node get_default_execution_plan(vector[Tree]& trees,
     for i in xrange(n):
         tmp_vec.push_back(trees[i])
         generate_local_optimal_plans(tmp_vec, coverage, sample_size, plans[i])           
-        tmp_vec.clear()                                                                        
-                                                                    
+        tmp_vec.clear()
+                                                              
     num_trees_to_select = (n / 2) + 1                                         
+#    num_trees_to_select = n
     for i in xrange(n):                                                         
         selected_trees.push_back(False)                                         
                                                                            
-    for j in xrange(num_trees_to_select):                                                         
+    for j in xrange(num_trees_to_select):                                       
         max_score = 0.0                                                         
         max_tree = -1                                                           
-        for i in xrange(n):                                                     
+        for i in xrange(n):
             if selected_trees[i]:                                               
                 continue                                                        
             if j == 0:
