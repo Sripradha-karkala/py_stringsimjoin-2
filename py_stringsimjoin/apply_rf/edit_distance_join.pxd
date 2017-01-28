@@ -9,4 +9,4 @@ cpdef pair[vector[pair[int, int]], vector[double]] ed_join(
                                      int qval, 
                                      double threshold,
                                      vector[string]& lstrings, 
-                                     vector[string]& rstrings)
+                                     vector[string]& rstrings, int n_jobs)

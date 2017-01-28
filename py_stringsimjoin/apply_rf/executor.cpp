@@ -892,14 +892,14 @@ static void (*__pyx_f_16py_stringsimjoin_8apply_rf_10tokenizers_load_tok)(PyObje
 static std::vector<std::string>  (*__pyx_f_16py_stringsimjoin_8apply_rf_10tokenizers_tokenize_str)(std::string &, std::string const &); /*proto*/
 
 /* Module declarations from 'py_stringsimjoin.apply_rf.set_sim_join' */
-static std::pair<std::vector<std::pair<int,int> > ,std::vector<double> >  (*__pyx_f_16py_stringsimjoin_8apply_rf_12set_sim_join_set_sim_join)(std::vector<std::vector<int> >  &, std::vector<std::vector<int> >  &, int, double, int __pyx_skip_dispatch); /*proto*/
+static std::pair<std::vector<std::pair<int,int> > ,std::vector<double> >  (*__pyx_f_16py_stringsimjoin_8apply_rf_12set_sim_join_set_sim_join)(std::vector<std::vector<int> >  &, std::vector<std::vector<int> >  &, int, double, int, int __pyx_skip_dispatch); /*proto*/
 static void (*__pyx_f_16py_stringsimjoin_8apply_rf_12set_sim_join_set_sim_join1)(std::vector<std::vector<int> >  &, std::vector<std::vector<int> >  &, int, double, int __pyx_skip_dispatch); /*proto*/
 
 /* Module declarations from 'py_stringsimjoin.apply_rf.overlap_coefficient_join' */
-static std::pair<std::vector<std::pair<int,int> > ,std::vector<double> >  (*__pyx_f_16py_stringsimjoin_8apply_rf_24overlap_coefficient_join_ov_coeff_join)(std::vector<std::vector<int> >  &, std::vector<std::vector<int> >  &, double, int __pyx_skip_dispatch); /*proto*/
+static std::pair<std::vector<std::pair<int,int> > ,std::vector<double> >  (*__pyx_f_16py_stringsimjoin_8apply_rf_24overlap_coefficient_join_ov_coeff_join)(std::vector<std::vector<int> >  &, std::vector<std::vector<int> >  &, double, int, int __pyx_skip_dispatch); /*proto*/
 
 /* Module declarations from 'py_stringsimjoin.apply_rf.edit_distance_join' */
-static std::pair<std::vector<std::pair<int,int> > ,std::vector<double> >  (*__pyx_f_16py_stringsimjoin_8apply_rf_18edit_distance_join_ed_join)(std::vector<std::vector<int> >  &, std::vector<std::vector<int> >  &, int, double, std::vector<std::string>  &, std::vector<std::string>  &, int __pyx_skip_dispatch); /*proto*/
+static std::pair<std::vector<std::pair<int,int> > ,std::vector<double> >  (*__pyx_f_16py_stringsimjoin_8apply_rf_18edit_distance_join_ed_join)(std::vector<std::vector<int> >  &, std::vector<std::vector<int> >  &, int, double, std::vector<std::string>  &, std::vector<std::string>  &, int, int __pyx_skip_dispatch); /*proto*/
 
 /* Module declarations from 'py_stringsimjoin.apply_rf.sim_functions' */
 static double (*__pyx_f_16py_stringsimjoin_8apply_rf_13sim_functions_jaccard)(std::vector<int>  const &, std::vector<int>  const &); /*proto*/
@@ -5233,7 +5233,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_8executor_write_output_pairs(st
  *     cdef vector[vector[int]] ltokens, rtokens
  */
 
-static std::pair<std::vector<std::pair<int,int> > ,std::vector<double> >  __pyx_f_16py_stringsimjoin_8apply_rf_8executor_execute_join_node(std::vector<std::string>  &__pyx_v_lstrings, std::vector<std::string>  &__pyx_v_rstrings, Predicatecpp __pyx_v_predicate, CYTHON_UNUSED int __pyx_v_n_jobs, std::string const &__pyx_v_working_dir) {
+static std::pair<std::vector<std::pair<int,int> > ,std::vector<double> >  __pyx_f_16py_stringsimjoin_8apply_rf_8executor_execute_join_node(std::vector<std::string>  &__pyx_v_lstrings, std::vector<std::string>  &__pyx_v_rstrings, Predicatecpp __pyx_v_predicate, int __pyx_v_n_jobs, std::string const &__pyx_v_working_dir) {
   std::vector<std::vector<int> >  __pyx_v_ltokens;
   std::vector<std::vector<int> >  __pyx_v_rtokens;
   std::pair<std::vector<std::pair<int,int> > ,std::vector<double> >  __pyx_v_output;
@@ -5253,7 +5253,7 @@ static std::pair<std::vector<std::pair<int,int> > ,std::vector<double> >  __pyx_
  * 
  *     if predicate.sim_measure_type.compare('COSINE') == 0:             # <<<<<<<<<<<<<<
  *         load_tok(predicate.tokenizer_type, working_dir, ltokens, rtokens)
- *         output = set_sim_join(ltokens, rtokens, 0, predicate.threshold)
+ *         output = set_sim_join(ltokens, rtokens, 0, predicate.threshold, n_jobs)
  */
   __pyx_t_1 = __pyx_convert_string_from_py_std__in_string(__pyx_n_b_COSINE); if (unlikely(PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 369; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_t_2 = ((__pyx_v_predicate.sim_measure_type.compare(__pyx_t_1) == 0) != 0);
@@ -5263,7 +5263,7 @@ static std::pair<std::vector<std::pair<int,int> > ,std::vector<double> >  __pyx_
  * 
  *     if predicate.sim_measure_type.compare('COSINE') == 0:
  *         load_tok(predicate.tokenizer_type, working_dir, ltokens, rtokens)             # <<<<<<<<<<<<<<
- *         output = set_sim_join(ltokens, rtokens, 0, predicate.threshold)
+ *         output = set_sim_join(ltokens, rtokens, 0, predicate.threshold, n_jobs)
  *     elif predicate.sim_measure_type.compare('DICE') == 0:
  */
     __pyx_t_3 = __pyx_convert_PyBytes_string_to_py_std__in_string(__pyx_v_predicate.tokenizer_type); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 370; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
@@ -5277,38 +5277,38 @@ static std::pair<std::vector<std::pair<int,int> > ,std::vector<double> >  __pyx_
     /* "py_stringsimjoin/apply_rf/executor.pyx":371
  *     if predicate.sim_measure_type.compare('COSINE') == 0:
  *         load_tok(predicate.tokenizer_type, working_dir, ltokens, rtokens)
- *         output = set_sim_join(ltokens, rtokens, 0, predicate.threshold)             # <<<<<<<<<<<<<<
+ *         output = set_sim_join(ltokens, rtokens, 0, predicate.threshold, n_jobs)             # <<<<<<<<<<<<<<
  *     elif predicate.sim_measure_type.compare('DICE') == 0:
  *         load_tok(predicate.tokenizer_type, working_dir, ltokens, rtokens)
  */
-    __pyx_v_output = __pyx_f_16py_stringsimjoin_8apply_rf_12set_sim_join_set_sim_join(__pyx_v_ltokens, __pyx_v_rtokens, 0, __pyx_v_predicate.threshold, 0);
+    __pyx_v_output = __pyx_f_16py_stringsimjoin_8apply_rf_12set_sim_join_set_sim_join(__pyx_v_ltokens, __pyx_v_rtokens, 0, __pyx_v_predicate.threshold, __pyx_v_n_jobs, 0);
 
     /* "py_stringsimjoin/apply_rf/executor.pyx":369
  *     cdef pair[vector[pair[int, int]], vector[double]] output
  * 
  *     if predicate.sim_measure_type.compare('COSINE') == 0:             # <<<<<<<<<<<<<<
  *         load_tok(predicate.tokenizer_type, working_dir, ltokens, rtokens)
- *         output = set_sim_join(ltokens, rtokens, 0, predicate.threshold)
+ *         output = set_sim_join(ltokens, rtokens, 0, predicate.threshold, n_jobs)
  */
     goto __pyx_L3;
   }
 
   /* "py_stringsimjoin/apply_rf/executor.pyx":372
  *         load_tok(predicate.tokenizer_type, working_dir, ltokens, rtokens)
- *         output = set_sim_join(ltokens, rtokens, 0, predicate.threshold)
+ *         output = set_sim_join(ltokens, rtokens, 0, predicate.threshold, n_jobs)
  *     elif predicate.sim_measure_type.compare('DICE') == 0:             # <<<<<<<<<<<<<<
  *         load_tok(predicate.tokenizer_type, working_dir, ltokens, rtokens)
- *         output = set_sim_join(ltokens, rtokens, 1, predicate.threshold)
+ *         output = set_sim_join(ltokens, rtokens, 1, predicate.threshold, n_jobs)
  */
   __pyx_t_1 = __pyx_convert_string_from_py_std__in_string(__pyx_n_b_DICE); if (unlikely(PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 372; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_t_2 = ((__pyx_v_predicate.sim_measure_type.compare(__pyx_t_1) == 0) != 0);
   if (__pyx_t_2) {
 
     /* "py_stringsimjoin/apply_rf/executor.pyx":373
- *         output = set_sim_join(ltokens, rtokens, 0, predicate.threshold)
+ *         output = set_sim_join(ltokens, rtokens, 0, predicate.threshold, n_jobs)
  *     elif predicate.sim_measure_type.compare('DICE') == 0:
  *         load_tok(predicate.tokenizer_type, working_dir, ltokens, rtokens)             # <<<<<<<<<<<<<<
- *         output = set_sim_join(ltokens, rtokens, 1, predicate.threshold)
+ *         output = set_sim_join(ltokens, rtokens, 1, predicate.threshold, n_jobs)
  *     elif predicate.sim_measure_type.compare('JACCARD') == 0:
  */
     __pyx_t_4 = __pyx_convert_PyBytes_string_to_py_std__in_string(__pyx_v_predicate.tokenizer_type); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 373; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
@@ -5322,38 +5322,38 @@ static std::pair<std::vector<std::pair<int,int> > ,std::vector<double> >  __pyx_
     /* "py_stringsimjoin/apply_rf/executor.pyx":374
  *     elif predicate.sim_measure_type.compare('DICE') == 0:
  *         load_tok(predicate.tokenizer_type, working_dir, ltokens, rtokens)
- *         output = set_sim_join(ltokens, rtokens, 1, predicate.threshold)             # <<<<<<<<<<<<<<
+ *         output = set_sim_join(ltokens, rtokens, 1, predicate.threshold, n_jobs)             # <<<<<<<<<<<<<<
  *     elif predicate.sim_measure_type.compare('JACCARD') == 0:
  *         load_tok(predicate.tokenizer_type, working_dir, ltokens, rtokens)
  */
-    __pyx_v_output = __pyx_f_16py_stringsimjoin_8apply_rf_12set_sim_join_set_sim_join(__pyx_v_ltokens, __pyx_v_rtokens, 1, __pyx_v_predicate.threshold, 0);
+    __pyx_v_output = __pyx_f_16py_stringsimjoin_8apply_rf_12set_sim_join_set_sim_join(__pyx_v_ltokens, __pyx_v_rtokens, 1, __pyx_v_predicate.threshold, __pyx_v_n_jobs, 0);
 
     /* "py_stringsimjoin/apply_rf/executor.pyx":372
  *         load_tok(predicate.tokenizer_type, working_dir, ltokens, rtokens)
- *         output = set_sim_join(ltokens, rtokens, 0, predicate.threshold)
+ *         output = set_sim_join(ltokens, rtokens, 0, predicate.threshold, n_jobs)
  *     elif predicate.sim_measure_type.compare('DICE') == 0:             # <<<<<<<<<<<<<<
  *         load_tok(predicate.tokenizer_type, working_dir, ltokens, rtokens)
- *         output = set_sim_join(ltokens, rtokens, 1, predicate.threshold)
+ *         output = set_sim_join(ltokens, rtokens, 1, predicate.threshold, n_jobs)
  */
     goto __pyx_L3;
   }
 
   /* "py_stringsimjoin/apply_rf/executor.pyx":375
  *         load_tok(predicate.tokenizer_type, working_dir, ltokens, rtokens)
- *         output = set_sim_join(ltokens, rtokens, 1, predicate.threshold)
+ *         output = set_sim_join(ltokens, rtokens, 1, predicate.threshold, n_jobs)
  *     elif predicate.sim_measure_type.compare('JACCARD') == 0:             # <<<<<<<<<<<<<<
  *         load_tok(predicate.tokenizer_type, working_dir, ltokens, rtokens)
- *         output = set_sim_join(ltokens, rtokens, 2, predicate.threshold)
+ *         output = set_sim_join(ltokens, rtokens, 2, predicate.threshold, n_jobs)
  */
   __pyx_t_1 = __pyx_convert_string_from_py_std__in_string(__pyx_n_b_JACCARD); if (unlikely(PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 375; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_t_2 = ((__pyx_v_predicate.sim_measure_type.compare(__pyx_t_1) == 0) != 0);
   if (__pyx_t_2) {
 
     /* "py_stringsimjoin/apply_rf/executor.pyx":376
- *         output = set_sim_join(ltokens, rtokens, 1, predicate.threshold)
+ *         output = set_sim_join(ltokens, rtokens, 1, predicate.threshold, n_jobs)
  *     elif predicate.sim_measure_type.compare('JACCARD') == 0:
  *         load_tok(predicate.tokenizer_type, working_dir, ltokens, rtokens)             # <<<<<<<<<<<<<<
- *         output = set_sim_join(ltokens, rtokens, 2, predicate.threshold)
+ *         output = set_sim_join(ltokens, rtokens, 2, predicate.threshold, n_jobs)
  *     elif predicate.sim_measure_type.compare('OVERLAP_COEFFICIENT') == 0:
  */
     __pyx_t_3 = __pyx_convert_PyBytes_string_to_py_std__in_string(__pyx_v_predicate.tokenizer_type); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 376; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
@@ -5367,38 +5367,38 @@ static std::pair<std::vector<std::pair<int,int> > ,std::vector<double> >  __pyx_
     /* "py_stringsimjoin/apply_rf/executor.pyx":377
  *     elif predicate.sim_measure_type.compare('JACCARD') == 0:
  *         load_tok(predicate.tokenizer_type, working_dir, ltokens, rtokens)
- *         output = set_sim_join(ltokens, rtokens, 2, predicate.threshold)             # <<<<<<<<<<<<<<
+ *         output = set_sim_join(ltokens, rtokens, 2, predicate.threshold, n_jobs)             # <<<<<<<<<<<<<<
  *     elif predicate.sim_measure_type.compare('OVERLAP_COEFFICIENT') == 0:
  *         load_tok(predicate.tokenizer_type, working_dir, ltokens, rtokens)
  */
-    __pyx_v_output = __pyx_f_16py_stringsimjoin_8apply_rf_12set_sim_join_set_sim_join(__pyx_v_ltokens, __pyx_v_rtokens, 2, __pyx_v_predicate.threshold, 0);
+    __pyx_v_output = __pyx_f_16py_stringsimjoin_8apply_rf_12set_sim_join_set_sim_join(__pyx_v_ltokens, __pyx_v_rtokens, 2, __pyx_v_predicate.threshold, __pyx_v_n_jobs, 0);
 
     /* "py_stringsimjoin/apply_rf/executor.pyx":375
  *         load_tok(predicate.tokenizer_type, working_dir, ltokens, rtokens)
- *         output = set_sim_join(ltokens, rtokens, 1, predicate.threshold)
+ *         output = set_sim_join(ltokens, rtokens, 1, predicate.threshold, n_jobs)
  *     elif predicate.sim_measure_type.compare('JACCARD') == 0:             # <<<<<<<<<<<<<<
  *         load_tok(predicate.tokenizer_type, working_dir, ltokens, rtokens)
- *         output = set_sim_join(ltokens, rtokens, 2, predicate.threshold)
+ *         output = set_sim_join(ltokens, rtokens, 2, predicate.threshold, n_jobs)
  */
     goto __pyx_L3;
   }
 
   /* "py_stringsimjoin/apply_rf/executor.pyx":378
  *         load_tok(predicate.tokenizer_type, working_dir, ltokens, rtokens)
- *         output = set_sim_join(ltokens, rtokens, 2, predicate.threshold)
+ *         output = set_sim_join(ltokens, rtokens, 2, predicate.threshold, n_jobs)
  *     elif predicate.sim_measure_type.compare('OVERLAP_COEFFICIENT') == 0:             # <<<<<<<<<<<<<<
  *         load_tok(predicate.tokenizer_type, working_dir, ltokens, rtokens)
- *         output = ov_coeff_join(ltokens, rtokens, predicate.threshold)
+ *         output = ov_coeff_join(ltokens, rtokens, predicate.threshold, n_jobs)
  */
   __pyx_t_1 = __pyx_convert_string_from_py_std__in_string(__pyx_n_b_OVERLAP_COEFFICIENT); if (unlikely(PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 378; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_t_2 = ((__pyx_v_predicate.sim_measure_type.compare(__pyx_t_1) == 0) != 0);
   if (__pyx_t_2) {
 
     /* "py_stringsimjoin/apply_rf/executor.pyx":379
- *         output = set_sim_join(ltokens, rtokens, 2, predicate.threshold)
+ *         output = set_sim_join(ltokens, rtokens, 2, predicate.threshold, n_jobs)
  *     elif predicate.sim_measure_type.compare('OVERLAP_COEFFICIENT') == 0:
  *         load_tok(predicate.tokenizer_type, working_dir, ltokens, rtokens)             # <<<<<<<<<<<<<<
- *         output = ov_coeff_join(ltokens, rtokens, predicate.threshold)
+ *         output = ov_coeff_join(ltokens, rtokens, predicate.threshold, n_jobs)
  *     elif predicate.sim_measure_type.compare('EDIT_DISTANCE') == 0:
  */
     __pyx_t_4 = __pyx_convert_PyBytes_string_to_py_std__in_string(__pyx_v_predicate.tokenizer_type); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 379; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
@@ -5412,25 +5412,25 @@ static std::pair<std::vector<std::pair<int,int> > ,std::vector<double> >  __pyx_
     /* "py_stringsimjoin/apply_rf/executor.pyx":380
  *     elif predicate.sim_measure_type.compare('OVERLAP_COEFFICIENT') == 0:
  *         load_tok(predicate.tokenizer_type, working_dir, ltokens, rtokens)
- *         output = ov_coeff_join(ltokens, rtokens, predicate.threshold)             # <<<<<<<<<<<<<<
+ *         output = ov_coeff_join(ltokens, rtokens, predicate.threshold, n_jobs)             # <<<<<<<<<<<<<<
  *     elif predicate.sim_measure_type.compare('EDIT_DISTANCE') == 0:
  *         load_tok('qg2_bag', working_dir, ltokens, rtokens)
  */
-    __pyx_v_output = __pyx_f_16py_stringsimjoin_8apply_rf_24overlap_coefficient_join_ov_coeff_join(__pyx_v_ltokens, __pyx_v_rtokens, __pyx_v_predicate.threshold, 0);
+    __pyx_v_output = __pyx_f_16py_stringsimjoin_8apply_rf_24overlap_coefficient_join_ov_coeff_join(__pyx_v_ltokens, __pyx_v_rtokens, __pyx_v_predicate.threshold, __pyx_v_n_jobs, 0);
 
     /* "py_stringsimjoin/apply_rf/executor.pyx":378
  *         load_tok(predicate.tokenizer_type, working_dir, ltokens, rtokens)
- *         output = set_sim_join(ltokens, rtokens, 2, predicate.threshold)
+ *         output = set_sim_join(ltokens, rtokens, 2, predicate.threshold, n_jobs)
  *     elif predicate.sim_measure_type.compare('OVERLAP_COEFFICIENT') == 0:             # <<<<<<<<<<<<<<
  *         load_tok(predicate.tokenizer_type, working_dir, ltokens, rtokens)
- *         output = ov_coeff_join(ltokens, rtokens, predicate.threshold)
+ *         output = ov_coeff_join(ltokens, rtokens, predicate.threshold, n_jobs)
  */
     goto __pyx_L3;
   }
 
   /* "py_stringsimjoin/apply_rf/executor.pyx":381
  *         load_tok(predicate.tokenizer_type, working_dir, ltokens, rtokens)
- *         output = ov_coeff_join(ltokens, rtokens, predicate.threshold)
+ *         output = ov_coeff_join(ltokens, rtokens, predicate.threshold, n_jobs)
  *     elif predicate.sim_measure_type.compare('EDIT_DISTANCE') == 0:             # <<<<<<<<<<<<<<
  *         load_tok('qg2_bag', working_dir, ltokens, rtokens)
  *         output = ed_join(ltokens, rtokens, 2, predicate.threshold,
@@ -5440,11 +5440,11 @@ static std::pair<std::vector<std::pair<int,int> > ,std::vector<double> >  __pyx_
   if (__pyx_t_2) {
 
     /* "py_stringsimjoin/apply_rf/executor.pyx":382
- *         output = ov_coeff_join(ltokens, rtokens, predicate.threshold)
+ *         output = ov_coeff_join(ltokens, rtokens, predicate.threshold, n_jobs)
  *     elif predicate.sim_measure_type.compare('EDIT_DISTANCE') == 0:
  *         load_tok('qg2_bag', working_dir, ltokens, rtokens)             # <<<<<<<<<<<<<<
  *         output = ed_join(ltokens, rtokens, 2, predicate.threshold,
- *                          lstrings, rstrings)
+ *                          lstrings, rstrings, n_jobs)
  */
     __pyx_t_3 = __pyx_convert_PyBytes_string_to_py_std__in_string(__pyx_v_working_dir); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 382; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_3);
@@ -5455,14 +5455,14 @@ static std::pair<std::vector<std::pair<int,int> > ,std::vector<double> >  __pyx_
  *     elif predicate.sim_measure_type.compare('EDIT_DISTANCE') == 0:
  *         load_tok('qg2_bag', working_dir, ltokens, rtokens)
  *         output = ed_join(ltokens, rtokens, 2, predicate.threshold,             # <<<<<<<<<<<<<<
- *                          lstrings, rstrings)
+ *                          lstrings, rstrings, n_jobs)
  *     return output
  */
-    __pyx_v_output = __pyx_f_16py_stringsimjoin_8apply_rf_18edit_distance_join_ed_join(__pyx_v_ltokens, __pyx_v_rtokens, 2, __pyx_v_predicate.threshold, __pyx_v_lstrings, __pyx_v_rstrings, 0);
+    __pyx_v_output = __pyx_f_16py_stringsimjoin_8apply_rf_18edit_distance_join_ed_join(__pyx_v_ltokens, __pyx_v_rtokens, 2, __pyx_v_predicate.threshold, __pyx_v_lstrings, __pyx_v_rstrings, __pyx_v_n_jobs, 0);
 
     /* "py_stringsimjoin/apply_rf/executor.pyx":381
  *         load_tok(predicate.tokenizer_type, working_dir, ltokens, rtokens)
- *         output = ov_coeff_join(ltokens, rtokens, predicate.threshold)
+ *         output = ov_coeff_join(ltokens, rtokens, predicate.threshold, n_jobs)
  *     elif predicate.sim_measure_type.compare('EDIT_DISTANCE') == 0:             # <<<<<<<<<<<<<<
  *         load_tok('qg2_bag', working_dir, ltokens, rtokens)
  *         output = ed_join(ltokens, rtokens, 2, predicate.threshold,
@@ -5472,7 +5472,7 @@ static std::pair<std::vector<std::pair<int,int> > ,std::vector<double> >  __pyx_
 
   /* "py_stringsimjoin/apply_rf/executor.pyx":385
  *         output = ed_join(ltokens, rtokens, 2, predicate.threshold,
- *                          lstrings, rstrings)
+ *                          lstrings, rstrings, n_jobs)
  *     return output             # <<<<<<<<<<<<<<
  * 
  * cdef vector[pair[int, int]] execute_filter_node(vector[pair[int, int]]& candset,
@@ -7300,7 +7300,7 @@ static std::vector<double>  __pyx_f_16py_stringsimjoin_8apply_rf_8executor_execu
                     #endif /* _OPENMP */
                     {
                         #ifdef _OPENMP
-                        #pragma omp for lastprivate(__pyx_v_cand) firstprivate(__pyx_v_i) lastprivate(__pyx_v_i)
+                        #pragma omp for firstprivate(__pyx_v_i) lastprivate(__pyx_v_i) lastprivate(__pyx_v_cand)
                         #endif /* _OPENMP */
                         for (__pyx_t_6 = 0; __pyx_t_6 < __pyx_t_7; __pyx_t_6++){
                             {
@@ -7395,7 +7395,7 @@ static std::vector<double>  __pyx_f_16py_stringsimjoin_8apply_rf_8executor_execu
                     #endif /* _OPENMP */
                     {
                         #ifdef _OPENMP
-                        #pragma omp for lastprivate(__pyx_v_cand) firstprivate(__pyx_v_i) lastprivate(__pyx_v_i)
+                        #pragma omp for firstprivate(__pyx_v_i) lastprivate(__pyx_v_i) lastprivate(__pyx_v_cand)
                         #endif /* _OPENMP */
                         for (__pyx_t_6 = 0; __pyx_t_6 < __pyx_t_5; __pyx_t_6++){
                             {
@@ -7511,7 +7511,7 @@ static std::vector<double>  __pyx_f_16py_stringsimjoin_8apply_rf_8executor_execu
                     #endif /* _OPENMP */
                     {
                         #ifdef _OPENMP
-                        #pragma omp for lastprivate(__pyx_v_cand) firstprivate(__pyx_v_i) lastprivate(__pyx_v_i)
+                        #pragma omp for firstprivate(__pyx_v_i) lastprivate(__pyx_v_i) lastprivate(__pyx_v_cand)
                         #endif /* _OPENMP */
                         for (__pyx_t_6 = 0; __pyx_t_6 < __pyx_t_7; __pyx_t_6++){
                             {
@@ -7606,7 +7606,7 @@ static std::vector<double>  __pyx_f_16py_stringsimjoin_8apply_rf_8executor_execu
                     #endif /* _OPENMP */
                     {
                         #ifdef _OPENMP
-                        #pragma omp for lastprivate(__pyx_v_cand) firstprivate(__pyx_v_i) lastprivate(__pyx_v_i)
+                        #pragma omp for firstprivate(__pyx_v_i) lastprivate(__pyx_v_i) lastprivate(__pyx_v_cand)
                         #endif /* _OPENMP */
                         for (__pyx_t_6 = 0; __pyx_t_6 < __pyx_t_5; __pyx_t_6++){
                             {
@@ -10282,7 +10282,7 @@ static PyObject *__pyx_pf_16py_stringsimjoin_8apply_rf_8executor_8perform_join(C
  *     if sim_type == 'COSINE':
  *         load_tok(tok_type, working_dir, ltokens, rtokens)             # <<<<<<<<<<<<<<
  *         threshold = threshold - 0.0001
- *         output = set_sim_join(ltokens, rtokens, 0, threshold)
+ *         output = set_sim_join(ltokens, rtokens, 0, threshold, 4)
  */
     __pyx_t_2 = __pyx_convert_PyBytes_string_to_py_std__in_string(__pyx_v_working_dir); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 830; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_2);
@@ -10293,7 +10293,7 @@ static PyObject *__pyx_pf_16py_stringsimjoin_8apply_rf_8executor_8perform_join(C
  *     if sim_type == 'COSINE':
  *         load_tok(tok_type, working_dir, ltokens, rtokens)
  *         threshold = threshold - 0.0001             # <<<<<<<<<<<<<<
- *         output = set_sim_join(ltokens, rtokens, 0, threshold)
+ *         output = set_sim_join(ltokens, rtokens, 0, threshold, 4)
  *     elif sim_type == 'DICE':
  */
     __pyx_t_2 = __Pyx_PyFloat_SubtractObjC(__pyx_v_threshold, __pyx_float_0_0001, 0.0001, 0); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 831; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
@@ -10304,12 +10304,12 @@ static PyObject *__pyx_pf_16py_stringsimjoin_8apply_rf_8executor_8perform_join(C
     /* "py_stringsimjoin/apply_rf/executor.pyx":832
  *         load_tok(tok_type, working_dir, ltokens, rtokens)
  *         threshold = threshold - 0.0001
- *         output = set_sim_join(ltokens, rtokens, 0, threshold)             # <<<<<<<<<<<<<<
+ *         output = set_sim_join(ltokens, rtokens, 0, threshold, 4)             # <<<<<<<<<<<<<<
  *     elif sim_type == 'DICE':
  *         load_tok(tok_type, working_dir, ltokens, rtokens)
  */
     __pyx_t_3 = __pyx_PyFloat_AsDouble(__pyx_v_threshold); if (unlikely((__pyx_t_3 == (double)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 832; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-    __pyx_v_output = __pyx_f_16py_stringsimjoin_8apply_rf_12set_sim_join_set_sim_join(__pyx_v_ltokens, __pyx_v_rtokens, 0, __pyx_t_3, 0);
+    __pyx_v_output = __pyx_f_16py_stringsimjoin_8apply_rf_12set_sim_join_set_sim_join(__pyx_v_ltokens, __pyx_v_rtokens, 0, __pyx_t_3, 4, 0);
 
     /* "py_stringsimjoin/apply_rf/executor.pyx":829
  *     cdef vector[string] lstrings, rstrings
@@ -10323,7 +10323,7 @@ static PyObject *__pyx_pf_16py_stringsimjoin_8apply_rf_8executor_8perform_join(C
 
   /* "py_stringsimjoin/apply_rf/executor.pyx":833
  *         threshold = threshold - 0.0001
- *         output = set_sim_join(ltokens, rtokens, 0, threshold)
+ *         output = set_sim_join(ltokens, rtokens, 0, threshold, 4)
  *     elif sim_type == 'DICE':             # <<<<<<<<<<<<<<
  *         load_tok(tok_type, working_dir, ltokens, rtokens)
  *         threshold = threshold - 0.0001
@@ -10332,11 +10332,11 @@ static PyObject *__pyx_pf_16py_stringsimjoin_8apply_rf_8executor_8perform_join(C
   if (__pyx_t_1) {
 
     /* "py_stringsimjoin/apply_rf/executor.pyx":834
- *         output = set_sim_join(ltokens, rtokens, 0, threshold)
+ *         output = set_sim_join(ltokens, rtokens, 0, threshold, 4)
  *     elif sim_type == 'DICE':
  *         load_tok(tok_type, working_dir, ltokens, rtokens)             # <<<<<<<<<<<<<<
  *         threshold = threshold - 0.0001
- *         output = set_sim_join(ltokens, rtokens, 1, threshold)
+ *         output = set_sim_join(ltokens, rtokens, 1, threshold, 4)
  */
     __pyx_t_2 = __pyx_convert_PyBytes_string_to_py_std__in_string(__pyx_v_working_dir); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 834; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_2);
@@ -10347,7 +10347,7 @@ static PyObject *__pyx_pf_16py_stringsimjoin_8apply_rf_8executor_8perform_join(C
  *     elif sim_type == 'DICE':
  *         load_tok(tok_type, working_dir, ltokens, rtokens)
  *         threshold = threshold - 0.0001             # <<<<<<<<<<<<<<
- *         output = set_sim_join(ltokens, rtokens, 1, threshold)
+ *         output = set_sim_join(ltokens, rtokens, 1, threshold, 4)
  *     elif sim_type == 'JACCARD':
  */
     __pyx_t_2 = __Pyx_PyFloat_SubtractObjC(__pyx_v_threshold, __pyx_float_0_0001, 0.0001, 0); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 835; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
@@ -10358,16 +10358,16 @@ static PyObject *__pyx_pf_16py_stringsimjoin_8apply_rf_8executor_8perform_join(C
     /* "py_stringsimjoin/apply_rf/executor.pyx":836
  *         load_tok(tok_type, working_dir, ltokens, rtokens)
  *         threshold = threshold - 0.0001
- *         output = set_sim_join(ltokens, rtokens, 1, threshold)             # <<<<<<<<<<<<<<
+ *         output = set_sim_join(ltokens, rtokens, 1, threshold, 4)             # <<<<<<<<<<<<<<
  *     elif sim_type == 'JACCARD':
  *         load_tok(tok_type, working_dir, ltokens, rtokens)
  */
     __pyx_t_3 = __pyx_PyFloat_AsDouble(__pyx_v_threshold); if (unlikely((__pyx_t_3 == (double)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 836; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-    __pyx_v_output = __pyx_f_16py_stringsimjoin_8apply_rf_12set_sim_join_set_sim_join(__pyx_v_ltokens, __pyx_v_rtokens, 1, __pyx_t_3, 0);
+    __pyx_v_output = __pyx_f_16py_stringsimjoin_8apply_rf_12set_sim_join_set_sim_join(__pyx_v_ltokens, __pyx_v_rtokens, 1, __pyx_t_3, 4, 0);
 
     /* "py_stringsimjoin/apply_rf/executor.pyx":833
  *         threshold = threshold - 0.0001
- *         output = set_sim_join(ltokens, rtokens, 0, threshold)
+ *         output = set_sim_join(ltokens, rtokens, 0, threshold, 4)
  *     elif sim_type == 'DICE':             # <<<<<<<<<<<<<<
  *         load_tok(tok_type, working_dir, ltokens, rtokens)
  *         threshold = threshold - 0.0001
@@ -10377,7 +10377,7 @@ static PyObject *__pyx_pf_16py_stringsimjoin_8apply_rf_8executor_8perform_join(C
 
   /* "py_stringsimjoin/apply_rf/executor.pyx":837
  *         threshold = threshold - 0.0001
- *         output = set_sim_join(ltokens, rtokens, 1, threshold)
+ *         output = set_sim_join(ltokens, rtokens, 1, threshold, 4)
  *     elif sim_type == 'JACCARD':             # <<<<<<<<<<<<<<
  *         load_tok(tok_type, working_dir, ltokens, rtokens)
  *         threshold = threshold - 0.0001
@@ -10386,11 +10386,11 @@ static PyObject *__pyx_pf_16py_stringsimjoin_8apply_rf_8executor_8perform_join(C
   if (__pyx_t_1) {
 
     /* "py_stringsimjoin/apply_rf/executor.pyx":838
- *         output = set_sim_join(ltokens, rtokens, 1, threshold)
+ *         output = set_sim_join(ltokens, rtokens, 1, threshold, 4)
  *     elif sim_type == 'JACCARD':
  *         load_tok(tok_type, working_dir, ltokens, rtokens)             # <<<<<<<<<<<<<<
  *         threshold = threshold - 0.0001
- *         output = set_sim_join(ltokens, rtokens, 2, threshold)
+ *         output = set_sim_join(ltokens, rtokens, 2, threshold, 4)
  */
     __pyx_t_2 = __pyx_convert_PyBytes_string_to_py_std__in_string(__pyx_v_working_dir); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 838; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_2);
@@ -10401,7 +10401,7 @@ static PyObject *__pyx_pf_16py_stringsimjoin_8apply_rf_8executor_8perform_join(C
  *     elif sim_type == 'JACCARD':
  *         load_tok(tok_type, working_dir, ltokens, rtokens)
  *         threshold = threshold - 0.0001             # <<<<<<<<<<<<<<
- *         output = set_sim_join(ltokens, rtokens, 2, threshold)
+ *         output = set_sim_join(ltokens, rtokens, 2, threshold, 4)
  *     elif sim_type == 'OVERLAP_COEFFICIENT':
  */
     __pyx_t_2 = __Pyx_PyFloat_SubtractObjC(__pyx_v_threshold, __pyx_float_0_0001, 0.0001, 0); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 839; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
@@ -10412,16 +10412,16 @@ static PyObject *__pyx_pf_16py_stringsimjoin_8apply_rf_8executor_8perform_join(C
     /* "py_stringsimjoin/apply_rf/executor.pyx":840
  *         load_tok(tok_type, working_dir, ltokens, rtokens)
  *         threshold = threshold - 0.0001
- *         output = set_sim_join(ltokens, rtokens, 2, threshold)             # <<<<<<<<<<<<<<
+ *         output = set_sim_join(ltokens, rtokens, 2, threshold, 4)             # <<<<<<<<<<<<<<
  *     elif sim_type == 'OVERLAP_COEFFICIENT':
  *         load_tok(tok_type, working_dir, ltokens, rtokens)
  */
     __pyx_t_3 = __pyx_PyFloat_AsDouble(__pyx_v_threshold); if (unlikely((__pyx_t_3 == (double)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 840; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-    __pyx_v_output = __pyx_f_16py_stringsimjoin_8apply_rf_12set_sim_join_set_sim_join(__pyx_v_ltokens, __pyx_v_rtokens, 2, __pyx_t_3, 0);
+    __pyx_v_output = __pyx_f_16py_stringsimjoin_8apply_rf_12set_sim_join_set_sim_join(__pyx_v_ltokens, __pyx_v_rtokens, 2, __pyx_t_3, 4, 0);
 
     /* "py_stringsimjoin/apply_rf/executor.pyx":837
  *         threshold = threshold - 0.0001
- *         output = set_sim_join(ltokens, rtokens, 1, threshold)
+ *         output = set_sim_join(ltokens, rtokens, 1, threshold, 4)
  *     elif sim_type == 'JACCARD':             # <<<<<<<<<<<<<<
  *         load_tok(tok_type, working_dir, ltokens, rtokens)
  *         threshold = threshold - 0.0001
@@ -10431,7 +10431,7 @@ static PyObject *__pyx_pf_16py_stringsimjoin_8apply_rf_8executor_8perform_join(C
 
   /* "py_stringsimjoin/apply_rf/executor.pyx":841
  *         threshold = threshold - 0.0001
- *         output = set_sim_join(ltokens, rtokens, 2, threshold)
+ *         output = set_sim_join(ltokens, rtokens, 2, threshold, 4)
  *     elif sim_type == 'OVERLAP_COEFFICIENT':             # <<<<<<<<<<<<<<
  *         load_tok(tok_type, working_dir, ltokens, rtokens)
  *         threshold = threshold - 0.0001
@@ -10440,11 +10440,11 @@ static PyObject *__pyx_pf_16py_stringsimjoin_8apply_rf_8executor_8perform_join(C
   if (__pyx_t_1) {
 
     /* "py_stringsimjoin/apply_rf/executor.pyx":842
- *         output = set_sim_join(ltokens, rtokens, 2, threshold)
+ *         output = set_sim_join(ltokens, rtokens, 2, threshold, 4)
  *     elif sim_type == 'OVERLAP_COEFFICIENT':
  *         load_tok(tok_type, working_dir, ltokens, rtokens)             # <<<<<<<<<<<<<<
  *         threshold = threshold - 0.0001
- *         output = ov_coeff_join(ltokens, rtokens, threshold)
+ *         output = ov_coeff_join(ltokens, rtokens, threshold, 4)
  */
     __pyx_t_2 = __pyx_convert_PyBytes_string_to_py_std__in_string(__pyx_v_working_dir); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 842; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_2);
@@ -10455,7 +10455,7 @@ static PyObject *__pyx_pf_16py_stringsimjoin_8apply_rf_8executor_8perform_join(C
  *     elif sim_type == 'OVERLAP_COEFFICIENT':
  *         load_tok(tok_type, working_dir, ltokens, rtokens)
  *         threshold = threshold - 0.0001             # <<<<<<<<<<<<<<
- *         output = ov_coeff_join(ltokens, rtokens, threshold)
+ *         output = ov_coeff_join(ltokens, rtokens, threshold, 4)
  *     elif sim_type == 'EDIT_DISTANCE':
  */
     __pyx_t_2 = __Pyx_PyFloat_SubtractObjC(__pyx_v_threshold, __pyx_float_0_0001, 0.0001, 0); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 843; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
@@ -10466,16 +10466,16 @@ static PyObject *__pyx_pf_16py_stringsimjoin_8apply_rf_8executor_8perform_join(C
     /* "py_stringsimjoin/apply_rf/executor.pyx":844
  *         load_tok(tok_type, working_dir, ltokens, rtokens)
  *         threshold = threshold - 0.0001
- *         output = ov_coeff_join(ltokens, rtokens, threshold)             # <<<<<<<<<<<<<<
+ *         output = ov_coeff_join(ltokens, rtokens, threshold, 4)             # <<<<<<<<<<<<<<
  *     elif sim_type == 'EDIT_DISTANCE':
  *         load_tok('qg2_bag', working_dir, ltokens, rtokens)
  */
     __pyx_t_3 = __pyx_PyFloat_AsDouble(__pyx_v_threshold); if (unlikely((__pyx_t_3 == (double)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 844; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-    __pyx_v_output = __pyx_f_16py_stringsimjoin_8apply_rf_24overlap_coefficient_join_ov_coeff_join(__pyx_v_ltokens, __pyx_v_rtokens, __pyx_t_3, 0);
+    __pyx_v_output = __pyx_f_16py_stringsimjoin_8apply_rf_24overlap_coefficient_join_ov_coeff_join(__pyx_v_ltokens, __pyx_v_rtokens, __pyx_t_3, 4, 0);
 
     /* "py_stringsimjoin/apply_rf/executor.pyx":841
  *         threshold = threshold - 0.0001
- *         output = set_sim_join(ltokens, rtokens, 2, threshold)
+ *         output = set_sim_join(ltokens, rtokens, 2, threshold, 4)
  *     elif sim_type == 'OVERLAP_COEFFICIENT':             # <<<<<<<<<<<<<<
  *         load_tok(tok_type, working_dir, ltokens, rtokens)
  *         threshold = threshold - 0.0001
@@ -10485,7 +10485,7 @@ static PyObject *__pyx_pf_16py_stringsimjoin_8apply_rf_8executor_8perform_join(C
 
   /* "py_stringsimjoin/apply_rf/executor.pyx":845
  *         threshold = threshold - 0.0001
- *         output = ov_coeff_join(ltokens, rtokens, threshold)
+ *         output = ov_coeff_join(ltokens, rtokens, threshold, 4)
  *     elif sim_type == 'EDIT_DISTANCE':             # <<<<<<<<<<<<<<
  *         load_tok('qg2_bag', working_dir, ltokens, rtokens)
  *         load_strings(path1, attr1, lstrings)
@@ -10494,7 +10494,7 @@ static PyObject *__pyx_pf_16py_stringsimjoin_8apply_rf_8executor_8perform_join(C
   if (__pyx_t_1) {
 
     /* "py_stringsimjoin/apply_rf/executor.pyx":846
- *         output = ov_coeff_join(ltokens, rtokens, threshold)
+ *         output = ov_coeff_join(ltokens, rtokens, threshold, 4)
  *     elif sim_type == 'EDIT_DISTANCE':
  *         load_tok('qg2_bag', working_dir, ltokens, rtokens)             # <<<<<<<<<<<<<<
  *         load_strings(path1, attr1, lstrings)
@@ -10510,7 +10510,7 @@ static PyObject *__pyx_pf_16py_stringsimjoin_8apply_rf_8executor_8perform_join(C
  *         load_tok('qg2_bag', working_dir, ltokens, rtokens)
  *         load_strings(path1, attr1, lstrings)             # <<<<<<<<<<<<<<
  *         load_strings(path2, attr2, rstrings)
- *         output = ed_join(ltokens, rtokens, 2, threshold, lstrings, rstrings)
+ *         output = ed_join(ltokens, rtokens, 2, threshold, lstrings, rstrings, 4)
  */
     __pyx_f_16py_stringsimjoin_8apply_rf_8executor_load_strings(__pyx_v_path1, __pyx_v_attr1, __pyx_v_lstrings);
 
@@ -10518,7 +10518,7 @@ static PyObject *__pyx_pf_16py_stringsimjoin_8apply_rf_8executor_8perform_join(C
  *         load_tok('qg2_bag', working_dir, ltokens, rtokens)
  *         load_strings(path1, attr1, lstrings)
  *         load_strings(path2, attr2, rstrings)             # <<<<<<<<<<<<<<
- *         output = ed_join(ltokens, rtokens, 2, threshold, lstrings, rstrings)
+ *         output = ed_join(ltokens, rtokens, 2, threshold, lstrings, rstrings, 4)
  * 
  */
     __pyx_f_16py_stringsimjoin_8apply_rf_8executor_load_strings(__pyx_v_path2, __pyx_v_attr2, __pyx_v_rstrings);
@@ -10526,16 +10526,16 @@ static PyObject *__pyx_pf_16py_stringsimjoin_8apply_rf_8executor_8perform_join(C
     /* "py_stringsimjoin/apply_rf/executor.pyx":849
  *         load_strings(path1, attr1, lstrings)
  *         load_strings(path2, attr2, rstrings)
- *         output = ed_join(ltokens, rtokens, 2, threshold, lstrings, rstrings)             # <<<<<<<<<<<<<<
+ *         output = ed_join(ltokens, rtokens, 2, threshold, lstrings, rstrings, 4)             # <<<<<<<<<<<<<<
  * 
  *     output_pairs = []
  */
     __pyx_t_3 = __pyx_PyFloat_AsDouble(__pyx_v_threshold); if (unlikely((__pyx_t_3 == (double)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 849; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-    __pyx_v_output = __pyx_f_16py_stringsimjoin_8apply_rf_18edit_distance_join_ed_join(__pyx_v_ltokens, __pyx_v_rtokens, 2, __pyx_t_3, __pyx_v_lstrings, __pyx_v_rstrings, 0);
+    __pyx_v_output = __pyx_f_16py_stringsimjoin_8apply_rf_18edit_distance_join_ed_join(__pyx_v_ltokens, __pyx_v_rtokens, 2, __pyx_t_3, __pyx_v_lstrings, __pyx_v_rstrings, 4, 0);
 
     /* "py_stringsimjoin/apply_rf/executor.pyx":845
  *         threshold = threshold - 0.0001
- *         output = ov_coeff_join(ltokens, rtokens, threshold)
+ *         output = ov_coeff_join(ltokens, rtokens, threshold, 4)
  *     elif sim_type == 'EDIT_DISTANCE':             # <<<<<<<<<<<<<<
  *         load_tok('qg2_bag', working_dir, ltokens, rtokens)
  *         load_strings(path1, attr1, lstrings)
@@ -10544,7 +10544,7 @@ static PyObject *__pyx_pf_16py_stringsimjoin_8apply_rf_8executor_8perform_join(C
   __pyx_L3:;
 
   /* "py_stringsimjoin/apply_rf/executor.pyx":851
- *         output = ed_join(ltokens, rtokens, 2, threshold, lstrings, rstrings)
+ *         output = ed_join(ltokens, rtokens, 2, threshold, lstrings, rstrings, 4)
  * 
  *     output_pairs = []             # <<<<<<<<<<<<<<
  *     for i in xrange(output.first.size()):
@@ -10850,7 +10850,7 @@ static PyObject *__pyx_pf_16py_stringsimjoin_8apply_rf_8executor_10test_jac(CYTH
  * #        print 'i= ', i
  * #    if sim_type == 3:
  *     for i in xrange(50):             # <<<<<<<<<<<<<<
- *         output1 = ov_coeff_join(ltokens, rtokens, threshold)
+ *         output1 = ov_coeff_join(ltokens, rtokens, threshold, 4)
  *         print 'output size : ', output.size()
  */
   for (__pyx_t_4 = 0; __pyx_t_4 < 50; __pyx_t_4+=1) {
@@ -10859,16 +10859,16 @@ static PyObject *__pyx_pf_16py_stringsimjoin_8apply_rf_8executor_10test_jac(CYTH
     /* "py_stringsimjoin/apply_rf/executor.pyx":872
  * #    if sim_type == 3:
  *     for i in xrange(50):
- *         output1 = ov_coeff_join(ltokens, rtokens, threshold)             # <<<<<<<<<<<<<<
+ *         output1 = ov_coeff_join(ltokens, rtokens, threshold, 4)             # <<<<<<<<<<<<<<
  *         print 'output size : ', output.size()
  * #    else:
  */
     __pyx_t_5 = __pyx_PyFloat_AsDouble(__pyx_v_threshold); if (unlikely((__pyx_t_5 == (double)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 872; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-    __pyx_v_output1 = __pyx_f_16py_stringsimjoin_8apply_rf_24overlap_coefficient_join_ov_coeff_join(__pyx_v_ltokens, __pyx_v_rtokens, __pyx_t_5, 0);
+    __pyx_v_output1 = __pyx_f_16py_stringsimjoin_8apply_rf_24overlap_coefficient_join_ov_coeff_join(__pyx_v_ltokens, __pyx_v_rtokens, __pyx_t_5, 4, 0);
 
     /* "py_stringsimjoin/apply_rf/executor.pyx":873
  *     for i in xrange(50):
- *         output1 = ov_coeff_join(ltokens, rtokens, threshold)
+ *         output1 = ov_coeff_join(ltokens, rtokens, threshold, 4)
  *         print 'output size : ', output.size()             # <<<<<<<<<<<<<<
  * #    else:
  * #        output1 = set_sim_join(ltokens, rtokens, sim_type, threshold)
@@ -11169,7 +11169,7 @@ static PyObject *__pyx_pf_16py_stringsimjoin_8apply_rf_8executor_12test_ed(CYTHO
  *     cdef pair[vector[pair[int, int]], vector[double]] output
  *     cdef int i
  *     for i in xrange(50):             # <<<<<<<<<<<<<<
- *         output = ed_join(ltokens, rtokens, 2, threshold, lstrings, rstrings)
+ *         output = ed_join(ltokens, rtokens, 2, threshold, lstrings, rstrings, 4)
  *         print 'output size : ', output.size()
  */
   for (__pyx_t_4 = 0; __pyx_t_4 < 50; __pyx_t_4+=1) {
@@ -11178,16 +11178,16 @@ static PyObject *__pyx_pf_16py_stringsimjoin_8apply_rf_8executor_12test_ed(CYTHO
     /* "py_stringsimjoin/apply_rf/executor.pyx":898
  *     cdef int i
  *     for i in xrange(50):
- *         output = ed_join(ltokens, rtokens, 2, threshold, lstrings, rstrings)             # <<<<<<<<<<<<<<
+ *         output = ed_join(ltokens, rtokens, 2, threshold, lstrings, rstrings, 4)             # <<<<<<<<<<<<<<
  *         print 'output size : ', output.size()
  *     print 'time : ', time.time() - st
  */
     __pyx_t_5 = __pyx_PyFloat_AsDouble(__pyx_v_threshold); if (unlikely((__pyx_t_5 == (double)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 898; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-    __pyx_v_output = __pyx_f_16py_stringsimjoin_8apply_rf_18edit_distance_join_ed_join(__pyx_v_ltokens, __pyx_v_rtokens, 2, __pyx_t_5, __pyx_v_lstrings, __pyx_v_rstrings, 0);
+    __pyx_v_output = __pyx_f_16py_stringsimjoin_8apply_rf_18edit_distance_join_ed_join(__pyx_v_ltokens, __pyx_v_rtokens, 2, __pyx_t_5, __pyx_v_lstrings, __pyx_v_rstrings, 4, 0);
 
     /* "py_stringsimjoin/apply_rf/executor.pyx":899
  *     for i in xrange(50):
- *         output = ed_join(ltokens, rtokens, 2, threshold, lstrings, rstrings)
+ *         output = ed_join(ltokens, rtokens, 2, threshold, lstrings, rstrings, 4)
  *         print 'output size : ', output.size()             # <<<<<<<<<<<<<<
  *     print 'time : ', time.time() - st
  * 
@@ -11228,7 +11228,7 @@ static PyObject *__pyx_pf_16py_stringsimjoin_8apply_rf_8executor_12test_ed(CYTHO
   }
 
   /* "py_stringsimjoin/apply_rf/executor.pyx":900
- *         output = ed_join(ltokens, rtokens, 2, threshold, lstrings, rstrings)
+ *         output = ed_join(ltokens, rtokens, 2, threshold, lstrings, rstrings, 4)
  *         print 'output size : ', output.size()
  *     print 'time : ', time.time() - st             # <<<<<<<<<<<<<<
  * 
@@ -13026,14 +13026,14 @@ PyMODINIT_FUNC PyInit_executor(void)
   if (__Pyx_ImportFunction(__pyx_t_1, "tokenize_str", (void (**)(void))&__pyx_f_16py_stringsimjoin_8apply_rf_10tokenizers_tokenize_str, "std::vector<std::string>  (std::string &, std::string const &)") < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 2; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   Py_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_t_2 = __Pyx_ImportModule("py_stringsimjoin.apply_rf.set_sim_join"); if (!__pyx_t_2) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 2; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  if (__Pyx_ImportFunction(__pyx_t_2, "set_sim_join", (void (**)(void))&__pyx_f_16py_stringsimjoin_8apply_rf_12set_sim_join_set_sim_join, "std::pair<std::vector<std::pair<int,int> > ,std::vector<double> >  (std::vector<std::vector<int> >  &, std::vector<std::vector<int> >  &, int, double, int __pyx_skip_dispatch)") < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 2; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (__Pyx_ImportFunction(__pyx_t_2, "set_sim_join", (void (**)(void))&__pyx_f_16py_stringsimjoin_8apply_rf_12set_sim_join_set_sim_join, "std::pair<std::vector<std::pair<int,int> > ,std::vector<double> >  (std::vector<std::vector<int> >  &, std::vector<std::vector<int> >  &, int, double, int, int __pyx_skip_dispatch)") < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 2; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   if (__Pyx_ImportFunction(__pyx_t_2, "set_sim_join1", (void (**)(void))&__pyx_f_16py_stringsimjoin_8apply_rf_12set_sim_join_set_sim_join1, "void (std::vector<std::vector<int> >  &, std::vector<std::vector<int> >  &, int, double, int __pyx_skip_dispatch)") < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 2; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   Py_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __pyx_t_3 = __Pyx_ImportModule("py_stringsimjoin.apply_rf.overlap_coefficient_join"); if (!__pyx_t_3) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 2; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  if (__Pyx_ImportFunction(__pyx_t_3, "ov_coeff_join", (void (**)(void))&__pyx_f_16py_stringsimjoin_8apply_rf_24overlap_coefficient_join_ov_coeff_join, "std::pair<std::vector<std::pair<int,int> > ,std::vector<double> >  (std::vector<std::vector<int> >  &, std::vector<std::vector<int> >  &, double, int __pyx_skip_dispatch)") < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 2; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (__Pyx_ImportFunction(__pyx_t_3, "ov_coeff_join", (void (**)(void))&__pyx_f_16py_stringsimjoin_8apply_rf_24overlap_coefficient_join_ov_coeff_join, "std::pair<std::vector<std::pair<int,int> > ,std::vector<double> >  (std::vector<std::vector<int> >  &, std::vector<std::vector<int> >  &, double, int, int __pyx_skip_dispatch)") < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 2; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   Py_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   __pyx_t_4 = __Pyx_ImportModule("py_stringsimjoin.apply_rf.edit_distance_join"); if (!__pyx_t_4) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 2; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  if (__Pyx_ImportFunction(__pyx_t_4, "ed_join", (void (**)(void))&__pyx_f_16py_stringsimjoin_8apply_rf_18edit_distance_join_ed_join, "std::pair<std::vector<std::pair<int,int> > ,std::vector<double> >  (std::vector<std::vector<int> >  &, std::vector<std::vector<int> >  &, int, double, std::vector<std::string>  &, std::vector<std::string>  &, int __pyx_skip_dispatch)") < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 2; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (__Pyx_ImportFunction(__pyx_t_4, "ed_join", (void (**)(void))&__pyx_f_16py_stringsimjoin_8apply_rf_18edit_distance_join_ed_join, "std::pair<std::vector<std::pair<int,int> > ,std::vector<double> >  (std::vector<std::vector<int> >  &, std::vector<std::vector<int> >  &, int, double, std::vector<std::string>  &, std::vector<std::string>  &, int, int __pyx_skip_dispatch)") < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 2; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   Py_DECREF(__pyx_t_4); __pyx_t_4 = 0;
   __pyx_t_5 = __Pyx_ImportModule("py_stringsimjoin.apply_rf.sim_functions"); if (!__pyx_t_5) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 2; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   if (__Pyx_ImportFunction(__pyx_t_5, "jaccard", (void (**)(void))&__pyx_f_16py_stringsimjoin_8apply_rf_13sim_functions_jaccard, "double (std::vector<int>  const &, std::vector<int>  const &)") < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 2; __pyx_clineno = __LINE__; goto __pyx_L1_error;}

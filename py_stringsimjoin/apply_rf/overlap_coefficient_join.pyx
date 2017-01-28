@@ -13,12 +13,12 @@ from py_stringsimjoin.apply_rf.utils cimport build_inverted_index
 
 cpdef pair[vector[pair[int, int]], vector[double]] ov_coeff_join(vector[vector[int]]& ltokens, 
                                            vector[vector[int]]& rtokens,
-                                           double threshold):                                           
+                                           double threshold, int n_jobs):                                           
     print 'l size. : ', ltokens.size(), ' , r size : ', rtokens.size()          
     cdef vector[vector[pair[int, int]]] output_pairs
     cdef vector[vector[double]] output_sim_scores                               
     cdef vector[pair[int, int]] partitions
-    cdef int i, n=rtokens.size(), ncpus=4, partition_size, start=0, end                                   
+    cdef int i, n=rtokens.size(), ncpus=n_jobs, partition_size, start=0, end                                   
     cdef InvertedIndex index
     build_inverted_index(ltokens, index)                                 
     

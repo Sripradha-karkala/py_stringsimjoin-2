@@ -93,8 +93,8 @@ cdef void compute_predicate_cost_and_coverage(vector[string]& lstrings,
                 cost[feature.first] += (end_time - start_time)
                 feature_values[feature.first].push_back(sim_score)
             cost[feature.first] /= sample_size
-            if feature.second.first.compare('OVERLAP_COEFFICIENT') == 0:
-                cost[feature.first] = cost[feature.first] * 10
+#            if feature.second.second.compare('qg3') == 0:
+#                cost[feature.first] = cost[feature.first] * 10
      #   print feature.first, cost[feature.first]
     print 't3'
     cdef int max_size = 0
@@ -469,7 +469,6 @@ cdef Node optimize_plans(omap[int, vector[Node]]& plans,
     
     generate_new_plans(plans_to_optimize, plans_to_update, pred_index, 
                        optimized_plans)
-    print 'hello'
     cdef Node optimized_plan
     for i in range(optimized_plans.size()):                                                         
         if i == 0:                                                          
@@ -534,7 +533,92 @@ cdef void generate_new_plans(vector[Node]& old_plans,
             nodes[k].add_child(nodes[k+1])                                  
         
         new_plans.push_back(nodes[0])          
-        
+
+cdef double compute_cost_of_combined_plan(omap[int, vector[Node]]& plans, 
+                                          omap[string, Coverage]& coverage,
+                                          omap[int, Coverage]& tree_cov, 
+                                          const int sample_size,
+                                          vector[bool]& selected_trees):
+    cdef Node stage1_plan, stage2_plan              
+    cdef Coverage prev_coverage                                                                                  
+    cdef int i, j, num_trees = selected_trees.size()
+    cdef bool flag1, flag2
+    flag1 = True
+    flag2 = True  
+    for i in range(num_trees):
+        if selected_trees[i]:                                          
+            prev_coverage.or_coverage(tree_cov[i])                                
+            for j in range(plans[i].size()):                                        
+                if flag1:                                                            
+                    stage1_plan = plans[i][j]                                     
+                    flag1 = False                                                    
+                else:                                                               
+                    stage1_plan = merge_plans(stage1_plan, plans[i][j])   
+        else:
+            for j in range(plans[i].size()):                                    
+                if flag2:                                                       
+                    stage2_plan = plans[i][j]                                   
+                    flag2 = False                                               
+                else:                                                           
+                    stage2_plan = merge_plans(stage2_plan, plans[i][j])    
+    cdef double selectivity, stage1_cost, stage2_cost
+    stage1_cost = compute_plan_cost(stage1_plan, coverage, sample_size)    
+    stage2_cost = compute_plan_cost(stage2_plan, coverage, sample_size)              
+    selectivity = <double>prev_coverage.sum() / <double>sample_size
+    return stage1_cost + selectivity*stage2_cost
+
+cdef void find_random_subset(vector[bool]& selected_trees):
+    cdef int num_trees = selected_trees.size(), num_trees_to_remove, i, j
+    num_trees_to_remove = num_trees - (num_trees / 2) - 1                       
+    i = 0
+    while i < num_trees_to_remove:
+        j = -1
+        while j == -1 or (not selected_trees[j]):
+            j = random.randint(0, num_trees - 1)
+        selected_trees[j] = False
+        i += 1     
+
+cdef void find_optimal_subset(omap[int, vector[Node]]& plans, 
+                         omap[string, Coverage]& coverage,
+                         omap[int, Coverage]& tree_cov,
+                         vector[bool]& selected_trees,
+                         const int sample_size):
+
+    cdef Node combined_plan
+    cdef int i, j, num_trees = selected_trees.size(), num_trees_to_remove
+    cdef bool flag
+
+    flag = True
+
+    for i in range(num_trees):
+        for j in range(plans[i].size()):
+            if flag:
+                combined_plan = plans[i][j]
+                flag = False
+            else:
+                combined_plan = merge_plans(combined_plan, plans[i][j])        
+
+    cdef double cost, curr_cost = compute_plan_cost(combined_plan, coverage, sample_size)
+    
+    num_trees_to_remove = num_trees - (num_trees / 2) - 1                                           
+
+    for j in xrange(num_trees_to_remove):                                       
+        max_reduction = 0.0
+        max_cost = 0.0                                                         
+        max_tree = -1                                                           
+        for i in xrange(num_trees):                                                     
+            if not selected_trees[i]:                                               
+                continue
+            selected_trees[i] = False
+            cost = compute_cost_of_combined_plan(plans, coverage, tree_cov, 
+                                                 sample_size, selected_trees)
+            selected_trees[i] = True
+            if curr_cost - cost >= max_reduction:
+                max_reduction = curr_cost - cost
+                max_cost = cost
+                max_tree = i
+        selected_trees[max_tree] = False
+        curr_cost = max_cost
  
 cdef Node get_default_execution_plan(vector[Tree]& trees,
                                      omap[string, Coverage]& coverage,
@@ -560,8 +644,8 @@ cdef Node get_default_execution_plan(vector[Tree]& trees,
     num_trees_to_select = (n / 2) + 1                                         
 #    num_trees_to_select = n
     for i in xrange(n):                                                         
-        selected_trees.push_back(False)                                         
-                                                                           
+        selected_trees.push_back(True)                                         
+    '''                                                                       
     for j in xrange(num_trees_to_select):                                       
         max_score = 0.0                                                         
         max_tree = -1                                                           
@@ -607,10 +691,12 @@ cdef Node get_default_execution_plan(vector[Tree]& trees,
             prev_coverage.or_coverage(tree_cov[max_tree])                       
         else:                                                                   
             prev_coverage.and_coverage(tree_cov[max_tree])                      
-                                                                                
+    '''
+#    find_optimal_subset(plans, coverage, tree_cov, selected_trees, sample_size)                                                                            
+    find_random_subset(selected_trees)
     print 'total number of trees : ' , n
     print 'selected trees : '
-    '''
+ 
     cdef Node combined_plan
     cdef int p = 0
     for i in xrange(n):
@@ -618,6 +704,7 @@ cdef Node get_default_execution_plan(vector[Tree]& trees,
             rem_trees.push_back(trees[i])
         else:
             sel_trees.push_back(trees[i])
+            '''
             print i, plans[i].size()
             k = 0
             if p == 0:
@@ -627,7 +714,7 @@ cdef Node get_default_execution_plan(vector[Tree]& trees,
             while k < plans[i].size():
                 combined_plan = merge_plans(combined_plan, plans[i][k])
                 k += 1
-    '''
+            '''
     return optimize_plans(plans, num_join_nodes, selected_trees)
 #    return combined_plan 
 

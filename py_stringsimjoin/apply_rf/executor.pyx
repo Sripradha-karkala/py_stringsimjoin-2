@@ -368,20 +368,20 @@ cdef pair[vector[pair[int, int]], vector[double]] execute_join_node(vector[strin
 
     if predicate.sim_measure_type.compare('COSINE') == 0:
         load_tok(predicate.tokenizer_type, working_dir, ltokens, rtokens)           
-        output = set_sim_join(ltokens, rtokens, 0, predicate.threshold)
+        output = set_sim_join(ltokens, rtokens, 0, predicate.threshold, n_jobs)
     elif predicate.sim_measure_type.compare('DICE') == 0:
         load_tok(predicate.tokenizer_type, working_dir, ltokens, rtokens)       
-        output = set_sim_join(ltokens, rtokens, 1, predicate.threshold)                   
+        output = set_sim_join(ltokens, rtokens, 1, predicate.threshold, n_jobs)                   
     elif predicate.sim_measure_type.compare('JACCARD') == 0:
         load_tok(predicate.tokenizer_type, working_dir, ltokens, rtokens)       
-        output = set_sim_join(ltokens, rtokens, 2, predicate.threshold)                   
+        output = set_sim_join(ltokens, rtokens, 2, predicate.threshold, n_jobs)                   
     elif predicate.sim_measure_type.compare('OVERLAP_COEFFICIENT') == 0:
         load_tok(predicate.tokenizer_type, working_dir, ltokens, rtokens)       
-        output = ov_coeff_join(ltokens, rtokens, predicate.threshold)
+        output = ov_coeff_join(ltokens, rtokens, predicate.threshold, n_jobs)
     elif predicate.sim_measure_type.compare('EDIT_DISTANCE') == 0:
         load_tok('qg2_bag', working_dir, ltokens, rtokens)       
         output = ed_join(ltokens, rtokens, 2, predicate.threshold, 
-                         lstrings, rstrings)
+                         lstrings, rstrings, n_jobs)
     return output
 
 cdef vector[pair[int, int]] execute_filter_node(vector[pair[int, int]]& candset, 
@@ -829,24 +829,24 @@ def perform_join(path1, attr1, path2, attr2, tok_type, sim_type, threshold, cons
     if sim_type == 'COSINE':
         load_tok(tok_type, working_dir, ltokens, rtokens)                           
         threshold = threshold - 0.0001                                              
-        output = set_sim_join(ltokens, rtokens, 0, threshold)           
+        output = set_sim_join(ltokens, rtokens, 0, threshold, 4)           
     elif sim_type == 'DICE':
         load_tok(tok_type, working_dir, ltokens, rtokens)                       
         threshold = threshold - 0.0001                                          
-        output = set_sim_join(ltokens, rtokens, 1, threshold)   
+        output = set_sim_join(ltokens, rtokens, 1, threshold, 4)   
     elif sim_type == 'JACCARD':
         load_tok(tok_type, working_dir, ltokens, rtokens)                       
         threshold = threshold - 0.0001                                          
-        output = set_sim_join(ltokens, rtokens, 2, threshold)           
+        output = set_sim_join(ltokens, rtokens, 2, threshold, 4)           
     elif sim_type == 'OVERLAP_COEFFICIENT':
         load_tok(tok_type, working_dir, ltokens, rtokens)                       
         threshold = threshold - 0.0001
-        output = ov_coeff_join(ltokens, rtokens, threshold)
+        output = ov_coeff_join(ltokens, rtokens, threshold, 4)
     elif sim_type == 'EDIT_DISTANCE':
         load_tok('qg2_bag', working_dir, ltokens, rtokens)
         load_strings(path1, attr1, lstrings)                                        
         load_strings(path2, attr2, rstrings)                         
-        output = ed_join(ltokens, rtokens, 2, threshold, lstrings, rstrings)
+        output = ed_join(ltokens, rtokens, 2, threshold, lstrings, rstrings, 4)
    
     output_pairs = []
     for i in xrange(output.first.size()):
@@ -869,7 +869,7 @@ def test_jac(sim_type, threshold):
 #        print 'i= ', i
 #    if sim_type == 3:
     for i in xrange(50):
-        output1 = ov_coeff_join(ltokens, rtokens, threshold)             
+        output1 = ov_coeff_join(ltokens, rtokens, threshold, 4)             
         print 'output size : ', output.size()                                       
 #    else:
 #        output1 = set_sim_join(ltokens, rtokens, sim_type, threshold)
@@ -895,7 +895,7 @@ def test_ed(df1, attr1, df2, attr2, threshold):
     cdef pair[vector[pair[int, int]], vector[double]] output
     cdef int i
     for i in xrange(50):                                                          
-        output = ed_join(ltokens, rtokens, 2, threshold, lstrings, rstrings)            
+        output = ed_join(ltokens, rtokens, 2, threshold, lstrings, rstrings, 4)            
         print 'output size : ', output.size()                                       
     print 'time : ', time.time() - st                                           
 
