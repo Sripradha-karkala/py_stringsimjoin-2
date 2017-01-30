@@ -24,3 +24,8 @@ cdef double left_length(const string& str1, const string& str2) nogil
 cdef double right_length(const string& str1, const string& str2) nogil
 cdef double length_sum(const string& str1, const string& str2) nogil
 cdef double length_diff(const string& str1, const string& str2) nogil
+
+cdef double jaccard_using_overlap(const int& size1, const int& size2, const double& overlap_score) nogil  
+cdef double dice_using_overlap(const int& size1, const int& size2, const double& overlap_score) nogil     
+cdef double cosine_using_overlap(const int& size1, const int& size2, const double& overlap_score) nogil   
+cdef double overlap_coeff_using_overlap(const int& size1, const int& size2, const double& overlap_score) nogil

@@ -469,13 +469,60 @@ cdef Node optimize_plans(omap[int, vector[Node]]& plans,
     
     generate_new_plans(plans_to_optimize, plans_to_update, pred_index, 
                        optimized_plans)
+    cdef vector[Node] pushed_optimized_plans
+    push_filters(optimized_plans, pushed_optimized_plans)
     cdef Node optimized_plan
-    for i in range(optimized_plans.size()):                                                         
+    for i in range(pushed_optimized_plans.size()):                                                         
         if i == 0:                                                          
-            optimized_plan = optimized_plans[i]
+            optimized_plan = pushed_optimized_plans[i]
         else:                                  
-            optimized_plan = merge_plans(optimized_plan, optimized_plans[i])         
+            optimized_plan = merge_plans(optimized_plan, pushed_optimized_plans[i])         
     return optimized_plan
+
+cdef void push_filters(vector[Node]& plans, vector[Node]& new_plans):
+    cdef int i, j, k
+    cdef vector[Node] nodes
+    cdef string node_type                                                       
+    cdef Node curr_node, new_node
+    seen_tok = {}
+    for i in range(plans.size()):
+        curr_node = plans[i]
+        nodes = vector[Node]()
+        new_node = Node(curr_node.node_type)                            
+        new_node.set_tree_id(curr_node.tree_id)                         
+        new_node.set_rule_id(curr_node.rule_id)                         
+        nodes.push_back(new_node)                                       
+        curr_node = curr_node.children[0]  
+        j = 1
+        while curr_node.node_type.compare("OUTPUT") != 0:
+            if curr_node.node_type.compare("JOIN") == 0:                                              
+                new_node = Node(curr_node.node_type)                                              
+                new_node.predicates.push_back(curr_node.predicates[0])                                           
+                nodes.push_back(new_node)
+                curr_node = curr_node.children[0]
+                j += 1
+                continue
+            if (curr_node.predicates[0].tokenizer_type.compare("none") == 0 or 
+                seen_tok.get(curr_node.predicates[0].tokenizer_type) is None):
+                new_node = Node(curr_node.node_type)
+                new_node.predicates.push_back(curr_node.predicates[0])                                      
+                nodes.push_back(new_node)
+                seen_tok[curr_node.predicates[0].tokenizer_type] = j
+                j += 1
+            else:
+                nodes[seen_tok[curr_node.predicates[0].tokenizer_type]].predicates.push_back(curr_node.predicates[0])
+                                                       
+            curr_node = curr_node.children[0]      
+
+        new_node = Node(curr_node.node_type)                                          
+        new_node.set_tree_id(curr_node.tree_id)                                       
+        new_node.set_rule_id(curr_node.rule_id)                                       
+        nodes.push_back(new_node)
+
+        for k in xrange(nodes.size() - 2, -1, -1):                              
+            nodes[k].add_child(nodes[k+1])                                      
+                                                                                
+        new_plans.push_back(nodes[0])         
 
 
 cdef void generate_new_plans(vector[Node]& old_plans,
@@ -692,8 +739,8 @@ cdef Node get_default_execution_plan(vector[Tree]& trees,
         else:                                                                   
             prev_coverage.and_coverage(tree_cov[max_tree])                      
     '''
-#    find_optimal_subset(plans, coverage, tree_cov, selected_trees, sample_size)                                                                            
-    find_random_subset(selected_trees)
+    find_optimal_subset(plans, coverage, tree_cov, selected_trees, sample_size)                                                                            
+#    find_random_subset(selected_trees)
     print 'total number of trees : ' , n
     print 'selected trees : '
  

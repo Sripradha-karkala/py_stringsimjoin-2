@@ -3,7 +3,22 @@ from libc.math cimport sqrt
 from libc.stdlib cimport malloc, free, abs
 from libcpp.vector cimport vector             
 from libcpp.set cimport set as oset                                             
-                                  
+
+cdef double jaccard_using_overlap(const int& size1, const int& size2, 
+                                  const double& overlap_score) nogil:
+    return overlap_score / <double>(size1 + size2 - overlap_score)
+
+cdef double dice_using_overlap(const int& size1, const int& size2, 
+                               const double& overlap_score) nogil:  
+    return (overlap_score * 2.0) / <double>(size1 + size2)                               
+
+cdef double cosine_using_overlap(const int& size1, const int& size2, 
+                                 const double& overlap_score) nogil:  
+    return overlap_score / sqrt(size1*size2)                                  
+
+cdef double overlap_coeff_using_overlap(const int& size1, const int& size2, 
+                                        const double& overlap_score) nogil:  
+    return overlap_score / <double>int_min(size1, size2)                      
 
 cdef double jaccard(const vector[int]& tokens1, const vector[int]& tokens2) nogil:
     cdef int i=0, j=0, size1 = tokens1.size(), size2 = tokens2.size()           

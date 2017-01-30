@@ -6,7 +6,8 @@ from libcpp.map cimport map as omap
 
 from py_stringsimjoin.apply_rf.sim_functions cimport cosine, dice, jaccard, \
   overlap, overlap_coefficient, edit_distance, cosine_str, dice_str, jaccard_str, \
-  left_length, right_length, length_sum, length_diff     
+  left_length, right_length, length_sum, length_diff, cosine_using_overlap, \
+  dice_using_overlap, jaccard_using_overlap, overlap_coeff_using_overlap     
 from py_stringsimjoin.apply_rf.inverted_index cimport InvertedIndex             
  
 
@@ -51,6 +52,16 @@ cdef token_simfnptr get_token_sim_function(const int sim_type) nogil:
         return overlap
     elif sim_type == 4:
         return overlap_coefficient
+
+cdef overlap_simfnptr get_overlap_sim_function(const int sim_type) nogil:           
+    if sim_type == 0: # COSINE                                                  
+        return cosine_using_overlap                                                           
+    elif sim_type == 1: # DICE                                                  
+        return dice_using_overlap                                                             
+    elif sim_type == 2: # JACCARD:                                              
+        return jaccard_using_overlap                                                          
+    elif sim_type == 4:                                                         
+        return overlap_coeff_using_overlap  
 
 cdef str_simfnptr get_str_sim_function(const int sim_type) nogil:     
     if sim_type == 5: # EDIT_DISTANCE                                                  
