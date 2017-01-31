@@ -401,20 +401,24 @@ cdef pair[vector[pair[int, int]], vector[double]] execute_join_node(
 
     if predicate.sim_measure_type.compare('COSINE') == 0:
         load_tok(predicate.tokenizer_type, working_dir, ltokens, rtokens)           
-        output = set_sim_join(ltokens, rtokens, 0, predicate.threshold, n_jobs, 
-                              cache, get_tok_type(predicate.tokenizer_type))
+        output = set_sim_join_no_cache(ltokens, rtokens, 0, predicate.threshold, n_jobs)
+#        output = set_sim_join(ltokens, rtokens, 0, predicate.threshold, n_jobs, 
+#                              cache, get_tok_type(predicate.tokenizer_type))
     elif predicate.sim_measure_type.compare('DICE') == 0:
         load_tok(predicate.tokenizer_type, working_dir, ltokens, rtokens)       
-        output = set_sim_join(ltokens, rtokens, 1, predicate.threshold, n_jobs, 
-                              cache, get_tok_type(predicate.tokenizer_type))                   
+        output = set_sim_join_no_cache(ltokens, rtokens, 1, predicate.threshold, n_jobs)
+#        output = set_sim_join(ltokens, rtokens, 1, predicate.threshold, n_jobs, 
+#                              cache, get_tok_type(predicate.tokenizer_type))                   
     elif predicate.sim_measure_type.compare('JACCARD') == 0:
-        load_tok(predicate.tokenizer_type, working_dir, ltokens, rtokens)       
-        output = set_sim_join(ltokens, rtokens, 2, predicate.threshold, n_jobs, 
-                              cache, get_tok_type(predicate.tokenizer_type))                   
+        load_tok(predicate.tokenizer_type, working_dir, ltokens, rtokens)
+        output = set_sim_join_no_cache(ltokens, rtokens, 2, predicate.threshold, n_jobs)       
+#        output = set_sim_join(ltokens, rtokens, 2, predicate.threshold, n_jobs, 
+#                              cache, get_tok_type(predicate.tokenizer_type))                   
     elif predicate.sim_measure_type.compare('OVERLAP_COEFFICIENT') == 0:
         load_tok(predicate.tokenizer_type, working_dir, ltokens, rtokens)       
-        output = ov_coeff_join(ltokens, rtokens, predicate.threshold, n_jobs, 
-                               cache, get_tok_type(predicate.tokenizer_type))
+        output = ov_coeff_join_no_cache(ltokens, rtokens, predicate.threshold, n_jobs)
+#        output = ov_coeff_join(ltokens, rtokens, predicate.threshold, n_jobs, 
+#                               cache, get_tok_type(predicate.tokenizer_type))
     elif predicate.sim_measure_type.compare('EDIT_DISTANCE') == 0:
         load_tok('qg2_bag', working_dir, ltokens, rtokens)       
         output = ed_join(ltokens, rtokens, 2, predicate.threshold, 
@@ -749,7 +753,7 @@ cdef vector[int] execute_filters(vector[pair[int, int]]& candset,
     cdef vector[pair[int, int]] partitions                                      
     cdef vector[int] final_output_pairs, part_pairs                             
     cdef vector[vector[int]] output_pairs                                       
-    cdef vector[omap[pair[int, int], double]] tmp_cache                         
+#    cdef vector[omap[pair[int, int], double]] tmp_cache                         
     cdef int n, start=0, end, i, tok_type = get_tok_type(predicates[0].tokenizer_type)                                                 
                                                                                 
     if top_level_node:                                                          
@@ -767,7 +771,7 @@ cdef vector[int] execute_filters(vector[pair[int, int]]& candset,
                                                                                 
         start = end                                                             
         output_pairs.push_back(vector[int]())                                   
-        tmp_cache.push_back(omap[pair[int, int], double]())                     
+#        tmp_cache.push_back(omap[pair[int, int], double]())                     
                                                                                 
     cdef vector[int] sim_types, comp_types                                                
 
@@ -779,17 +783,17 @@ cdef vector[int] execute_filters(vector[pair[int, int]]& candset,
     for i in prange(n_jobs, nogil=True):                                        
         execute_filters_part(partitions[i], candset, pair_ids, top_level_node,
                              ltokens, rtokens, lstrings, rstrings,         
-                             predicates, sim_types, comp_types, output_pairs[i],
-                             tmp_cache[i], cache, tok_type)
+                             predicates, sim_types, comp_types, output_pairs[i])
+#                             tmp_cache[i], cache, tok_type)
     print 'parallen end'                                                        
-    cdef pair[pair[int, int], double] cache_entry                               
+#    cdef pair[pair[int, int], double] cache_entry                               
 
     for i in range(n_jobs):                                             
         final_output_pairs.insert(final_output_pairs.end(), 
                                   output_pairs[i].begin(), 
                                   output_pairs[i].end())
-        for cache_entry in tmp_cache[i]:                                        
-            cache.add_entry(tok_type, cache_entry.first, cache_entry.second)    
+#        for cache_entry in tmp_cache[i]:                                        
+#            cache.add_entry(tok_type, cache_entry.first, cache_entry.second)    
                                                                                 
     return final_output_pairs               
 
@@ -803,9 +807,7 @@ cdef void execute_filters_part(pair[int, int] partition,
                                    vector[string]& rstrings,                    
                                    vector[Predicatecpp]& predicates,                     
                                    vector[int]& sim_types, vector[int]& comp_types,                 
-                               vector[int]& output_pairs,
-                               omap[pair[int, int], double]& tmp_cache, 
-                               Cache& cache, int tok_type) nogil:            
+                               vector[int]& output_pairs) nogil:            
                                                                                 
     cdef pair[int, int] cand                                                    
     cdef int i, j, size1, size2                                                                  
@@ -821,10 +823,10 @@ cdef void execute_filters_part(pair[int, int] partition,
     if top_level_node:                                                      
         for i in range(partition.first, partition.second):                  
             cand  = candset[i]
-            overlap_score = cache.lookup(tok_type, cand)               
-            if overlap_score == -1:                                         
-                overlap_score = overlap(ltokens[cand.first], rtokens[cand.second])       
-                tmp_cache[cand] = overlap_score 
+#            overlap_score = cache.lookup(tok_type, cand)               
+#            if overlap_score == -1:                                         
+            overlap_score = overlap(ltokens[cand.first], rtokens[cand.second])       
+#                tmp_cache[cand] = overlap_score 
             size1 = ltokens[cand.first].size()
             size2 = rtokens[cand.second].size()
             flag = True
@@ -838,10 +840,10 @@ cdef void execute_filters_part(pair[int, int] partition,
     else:                                                                   
         for i in range(partition.first, partition.second):                  
             cand  = candset[pair_ids[i]]                                                  
-            overlap_score = cache.lookup(tok_type, cand)                        
-            if overlap_score == -1:                                             
-                overlap_score = overlap(ltokens[cand.first], rtokens[cand.second])
-                tmp_cache[cand] = overlap_score    
+#            overlap_score = cache.lookup(tok_type, cand)                        
+#            if overlap_score == -1:                                             
+            overlap_score = overlap(ltokens[cand.first], rtokens[cand.second])
+#                tmp_cache[cand] = overlap_score    
             size1 = ltokens[cand.first].size()                                  
             size2 = rtokens[cand.second].size()                                 
             flag = True                                                         
