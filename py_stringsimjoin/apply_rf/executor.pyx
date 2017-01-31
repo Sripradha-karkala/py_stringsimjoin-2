@@ -16,20 +16,21 @@ from libc.stdlib cimport atoi
 from py_stringsimjoin.apply_rf.predicate import Predicate                       
 from py_stringsimjoin.apply_rf.execution_plan import get_predicate_dict
 from py_stringsimjoin.apply_rf.tokenizers cimport tokenize, load_tok, tokenize_str
-from py_stringsimjoin.apply_rf.set_sim_join cimport set_sim_join, set_sim_join1
-from py_stringsimjoin.apply_rf.overlap_coefficient_join cimport ov_coeff_join                
+from py_stringsimjoin.apply_rf.set_sim_join cimport set_sim_join, set_sim_join_no_cache
+from py_stringsimjoin.apply_rf.overlap_coefficient_join cimport ov_coeff_join, ov_coeff_join_no_cache                
 from py_stringsimjoin.apply_rf.edit_distance_join cimport ed_join   
 from py_stringsimjoin.apply_rf.sim_functions cimport cosine, dice, jaccard, overlap      
 from py_stringsimjoin.apply_rf.utils cimport compfnptr, str_simfnptr, \
   token_simfnptr, get_comp_type, get_comparison_function, get_sim_type, \
   get_overlap_sim_function, get_str_sim_function, get_token_sim_function, \
-  simfnptr_str, get_sim_function_str, overlap_simfnptr
+  simfnptr_str, get_sim_function_str, overlap_simfnptr, get_tok_type
 from py_stringsimjoin.apply_rf.predicatecpp cimport Predicatecpp                
 from py_stringsimjoin.apply_rf.node cimport Node                                
 from py_stringsimjoin.apply_rf.coverage cimport Coverage         
 from py_stringsimjoin.apply_rf.rule cimport Rule                                
 from py_stringsimjoin.apply_rf.tree cimport Tree  
 from py_stringsimjoin.apply_rf.ex_plan cimport get_default_execution_plan, generate_ex_plan_for_stage2, compute_predicate_cost_and_coverage, extract_pos_rules_from_rf, generate_local_optimal_plans, generate_overall_plan  
+from py_stringsimjoin.apply_rf.cache cimport Cache
 
 cdef extern from "string.h" nogil:                                              
     char *strtok (char *inp_str, const char *delimiters)     
@@ -56,7 +57,7 @@ def test_execute_rf(rf, feature_table, l1, l2, path1, attr1, path2, attr2, worki
         l.push_back(lstrings[int(s)])                                       
     for s in l2:                                                                
         r.push_back(rstrings[int(s)])                                       
-    print 'computing coverage'                                                  
+    print ' computing coverage'                                                  
     compute_predicate_cost_and_coverage(l, r, trees, coverage, tree_cov)                 
     cdef Node global_plan, join_node
     global_plan = get_default_execution_plan(trees, coverage, tree_cov, 
@@ -66,12 +67,18 @@ def test_execute_rf(rf, feature_table, l1, l2, path1, attr1, path2, attr2, worki
     for join_node in global_plan.children:                                             
          print 'JOIN', join_node.predicates[0].pred_name
 
+    tok_st = time.time()
     print 'tokenizing strings'                                                  
     tokenize_strings(trees, lstrings, rstrings, working_dir)                    
     print 'finished tokenizing. executing plan'                                 
+    tok_time = time.time() - tok_st
+    cdef Cache cache = Cache(6)
 
-    execute_plan(global_plan, trees1, lstrings, rstrings, working_dir, n_jobs)  
-                                                                                
+    cdef double join_time = 0.0
+    stage1_st = time.time()
+    execute_plan(global_plan, trees1, lstrings, rstrings, working_dir, n_jobs, cache)  
+    stage1_time = time.time() - stage1_st
+                                                                            
     cdef pair[vector[pair[int, int]], vector[int]] candset_votes                
     candset_votes = merge_candsets(num_total_trees, trees1,        
                                    working_dir)                                 
@@ -83,15 +90,20 @@ def test_execute_rf(rf, feature_table, l1, l2, path1, attr1, path2, attr2, worki
                                         trees2, sample_size)  
     print 'executing remaining trees'                                           
     cdef int label = 1, num_trees_processed=trees1.size()                                                          
-    i = 0                                                                       
+    i = 0
+    stage2_st = time.time()                                                                       
     while candset_votes.first.size() > 0 and i < plans.size():                  
         candset_votes = execute_tree_plan(candset_votes, lstrings, rstrings, plans[i],
                                   num_total_trees, num_trees_processed, label,  
-                                  n_jobs, working_dir)                          
+                                  n_jobs, working_dir, cache)                          
         num_trees_processed += 1                                                
         label += 1                                                              
-    print 'total time : ', time.time() - start_time   
+    stage2_time = time.time() - stage2_st
 
+    print 'total time : ', time.time() - start_time   
+    print 'tok time : ', tok_time
+    print 'stage1 time : ', stage1_time
+    print 'stage2 time : ', stage2_time
 
 def execute_rf(rf, feature_table, l1, l2, path1, attr1, path2, attr2, working_dir, n_jobs):                                          
     start_time = time.time()
@@ -144,8 +156,9 @@ def execute_rf(rf, feature_table, l1, l2, path1, attr1, path2, attr2, working_di
 
     print 'tokenizing strings'
     tokenize_strings(trees, lstrings, rstrings, working_dir)                    
+    cdef Cache cache = Cache(6)                                                 
     print 'finished tokenizing. executing plan'
-    execute_plan(global_plan, trees1, lstrings, rstrings, working_dir, n_jobs)           
+    execute_plan(global_plan, trees1, lstrings, rstrings, working_dir, n_jobs, cache)           
 
     cdef pair[vector[pair[int, int]], vector[int]] candset_votes                
     candset_votes = merge_candsets(num_total_trees, trees1,        
@@ -161,13 +174,13 @@ def execute_rf(rf, feature_table, l1, l2, path1, attr1, path2, attr2, working_di
     while candset_votes.first.size() > 0 and i < plans.size():                  
         candset_votes = execute_tree_plan(candset_votes, lstrings, rstrings, plans[i], 
                                   num_total_trees, num_trees_processed, label,
-                                  n_jobs, working_dir)  
+                                  n_jobs, working_dir, cache)  
         num_trees_processed += 1
         label += 1
     print 'total time : ', time.time() - start_time
 
 cdef void execute_plan(Node& root, vector[Tree]& trees, vector[string]& lstrings, 
-        vector[string]& rstrings, const string& working_dir, int n_jobs):
+        vector[string]& rstrings, const string& working_dir, int n_jobs, Cache& cache):
 #    tokenize_strings(trees, lstrings, rstrings, working_dir)
 
     cdef pair[vector[pair[int, int]], vector[double]] candset
@@ -176,20 +189,25 @@ cdef void execute_plan(Node& root, vector[Tree]& trees, vector[string]& lstrings
 
     cdef Node join_node, child_node, curr_node
     print root.node_type, root.predicates.size(), root.children.size()
+    join_time = 0
     for join_node in root.children:
          print 'JOIN', join_node.predicates[0].sim_measure_type, join_node.predicates[0].tokenizer_type, join_node.predicates[0].comp_op, join_node.predicates[0].threshold
+         js = time.time()
          candset = execute_join_node(lstrings, rstrings, join_node.predicates[0], 
-                                     n_jobs, working_dir)
-         print 'join completed. starting subtree execution.'                                                 
-         execute_join_subtree(candset.first, candset.second, lstrings, rstrings, join_node, n_jobs, working_dir) 
+                                     n_jobs, working_dir, cache)
+         print 'join completed. starting subtree execution.'
+         join_time += time.time() - js                                                 
+         execute_join_subtree(candset.first, candset.second, lstrings, rstrings, join_node, n_jobs, working_dir, cache) 
          print 'join subtree execution completed'
+    print 'join time : ', join_time
 
 
 cdef pair[vector[pair[int, int]], vector[int]] execute_join_subtree(               
                     vector[pair[int, int]]& candset,
                     vector[double]& feature_values,   
                     vector[string]& lstrings, vector[string]& rstrings,            
-                    Node& join_subtree, int n_jobs, const string& working_dir):          
+                    Node& join_subtree, int n_jobs, const string& working_dir, 
+                    Cache& cache):          
     cdef Node child_node, grand_child_node, curr_node                           
                                                                                 
     cdef vector[pair[Node, int]] queue                                          
@@ -239,9 +257,15 @@ cdef pair[vector[pair[int, int]], vector[int]] execute_join_subtree(
                curr_node.node_type.compare("FILTER") == 0 and                   
                curr_node.children.size() < 2):
             print 'FILTER', curr_node.predicates[0].sim_measure_type, curr_node.predicates[0].tokenizer_type, curr_node.predicates[0].comp_op, curr_node.predicates[0].threshold
-            pair_ids = execute_filter_node1(candset, pair_ids, top_level_node,
-                                            lstrings, rstrings,                 
-                                            curr_node.predicates[0], n_jobs, working_dir)
+            if curr_node.predicates.size() > 1:
+                pair_ids = execute_filters(candset, pair_ids, top_level_node,
+                                                lstrings, rstrings,
+                                                curr_node.predicates, n_jobs, working_dir, cache)
+            else:
+                pair_ids = execute_filter_node1(candset, pair_ids, top_level_node,
+                                                lstrings, rstrings,                 
+                                                curr_node.predicates[0], n_jobs, 
+                                                working_dir, cache)
             curr_node = curr_node.children[0]                                   
             top_level_node = False                                              
                                                                                 
@@ -278,9 +302,17 @@ cdef pair[vector[pair[int, int]], vector[int]] execute_join_subtree(
                curr_index += 1                                                  
         elif curr_node.node_type.compare("FILTER") == 0:                        
             print 'FILTER', curr_node.predicates[0].sim_measure_type, curr_node.predicates[0].tokenizer_type, curr_node.predicates[0].comp_op, curr_node.predicates[0].threshold
-            pair_ids = execute_filter_node1(candset, pair_ids, top_level_node,
-                                           lstrings, rstrings,                  
-                                           curr_node.predicates[0], n_jobs, working_dir)
+            if curr_node.predicates.size() > 1:
+                pair_ids = execute_filters(candset, pair_ids, top_level_node,
+                                                lstrings, rstrings,
+                                                curr_node.predicates, n_jobs, 
+                                                working_dir, cache)
+            else:
+                pair_ids = execute_filter_node1(candset, pair_ids, top_level_node,
+                                                lstrings, rstrings,
+                                                curr_node.predicates[0], n_jobs, 
+                                                working_dir, cache)
+
             for child_node in curr_node.children:                               
                 queue.push_back(pair[Node, int](child_node, curr_index))        
                                                                                 
@@ -359,24 +391,30 @@ cdef void write_output_pairs(vector[pair[int,int]]& output_pairs, const string& 
         f.write(s + '\n')                                                       
     f.close()       
 
-cdef pair[vector[pair[int, int]], vector[double]] execute_join_node(vector[string]& lstrings, vector[string]& rstrings,
-                            Predicatecpp predicate, int n_jobs, const string& working_dir):
+cdef pair[vector[pair[int, int]], vector[double]] execute_join_node(
+                            vector[string]& lstrings, vector[string]& rstrings,
+                            Predicatecpp predicate, int n_jobs, 
+                            const string& working_dir, Cache& cache):
     cdef vector[vector[int]] ltokens, rtokens
 
     cdef pair[vector[pair[int, int]], vector[double]] output
 
     if predicate.sim_measure_type.compare('COSINE') == 0:
         load_tok(predicate.tokenizer_type, working_dir, ltokens, rtokens)           
-        output = set_sim_join(ltokens, rtokens, 0, predicate.threshold, n_jobs)
+        output = set_sim_join(ltokens, rtokens, 0, predicate.threshold, n_jobs, 
+                              cache, get_tok_type(predicate.tokenizer_type))
     elif predicate.sim_measure_type.compare('DICE') == 0:
         load_tok(predicate.tokenizer_type, working_dir, ltokens, rtokens)       
-        output = set_sim_join(ltokens, rtokens, 1, predicate.threshold, n_jobs)                   
+        output = set_sim_join(ltokens, rtokens, 1, predicate.threshold, n_jobs, 
+                              cache, get_tok_type(predicate.tokenizer_type))                   
     elif predicate.sim_measure_type.compare('JACCARD') == 0:
         load_tok(predicate.tokenizer_type, working_dir, ltokens, rtokens)       
-        output = set_sim_join(ltokens, rtokens, 2, predicate.threshold, n_jobs)                   
+        output = set_sim_join(ltokens, rtokens, 2, predicate.threshold, n_jobs, 
+                              cache, get_tok_type(predicate.tokenizer_type))                   
     elif predicate.sim_measure_type.compare('OVERLAP_COEFFICIENT') == 0:
         load_tok(predicate.tokenizer_type, working_dir, ltokens, rtokens)       
-        output = ov_coeff_join(ltokens, rtokens, predicate.threshold, n_jobs)
+        output = ov_coeff_join(ltokens, rtokens, predicate.threshold, n_jobs, 
+                               cache, get_tok_type(predicate.tokenizer_type))
     elif predicate.sim_measure_type.compare('EDIT_DISTANCE') == 0:
         load_tok('qg2_bag', working_dir, ltokens, rtokens)       
         output = ed_join(ltokens, rtokens, 2, predicate.threshold, 
@@ -387,7 +425,8 @@ cdef pair[vector[pair[int, int]], vector[int]] execute_tree_plan(
                     pair[vector[pair[int, int]], vector[int]]& candset_votes, 
                     vector[string]& lstrings, vector[string]& rstrings,
                     Node& plan, int num_total_trees, int num_trees_processed,
-                    int label, int n_jobs, const string& working_dir):
+                    int label, int n_jobs, const string& working_dir, 
+                    Cache& cache):
     cdef Node child_node, grand_child_node, curr_node
 
     cdef vector[pair[Node, int]] queue
@@ -424,9 +463,17 @@ cdef pair[vector[pair[int, int]], vector[int]] execute_tree_plan(
                curr_node.node_type.compare("FILTER") == 0 and 
                curr_node.children.size() < 2):
             print 'FILTER', curr_node.predicates[0].sim_measure_type, curr_node.predicates[0].tokenizer_type, curr_node.predicates[0].comp_op, curr_node.predicates[0].threshold
-            pair_ids = execute_filter_node1(candset_votes.first, pair_ids, top_level_node,
-                                            lstrings, rstrings,
-                                            curr_node.predicates[0], n_jobs, working_dir)
+            if curr_node.predicates.size() > 1:
+                pair_ids = execute_filters(candset_votes.first, pair_ids, top_level_node,
+                                                lstrings, rstrings,
+                                                curr_node.predicates, n_jobs, 
+                                                working_dir, cache)
+            else:
+                pair_ids = execute_filter_node1(candset_votes.first, pair_ids, top_level_node,
+                                                lstrings, rstrings,
+                                                curr_node.predicates[0], n_jobs, 
+                                                working_dir, cache)
+
             curr_node = curr_node.children[0]
             top_level_node = False
         
@@ -459,9 +506,18 @@ cdef pair[vector[pair[int, int]], vector[int]] execute_tree_plan(
                curr_index += 1         
         elif curr_node.node_type.compare("FILTER") == 0:
             print 'FILTER', curr_node.predicates[0].sim_measure_type, curr_node.predicates[0].tokenizer_type, curr_node.predicates[0].comp_op, curr_node.predicates[0].threshold
-            pair_ids = execute_filter_node1(candset_votes.first, pair_ids, top_level_node,
-                                           lstrings, rstrings,      
-                                           curr_node.predicates[0], n_jobs, working_dir)           
+            if curr_node.predicates.size() > 1:
+                pair_ids = execute_filters(candset_votes.first, pair_ids, 
+                                           top_level_node, lstrings, rstrings,
+                                           curr_node.predicates, n_jobs, 
+                                           working_dir, cache)
+            else:
+                pair_ids = execute_filter_node1(candset_votes.first, pair_ids, 
+                                                top_level_node, lstrings, 
+                                                rstrings, 
+                                                curr_node.predicates[0], n_jobs, 
+                                                working_dir, cache)
+
             for child_node in curr_node.children:
                 queue.push_back(pair[Node, int](child_node, curr_index))
 
@@ -584,7 +640,8 @@ cdef vector[int] execute_filter_node1(vector[pair[int, int]]& candset,
                                      vector[string]& lstrings, 
                                      vector[string]& rstrings,
                                      Predicatecpp predicate, 
-                                     int n_jobs, const string& working_dir):
+                                     int n_jobs, const string& working_dir,
+                                     Cache& cache):
     cdef vector[vector[int]] ltokens, rtokens                                   
     if predicate.is_tok_sim_measure:
         print 'before tok'                                                          
@@ -619,7 +676,8 @@ cdef vector[int] execute_filter_node1(vector[pair[int, int]]& candset,
     for i in prange(n_jobs, nogil=True):                                        
         execute_filter_node_part1(partitions[i], candset, pair_ids, top_level_node, 
                                   ltokens, rtokens, lstrings, rstrings,      
-                                 predicate, sim_type, comp_type, output_pairs[i])
+                                  predicate, sim_type, comp_type, 
+                                  output_pairs[i], cache)
     print 'parallen end'                                                        
     for part_pairs in output_pairs:                                             
         final_output_pairs.insert(final_output_pairs.end(), part_pairs.begin(), part_pairs.end())
@@ -636,7 +694,8 @@ cdef void execute_filter_node_part1(pair[int, int] partition,
                                    vector[string]& rstrings,                
                                    Predicatecpp& predicate,                     
                                    int sim_type, int comp_type,                 
-                                   vector[int]& output_pairs) nogil: 
+                                   vector[int]& output_pairs, 
+                                   Cache& cache) nogil: 
                                                                                 
     cdef pair[int, int] cand                                                    
     cdef int i                                                                  
@@ -680,7 +739,8 @@ cdef vector[int] execute_filters(vector[pair[int, int]]& candset,
                                  vector[string]& lstrings,                  
                                  vector[string]& rstrings,                  
                                  vector[Predicatecpp] predicates,                    
-                                 int n_jobs, const string& working_dir):    
+                                 int n_jobs, const string& working_dir, 
+                                 Cache& cache):    
     cdef vector[vector[int]] ltokens, rtokens                                   
     if predicates[0].is_tok_sim_measure:                                            
         print 'before tok'                                                      
@@ -689,7 +749,8 @@ cdef vector[int] execute_filters(vector[pair[int, int]]& candset,
     cdef vector[pair[int, int]] partitions                                      
     cdef vector[int] final_output_pairs, part_pairs                             
     cdef vector[vector[int]] output_pairs                                       
-    cdef int n, start=0, end, i                                                 
+    cdef vector[omap[pair[int, int], double]] tmp_cache                         
+    cdef int n, start=0, end, i, tok_type = get_tok_type(predicates[0].tokenizer_type)                                                 
                                                                                 
     if top_level_node:                                                          
         n = candset.size()                                                      
@@ -706,6 +767,7 @@ cdef vector[int] execute_filters(vector[pair[int, int]]& candset,
                                                                                 
         start = end                                                             
         output_pairs.push_back(vector[int]())                                   
+        tmp_cache.push_back(omap[pair[int, int], double]())                     
                                                                                 
     cdef vector[int] sim_types, comp_types                                                
 
@@ -717,10 +779,17 @@ cdef vector[int] execute_filters(vector[pair[int, int]]& candset,
     for i in prange(n_jobs, nogil=True):                                        
         execute_filters_part(partitions[i], candset, pair_ids, top_level_node,
                              ltokens, rtokens, lstrings, rstrings,         
-                             predicates, sim_types, comp_types, output_pairs[i])
+                             predicates, sim_types, comp_types, output_pairs[i],
+                             tmp_cache[i], cache, tok_type)
     print 'parallen end'                                                        
-    for part_pairs in output_pairs:                                             
-        final_output_pairs.insert(final_output_pairs.end(), part_pairs.begin(), part_pairs.end())
+    cdef pair[pair[int, int], double] cache_entry                               
+
+    for i in range(n_jobs):                                             
+        final_output_pairs.insert(final_output_pairs.end(), 
+                                  output_pairs[i].begin(), 
+                                  output_pairs[i].end())
+        for cache_entry in tmp_cache[i]:                                        
+            cache.add_entry(tok_type, cache_entry.first, cache_entry.second)    
                                                                                 
     return final_output_pairs               
 
@@ -734,7 +803,9 @@ cdef void execute_filters_part(pair[int, int] partition,
                                    vector[string]& rstrings,                    
                                    vector[Predicatecpp]& predicates,                     
                                    vector[int]& sim_types, vector[int]& comp_types,                 
-                                   vector[int]& output_pairs) nogil:            
+                               vector[int]& output_pairs,
+                               omap[pair[int, int], double]& tmp_cache, 
+                               Cache& cache, int tok_type) nogil:            
                                                                                 
     cdef pair[int, int] cand                                                    
     cdef int i, j, size1, size2                                                                  
@@ -750,7 +821,10 @@ cdef void execute_filters_part(pair[int, int] partition,
     if top_level_node:                                                      
         for i in range(partition.first, partition.second):                  
             cand  = candset[i]
-            overlap_score = overlap(ltokens[cand.first], rtokens[cand.second])
+            overlap_score = cache.lookup(tok_type, cand)               
+            if overlap_score == -1:                                         
+                overlap_score = overlap(ltokens[cand.first], rtokens[cand.second])       
+                tmp_cache[cand] = overlap_score 
             size1 = ltokens[cand.first].size()
             size2 = rtokens[cand.second].size()
             flag = True
@@ -763,8 +837,11 @@ cdef void execute_filters_part(pair[int, int] partition,
                 output_pairs.push_back(i)                                   
     else:                                                                   
         for i in range(partition.first, partition.second):                  
-            cand  = candset[i]                                                  
-            overlap_score = overlap(ltokens[cand.first], rtokens[cand.second])  
+            cand  = candset[pair_ids[i]]                                                  
+            overlap_score = cache.lookup(tok_type, cand)                        
+            if overlap_score == -1:                                             
+                overlap_score = overlap(ltokens[cand.first], rtokens[cand.second])
+                tmp_cache[cand] = overlap_score    
             size1 = ltokens[cand.first].size()                                  
             size2 = rtokens[cand.second].size()                                 
             flag = True                                                         
@@ -859,19 +936,19 @@ def perform_join(path1, attr1, path2, attr2, tok_type, sim_type, threshold, cons
     if sim_type == 'COSINE':
         load_tok(tok_type, working_dir, ltokens, rtokens)                           
         threshold = threshold - 0.0001                                              
-        output = set_sim_join(ltokens, rtokens, 0, threshold, 4)           
+        output = set_sim_join_no_cache(ltokens, rtokens, 0, threshold, 4)           
     elif sim_type == 'DICE':
         load_tok(tok_type, working_dir, ltokens, rtokens)                       
         threshold = threshold - 0.0001                                          
-        output = set_sim_join(ltokens, rtokens, 1, threshold, 4)   
+        output = set_sim_join_no_cache(ltokens, rtokens, 1, threshold, 4)   
     elif sim_type == 'JACCARD':
         load_tok(tok_type, working_dir, ltokens, rtokens)                       
         threshold = threshold - 0.0001                                          
-        output = set_sim_join(ltokens, rtokens, 2, threshold, 4)           
+        output = set_sim_join_no_cache(ltokens, rtokens, 2, threshold, 4)           
     elif sim_type == 'OVERLAP_COEFFICIENT':
         load_tok(tok_type, working_dir, ltokens, rtokens)                       
         threshold = threshold - 0.0001
-        output = ov_coeff_join(ltokens, rtokens, threshold, 4)
+        output = ov_coeff_join_no_cache(ltokens, rtokens, threshold, 4)
     elif sim_type == 'EDIT_DISTANCE':
         load_tok('qg2_bag', working_dir, ltokens, rtokens)
         load_strings(path1, attr1, lstrings)                                        
@@ -899,7 +976,7 @@ def test_jac(sim_type, threshold):
 #        print 'i= ', i
 #    if sim_type == 3:
     for i in xrange(50):
-        output1 = ov_coeff_join(ltokens, rtokens, threshold, 4)             
+        output1 = ov_coeff_join_no_cache(ltokens, rtokens, threshold, 4)             
         print 'output size : ', output.size()                                       
 #    else:
 #        output1 = set_sim_join(ltokens, rtokens, sim_type, threshold)

@@ -10,6 +10,19 @@ from py_stringsimjoin.apply_rf.sim_functions cimport cosine, dice, jaccard, \
   dice_using_overlap, jaccard_using_overlap, overlap_coeff_using_overlap     
 from py_stringsimjoin.apply_rf.inverted_index cimport InvertedIndex             
  
+cdef int get_tok_type(const string& tok_type):
+    if tok_type.compare('alph') == 0:                                               
+        return 0                                                                
+    elif tok_type.compare('alph_num') == 0:                                                  
+        return 1                                                                
+    elif tok_type.compare('num') == 0:                                            
+        return 2                                                                
+    elif tok_type.compare('ws') == 0:                              
+        return 3                                                                
+    elif tok_type.compare('qg2') == 0:                  
+        return 4                                                                
+    elif tok_type.compare('qg3') == 0:                        
+        return 5 
 
 cdef int get_sim_type(const string& sim_measure_type):                          
     if sim_measure_type.compare('COSINE') == 0: # COSINE                                                  

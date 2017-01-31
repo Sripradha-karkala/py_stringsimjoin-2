@@ -26,6 +26,8 @@ cdef overlap_simfnptr get_overlap_sim_function(const int) nogil
 cdef int get_comp_type(const string&)
 cdef compfnptr get_comparison_function(const int) nogil
 
+cdef int get_tok_type(const string& tok_type)
+
 cdef void build_inverted_index(vector[vector[int]]& token_vectors, InvertedIndex &inv_index)
 cdef void build_prefix_index(vector[vector[int]]& token_vectors, int qval, double threshold, InvertedIndex &inv_index)
 

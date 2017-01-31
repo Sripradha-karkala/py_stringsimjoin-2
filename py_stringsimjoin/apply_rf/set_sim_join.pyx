@@ -9,8 +9,10 @@ from libcpp cimport bool
 from libcpp.map cimport map as omap                                             
 from libcpp.pair cimport pair     
 
-from py_stringsimjoin.apply_rf.sim_functions cimport cosine, dice, jaccard
-from py_stringsimjoin.apply_rf.utils cimport int_min, int_max
+from py_stringsimjoin.apply_rf.sim_functions cimport cosine, dice, jaccard, overlap
+from py_stringsimjoin.apply_rf.utils cimport int_min, int_max, \
+  get_overlap_sim_function, overlap_simfnptr
+from py_stringsimjoin.apply_rf.cache cimport Cache
 
 cdef double mytrunc(double d) nogil:
     return (trunc(d * 10000) / 10000)
@@ -57,14 +59,15 @@ cdef fnptr get_sim_function(int& sim_type) nogil:
     elif sim_type == 2: # JACCARD:                                              
         return jaccard
 
-cpdef pair[vector[pair[int, int]], vector[double]] set_sim_join(vector[vector[int]]& ltokens, 
+cdef pair[vector[pair[int, int]], vector[double]] set_sim_join(vector[vector[int]]& ltokens, 
                                           vector[vector[int]]& rtokens,
-                                          int sim_type,
-                                          double threshold, int n_jobs):                                           
+                                          int sim_type, double threshold, 
+                                          int n_jobs, Cache& cache, int tok_type):                                           
     print 'l size. : ', ltokens.size(), ' , r size : ', rtokens.size()          
     cdef vector[vector[pair[int, int]]] output_pairs
     cdef vector[vector[double]] output_sim_scores
     cdef vector[pair[int, int]] partitions
+    cdef vector[omap[pair[int, int], double]] tmp_cache
     cdef int i, n=rtokens.size(), ncpus=n_jobs, partition_size, start=0, end                                   
     cdef PositionIndex index
     build_index(ltokens, sim_type, threshold, index)                                 
@@ -82,137 +85,26 @@ cpdef pair[vector[pair[int, int]], vector[double]] set_sim_join(vector[vector[in
         start = end            
         output_pairs.push_back(vector[pair[int, int]]())
         output_sim_scores.push_back(vector[double]())
+        tmp_cache.push_back(omap[pair[int, int], double]())
 
     print 'join started'
     for i in prange(ncpus, nogil=True):    
         set_sim_join_part(partitions[i], ltokens, rtokens, sim_type, threshold, 
-                          index, output_pairs[i], output_sim_scores[i])
+                          index, output_pairs[i], output_sim_scores[i], 
+                          tmp_cache[i], cache, tok_type)
 
     print 'join finished'
-
+    cdef pair[pair[int, int], double] cache_entry
     for i in xrange(ncpus):
         output.first.insert(output.first.end(), 
                             output_pairs[i].begin(), output_pairs[i].end())
         output.second.insert(output.second.end(), 
                              output_sim_scores[i].begin(), 
-                             output_sim_scores[i].end())    
-    print 'f2'
+                             output_sim_scores[i].end())
+        for cache_entry in tmp_cache[i]:
+            cache.add_entry(tok_type, cache_entry.first, cache_entry.second)    
     return output
-#    return pair[vector[pair[int, int]], vector[double]](final_output_pairs,
-#                                                        final_output_sim_scores)
 
-cpdef void set_sim_join1(vector[vector[int]]& ltokens,
-                                          vector[vector[int]]& rtokens,         
-                                          int sim_type,                         
-                                          double threshold):                    
-    print 'l size. : ', ltokens.size(), ' , r size : ', rtokens.size()          
-    cdef vector[vector[pair[int, int]]] output_pairs                            
-    cdef vector[vector[double]] output_sim_scores                               
-    cdef vector[double] final_output_sim_scores                                 
-    cdef vector[pair[int, int]] partitions, final_output_pairs                  
-    cdef int i, n=rtokens.size(), ncpus=4, partition_size, start=0, end         
-    cdef PositionIndex index                                                    
-    build_index(ltokens, sim_type, threshold, index)                            
-                                                                                
-    cdef pair[vector[pair[int, int]], vector[double]] output                    
-                                                                                
-    partition_size = <int>(<float> n / <float> ncpus)                           
-    print 'part size : ', partition_size                                        
-    for i in range(ncpus):                                                      
-        end = start + partition_size                                            
-        if end > n or i == ncpus - 1:                                           
-            end = n                                                             
-        partitions.push_back(pair[int, int](start, end))                        
-        print start, end                                                        
-        start = end                                                             
-        output_pairs.push_back(vector[pair[int, int]]())                        
-        output_sim_scores.push_back(vector[double]())                           
-                                                                                
-    print 'join started'                                                        
-    for i in prange(ncpus, nogil=True):                                         
-        set_sim_join_part1(partitions[i], ltokens, rtokens, sim_type, threshold, 
-                          index)         
-                                                                                
-    print 'join finished'                                                       
-                                                                                
-    for i in xrange(ncpus):                                                     
-        output.first.insert(output.first.end(),                                 
-                            output_pairs[i].begin(), output_pairs[i].end())     
-        output.second.insert(output.second.end(),                               
-                             output_sim_scores[i].begin(),                      
-                             output_sim_scores[i].end())                        
-    print 'f2'                                                                  
-#    return output                                            
-
-cdef void set_sim_join_part1(pair[int, int]& partition,  
-                            vector[vector[int]]& ltokens,                       
-                            vector[vector[int]]& rtokens,                       
-                            int& sim_type,                                       
-                            double& threshold, PositionIndex& index) nogil:           
-    cdef omap[int, int] candidate_overlap, overlap_threshold_cache              
-    cdef vector[pair[int, int]] candidates                                      
-    cdef vector[int] tokens                                                     
-    cdef pair[int, int] cand, entry                                             
-    cdef int k=0, j=0, m, i, prefix_length, cand_num_tokens, current_overlap, overlap_upper_bound
-    cdef int size, size_lower_bound, size_upper_bound                           
-    cdef double sim_score                                                       
-#    cdef fnptr sim_fn                                                           
-#    sim_fn = get_sim_function(sim_type)                                         
-                                                                                
-    for i in range(partition.first, partition.second):                          
-
-        tokens = rtokens[i]                                                     
-        m = tokens.size()                                                       
-        prefix_length = get_prefix_length(m, sim_type, threshold)               
-        size_lower_bound = get_size_lower_bound(m, sim_type, threshold)         
-        size_upper_bound = get_size_upper_bound(m, sim_type, threshold)         
-#        print i, 'p1'                                                                        
-        for size in range(size_lower_bound, size_upper_bound + 1):              
-            overlap_threshold_cache[size] = get_overlap_threshold(size, m, sim_type, threshold)
-#        print i, 'p2'                                                                        
-        
-        for j in range(prefix_length):                                          
-            if index.index.find(tokens[j]) == index.index.end():
-                continue
-
-            candidates = index.index[tokens[j]]                                 
-            
-            for cand in candidates:                                             
-                current_overlap = candidate_overlap[cand.first]                 
-               
-                if current_overlap != -1:                                       
-                    cand_num_tokens = index.size_vector[cand.first]             
-                                                                                
-                    # only consider candidates satisfying the size filter       
-                    # condition.                                                
-                    if size_lower_bound <= cand_num_tokens <= size_upper_bound: 
-                                                                                
-                        if m - j <= cand_num_tokens - cand.second:              
-                            overlap_upper_bound = m - j                         
-                        else:                                                   
-                            overlap_upper_bound = cand_num_tokens - cand.second 
-                                                                                
-                        # only consider candidates for which the overlap upper  
-                        # bound is at least the required overlap.               
-                        if (current_overlap + overlap_upper_bound >=            
-                                overlap_threshold_cache[cand_num_tokens]):      
-                            candidate_overlap[cand.first] = current_overlap + 1 
-                        else:                                                   
-                            candidate_overlap[cand.first] = -1                  
-           
-#        print i, 'p3'                                                          
-#        print i, candidate_overlap.size()                                      
-        for entry in candidate_overlap:                                         
-            if entry.second > 0:                                                
-#                sim_score = sim_fn(ltokens[entry.first], tokens)                
-                #print ltokens[entry.first], rtokens[i], entry.second, sim_score
-#                if sim_score > threshold:                                       
-                k += 1
-#                    output_pairs.push_back(pair[int, int](entry.first, i))      
-#                    output_sim_scores.push_back(sim_score)                      
-#        print i, 'p4'                                                          
-        candidate_overlap.clear()                                               
-        overlap_threshold_cache.clear()  
 
 cdef void set_sim_join_part(pair[int, int] partition, 
                             vector[vector[int]]& ltokens, 
@@ -220,17 +112,19 @@ cdef void set_sim_join_part(pair[int, int] partition,
                             int sim_type, 
                             double threshold, PositionIndex& index, 
                             vector[pair[int, int]]& output_pairs,
-                            vector[double]& output_sim_scores) nogil:              
+                            vector[double]& output_sim_scores,
+                            omap[pair[int, int], double]& tmp_cache, 
+                            Cache& cache, int tok_type) nogil:              
     cdef omap[int, int] candidate_overlap, overlap_threshold_cache              
     cdef vector[pair[int, int]] candidates                                      
     cdef vector[int] tokens
-    cdef pair[int, int] cand, entry                                             
+    cdef pair[int, int] cand, entry, cand_pair                                             
     cdef int k=0, j=0, m, i, prefix_length, cand_num_tokens, current_overlap, overlap_upper_bound
     cdef int size, size_lower_bound, size_upper_bound                       
-    cdef double sim_score               
-    cdef fnptr sim_fn
-    sim_fn = get_sim_function(sim_type)
- 
+    cdef double sim_score, overlap_score               
+    cdef overlap_simfnptr sim_fn
+    sim_fn = get_overlap_sim_function(sim_type)
+   
     for i in range(partition.first, partition.second):
         tokens = rtokens[i]                        
         m = tokens.size()                                                      
@@ -239,10 +133,8 @@ cdef void set_sim_join_part(pair[int, int] partition,
                                    index.min_len)                             
         size_upper_bound = int_min(get_size_upper_bound(m, sim_type, threshold),
                                    index.max_len)                            
-#        print i, 'p1'                                                                        
         for size in range(size_lower_bound, size_upper_bound + 1):              
             overlap_threshold_cache[size] = get_overlap_threshold(size, m, sim_type, threshold)
-#        print i, 'p2'                                                                        
         for j in range(prefix_length):                                          
             if index.index.find(tokens[j]) == index.index.end():                
                 continue  
@@ -268,18 +160,126 @@ cdef void set_sim_join_part(pair[int, int] partition,
                             candidate_overlap[cand.first] = current_overlap + 1 
                         else:                                                   
                             candidate_overlap[cand.first] = -1                  
-#        print i, 'p3'
-#        print i, candidate_overlap.size()                                      
+        
         for entry in candidate_overlap:                                         
-            if entry.second > 0:                                                
-                sim_score = sim_fn(ltokens[entry.first], tokens)           
-                #print ltokens[entry.first], rtokens[i], entry.second, sim_score
+            if entry.second > 0:
+                cand_pair = pair[int, int](entry.first, i)
+                overlap_score = cache.lookup(tok_type, cand_pair)
+                if overlap_score == -1:
+                    overlap_score = overlap(ltokens[entry.first], tokens)
+                    tmp_cache[cand_pair] = overlap_score                                                
+                sim_score = sim_fn(ltokens[entry.first].size(), tokens.size(), 
+                                   overlap_score)           
                 if sim_score > threshold:                                       
-                    output_pairs.push_back(pair[int, int](entry.first, i))
+                    output_pairs.push_back(cand_pair)
                     output_sim_scores.push_back(sim_score)     
-#        print i, 'p4'
         candidate_overlap.clear()                                               
         overlap_threshold_cache.clear()    
+
+cpdef pair[vector[pair[int, int]], vector[double]] set_sim_join_no_cache(
+                                          vector[vector[int]]& ltokens,
+                                          vector[vector[int]]& rtokens,         
+                                          int sim_type, double threshold,       
+                                          int n_jobs):
+    print 'l size. : ', ltokens.size(), ' , r size : ', rtokens.size()          
+    cdef vector[vector[pair[int, int]]] output_pairs                            
+    cdef vector[vector[double]] output_sim_scores                               
+    cdef vector[pair[int, int]] partitions                                      
+    cdef int i, n=rtokens.size(), ncpus=n_jobs, partition_size, start=0, end    
+    cdef PositionIndex index                                                    
+    build_index(ltokens, sim_type, threshold, index)                            
+                                                                                
+    cdef pair[vector[pair[int, int]], vector[double]] output                    
+                                                                                
+    partition_size = <int>(<float> n / <float> ncpus)                           
+    print 'part size : ', partition_size                                        
+    for i in range(ncpus):                                                      
+        end = start + partition_size                                            
+        if end > n or i == ncpus - 1:                                           
+            end = n                                                             
+        partitions.push_back(pair[int, int](start, end))                        
+        print start, end                                                        
+        start = end                                                             
+        output_pairs.push_back(vector[pair[int, int]]())                        
+        output_sim_scores.push_back(vector[double]())                           
+                                                                                
+    print 'join started'                                                        
+    for i in prange(ncpus, nogil=True):                                         
+        set_sim_join_part_no_cache(partitions[i], ltokens, rtokens, sim_type, 
+                                   threshold, index, output_pairs[i], 
+                                   output_sim_scores[i])                        
+                                                                                
+    print 'join finished'                                                       
+    for i in xrange(ncpus):                                                     
+        output.first.insert(output.first.end(),                                 
+                            output_pairs[i].begin(), output_pairs[i].end())     
+        output.second.insert(output.second.end(),                               
+                             output_sim_scores[i].begin(),                      
+                             output_sim_scores[i].end())                        
+    return output 
+
+cdef void set_sim_join_part_no_cache(pair[int, int] partition,                           
+                            vector[vector[int]]& ltokens,                       
+                            vector[vector[int]]& rtokens,                       
+                            int sim_type,                                       
+                            double threshold, PositionIndex& index,             
+                            vector[pair[int, int]]& output_pairs,               
+                            vector[double]& output_sim_scores) nogil:                  
+    cdef omap[int, int] candidate_overlap, overlap_threshold_cache              
+    cdef vector[pair[int, int]] candidates                                      
+    cdef vector[int] tokens                                                     
+    cdef pair[int, int] cand, entry                                  
+    cdef int k=0, j=0, m, i, prefix_length, cand_num_tokens, current_overlap, overlap_upper_bound
+    cdef int size, size_lower_bound, size_upper_bound                           
+    cdef double sim_score, overlap_score                                        
+    cdef fnptr sim_fn                                                           
+    sim_fn = get_sim_function(sim_type)                                 
+                                                                                
+    for i in range(partition.first, partition.second):                          
+        tokens = rtokens[i]                                                     
+        m = tokens.size()                                                       
+        prefix_length = get_prefix_length(m, sim_type, threshold)               
+        size_lower_bound = int_max(get_size_lower_bound(m, sim_type, threshold),
+                                   index.min_len)                               
+        size_upper_bound = int_min(get_size_upper_bound(m, sim_type, threshold),
+                                   index.max_len)                               
+        for size in range(size_lower_bound, size_upper_bound + 1):              
+            overlap_threshold_cache[size] = get_overlap_threshold(size, m, sim_type, threshold)
+        for j in range(prefix_length):                                          
+            if index.index.find(tokens[j]) == index.index.end():                
+                continue                                                        
+            candidates = index.index[tokens[j]]                                 
+            for cand in candidates:                                             
+                current_overlap = candidate_overlap[cand.first]                 
+                if current_overlap != -1:                                       
+                    cand_num_tokens = index.size_vector[cand.first]             
+                                                                                
+                    # only consider candidates satisfying the size filter       
+                    # condition.                                                
+                    if size_lower_bound <= cand_num_tokens <= size_upper_bound: 
+                                                                                
+                        if m - j <= cand_num_tokens - cand.second:              
+                            overlap_upper_bound = m - j                         
+                        else:                                                   
+                            overlap_upper_bound = cand_num_tokens - cand.second 
+
+                        # only consider candidates for which the overlap upper  
+                        # bound is at least the required overlap.               
+                        if (current_overlap + overlap_upper_bound >=            
+                                overlap_threshold_cache[cand_num_tokens]):      
+                            candidate_overlap[cand.first] = current_overlap + 1 
+                        else:                                                   
+                            candidate_overlap[cand.first] = -1                  
+                                                                                
+        for entry in candidate_overlap:                                         
+            if entry.second > 0:                                                
+                sim_score = sim_fn(ltokens[entry.first], tokens)                               
+                if sim_score > threshold:                                       
+                    output_pairs.push_back(pair[int, int](entry.first, i))                           
+                    output_sim_scores.push_back(sim_score)                      
+        candidate_overlap.clear()                                               
+        overlap_threshold_cache.clear() 
+
 
 cdef void build_index(vector[vector[int]]& token_vectors, int& sim_type, double& threshold, PositionIndex &pos_index):
     cdef vector[int] tokens, size_vector                                                 
