@@ -61,7 +61,7 @@ def test_execute_rf(rf, feature_table, l1, l2, path1, attr1, path2, attr2,
     for s in l2:                                                                
         r.push_back(rstrings[int(s)])                                       
     print ' computing coverage'                                                  
-    compute_predicate_cost_and_coverage(l, r, trees, coverage, tree_cov)                 
+    compute_predicate_cost_and_coverage(l, r, trees, coverage, tree_cov, n_jobs)                 
     cdef Node global_plan, join_node
     global_plan = get_default_execution_plan(trees, coverage, tree_cov, 
                                              l.size(), trees1, trees2,
@@ -73,7 +73,7 @@ def test_execute_rf(rf, feature_table, l1, l2, path1, attr1, path2, attr2,
 
     tok_st = time.time()
     print 'tokenizing strings'                                                  
-    tokenize_strings(trees, lstrings, rstrings, working_dir)                    
+    tokenize_strings(trees, lstrings, rstrings, working_dir, n_jobs)                    
     print 'finished tokenizing. executing plan'                                 
     tok_time = time.time() - tok_st
     cdef Cache cache = Cache(6)
@@ -91,7 +91,7 @@ def test_execute_rf(rf, feature_table, l1, l2, path1, attr1, path2, attr2,
     cdef vector[Node] plans                                                     
     plans = generate_ex_plan_for_stage2(candset_votes.first,                    
                                         lstrings, rstrings,   
-                                        trees2, sample_size, push_flag)  
+                                        trees2, sample_size, n_jobs, push_flag)  
     print 'executing remaining trees'                                           
     cdef int label = 1, num_trees_processed=trees1.size()                                                          
     i = 0
@@ -149,7 +149,7 @@ def execute_rf(rf, feature_table, l1, l2, path1, attr1, path2, attr2, working_di
     for s in l2:                                                                
         r.push_back(rstrings[int(s) - 1])
     print 'computing coverage'                                           
-#    compute_predicate_cost_and_coverage(l, r, trees1, coverage)    
+#    compute_predicate_cost_and_coverage(l, r, trees1, coverage, n_jobs)    
 
     cdef vector[Node] plans                                                     
 #    generate_local_optimal_plans(trees1, coverage, l.size(), plans)              
@@ -159,7 +159,7 @@ def execute_rf(rf, feature_table, l1, l2, path1, attr1, path2, attr2, working_di
     global_plan = generate_overall_plan(plans)                                                
 
     print 'tokenizing strings'
-    tokenize_strings(trees, lstrings, rstrings, working_dir)                    
+    tokenize_strings(trees, lstrings, rstrings, working_dir, n_jobs)                    
     cdef Cache cache = Cache(6)                                                 
     print 'finished tokenizing. executing plan'
     execute_plan(global_plan, trees1, lstrings, rstrings, working_dir, n_jobs, cache)           
@@ -171,7 +171,8 @@ def execute_rf(rf, feature_table, l1, l2, path1, attr1, path2, attr2, working_di
     print 'generating plan'
     plans = generate_ex_plan_for_stage2(candset_votes.first,              
                                                           lstrings, rstrings,   
-                                                          trees2, sample_size, True)  
+                                                          trees2, sample_size, 
+                                                          n_jobs, True)  
     print 'executing remaining trees'                                                                            
     cdef int label = 1
     i = 0                                                              
@@ -870,7 +871,7 @@ cdef vector[int] split(string inp_string) nogil:
     return out_tokens    
 
 cdef void tokenize_strings(vector[Tree]& trees, vector[string]& lstrings, 
-                      vector[string]& rstrings, const string& working_dir):
+                      vector[string]& rstrings, const string& working_dir, int n_jobs):
     cdef oset[string] tokenizers
     cdef Tree tree
     cdef Rule rule
@@ -885,13 +886,13 @@ cdef void tokenize_strings(vector[Tree]& trees, vector[string]& lstrings,
  
     cdef string tok_type
     for tok_type in tokenizers:
-        tokenize(lstrings, rstrings, tok_type, working_dir)
+        tokenize(lstrings, rstrings, tok_type, working_dir, n_jobs)
 
 def test_tok1(df1, attr1, df2, attr2):                                                         
     cdef vector[string] lstrings, rstrings                                                 
     convert_to_vector1(df1[attr1], lstrings)
     convert_to_vector1(df2[attr2], rstrings)
-    tokenize(lstrings, rstrings, 'ws', 'gh')                       
+    tokenize(lstrings, rstrings, 'ws', 'gh', 4)                       
   
 cdef void convert_to_vector1(string_col, vector[string]& string_vector):         
     for val in string_col:                                                      
@@ -931,7 +932,7 @@ def generate_tokens(ft, path1, attr1, path2, attr2, const string& working_dir):
 
     cdef string tok_type                                                        
     for tok_type in tokenizers:                                                 
-        tokenize(lstrings, rstrings, tok_type, working_dir)    
+        tokenize(lstrings, rstrings, tok_type, working_dir, 4)    
 
 def perform_join(path1, attr1, path2, attr2, tok_type, sim_type, threshold, const string& working_dir):
     cdef vector[vector[int]] ltokens, rtokens                                   

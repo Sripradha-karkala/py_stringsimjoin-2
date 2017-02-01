@@ -3,7 +3,8 @@ from Cython.Build import cythonize
 
 setup(ext_modules = cythonize([
     Extension("tokenizers", sources=["tokenizers.pyx"], language="c++",
-              extra_compile_args = ["-O3", "-ffast-math", "-march=native"]),
+              extra_compile_args = ["-O3", "-ffast-math", "-march=native", "-fopenmp"],
+              extra_link_args=['-fopenmp']),
     Extension("sim_functions", sources=["sim_functions.pyx"], language="c++",         
               extra_compile_args = ["-O3", "-ffast-math", "-march=native"]),  
     Extension("set_sim_join", sources=["set_sim_join.pyx", "cache.cpp", "position_index.cpp"], language="c++",             

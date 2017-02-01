@@ -21,7 +21,7 @@ cdef extern from "string.h" nogil:
 cdef extern from "<algorithm>" namespace "std" nogil:
     void sort(vector[int].iterator, vector[int].iterator)
  
-#cdef extern from "whitespace_tokenizer.h" nogil:                                      
+#  cdef extern from "whitespace_tokenizer.h" nogil:                                      
 #    cdef cppclass WhitespaceTokenizer nogil:                                          
 #        WhitespaceTokenizer()                                                         
 #        WhitespaceTokenizer(bool return_set)
@@ -35,7 +35,7 @@ cdef class WhitespaceTokenizer:
     def __init__(self, bool return_set):
         self.return_set = return_set
 
-    cpdef vector[string] tokenize(self, const string& inp_string):
+    cdef vector[string] tokenize(self, const string& inp_string) nogil:
         cdef char* pch                                                              
         pch = strtok (<char*> inp_string.c_str(), " ") 
         cdef oset[string] tokens                                            
@@ -65,7 +65,7 @@ cdef class QgramTokenizer:
         self.suffix_pad = suffix_pad
         self.return_set = return_set                                            
                                                                                 
-    cpdef vector[string] tokenize(self, const string& inp_string):               
+    cdef vector[string] tokenize(self, const string& inp_string) nogil:               
         cdef string inp_str = inp_string;                                                         
         if self.padding:                                                                
             inp_str = string(self.qval - 1, self.prefix_pad) + inp_str + string(self.qval - 1, self.suffix_pad)
@@ -152,7 +152,7 @@ def test_tok2(df1, attr1, df2, attr2):
     convert_to_vector(df1[attr1], lstrings)                                    
     convert_to_vector(df2[attr2], rstrings)                                    
     st = time.time()
-    tokenize(lstrings, rstrings, 'ws', 'gh1') 
+    tokenize(lstrings, rstrings, 'ws', 'gh1', 4) 
     print 'time : ', time.time() - st
 
 cdef vector[int] split(string inp_string):
@@ -197,8 +197,9 @@ cdef vector[string] tokenize_str(string& inp_str, const string& tok_type):
     return tok.tokenize(inp_str)
 
 cpdef void tokenize(vector[string]& lstrings, vector[string]& rstrings,          
-                   const string& tok_type, const string& working_dir):          
+                   const string& tok_type, const string& working_dir, int n_jobs):          
     cdef object tok                                                               
+    '''
     if tok_type.compare('ws') == 0:                                             
         tok = WhitespaceTokenizer(True)                              
     elif tok_type.compare('alph') == 0:                                         
@@ -213,28 +214,91 @@ cpdef void tokenize(vector[string]& lstrings, vector[string]& rstrings,
         tok = QgramTokenizer(3, True, ord('#'), ord('$'), True)      
     elif tok_type.compare('qg2_bag') == 0:                                      
         tok = QgramTokenizer(2, True, ord('#'), ord('$'), False)  
+    '''
     print tok_type
-    #cdef AlphabeticTokenizer tok
-#    tok = AlphabeticTokenizer(True)                                                                                
+
     cdef string s, token                                                        
     cdef vector[string] tokens                                                  
     cdef omap[string, int] token_freq, token_ordering                           
     cdef vector[vector[string]] ltokens, rtokens                                
-    cdef int j, n=lstrings.size()
+    cdef int j, n1=lstrings.size(), n2=rstrings.size()
+   
+    cdef WhitespaceTokenizer ws_tok
+    cdef QgramTokenizer qg2_tok, qg3_tok, qg2_bag_tok
 
+    for j in range(n1):
+        ltokens.push_back(vector[string]())
+
+    for j in range(n2):                                                          
+        rtokens.push_back(vector[string]())  
+
+    if tok_type.compare('ws') == 0:                                             
+        ws_tok = WhitespaceTokenizer(True)                                         
+        for j in prange(n1, nogil=True, num_threads=n_jobs):                                                          
+            ltokens[j] = ws_tok.tokenize(lstrings[j])      
+        for j in prange(n2, nogil=True, num_threads=n_jobs):                        
+            rtokens[j] = ws_tok.tokenize(rstrings[j])   
+    elif tok_type.compare('alph') == 0:                                         
+        tok = AlphabeticTokenizer(True)
+        for j in range(n1):                                                          
+            ltokens[j] = tok.tokenize(lstrings[j])
+        for j in range(n2):                                                     
+            rtokens[j] = tok.tokenize(rstrings[j])                                          
+    elif tok_type.compare('alph_num') == 0:                                     
+        tok = AlphanumericTokenizer(True)
+        for j in range(n1):                                                      
+            ltokens[j] = tok.tokenize(lstrings[j])
+        for j in range(n2):                                                     
+            rtokens[j] = tok.tokenize(rstrings[j])                                         
+    elif tok_type.compare('num') == 0:                                          
+        tok = NumericTokenizer(True)
+        for j in range(n1):                                                      
+            ltokens[j] = tok.tokenize(lstrings[j])
+        for j in range(n2):                                                     
+            rtokens[j] = tok.tokenize(rstrings[j])                                              
+    elif tok_type.compare('qg2') == 0:                                          
+        qg2_tok = QgramTokenizer(2, True, ord('#'), ord('$'), True)                 
+        for j in prange(n1, nogil=True, num_threads=n_jobs):                                                          
+            ltokens[j] = qg2_tok.tokenize(lstrings[j])
+        for j in prange(n2, nogil=True, num_threads=n_jobs):                        
+            rtokens[j] = qg2_tok.tokenize(rstrings[j])      
+    elif tok_type.compare('qg3') == 0:                                          
+        qg3_tok = QgramTokenizer(3, True, ord('#'), ord('$'), True)                 
+        for j in prange(n1, nogil=True, num_threads=n_jobs):                         
+            ltokens[j] = qg3_tok.tokenize(lstrings[j])
+        for j in prange(n2, nogil=True, num_threads=n_jobs):                        
+            rtokens[j] = qg3_tok.tokenize(rstrings[j])  
+    elif tok_type.compare('qg2_bag') == 0:                                      
+        qg2_bag_tok = QgramTokenizer(2, True, ord('#'), ord('$'), False)
+        for j in prange(n1, nogil=True, num_threads=n_jobs):                         
+            ltokens[j] = qg2_bag_tok.tokenize(lstrings[j])
+        for j in prange(n2, nogil=True, num_threads=n_jobs):                        
+            rtokens[j] = qg2_bag_tok.tokenize(rstrings[j])        
+
+    '''
     for j in range(n):                                                          
         tokens = tok.tokenize(lstrings[j])                                                         
         ltokens.push_back(tokens)                                               
         for token in tokens:                                                    
             token_freq[token] += 1                                              
+    '''
 
+    for tokens in ltokens:
+        for token in tokens:
+            token_freq[token] += 1                                              
+
+    for tokens in rtokens:                                                      
+        for token in tokens:                                                    
+            token_freq[token] += 1   
+
+    '''
     n = rstrings.size()                                                 
     for j in range(n):                                                          
         tokens = tok.tokenize(rstrings[j])                                                
         rtokens.push_back(tokens)                                               
         for token in tokens:                                                    
             token_freq[token] += 1                                              
-
+    '''
     ordered_tokens = []                              
     for entry in token_freq:
         ordered_tokens.append((entry.first, entry.second))                                                    
@@ -291,8 +355,10 @@ cdef void tokenize_without_materializing(vector[string]& lstrings,
                                           vector[string]& rstrings,         
                                           const string& tok_type,
                                           vector[vector[int]]& l_ordered_tokens,
-                                          vector[vector[int]]& r_ordered_tokens):          
+                                          vector[vector[int]]& r_ordered_tokens,
+                                          int n_jobs):          
     cdef object tok                                                             
+    '''
     if tok_type.compare('ws') == 0:                                             
         tok = WhitespaceTokenizer(True)                                         
     elif tok_type.compare('alph') == 0:                                         
@@ -307,15 +373,68 @@ cdef void tokenize_without_materializing(vector[string]& lstrings,
         tok = QgramTokenizer(3, True, ord('#'), ord('$'), True)                 
     elif tok_type.compare('qg2_bag') == 0:                                      
         tok = QgramTokenizer(2, True, ord('#'), ord('$'), False)  
-                                                                                
-    #cdef AlphabeticTokenizer tok                                               
-#    tok = AlphabeticTokenizer(True)                                                                                
+    '''
+                                                                            
     cdef string s, token                                                        
     cdef vector[string] tokens                                                  
     cdef omap[string, int] token_freq, token_ordering                           
     cdef vector[vector[string]] ltokens, rtokens                                
-    cdef int j, n=lstrings.size()                                               
-                                                                                
+                                                                               
+    cdef int j, n1=lstrings.size(), n2=rstrings.size()
+
+    cdef WhitespaceTokenizer ws_tok
+    cdef QgramTokenizer qg2_tok, qg3_tok, qg2_bag_tok
+
+    for j in range(n1):
+        ltokens.push_back(vector[string]())
+
+    for j in range(n2):
+        rtokens.push_back(vector[string]())
+
+    if tok_type.compare('ws') == 0:
+        ws_tok = WhitespaceTokenizer(True)
+        for j in prange(n1, nogil=True, num_threads=n_jobs):
+            ltokens[j] = ws_tok.tokenize(lstrings[j])
+        for j in prange(n2, nogil=True, num_threads=n_jobs):
+            rtokens[j] = ws_tok.tokenize(rstrings[j])
+    elif tok_type.compare('alph') == 0:
+        tok = AlphabeticTokenizer(True)
+        for j in range(n1):
+            ltokens[j] = tok.tokenize(lstrings[j])
+        for j in range(n2):
+            rtokens[j] = tok.tokenize(rstrings[j])
+    elif tok_type.compare('alph_num') == 0:
+        tok = AlphanumericTokenizer(True)
+        for j in range(n1):
+            ltokens[j] = tok.tokenize(lstrings[j])
+        for j in range(n2):
+            rtokens[j] = tok.tokenize(rstrings[j])
+    elif tok_type.compare('num') == 0:
+        tok = NumericTokenizer(True)
+        for j in range(n1):
+            ltokens[j] = tok.tokenize(lstrings[j])
+        for j in range(n2):
+            rtokens[j] = tok.tokenize(rstrings[j])
+    elif tok_type.compare('qg2') == 0:
+        qg2_tok = QgramTokenizer(2, True, ord('#'), ord('$'), True)
+        for j in prange(n1, nogil=True, num_threads=n_jobs):
+            ltokens[j] = qg2_tok.tokenize(lstrings[j])
+        for j in prange(n2, nogil=True, num_threads=n_jobs):
+            rtokens[j] = qg2_tok.tokenize(rstrings[j])
+    elif tok_type.compare('qg3') == 0:
+        qg3_tok = QgramTokenizer(3, True, ord('#'), ord('$'), True)
+        for j in prange(n1, nogil=True, num_threads=n_jobs):
+            ltokens[j] = qg3_tok.tokenize(lstrings[j])
+        for j in prange(n2, nogil=True, num_threads=n_jobs):
+            rtokens[j] = qg3_tok.tokenize(rstrings[j])
+    elif tok_type.compare('qg2_bag') == 0:
+        qg2_bag_tok = QgramTokenizer(2, True, ord('#'), ord('$'), False)
+        for j in prange(n1, nogil=True, num_threads=n_jobs):
+            ltokens[j] = qg2_bag_tok.tokenize(lstrings[j])
+        for j in prange(n2, nogil=True, num_threads=n_jobs):
+            rtokens[j] = qg2_bag_tok.tokenize(rstrings[j])
+
+    ''' 
     for j in range(n):                                                          
         tokens = tok.tokenize(lstrings[j])                                      
         ltokens.push_back(tokens)                                               
@@ -328,7 +447,15 @@ cdef void tokenize_without_materializing(vector[string]& lstrings,
         rtokens.push_back(tokens)                                               
         for token in tokens:                                                    
             token_freq[token] += 1                                              
-                                                                                
+    '''
+    for tokens in ltokens:
+        for token in tokens:
+            token_freq[token] += 1
+
+    for tokens in rtokens:
+        for token in tokens:
+            token_freq[token] += 1
+                                                                            
     ordered_tokens = []                                                         
     for entry in token_freq:                                                    
         ordered_tokens.append((entry.first, entry.second))                      

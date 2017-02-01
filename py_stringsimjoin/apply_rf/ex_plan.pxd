@@ -15,7 +15,7 @@ cdef void compute_predicate_cost_and_coverage(vector[string]& lstrings,
                                               vector[string]& rstrings, 
                                               vector[Tree]& trees, 
                                               omap[string, Coverage]& coverage,
-                                              omap[int, Coverage]& tree_cov)
+                                              omap[int, Coverage]& tree_cov, int n_jobs)
 
 cdef Node get_default_execution_plan(vector[Tree]& trees, 
                                      omap[string, Coverage]& coverage,
@@ -29,4 +29,4 @@ cdef Node generate_overall_plan(vector[Node] plans)
 
 cdef vector[Node] generate_ex_plan_for_stage2(vector[pair[int, int]]&, vector[string]& lstrings,         
                                               vector[string]& rstrings,         
-                                              vector[Tree]& trees, int, bool push_flag)
+                                              vector[Tree]& trees, int, int, bool push_flag)

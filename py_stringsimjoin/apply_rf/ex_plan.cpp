@@ -892,7 +892,7 @@ static int __Pyx_InitStrings(__Pyx_StringTabEntry *t);
 /* Module declarations from 'libcpp.set' */
 
 /* Module declarations from 'py_stringsimjoin.apply_rf.tokenizers' */
-static void (*__pyx_f_16py_stringsimjoin_8apply_rf_10tokenizers_tokenize_without_materializing)(std::vector<std::string>  const &, std::vector<std::string>  const &, std::string const &, std::vector<std::vector<int> >  &, std::vector<std::vector<int> >  &); /*proto*/
+static void (*__pyx_f_16py_stringsimjoin_8apply_rf_10tokenizers_tokenize_without_materializing)(std::vector<std::string>  const &, std::vector<std::string>  const &, std::string const &, std::vector<std::vector<int> >  &, std::vector<std::vector<int> >  &, int); /*proto*/
 
 /* Module declarations from 'py_stringsimjoin.apply_rf.inverted_index' */
 
@@ -1273,7 +1273,7 @@ static std::pair<std::vector<std::string> ,std::vector<std::string> >  __pyx_f_1
  *                                               vector[Tree]& trees,
  */
 
-static void __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_compute_predicate_cost_and_coverage(std::vector<std::string>  &__pyx_v_lstrings, std::vector<std::string>  &__pyx_v_rstrings, std::vector<Tree>  &__pyx_v_trees, std::map<std::string,Coverage>  &__pyx_v_coverage, std::map<int,Coverage>  &__pyx_v_tree_cov) {
+static void __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_compute_predicate_cost_and_coverage(std::vector<std::string>  &__pyx_v_lstrings, std::vector<std::string>  &__pyx_v_rstrings, std::vector<Tree>  &__pyx_v_trees, std::map<std::string,Coverage>  &__pyx_v_coverage, std::map<int,Coverage>  &__pyx_v_tree_cov, int __pyx_v_n_jobs) {
   std::map<std::string,double>  __pyx_v_cost;
   int __pyx_v_sample_size;
   std::map<std::string,std::pair<std::string,std::string> >  __pyx_v_feature_info;
@@ -1503,7 +1503,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_compute_predicate_cost
  *         ltokens[tok_type] = vector[vector[int]]()
  *         rtokens[tok_type] = vector[vector[int]]()             # <<<<<<<<<<<<<<
  *         tokenize_without_materializing(lstrings, rstrings, tok_type,
- *                                        ltokens[tok_type], rtokens[tok_type])
+ *                                        ltokens[tok_type], rtokens[tok_type], n_jobs)
  */
     try {
       __pyx_t_13 = std::vector<std::vector<int> > ();
@@ -1517,10 +1517,10 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_compute_predicate_cost
  *         ltokens[tok_type] = vector[vector[int]]()
  *         rtokens[tok_type] = vector[vector[int]]()
  *         tokenize_without_materializing(lstrings, rstrings, tok_type,             # <<<<<<<<<<<<<<
- *                                        ltokens[tok_type], rtokens[tok_type])
+ *                                        ltokens[tok_type], rtokens[tok_type], n_jobs)
  * 
  */
-    __pyx_f_16py_stringsimjoin_8apply_rf_10tokenizers_tokenize_without_materializing(__pyx_v_lstrings, __pyx_v_rstrings, __pyx_v_tok_type, (__pyx_v_ltokens[__pyx_v_tok_type]), (__pyx_v_rtokens[__pyx_v_tok_type]));
+    __pyx_f_16py_stringsimjoin_8apply_rf_10tokenizers_tokenize_without_materializing(__pyx_v_lstrings, __pyx_v_rstrings, __pyx_v_tok_type, (__pyx_v_ltokens[__pyx_v_tok_type]), (__pyx_v_rtokens[__pyx_v_tok_type]), __pyx_v_n_jobs);
 
     /* "py_stringsimjoin/apply_rf/ex_plan.pyx":67
  *                     tok_types.insert(predicate.tokenizer_type)
@@ -1532,7 +1532,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_compute_predicate_cost
   }
 
   /* "py_stringsimjoin/apply_rf/ex_plan.pyx":73
- *                                        ltokens[tok_type], rtokens[tok_type])
+ *                                        ltokens[tok_type], rtokens[tok_type], n_jobs)
  * 
  *     print 't2'             # <<<<<<<<<<<<<<
  *     for feature in feature_info:
@@ -2128,7 +2128,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_compute_predicate_cost
  *                                               vector[string]& rstrings,
  */
 
-static std::vector<Node>  __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_generate_ex_plan_for_stage2(std::vector<std::pair<int,int> >  &__pyx_v_candset, std::vector<std::string>  &__pyx_v_lstrings, std::vector<std::string>  &__pyx_v_rstrings, std::vector<Tree>  &__pyx_v_trees, int __pyx_v_orig_sample_size, bool __pyx_v_push_flag) {
+static std::vector<Node>  __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_generate_ex_plan_for_stage2(std::vector<std::pair<int,int> >  &__pyx_v_candset, std::vector<std::string>  &__pyx_v_lstrings, std::vector<std::string>  &__pyx_v_rstrings, std::vector<Tree>  &__pyx_v_trees, int __pyx_v_orig_sample_size, int __pyx_v_n_jobs, bool __pyx_v_push_flag) {
   std::pair<std::vector<std::string> ,std::vector<std::string> >  __pyx_v_sample;
   std::map<std::string,Coverage>  __pyx_v_coverage;
   std::map<std::string,double>  __pyx_v_cost;
@@ -2200,7 +2200,7 @@ static std::vector<Node>  __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_generate
 
   /* "py_stringsimjoin/apply_rf/ex_plan.pyx":131
  *                                               vector[Tree]& trees,
- *                                               int orig_sample_size, bool push_flag):
+ *                                               int orig_sample_size, int n_jobs, bool push_flag):
  *     cdef pair[vector[string], vector[string]] sample = sample_pairs(candset,             # <<<<<<<<<<<<<<
  *                                                                     orig_sample_size,
  *                                                                     lstrings,
@@ -2378,7 +2378,7 @@ static std::vector<Node>  __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_generate
  *         ltokens[tok_type] = vector[vector[int]]()
  *         rtokens[tok_type] = vector[vector[int]]()             # <<<<<<<<<<<<<<
  *         tokenize_without_materializing(sample.first, sample.second, tok_type,
- *                                        ltokens[tok_type], rtokens[tok_type])
+ *                                        ltokens[tok_type], rtokens[tok_type], n_jobs)
  */
     try {
       __pyx_t_13 = std::vector<std::vector<int> > ();
@@ -2392,10 +2392,10 @@ static std::vector<Node>  __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_generate
  *         ltokens[tok_type] = vector[vector[int]]()
  *         rtokens[tok_type] = vector[vector[int]]()
  *         tokenize_without_materializing(sample.first, sample.second, tok_type,             # <<<<<<<<<<<<<<
- *                                        ltokens[tok_type], rtokens[tok_type])
+ *                                        ltokens[tok_type], rtokens[tok_type], n_jobs)
  * 
  */
-    __pyx_f_16py_stringsimjoin_8apply_rf_10tokenizers_tokenize_without_materializing(__pyx_v_sample.first, __pyx_v_sample.second, __pyx_v_tok_type, (__pyx_v_ltokens[__pyx_v_tok_type]), (__pyx_v_rtokens[__pyx_v_tok_type]));
+    __pyx_f_16py_stringsimjoin_8apply_rf_10tokenizers_tokenize_without_materializing(__pyx_v_sample.first, __pyx_v_sample.second, __pyx_v_tok_type, (__pyx_v_ltokens[__pyx_v_tok_type]), (__pyx_v_rtokens[__pyx_v_tok_type]), __pyx_v_n_jobs);
 
     /* "py_stringsimjoin/apply_rf/ex_plan.pyx":158
  *                     tok_types.insert(predicate.tokenizer_type)
@@ -2407,7 +2407,7 @@ static std::vector<Node>  __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_generate
   }
 
   /* "py_stringsimjoin/apply_rf/ex_plan.pyx":164
- *                                        ltokens[tok_type], rtokens[tok_type])
+ *                                        ltokens[tok_type], rtokens[tok_type], n_jobs)
  * 
  *     print 't2'             # <<<<<<<<<<<<<<
  *     for feature in feature_info:
@@ -5429,7 +5429,7 @@ static Node __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_optimize_plans(std::ma
  *     cdef vector[bool] overlap_join_plans
  *     for i in range(optimized_plans.size()):             # <<<<<<<<<<<<<<
  *         if optimized_plans[i].children[0].predicates[0].sim_measure_type.compare("OVERLAP_COEFFICIENT") == 0:
- *             overlap_join_plans[i] = True
+ *             overlap_join_plans.push_back(True)
  */
   __pyx_t_2 = __pyx_v_optimized_plans.size();
   for (__pyx_t_3 = 0; __pyx_t_3 < __pyx_t_2; __pyx_t_3+=1) {
@@ -5439,7 +5439,7 @@ static Node __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_optimize_plans(std::ma
  *     cdef vector[bool] overlap_join_plans
  *     for i in range(optimized_plans.size()):
  *         if optimized_plans[i].children[0].predicates[0].sim_measure_type.compare("OVERLAP_COEFFICIENT") == 0:             # <<<<<<<<<<<<<<
- *             overlap_join_plans[i] = True
+ *             overlap_join_plans.push_back(True)
  *             reordered_plans.push_back(optimized_plans[i])
  */
     __pyx_t_12 = __pyx_convert_string_from_py_std__in_string(__pyx_n_b_OVERLAP_COEFFICIENT); if (unlikely(PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 487; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
@@ -5449,18 +5449,23 @@ static Node __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_optimize_plans(std::ma
       /* "py_stringsimjoin/apply_rf/ex_plan.pyx":488
  *     for i in range(optimized_plans.size()):
  *         if optimized_plans[i].children[0].predicates[0].sim_measure_type.compare("OVERLAP_COEFFICIENT") == 0:
- *             overlap_join_plans[i] = True             # <<<<<<<<<<<<<<
+ *             overlap_join_plans.push_back(True)             # <<<<<<<<<<<<<<
  *             reordered_plans.push_back(optimized_plans[i])
  *         else:
  */
-      (__pyx_v_overlap_join_plans[__pyx_v_i]) = 1;
+      try {
+        __pyx_v_overlap_join_plans.push_back(1);
+      } catch(...) {
+        __Pyx_CppExn2PyErr();
+        {__pyx_filename = __pyx_f[0]; __pyx_lineno = 488; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      }
 
       /* "py_stringsimjoin/apply_rf/ex_plan.pyx":489
  *         if optimized_plans[i].children[0].predicates[0].sim_measure_type.compare("OVERLAP_COEFFICIENT") == 0:
- *             overlap_join_plans[i] = True
+ *             overlap_join_plans.push_back(True)
  *             reordered_plans.push_back(optimized_plans[i])             # <<<<<<<<<<<<<<
  *         else:
- *             overlap_join_plans[i] = False
+ *             overlap_join_plans.push_back(False)
  */
       try {
         __pyx_v_reordered_plans.push_back((__pyx_v_optimized_plans[__pyx_v_i]));
@@ -5473,7 +5478,7 @@ static Node __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_optimize_plans(std::ma
  *     cdef vector[bool] overlap_join_plans
  *     for i in range(optimized_plans.size()):
  *         if optimized_plans[i].children[0].predicates[0].sim_measure_type.compare("OVERLAP_COEFFICIENT") == 0:             # <<<<<<<<<<<<<<
- *             overlap_join_plans[i] = True
+ *             overlap_join_plans.push_back(True)
  *             reordered_plans.push_back(optimized_plans[i])
  */
       goto __pyx_L17;
@@ -5482,18 +5487,23 @@ static Node __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_optimize_plans(std::ma
     /* "py_stringsimjoin/apply_rf/ex_plan.pyx":491
  *             reordered_plans.push_back(optimized_plans[i])
  *         else:
- *             overlap_join_plans[i] = False             # <<<<<<<<<<<<<<
+ *             overlap_join_plans.push_back(False)             # <<<<<<<<<<<<<<
  * 
  *     for i in range(overlap_join_plans.size()):
  */
     /*else*/ {
-      (__pyx_v_overlap_join_plans[__pyx_v_i]) = 0;
+      try {
+        __pyx_v_overlap_join_plans.push_back(0);
+      } catch(...) {
+        __Pyx_CppExn2PyErr();
+        {__pyx_filename = __pyx_f[0]; __pyx_lineno = 491; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      }
     }
     __pyx_L17:;
   }
 
   /* "py_stringsimjoin/apply_rf/ex_plan.pyx":493
- *             overlap_join_plans[i] = False
+ *             overlap_join_plans.push_back(False)
  * 
  *     for i in range(overlap_join_plans.size()):             # <<<<<<<<<<<<<<
  *         if not overlap_join_plans[i]:
@@ -11992,18 +12002,18 @@ PyMODINIT_FUNC PyInit_ex_plan(void)
   /*--- Global init code ---*/
   /*--- Variable export code ---*/
   /*--- Function export code ---*/
-  if (__Pyx_ExportFunction("compute_predicate_cost_and_coverage", (void (*)(void))__pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_compute_predicate_cost_and_coverage, "void (std::vector<std::string>  &, std::vector<std::string>  &, std::vector<Tree>  &, std::map<std::string,Coverage>  &, std::map<int,Coverage>  &)") < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 2; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (__Pyx_ExportFunction("compute_predicate_cost_and_coverage", (void (*)(void))__pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_compute_predicate_cost_and_coverage, "void (std::vector<std::string>  &, std::vector<std::string>  &, std::vector<Tree>  &, std::map<std::string,Coverage>  &, std::map<int,Coverage>  &, int)") < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 2; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   if (__Pyx_ExportFunction("get_default_execution_plan", (void (*)(void))__pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_get_default_execution_plan, "Node (std::vector<Tree>  &, std::map<std::string,Coverage>  &, std::map<int,Coverage>  &, int const , std::vector<Tree>  &, std::vector<Tree>  &, bool, bool)") < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 2; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   if (__Pyx_ExportFunction("extract_pos_rules_from_rf", (void (*)(void))__pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_extract_pos_rules_from_rf, "std::vector<Tree>  (PyObject *, PyObject *)") < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 2; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   if (__Pyx_ExportFunction("generate_local_optimal_plans", (void (*)(void))__pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_generate_local_optimal_plans, "void (std::vector<Tree>  &, std::map<std::string,Coverage>  &, int, std::vector<Node>  &, std::vector<int>  &)") < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 2; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   if (__Pyx_ExportFunction("generate_overall_plan", (void (*)(void))__pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_generate_overall_plan, "Node (std::vector<Node> )") < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 2; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  if (__Pyx_ExportFunction("generate_ex_plan_for_stage2", (void (*)(void))__pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_generate_ex_plan_for_stage2, "std::vector<Node>  (std::vector<std::pair<int,int> >  &, std::vector<std::string>  &, std::vector<std::string>  &, std::vector<Tree>  &, int, bool)") < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 2; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (__Pyx_ExportFunction("generate_ex_plan_for_stage2", (void (*)(void))__pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_generate_ex_plan_for_stage2, "std::vector<Node>  (std::vector<std::pair<int,int> >  &, std::vector<std::string>  &, std::vector<std::string>  &, std::vector<Tree>  &, int, int, bool)") < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 2; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   /*--- Type init code ---*/
   /*--- Type import code ---*/
   /*--- Variable import code ---*/
   /*--- Function import code ---*/
   __pyx_t_1 = __Pyx_ImportModule("py_stringsimjoin.apply_rf.tokenizers"); if (!__pyx_t_1) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 2; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  if (__Pyx_ImportFunction(__pyx_t_1, "tokenize_without_materializing", (void (**)(void))&__pyx_f_16py_stringsimjoin_8apply_rf_10tokenizers_tokenize_without_materializing, "void (std::vector<std::string>  const &, std::vector<std::string>  const &, std::string const &, std::vector<std::vector<int> >  &, std::vector<std::vector<int> >  &)") < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 2; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (__Pyx_ImportFunction(__pyx_t_1, "tokenize_without_materializing", (void (**)(void))&__pyx_f_16py_stringsimjoin_8apply_rf_10tokenizers_tokenize_without_materializing, "void (std::vector<std::string>  const &, std::vector<std::string>  const &, std::string const &, std::vector<std::vector<int> >  &, std::vector<std::vector<int> >  &, int)") < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 2; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   Py_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_t_2 = __Pyx_ImportModule("py_stringsimjoin.apply_rf.utils"); if (!__pyx_t_2) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 2; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   if (__Pyx_ImportFunction(__pyx_t_2, "get_sim_type", (void (**)(void))&__pyx_f_16py_stringsimjoin_8apply_rf_5utils_get_sim_type, "int (std::string const &)") < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 2; __pyx_clineno = __LINE__; goto __pyx_L1_error;}

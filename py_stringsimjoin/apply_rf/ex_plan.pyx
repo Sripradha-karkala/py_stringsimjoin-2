@@ -41,7 +41,7 @@ cdef void compute_predicate_cost_and_coverage(vector[string]& lstrings,
                                               vector[string]& rstrings, 
                                               vector[Tree]& trees, 
                                               omap[string, Coverage]& coverage, 
-                                              omap[int, Coverage]& tree_cov):
+                                              omap[int, Coverage]& tree_cov, int n_jobs):
     cdef omap[string, vector[double]] features
     cdef omap[string, double] cost    
     cdef int sample_size = lstrings.size()
@@ -68,7 +68,7 @@ cdef void compute_predicate_cost_and_coverage(vector[string]& lstrings,
         ltokens[tok_type] = vector[vector[int]]()
         rtokens[tok_type] = vector[vector[int]]()                               
         tokenize_without_materializing(lstrings, rstrings, tok_type, 
-                                       ltokens[tok_type], rtokens[tok_type]) 
+                                       ltokens[tok_type], rtokens[tok_type], n_jobs) 
         
     print 't2'
     for feature in feature_info:
@@ -127,7 +127,7 @@ cdef vector[Node] generate_ex_plan_for_stage2(vector[pair[int, int]]& candset,
                                               vector[string]& lstrings, 
                                               vector[string]& rstrings, 
                                               vector[Tree]& trees,
-                                              int orig_sample_size, bool push_flag):
+                                              int orig_sample_size, int n_jobs, bool push_flag):
     cdef pair[vector[string], vector[string]] sample = sample_pairs(candset,
                                                                     orig_sample_size,
                                                                     lstrings,
@@ -159,7 +159,7 @@ cdef vector[Node] generate_ex_plan_for_stage2(vector[pair[int, int]]& candset,
         ltokens[tok_type] = vector[vector[int]]()                               
         rtokens[tok_type] = vector[vector[int]]()                               
         tokenize_without_materializing(sample.first, sample.second, tok_type,            
-                                       ltokens[tok_type], rtokens[tok_type])    
+                                       ltokens[tok_type], rtokens[tok_type], n_jobs)    
                                                                                 
     print 't2'                                                                  
     for feature in feature_info:
@@ -485,10 +485,10 @@ cdef Node optimize_plans(omap[int, vector[Node]]& plans,
     cdef vector[bool] overlap_join_plans
     for i in range(optimized_plans.size()):                              
         if optimized_plans[i].children[0].predicates[0].sim_measure_type.compare("OVERLAP_COEFFICIENT") == 0:
-            overlap_join_plans[i] = True
+            overlap_join_plans.push_back(True)
             reordered_plans.push_back(optimized_plans[i])
         else:
-            overlap_join_plans[i] = False
+            overlap_join_plans.push_back(False)
 
     for i in range(overlap_join_plans.size()):
         if not overlap_join_plans[i]:
