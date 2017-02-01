@@ -39,13 +39,16 @@ cdef void load_strings(data_path, attr, vector[string]& strings):
     df = pd.read_csv(data_path)
     convert_to_vector1(df[attr], strings)
 
-def test_execute_rf(rf, feature_table, l1, l2, path1, attr1, path2, attr2, working_dir, n_jobs):
+def test_execute_rf(rf, feature_table, l1, l2, path1, attr1, path2, attr2, 
+                    working_dir, n_jobs, py_reuse_flag, py_push_flag):
     start_time = time.time()                                                    
     cdef vector[Tree] trees, trees1, trees2                                     
     trees = extract_pos_rules_from_rf(rf, feature_table)                        
                                                                                 
     cdef int i=0, num_total_trees = trees.size()      
-                                                                                
+    cdef bool reuse_flag, push_flag
+    reuse_flag = py_reuse_flag
+    push_flag = py_push_flag                                                                            
     cdef vector[string] lstrings, rstrings                                      
     load_strings(path1, attr1, lstrings)                                        
     load_strings(path2, attr2, rstrings)                                        
@@ -61,7 +64,8 @@ def test_execute_rf(rf, feature_table, l1, l2, path1, attr1, path2, attr2, worki
     compute_predicate_cost_and_coverage(l, r, trees, coverage, tree_cov)                 
     cdef Node global_plan, join_node
     global_plan = get_default_execution_plan(trees, coverage, tree_cov, 
-                                             l.size(), trees1, trees2) 
+                                             l.size(), trees1, trees2,
+                                             reuse_flag, push_flag) 
 
     print 'num join nodes : ', global_plan.children.size()
     for join_node in global_plan.children:                                             
@@ -87,7 +91,7 @@ def test_execute_rf(rf, feature_table, l1, l2, path1, attr1, path2, attr2, worki
     cdef vector[Node] plans                                                     
     plans = generate_ex_plan_for_stage2(candset_votes.first,                    
                                         lstrings, rstrings,   
-                                        trees2, sample_size)  
+                                        trees2, sample_size, push_flag)  
     print 'executing remaining trees'                                           
     cdef int label = 1, num_trees_processed=trees1.size()                                                          
     i = 0
@@ -167,7 +171,7 @@ def execute_rf(rf, feature_table, l1, l2, path1, attr1, path2, attr2, working_di
     print 'generating plan'
     plans = generate_ex_plan_for_stage2(candset_votes.first,              
                                                           lstrings, rstrings,   
-                                                          trees2, sample_size)  
+                                                          trees2, sample_size, True)  
     print 'executing remaining trees'                                                                            
     cdef int label = 1
     i = 0                                                              

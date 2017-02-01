@@ -127,7 +127,7 @@ cdef vector[Node] generate_ex_plan_for_stage2(vector[pair[int, int]]& candset,
                                               vector[string]& lstrings, 
                                               vector[string]& rstrings, 
                                               vector[Tree]& trees,
-                                              int orig_sample_size):
+                                              int orig_sample_size, bool push_flag):
     cdef pair[vector[string], vector[string]] sample = sample_pairs(candset,
                                                                     orig_sample_size,
                                                                     lstrings,
@@ -216,7 +216,7 @@ cdef vector[Node] generate_ex_plan_for_stage2(vector[pair[int, int]]& candset,
 
     for i in xrange(trees.size()):
 #        print i
-        plan = gen_plan_for_tree(trees[i], coverage, sample_size)
+        plan = gen_plan_for_tree(trees[i], coverage, sample_size, push_flag)
         tree_plans.push_back(plan)
         tree_costs.push_back(compute_plan_cost(plan, coverage, sample_size))
 
@@ -229,7 +229,8 @@ cdef vector[Node] generate_ex_plan_for_stage2(vector[pair[int, int]]& candset,
     print 't7'
     return ordered_plans 
 
-cdef Node gen_plan_for_tree(Tree& tree, omap[string, Coverage]& coverage, const int& sample_size):
+cdef Node gen_plan_for_tree(Tree& tree, omap[string, Coverage]& coverage, 
+                            const int& sample_size, bool push_flag):
     cdef Rule rule                                                              
     cdef vector[int] optimal_seq                                                
     cdef vector[Node] nodes, plans                                                     
@@ -259,17 +260,23 @@ cdef Node gen_plan_for_tree(Tree& tree, omap[string, Coverage]& coverage, const 
             nodes[i].add_child(nodes[i+1])                                  
         plans.push_back(nodes[0])
 
-#    cdef vector[Node] pushed_plans
-#    push_filters(plans, pushed_plans)
+    cdef vector[Node] pushed_plans
+    cdef Node combined_plan                                        
 
-#    cdef Node combined_plan = pushed_plans[0]                                          
-    cdef Node combined_plan = plans[0]
-    i=1                                                                
-#    print 'before merge size : ', combined_plan.children.size()                 
-    while i < plans.size():                                                     
-        combined_plan = merge_plans_stage2(combined_plan, plans[i])                    
-        i += 1                                                                  
-#        print 'i = ', i, ' , num child nodes : ', combined_plan.children.size() 
+    if push_flag:
+        push_filters(plans, pushed_plans)
+
+        for i in range(pushed_plans.size()):                                    
+            if i == 0:                                                          
+                combined_plan = pushed_plans[i]                                 
+            else:                                                               
+                combined_plan = merge_plans_stage2(combined_plan, pushed_plans[i])    
+    else:
+        for i in range(plans.size()):                                    
+            if i == 0:                                                          
+                combined_plan = plans[i]                                 
+            else:                                                               
+                combined_plan = merge_plans_stage2(combined_plan, plans[i])    
 
     return combined_plan    
 
@@ -428,7 +435,7 @@ cdef vector[int] get_optimal_tree_seq(vector[double] costs,
 
 cdef Node optimize_plans(omap[int, vector[Node]]& plans, 
                          omap[int, vector[int]]& num_join_nodes,
-                         vector[bool]& selected_trees):
+                         vector[bool]& selected_trees, bool push_flag):
     py_map = {}
     cdef int i, j,m=0,n,k
 
@@ -474,28 +481,37 @@ cdef Node optimize_plans(omap[int, vector[Node]]& plans,
     generate_new_plans(plans_to_optimize, plans_to_update, pred_index, 
                        optimized_plans)
 
-    cdef vector[Node] pushed_optimized_plans
-    push_filters(optimized_plans, pushed_optimized_plans)
-
     cdef vector[Node] reordered_plans
     cdef vector[bool] overlap_join_plans
-    for i in range(pushed_optimized_plans.size()):                              
-        if pushed_optimized_plans[i].children[0].predicates[0].sim_measure_type.compare("OVERLAP_COEFFICIENT") == 0:
+    for i in range(optimized_plans.size()):                              
+        if optimized_plans[i].children[0].predicates[0].sim_measure_type.compare("OVERLAP_COEFFICIENT") == 0:
             overlap_join_plans[i] = True
-            reordered_plans.push_back(pushed_optimized_plans[i])
+            reordered_plans.push_back(optimized_plans[i])
         else:
             overlap_join_plans[i] = False
 
     for i in range(overlap_join_plans.size()):
         if not overlap_join_plans[i]:
-            reordered_plans.push_back(pushed_optimized_plans[i])
+            reordered_plans.push_back(optimized_plans[i])
 
-    cdef Node optimized_plan
-    for i in range(reordered_plans.size()):                                                         
-        if i == 0:                                                          
-            optimized_plan = reordered_plans[i]
-        else:                                  
-            optimized_plan = merge_plans(optimized_plan, reordered_plans[i])         
+    cdef vector[Node] pushed_optimized_plans                                    
+    cdef Node optimized_plan                                                    
+
+    if push_flag:                                                                                
+        push_filters(reordered_plans, pushed_optimized_plans)  
+
+        for i in range(pushed_optimized_plans.size()):                                                         
+            if i == 0:                                                          
+                optimized_plan = pushed_optimized_plans[i]
+            else:                                  
+                optimized_plan = merge_plans(optimized_plan, pushed_optimized_plans[i])         
+    else:
+        for i in range(reordered_plans.size()):                                 
+            if i == 0:                                                          
+                optimized_plan = reordered_plans[i]                             
+            else:                                                               
+                optimized_plan = merge_plans(optimized_plan, reordered_plans[i])
+
     return optimized_plan
 
 cdef void push_filters(vector[Node]& plans, vector[Node]& new_plans):
@@ -691,7 +707,8 @@ cdef Node get_default_execution_plan(vector[Tree]& trees,
                                      omap[int, Coverage]& tree_cov,            
                                      const int sample_size,
                                      vector[Tree]& sel_trees, 
-                                     vector[Tree]& rem_trees):                   
+                                     vector[Tree]& rem_trees,
+                                     bool reuse_flag, bool push_flag):                   
     cdef omap[int, vector[Node]] plans
     cdef omap[int, vector[int]] num_join_nodes                                                        
     cdef Node new_global_plan, curr_global_plan, tmp_node                                 
@@ -760,34 +777,49 @@ cdef Node get_default_execution_plan(vector[Tree]& trees,
     '''
     cit_trees = [0, 2, 3, 5]
     find_optimal_subset(plans, coverage, tree_cov, selected_trees, sample_size)                                                                            
+
     for i in xrange(n):
         selected_trees[i] = True
     for i in cit_trees:
         selected_trees[i] = False
+
 #    find_random_subset(selected_trees)
     print 'total number of trees : ' , n
     print 'selected trees : '
  
-    cdef Node combined_plan
-    cdef int p = 0
     for i in xrange(n):
         if not selected_trees[i]:
             rem_trees.push_back(trees[i])
         else:
             sel_trees.push_back(trees[i])
-            '''
-            print i, plans[i].size()
-            k = 0
-            if p == 0:
-                combined_plan = plans[i][0]
-                k = 1
-                p += 1
-            while k < plans[i].size():
-                combined_plan = merge_plans(combined_plan, plans[i][k])
-                k += 1
-            '''
-    return optimize_plans(plans, num_join_nodes, selected_trees)
-#    return combined_plan 
+
+    if reuse_flag:
+        return optimize_plans(plans, num_join_nodes, selected_trees, push_flag)
+
+    cdef vector[Node] pushed_plans                                   
+    cdef Node combined_plan                                                     
+    cdef vector[Node] overall_plans
+
+    for i in xrange(n):
+        for j in xrange(plans[i].size()):
+            overall_plans.push_back(plans[i][j])
+
+    if push_flag:
+        push_filters(overall_plans, pushed_plans)                       
+                                                                                
+        for i in range(pushed_plans.size()):                                     
+            if i == 0:                                                              
+                combined_plan = pushed_plans[i]                                 
+            else:                                                                   
+                combined_plan = merge_plans(combined_plan, pushed_plans[i]) 
+    else:
+        for i in range(overall_plans.size()):                                    
+            if i == 0:                                                          
+                combined_plan = overall_plans[i]                                 
+            else:                                                               
+                combined_plan = merge_plans(combined_plan, overall_plans[i])   
+
+    return combined_plan 
 
 cdef void generate_local_optimal_plans(vector[Tree]& trees, 
                                        omap[string, Coverage]& coverage, 
