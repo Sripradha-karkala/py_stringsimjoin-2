@@ -32,7 +32,9 @@ void Coverage::and_coverage(const Coverage& cov) {
 void Coverage::reset() {
   bit_vector.reset();
 }
-
+bool Coverage::index(int i) {
+  return bit_vector[i];
+}
 int Coverage::sum() {
   return bit_vector.count();
 }  

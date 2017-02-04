@@ -17,5 +17,6 @@ class Coverage {
     void and_coverage(const Coverage&);
     void or_coverage(const Coverage&);
     void reset();
+    bool index(int);
     int sum();
 };

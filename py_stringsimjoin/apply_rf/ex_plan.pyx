@@ -22,19 +22,25 @@ from py_stringsimjoin.apply_rf.coverage cimport Coverage
 
 
 # Sample a set of pairs from the candidate set of pairs
-cdef pair[vector[string], vector[string]] sample_pairs(vector[pair[int, int]]& candset,
-                                                       const int& sample_size,  
-                                                       vector[string]& lstrings,
-                                                       vector[string]& rstrings):
-    cdef double p = <double>sample_size / <double>candset.size()                
-    cdef vector[string] lsample, rsample                                        
-    cdef pair[int, int] entry                                                
-    for entry in candset:                                                       
-        if random.random() <= p:                                                
+cdef pair[pair[vector[string], vector[string]], vector[int]] sample_pairs(
+                   pair[vector[pair[int, int]], vector[int]]& candset_votes,
+                                              const int& sample_size,  
+                                              vector[string]& lstrings,
+                                              vector[string]& rstrings):
+    cdef double p = <double>sample_size / <double>candset_votes.second.size()                
+    cdef vector[string] lsample, rsample
+    cdef vector[int] sample_votes                                        
+    cdef pair[int, int] entry
+    cdef int i                                              
+    for i in xrange(candset_votes.second.size()):                                                       
+        if random.random() <= p:
+            entry = candset_votes.first[i]                                                
             lsample.push_back(lstrings[entry.first])                         
-            rsample.push_back(rstrings[entry.second])                         
+            rsample.push_back(rstrings[entry.second])
+            sample_votes.push_back(candset_votes.second[i])
+                         
     print 'sample size : ', lsample.size()                                      
-    return pair[vector[string], vector[string]](lsample, rsample)  
+    return pair[pair[vector[string], vector[string]], vector[int]](pair[vector[string], vector[string]](lsample, rsample), sample_votes)  
 
 
 cdef void compute_predicate_cost_and_coverage(vector[string]& lstrings, 
@@ -93,7 +99,8 @@ cdef void compute_predicate_cost_and_coverage(vector[string]& lstrings,
                 cost[feature.first] += (end_time - start_time)
                 feature_values[feature.first].push_back(sim_score)
             cost[feature.first] /= sample_size
-#            if feature.second.second.compare('qg3') == 0:
+#            if (feature.second.first.compare('OVERLAP_COEFFICIENT') == 0 and
+#                feature.second.second.compare('qg2') == 0):
 #                cost[feature.first] = cost[feature.first] * 10
      #   print feature.first, cost[feature.first]
     print 't3'
@@ -123,19 +130,20 @@ cdef void compute_predicate_cost_and_coverage(vector[string]& lstrings,
 # Generate execution plans for executing the remaining (n/2 - 1) trees
 # This function would find an optimal ordering of the remaining trees and return
 # a plan for each of the (n/2 - 1) trees in that order.
-cdef vector[Node] generate_ex_plan_for_stage2(vector[pair[int, int]]& candset,
+cdef vector[Node] generate_ex_plan_for_stage2(pair[vector[pair[int, int]], vector[int]]& candset_votes,
                                               vector[string]& lstrings, 
                                               vector[string]& rstrings, 
                                               vector[Tree]& trees,
                                               int orig_sample_size, int n_jobs, bool push_flag):
-    cdef pair[vector[string], vector[string]] sample = sample_pairs(candset,
+    cdef pair[pair[vector[string], vector[string]], vector[int]] sample = sample_pairs(
+                                                                    candset_votes,
                                                                     orig_sample_size,
                                                                     lstrings,
                                                                     rstrings)
     cdef omap[string, Coverage] coverage
     cdef omap[string, vector[double]] features                                  
     cdef omap[string, double] cost                                              
-    cdef int i, sample_size = sample.first.size()                                      
+    cdef int i, sample_size = sample.second.size()                                      
     cdef omap[string, pair[string, string]] feature_info                        
     cdef omap[string, vector[vector[int]]] ltokens, rtokens                     
     cdef Tree tree                                                              
@@ -158,7 +166,7 @@ cdef vector[Node] generate_ex_plan_for_stage2(vector[pair[int, int]]& candset,
     for tok_type in tok_types:                                                  
         ltokens[tok_type] = vector[vector[int]]()                               
         rtokens[tok_type] = vector[vector[int]]()                               
-        tokenize_without_materializing(sample.first, sample.second, tok_type,            
+        tokenize_without_materializing(sample.first.first, sample.first.second, tok_type,            
                                        ltokens[tok_type], rtokens[tok_type], n_jobs)    
                                                                                 
     print 't2'                                                                  
@@ -169,7 +177,7 @@ cdef vector[Node] generate_ex_plan_for_stage2(vector[pair[int, int]]& candset,
             cost[feature.first] = 0.0                                           
             for i in xrange(sample_size):                                       
                 start_time = time.time()                                        
-                sim_score = str_sim_fn(sample.first[i], sample.second[i])                
+                sim_score = str_sim_fn(sample.first.first[i], sample.first.second[i])                
                 end_time = time.time()                                          
                 cost[feature.first] += (end_time - start_time)                  
                 feature_values[feature.first].push_back(sim_score)              
@@ -221,10 +229,12 @@ cdef vector[Node] generate_ex_plan_for_stage2(vector[pair[int, int]]& candset,
         tree_costs.push_back(compute_plan_cost(plan, coverage, sample_size))
 
     print 't5'
-    cdef vector[int] opt_tree_seq = get_optimal_tree_seq(tree_costs, tree_cov, sample_size) 
+#    cdef vector[int] opt_tree_seq = get_optimal_tree_seq(tree_costs, tree_cov, sample_size) 
+    cdef vector[int] opt_tree_seq = get_optimal_tree_seq_v1(tree_costs, tree_cov, sample_size, sample.second)
     cdef vector[Node] ordered_plans
     print 't6'
     for i in opt_tree_seq:
+        print i
         ordered_plans.push_back(tree_plans[i])
     print 't7'
     return ordered_plans 
@@ -432,6 +442,60 @@ cdef vector[int] get_optimal_tree_seq(vector[double] costs,
             prev_coverage.and_coverage(coverage[max_tree])
                                                                                 
     return optimal_seq 
+
+cdef vector[int] get_optimal_tree_seq_v1(vector[double]& costs,
+                                      omap[int, Coverage]& coverage,
+                                      const int sample_size,
+                                      vector[int]& votes):
+    cdef vector[int] optimal_seq, curr_votes
+    cdef vector[bool] selected_trees
+    cdef int i, j = 0, n=costs.size(), max_tree, k, d
+    cdef double max_score, tree_score
+
+    for i in xrange(n):
+        selected_trees.push_back(False)
+
+    for i in xrange(sample_size):
+        curr_votes.push_back(votes[i])
+
+    for j in xrange(n):
+        max_score = 0.0
+        max_tree = -1
+
+        for i in xrange(n):
+            if selected_trees[i]:
+                continue
+
+            d = 0
+            
+            for k in xrange(sample_size):
+                if curr_votes[k] != -1:
+                    if coverage[i].index(k):
+                        if curr_votes[k] + 1 >= 5:
+                            d += 1
+                    else:
+                        if curr_votes[k] + n - j - 1 < 5:
+                            d += 1
+                
+            tree_score = (<double>d / <double>sample_size) / costs[i]
+
+            if tree_score > max_score:
+                max_score = tree_score
+                max_tree = i
+
+        optimal_seq.push_back(max_tree)
+        selected_trees[max_tree] = True
+        for k in xrange(sample_size):
+            if curr_votes[k] != -1:
+                if coverage[max_tree].index(k):
+                    if curr_votes[k] + 1 >= 5:
+                        curr_votes[k] = -1
+                else:
+                    if curr_votes[k] + n - j - 1 < 5:
+                        curr_votes[k] = -1
+
+    return optimal_seq
+
 
 cdef Node optimize_plans(omap[int, vector[Node]]& plans, 
                          omap[int, vector[int]]& num_join_nodes,
@@ -708,7 +772,7 @@ cdef Node get_default_execution_plan(vector[Tree]& trees,
                                      const int sample_size,
                                      vector[Tree]& sel_trees, 
                                      vector[Tree]& rem_trees,
-                                     bool reuse_flag, bool push_flag):                   
+                                     bool reuse_flag, bool push_flag, tree_list):                   
     cdef omap[int, vector[Node]] plans
     cdef omap[int, vector[int]] num_join_nodes                                                        
     cdef Node new_global_plan, curr_global_plan, tmp_node                                 
@@ -775,13 +839,14 @@ cdef Node get_default_execution_plan(vector[Tree]& trees,
         else:                                                                   
             prev_coverage.and_coverage(tree_cov[max_tree])                      
     '''
-    cit_trees = [0, 2, 3, 5]
+#    cit_trees = [0, 2, 3, 5]
     find_optimal_subset(plans, coverage, tree_cov, selected_trees, sample_size)                                                                            
 
-    for i in xrange(n):
-        selected_trees[i] = True
-    for i in cit_trees:
-        selected_trees[i] = False
+    if len(tree_list) > 1:
+        for i in xrange(n):
+            selected_trees[i] = False
+        for i in tree_list:
+            selected_trees[i] = True
 
 #    find_random_subset(selected_trees)
     print 'total number of trees : ' , n
