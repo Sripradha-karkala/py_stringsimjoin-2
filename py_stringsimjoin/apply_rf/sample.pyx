@@ -67,7 +67,7 @@ cdef void sample_pairs(vector[string]& lstrings, vector[string]& rstrings,
 
     # tokenize input strings using whitespace tokenizer
     tokenize_without_materializing(lstrings, rstrings, tok_type,            
-                                   ltokens, rtokens)
+                                   ltokens, rtokens, 4)
 
     cdef int number_of_r_tuples_to_sample = <int>ceil(<float>sample_size / <float>y_param)
     sample_rtable_indices = random.sample(range(0, rstrings.size()),          

@@ -75,7 +75,7 @@ def test_execute_rf(rf, feature_table, l1, l2, path1, attr1, path2, attr2,
     print 'num join nodes : ', global_plan.children.size()
     for join_node in global_plan.children:                                             
          print 'JOIN', join_node.predicates[0].pred_name
-     
+ 
     tok_st = time.time()
     print 'tokenizing strings'                                                  
     tokenize_strings(trees, lstrings, rstrings, working_dir, n_jobs)                    
@@ -83,28 +83,25 @@ def test_execute_rf(rf, feature_table, l1, l2, path1, attr1, path2, attr2,
     tok_time = time.time() - tok_st
 
     cdef omap[string, vector[vector[int]]] ltokens_cache, rtokens_cache         
+    cdef oset[string] tokenizers
+    cdef Tree tree
+    cdef Rule rule
+    cdef Predicatecpp predicate
+    cdef string tok_type
+
     if use_cache:                                                               
-        ltokens_cache["qg2"] = vector[vector[int]]()                            
-        rtokens_cache["qg2"] = vector[vector[int]]()                            
-        load_tok("qg2", working_dir, ltokens_cache["qg2"], rtokens_cache["qg2"])
-        ltokens_cache["qg2_bag"] = vector[vector[int]]()                        
-        rtokens_cache["qg2_bag"] = vector[vector[int]]()                        
-        load_tok("qg2_bag", working_dir, ltokens_cache["qg2_bag"], rtokens_cache["qg2_bag"])
-        ltokens_cache["qg3"] = vector[vector[int]]()                            
-        rtokens_cache["qg3"] = vector[vector[int]]()                            
-        load_tok("qg3", working_dir, ltokens_cache["qg3"], rtokens_cache["qg3"])
-        ltokens_cache["ws"] = vector[vector[int]]()                             
-        rtokens_cache["ws"] = vector[vector[int]]()                             
-        load_tok("ws", working_dir, ltokens_cache["ws"], rtokens_cache["ws"])   
-        ltokens_cache["alph_num"] = vector[vector[int]]()                       
-        rtokens_cache["alph_num"] = vector[vector[int]]()                       
-        load_tok("alph_num", working_dir, ltokens_cache["alph_num"], rtokens_cache["alph_num"])
-        ltokens_cache["alph"] = vector[vector[int]]()                           
-        rtokens_cache["alph"] = vector[vector[int]]()                           
-        load_tok("alph", working_dir, ltokens_cache["alph"], rtokens_cache["alph"])
-        ltokens_cache["num"] = vector[vector[int]]()                            
-        rtokens_cache["num"] = vector[vector[int]]()                            
-        load_tok("num", working_dir, ltokens_cache["num"], rtokens_cache["num"])
+        for tree in trees:
+            for rule in tree.rules:
+                for predicate in rule.predicates:
+                    if predicate.sim_measure_type.compare('EDIT_DISTANCE') == 0:
+                        tokenizers.insert('qg2_bag')
+                        continue
+                    tokenizers.insert(predicate.tokenizer_type)
+
+        for tok_type in tokenizers:
+            ltokens_cache[tok_type] = vector[vector[int]]()                            
+            rtokens_cache[tok_type] = vector[vector[int]]()                            
+            load_tok(tok_type, working_dir, ltokens_cache[tok_type], rtokens_cache[tok_type])
 
     cdef double join_time = 0.0
     stage1_st = time.time()
@@ -136,7 +133,7 @@ def test_execute_rf(rf, feature_table, l1, l2, path1, attr1, path2, attr2,
         num_trees_processed += 1                                                
         label += 1                                                              
     stage2_time = time.time() - stage2_st
-
+    
     print 'total time : ', time.time() - start_time   
     print 'tok time : ', tok_time
     print 'stage1 time : ', stage1_time

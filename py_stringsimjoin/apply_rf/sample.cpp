@@ -531,9 +531,18 @@ typedef double (*__pyx_t_16py_stringsimjoin_8apply_rf_5utils_simfnptr_str)(std::
  * ctypedef double (*simfnptr_str)(vector[string]&, vector[string]&) nogil
  * ctypedef bool (*compfnptr)(double, double) nogil             # <<<<<<<<<<<<<<
  * 
- * cdef int get_sim_type(const string&)
+ * ctypedef double (*overlap_simfnptr)(const int&, const int&, const double&) nogil
  */
 typedef bool (*__pyx_t_16py_stringsimjoin_8apply_rf_5utils_compfnptr)(double, double);
+
+/* "py_stringsimjoin/apply_rf/utils.pxd":16
+ * ctypedef bool (*compfnptr)(double, double) nogil
+ * 
+ * ctypedef double (*overlap_simfnptr)(const int&, const int&, const double&) nogil             # <<<<<<<<<<<<<<
+ * 
+ * cdef int get_sim_type(const string&)
+ */
+typedef double (*__pyx_t_16py_stringsimjoin_8apply_rf_5utils_overlap_simfnptr)(int const &, int const &, double const &);
 
 /* --- Runtime support code (head) --- */
 #ifndef CYTHON_REFNANNY
@@ -793,7 +802,7 @@ static int __Pyx_InitStrings(__Pyx_StringTabEntry *t);
 static void (*__pyx_f_16py_stringsimjoin_8apply_rf_5utils_build_inverted_index)(std::vector<std::vector<int> >  &, InvertedIndex &); /*proto*/
 
 /* Module declarations from 'py_stringsimjoin.apply_rf.tokenizers' */
-static void (*__pyx_f_16py_stringsimjoin_8apply_rf_10tokenizers_tokenize_without_materializing)(std::vector<std::string>  const &, std::vector<std::string>  const &, std::string const &, std::vector<std::vector<int> >  &, std::vector<std::vector<int> >  &); /*proto*/
+static void (*__pyx_f_16py_stringsimjoin_8apply_rf_10tokenizers_tokenize_without_materializing)(std::vector<std::string>  const &, std::vector<std::string>  const &, std::string const &, std::vector<std::vector<int> >  &, std::vector<std::vector<int> >  &, int); /*proto*/
 
 /* Module declarations from 'py_stringsimjoin.apply_rf.sample' */
 static void __pyx_f_16py_stringsimjoin_8apply_rf_6sample_convert_to_string_vector(PyObject *, std::vector<std::string>  &); /*proto*/
@@ -1787,13 +1796,13 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_6sample_sample_pairs(std::vecto
  * 
  *     # tokenize input strings using whitespace tokenizer
  *     tokenize_without_materializing(lstrings, rstrings, tok_type,             # <<<<<<<<<<<<<<
- *                                    ltokens, rtokens)
+ *                                    ltokens, rtokens, 4)
  * 
  */
-  __pyx_f_16py_stringsimjoin_8apply_rf_10tokenizers_tokenize_without_materializing(__pyx_v_lstrings, __pyx_v_rstrings, __pyx_v_tok_type, __pyx_v_ltokens, __pyx_v_rtokens);
+  __pyx_f_16py_stringsimjoin_8apply_rf_10tokenizers_tokenize_without_materializing(__pyx_v_lstrings, __pyx_v_rstrings, __pyx_v_tok_type, __pyx_v_ltokens, __pyx_v_rtokens, 4);
 
   /* "py_stringsimjoin/apply_rf/sample.pyx":72
- *                                    ltokens, rtokens)
+ *                                    ltokens, rtokens, 4)
  * 
  *     cdef int number_of_r_tuples_to_sample = <int>ceil(<float>sample_size / <float>y_param)             # <<<<<<<<<<<<<<
  *     sample_rtable_indices = random.sample(range(0, rstrings.size()),
@@ -2648,7 +2657,7 @@ PyMODINIT_FUNC PyInit_sample(void)
   if (__Pyx_ImportFunction(__pyx_t_1, "build_inverted_index", (void (**)(void))&__pyx_f_16py_stringsimjoin_8apply_rf_5utils_build_inverted_index, "void (std::vector<std::vector<int> >  &, InvertedIndex &)") < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 2; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   Py_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_t_2 = __Pyx_ImportModule("py_stringsimjoin.apply_rf.tokenizers"); if (!__pyx_t_2) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 2; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  if (__Pyx_ImportFunction(__pyx_t_2, "tokenize_without_materializing", (void (**)(void))&__pyx_f_16py_stringsimjoin_8apply_rf_10tokenizers_tokenize_without_materializing, "void (std::vector<std::string>  const &, std::vector<std::string>  const &, std::string const &, std::vector<std::vector<int> >  &, std::vector<std::vector<int> >  &)") < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 2; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (__Pyx_ImportFunction(__pyx_t_2, "tokenize_without_materializing", (void (**)(void))&__pyx_f_16py_stringsimjoin_8apply_rf_10tokenizers_tokenize_without_materializing, "void (std::vector<std::string>  const &, std::vector<std::string>  const &, std::string const &, std::vector<std::vector<int> >  &, std::vector<std::vector<int> >  &, int)") < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 2; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   Py_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   /*--- Execution code ---*/
   #if defined(__Pyx_Generator_USED) || defined(__Pyx_Coroutine_USED)
