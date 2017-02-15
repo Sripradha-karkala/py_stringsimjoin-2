@@ -29,7 +29,7 @@ from py_stringsimjoin.apply_rf.node cimport Node
 from py_stringsimjoin.apply_rf.coverage cimport Coverage         
 from py_stringsimjoin.apply_rf.rule cimport Rule                                
 from py_stringsimjoin.apply_rf.tree cimport Tree  
-from py_stringsimjoin.apply_rf.ex_plan cimport get_default_execution_plan, generate_ex_plan_for_stage2, compute_predicate_cost_and_coverage, extract_pos_rules_from_rf, generate_local_optimal_plans, generate_overall_plan  
+from py_stringsimjoin.apply_rf.ex_plan cimport get_plans_for_rules, get_default_execution_plan, generate_ex_plan_for_stage2, compute_predicate_cost_and_coverage, extract_pos_rules_from_rf, generate_local_optimal_plans, generate_overall_plan  
 from py_stringsimjoin.apply_rf.execute_join_node cimport execute_join_node
 from py_stringsimjoin.apply_rf.execute_select_node cimport execute_select_node, execute_select_node_candset      
 from py_stringsimjoin.apply_rf.execute_feature_node cimport execute_feature_node      
@@ -138,6 +138,80 @@ def test_execute_rf(rf, feature_table, l1, l2, path1, attr1, path2, attr2,
     print 'tok time : ', tok_time
     print 'stage1 time : ', stage1_time
     print 'stage2 time : ', stage2_time
+
+def naive_execute_rf(rf, feature_table, l1, l2, path1, attr1, path2, attr2,      
+                     working_dir, n_jobs, py_reuse_flag, py_push_flag,           
+                     tree_list, use_cache):                                      
+    start_time = time.time()                                                    
+    cdef vector[Tree] trees, trees1, trees2                                     
+    trees = extract_pos_rules_from_rf(rf, feature_table)                        
+                                                                                
+    cdef int i=0,j, num_total_trees = trees.size()                                
+    cdef bool reuse_flag, push_flag                                             
+    reuse_flag = py_reuse_flag                                                  
+    push_flag = py_push_flag                                                    
+    cdef vector[string] lstrings, rstrings                                      
+    load_strings(path1, attr1, lstrings)                                        
+    load_strings(path2, attr2, rstrings)                                        
+                                                                                
+    cdef omap[string, Coverage] coverage                                        
+    cdef omap[int, Coverage] tree_cov                                           
+    cdef vector[string] l, r                                                    
+    for s in l1:                                                                
+        l.push_back(lstrings[int(s)])                                           
+    for s in l2:                                                                
+        r.push_back(rstrings[int(s)])                                           
+    print ' computing coverage'                                                 
+    compute_predicate_cost_and_coverage(l, r, trees, coverage, tree_cov, n_jobs)
+    cdef omap[int, vector[Node]] plans
+    global_plan = get_plans_for_rules(trees, coverage, tree_cov,         
+                                             l.size(), trees1, trees2,          
+                                             reuse_flag, push_flag, tree_list) 
+
+    print 'tokenizing strings'                                                  
+    tokenize_strings(trees, lstrings, rstrings, working_dir, n_jobs)            
+    print 'finished tokenizing. executing plan' 
+    cdef omap[string, vector[vector[int]]] ltokens_cache, rtokens_cache         
+ 
+    cdef vector[int] trees2_index
+    naive_rf_time = time.time() - start_time
+    subset_rf_time = naive_rf_time
+    sel_trees = {}
+    for i in tree_list:
+        sel_trees[i] = True
+    for i in xrange(num_total_trees):
+        start_time = time.time()
+        for j in xrange(plans[i].size()):
+            execute_plan(plans[i][j], trees, lstrings, rstrings, working_dir, n_jobs,  
+                 use_cache, ltokens_cache, rtokens_cache)
+        naive_rf_time += time.time() - start_time
+        if sel_trees.get(i) is not None:
+            subset_rf_time += time.time() - start_time
+            trees1.push_back(trees[i])
+        else:
+            trees2_index.push_back(i)
+
+    cdef pair[vector[pair[int, int]], vector[int]] candset_votes                
+    start_time = time.time()
+    candset_votes = merge_candsets(num_total_trees, trees1,                     
+                                   working_dir)    
+    print 'executing remaining trees'                                           
+    cdef int label = 1, num_trees_processed=trees1.size()                       
+    i = 0                                                                                                      
+    while candset_votes.first.size() > 0 and i < trees2_index.size():
+        for j in xrange(plans[trees2_index[i]].size()):                  
+            candset_votes = execute_tree_plan(candset_votes, lstrings, rstrings, plans[trees2_index[i]][j],
+                                  num_total_trees, num_trees_processed, label,  
+                                  n_jobs, working_dir, use_cache,               
+                                  ltokens_cache, rtokens_cache)                 
+        num_trees_processed += 1                                                
+        label += 1    
+
+    print 'rem trees time : ', time.time() - start_time
+    subset_rf_time += time.time() - start_time
+
+    print 'naive rf time : ', naive_rf_time
+    print 'subset rf time : ', subset_rf_time
 
 
 cdef void execute_plan(Node& root, vector[Tree]& trees, vector[string]& lstrings, 
@@ -428,7 +502,8 @@ cdef pair[vector[pair[int, int]], vector[int]] execute_tree_plan(
                 cached_pair_ids.erase(curr_entry.second)
 
         while (curr_node.node_type.compare("OUTPUT") != 0 and
-               curr_node.node_type.compare("FILTER") == 0 and 
+               (curr_node.node_type.compare("FILTER") == 0 or 
+                curr_node.node_type.compare("JOIN") == 0) and
                curr_node.children.size() < 2):
             print 'FILTER', curr_node.predicates[0].sim_measure_type, \
                   curr_node.predicates[0].tokenizer_type, \

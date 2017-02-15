@@ -765,7 +765,25 @@ cdef void find_optimal_subset(omap[int, vector[Node]]& plans,
                 max_tree = i
         selected_trees[max_tree] = False
         curr_cost = max_cost
- 
+
+cdef omap[int, vector[Node]] get_plans_for_rules(vector[Tree]& trees,                       
+                                     omap[string, Coverage]& coverage,          
+                                     omap[int, Coverage]& tree_cov,             
+                                     const int sample_size,                     
+                                     vector[Tree]& sel_trees,                   
+                                     vector[Tree]& rem_trees,                   
+                                     bool reuse_flag, bool push_flag, tree_list):
+    cdef omap[int, vector[Node]] plans                                          
+    cdef omap[int, vector[int]] num_join_nodes                                  
+    cdef int i, j = 0, k, n=trees.size(), max_tree, num_trees_to_select         
+                                                                                
+    cdef vector[Tree] tmp_vec                                                   
+    for i in xrange(n):                                                         
+        tmp_vec.push_back(trees[i])                                             
+        generate_local_optimal_plans(tmp_vec, coverage, sample_size, plans[i], num_join_nodes[i])
+        tmp_vec.clear()
+    return plans    
+
 cdef Node get_default_execution_plan(vector[Tree]& trees,
                                      omap[string, Coverage]& coverage,
                                      omap[int, Coverage]& tree_cov,            
