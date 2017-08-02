@@ -546,6 +546,19 @@ typedef bool (*__pyx_t_16py_stringsimjoin_8apply_rf_5utils_compfnptr)(double, do
  * cdef int get_sim_type(const string&)
  */
 typedef double (*__pyx_t_16py_stringsimjoin_8apply_rf_5utils_overlap_simfnptr)(int const &, int const &, double const &);
+struct __pyx_opt_args_16py_stringsimjoin_8apply_rf_7ex_plan_find_optimal_subset;
+
+/* "py_stringsimjoin/apply_rf/ex_plan.pyx":902
+ *         i += 1
+ * 
+ * cdef void find_optimal_subset(omap[int, vector[Node]]& plans,             # <<<<<<<<<<<<<<
+ *                          omap[string, Coverage]& coverage,
+ *                          omap[int, Coverage]& tree_cov,
+ */
+struct __pyx_opt_args_16py_stringsimjoin_8apply_rf_7ex_plan_find_optimal_subset {
+  int __pyx_n;
+  PyObject *num_trees_for_blocking;
+};
 
 /* --- Runtime support code (head) --- */
 #ifndef CYTHON_REFNANNY
@@ -654,6 +667,52 @@ static void __Pyx_WriteUnraisable(const char *name, int clineno,
                                   int lineno, const char *filename,
                                   int full_traceback, int nogil);
 
+#if CYTHON_COMPILING_IN_CPYTHON
+static CYTHON_INLINE int __Pyx_ListComp_Append(PyObject* list, PyObject* x) {
+    PyListObject* L = (PyListObject*) list;
+    Py_ssize_t len = Py_SIZE(list);
+    if (likely(L->allocated > len)) {
+        Py_INCREF(x);
+        PyList_SET_ITEM(list, len, x);
+        Py_SIZE(list) = len+1;
+        return 0;
+    }
+    return PyList_Append(list, x);
+}
+#else
+#define __Pyx_ListComp_Append(L,x) PyList_Append(L,x)
+#endif
+
+#define __Pyx_GetItemInt(o, i, type, is_signed, to_py_func, is_list, wraparound, boundscheck)\
+    (__Pyx_fits_Py_ssize_t(i, type, is_signed) ?\
+    __Pyx_GetItemInt_Fast(o, (Py_ssize_t)i, is_list, wraparound, boundscheck) :\
+    (is_list ? (PyErr_SetString(PyExc_IndexError, "list index out of range"), (PyObject*)NULL) :\
+               __Pyx_GetItemInt_Generic(o, to_py_func(i))))
+#define __Pyx_GetItemInt_List(o, i, type, is_signed, to_py_func, is_list, wraparound, boundscheck)\
+    (__Pyx_fits_Py_ssize_t(i, type, is_signed) ?\
+    __Pyx_GetItemInt_List_Fast(o, (Py_ssize_t)i, wraparound, boundscheck) :\
+    (PyErr_SetString(PyExc_IndexError, "list index out of range"), (PyObject*)NULL))
+static CYTHON_INLINE PyObject *__Pyx_GetItemInt_List_Fast(PyObject *o, Py_ssize_t i,
+                                                              int wraparound, int boundscheck);
+#define __Pyx_GetItemInt_Tuple(o, i, type, is_signed, to_py_func, is_list, wraparound, boundscheck)\
+    (__Pyx_fits_Py_ssize_t(i, type, is_signed) ?\
+    __Pyx_GetItemInt_Tuple_Fast(o, (Py_ssize_t)i, wraparound, boundscheck) :\
+    (PyErr_SetString(PyExc_IndexError, "tuple index out of range"), (PyObject*)NULL))
+static CYTHON_INLINE PyObject *__Pyx_GetItemInt_Tuple_Fast(PyObject *o, Py_ssize_t i,
+                                                              int wraparound, int boundscheck);
+static CYTHON_INLINE PyObject *__Pyx_GetItemInt_Generic(PyObject *o, PyObject* j);
+static CYTHON_INLINE PyObject *__Pyx_GetItemInt_Fast(PyObject *o, Py_ssize_t i,
+                                                     int is_list, int wraparound, int boundscheck);
+
+#define __Pyx_SetItemInt(o, i, v, type, is_signed, to_py_func, is_list, wraparound, boundscheck)\
+    (__Pyx_fits_Py_ssize_t(i, type, is_signed) ?\
+    __Pyx_SetItemInt_Fast(o, (Py_ssize_t)i, v, is_list, wraparound, boundscheck) :\
+    (is_list ? (PyErr_SetString(PyExc_IndexError, "list assignment index out of range"), -1) :\
+               __Pyx_SetItemInt_Generic(o, to_py_func(i), v)))
+static CYTHON_INLINE int __Pyx_SetItemInt_Generic(PyObject *o, PyObject *j, PyObject *v);
+static CYTHON_INLINE int __Pyx_SetItemInt_Fast(PyObject *o, Py_ssize_t i, PyObject *v,
+                                               int is_list, int wraparound, int boundscheck);
+
 static CYTHON_INLINE int __Pyx_div_int(int, int);
 
 #define UNARY_NEG_WOULD_OVERFLOW(x)\
@@ -684,22 +743,6 @@ static PyObject *__Pyx_PyDict_GetItem(PyObject *d, PyObject* key) {
 static CYTHON_INLINE long __Pyx_div_long(long, long);
 
 #if CYTHON_COMPILING_IN_CPYTHON
-static CYTHON_INLINE int __Pyx_ListComp_Append(PyObject* list, PyObject* x) {
-    PyListObject* L = (PyListObject*) list;
-    Py_ssize_t len = Py_SIZE(list);
-    if (likely(L->allocated > len)) {
-        Py_INCREF(x);
-        PyList_SET_ITEM(list, len, x);
-        Py_SIZE(list) = len+1;
-        return 0;
-    }
-    return PyList_Append(list, x);
-}
-#else
-#define __Pyx_ListComp_Append(L,x) PyList_Append(L,x)
-#endif
-
-#if CYTHON_COMPILING_IN_CPYTHON
 static PyObject* __Pyx_PyInt_EqObjC(PyObject *op1, PyObject *op2, long intval, int inplace);
 #else
 #define __Pyx_PyInt_EqObjC(op1, op2, intval, inplace)\
@@ -712,27 +755,6 @@ static PyObject* __Pyx_PyInt_AddObjC(PyObject *op1, PyObject *op2, long intval, 
 #define __Pyx_PyInt_AddObjC(op1, op2, intval, inplace)\
     (inplace ? PyNumber_InPlaceAdd(op1, op2) : PyNumber_Add(op1, op2))
 #endif
-
-#define __Pyx_GetItemInt(o, i, type, is_signed, to_py_func, is_list, wraparound, boundscheck)\
-    (__Pyx_fits_Py_ssize_t(i, type, is_signed) ?\
-    __Pyx_GetItemInt_Fast(o, (Py_ssize_t)i, is_list, wraparound, boundscheck) :\
-    (is_list ? (PyErr_SetString(PyExc_IndexError, "list index out of range"), (PyObject*)NULL) :\
-               __Pyx_GetItemInt_Generic(o, to_py_func(i))))
-#define __Pyx_GetItemInt_List(o, i, type, is_signed, to_py_func, is_list, wraparound, boundscheck)\
-    (__Pyx_fits_Py_ssize_t(i, type, is_signed) ?\
-    __Pyx_GetItemInt_List_Fast(o, (Py_ssize_t)i, wraparound, boundscheck) :\
-    (PyErr_SetString(PyExc_IndexError, "list index out of range"), (PyObject*)NULL))
-static CYTHON_INLINE PyObject *__Pyx_GetItemInt_List_Fast(PyObject *o, Py_ssize_t i,
-                                                              int wraparound, int boundscheck);
-#define __Pyx_GetItemInt_Tuple(o, i, type, is_signed, to_py_func, is_list, wraparound, boundscheck)\
-    (__Pyx_fits_Py_ssize_t(i, type, is_signed) ?\
-    __Pyx_GetItemInt_Tuple_Fast(o, (Py_ssize_t)i, wraparound, boundscheck) :\
-    (PyErr_SetString(PyExc_IndexError, "tuple index out of range"), (PyObject*)NULL))
-static CYTHON_INLINE PyObject *__Pyx_GetItemInt_Tuple_Fast(PyObject *o, Py_ssize_t i,
-                                                              int wraparound, int boundscheck);
-static CYTHON_INLINE PyObject *__Pyx_GetItemInt_Generic(PyObject *o, PyObject* j);
-static CYTHON_INLINE PyObject *__Pyx_GetItemInt_Fast(PyObject *o, Py_ssize_t i,
-                                                     int is_list, int wraparound, int boundscheck);
 
 #include <string.h>
 
@@ -840,9 +862,9 @@ static int __Pyx_PrintOne(PyObject* stream, PyObject *o);
 
 static CYTHON_INLINE PyObject* __Pyx_PyInt_From_int(int value);
 
-static CYTHON_INLINE size_t __Pyx_PyInt_As_size_t(PyObject *);
-
 static CYTHON_INLINE PyObject* __Pyx_PyInt_From_long(long value);
+
+static CYTHON_INLINE size_t __Pyx_PyInt_As_size_t(PyObject *);
 
 static CYTHON_INLINE long __Pyx_PyInt_As_long(PyObject *);
 
@@ -904,9 +926,11 @@ static int (*__pyx_f_16py_stringsimjoin_8apply_rf_5utils_get_comp_type)(std::str
 static __pyx_t_16py_stringsimjoin_8apply_rf_5utils_compfnptr (*__pyx_f_16py_stringsimjoin_8apply_rf_5utils_get_comparison_function)(int const ); /*proto*/
 
 /* Module declarations from 'py_stringsimjoin.apply_rf.ex_plan' */
-static void __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_generate_local_optimal_plans(std::vector<Tree>  &, std::map<std::string,Coverage>  &, int, std::vector<Node>  &, std::vector<int>  &); /*proto*/
+static void __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_generate_local_optimal_plans(std::vector<Tree>  &, std::map<std::string,Coverage>  &, int, std::vector<Node>  &, std::vector<int>  &, bool); /*proto*/
 static std::pair<std::pair<std::vector<std::string> ,std::vector<std::string> > ,std::vector<int> >  __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_sample_pairs(std::pair<std::vector<std::pair<int,int> > ,std::vector<int> >  &, int const &, std::vector<std::string>  &, std::vector<std::string>  &); /*proto*/
-static Node __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_gen_plan_for_tree(Tree &, std::map<std::string,Coverage>  &, int const &, bool); /*proto*/
+static std::vector<int>  __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_get_random_filter_order(std::vector<int> ); /*proto*/
+static Node __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_gen_plan_for_tree(Tree &, std::map<std::string,Coverage>  &, int const &, bool, bool); /*proto*/
+static Node __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_gen_plan_for_trees_stage2(std::vector<Tree>  &, std::map<std::string,Coverage>  &, int const &, bool); /*proto*/
 static double __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_compute_plan_cost(Node &, std::map<std::string,Coverage>  &, int const &); /*proto*/
 static double __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_compute_subtree_cost(Node, Coverage, std::map<std::string,Coverage>  &, int const &); /*proto*/
 static Node __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_merge_plans_stage2(Node, Node); /*proto*/
@@ -916,7 +940,8 @@ static Node __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_optimize_plans(std::ma
 static void __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_push_filters(std::vector<Node>  &, std::vector<Node>  &); /*proto*/
 static void __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_generate_new_plans(std::vector<Node>  &, std::vector<int>  &, std::vector<int>  &, std::vector<Node>  &); /*proto*/
 static double __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_compute_cost_of_combined_plan(std::map<int,std::vector<Node> >  &, std::map<std::string,Coverage>  &, std::map<int,Coverage>  &, int const , std::vector<bool>  &); /*proto*/
-static void __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_find_optimal_subset(std::map<int,std::vector<Node> >  &, std::map<std::string,Coverage>  &, std::map<int,Coverage>  &, std::vector<bool>  &, int const ); /*proto*/
+static void __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_find_optimal_subset(std::map<int,std::vector<Node> >  &, std::map<std::string,Coverage>  &, std::map<int,Coverage>  &, std::vector<bool>  &, int const , struct __pyx_opt_args_16py_stringsimjoin_8apply_rf_7ex_plan_find_optimal_subset *__pyx_optional_args); /*proto*/
+static std::pair<std::vector<int> ,int>  __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_get_random_order(std::pair<std::vector<int> ,int> ); /*proto*/
 static std::pair<std::vector<int> ,int>  __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_get_optimal_predicate_seq(std::vector<Predicatecpp>  &, std::map<std::string,Coverage>  &, int const ); /*proto*/
 static std::vector<Rule>  __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_extract_pos_rules_from_tree(PyObject *, PyObject *); /*proto*/
 static void __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_traverse(PyObject *, PyObject *, PyObject *, PyObject *, PyObject *, PyObject *, PyObject *, PyObject *, PyObject *, std::vector<Rule>  &); /*proto*/
@@ -937,6 +962,7 @@ static PyObject *__pyx_builtin_xrange;
 static PyObject *__pyx_builtin_range;
 static PyObject *__pyx_builtin_sorted;
 static char __pyx_k_[] = "<=";
+static char __pyx_k_n[] = "n ";
 static char __pyx_k__2[] = ">";
 static char __pyx_k__3[] = ">=";
 static char __pyx_k__4[] = "<";
@@ -947,8 +973,6 @@ static char __pyx_k_t2[] = "t2";
 static char __pyx_k_t3[] = "t3";
 static char __pyx_k_t4[] = "t4";
 static char __pyx_k_t5[] = "t5";
-static char __pyx_k_t6[] = "t6";
-static char __pyx_k_t7[] = "t7";
 static char __pyx_k_end[] = "end";
 static char __pyx_k_get[] = "get";
 static char __pyx_k_key[] = "key";
@@ -981,6 +1005,7 @@ static char __pyx_k_randint[] = "randint";
 static char __pyx_k_reverse[] = "reverse";
 static char __pyx_k_Predicate[] = "Predicate";
 static char __pyx_k_feat_name[] = "feat_name";
+static char __pyx_k_num_preds[] = "num preds : ";
 static char __pyx_k_threshold[] = "threshold";
 static char __pyx_k_tokenizer[] = "tokenizer";
 static char __pyx_k_estimators[] = "estimators_";
@@ -1031,7 +1056,9 @@ static PyObject *__pyx_n_s_ix;
 static PyObject *__pyx_n_s_key;
 static PyObject *__pyx_n_s_keys;
 static PyObject *__pyx_n_s_main;
+static PyObject *__pyx_kp_s_n;
 static PyObject *__pyx_n_b_none;
+static PyObject *__pyx_kp_s_num_preds;
 static PyObject *__pyx_n_s_pop;
 static PyObject *__pyx_n_s_print;
 static PyObject *__pyx_n_s_py_stringsimjoin_apply_rf_predic;
@@ -1049,8 +1076,6 @@ static PyObject *__pyx_n_s_t2;
 static PyObject *__pyx_n_s_t3;
 static PyObject *__pyx_n_s_t4;
 static PyObject *__pyx_n_s_t5;
-static PyObject *__pyx_n_s_t6;
-static PyObject *__pyx_n_s_t7;
 static PyObject *__pyx_n_s_test;
 static PyObject *__pyx_n_s_threshold;
 static PyObject *__pyx_n_s_time;
@@ -1063,6 +1088,7 @@ static PyObject *__pyx_n_s_xrange;
 static __Pyx_CachedCFunction __pyx_umethod_PyDict_Type_keys = {0, &__pyx_n_s_keys, 0, 0, 0};
 static PyObject *__pyx_int_0;
 static PyObject *__pyx_int_1;
+static PyObject *__pyx_int_6;
 static PyObject *__pyx_int_neg_1;
 static PyObject *__pyx_int_neg_2;
 
@@ -2113,7 +2139,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_compute_predicate_cost
  *                     c1.and_coverage(coverage[predicate.pred_name])
  *             tree_cov[x].or_coverage(c1)             # <<<<<<<<<<<<<<
  * 
- * # Generate execution plans for executing the remaining (n/2 - 1) trees
+ * #    cdef Node plan
  */
       (__pyx_v_tree_cov[__pyx_v_x]).or_coverage(__pyx_v_c1);
     }
@@ -2138,7 +2164,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_compute_predicate_cost
   __Pyx_RefNannyFinishContext();
 }
 
-/* "py_stringsimjoin/apply_rf/ex_plan.pyx":133
+/* "py_stringsimjoin/apply_rf/ex_plan.pyx":142
  * # This function would find an optimal ordering of the remaining trees and return
  * # a plan for each of the (n/2 - 1) trees in that order.
  * cdef vector[Node] generate_ex_plan_for_stage2(pair[vector[pair[int, int]], vector[int]]& candset_votes,             # <<<<<<<<<<<<<<
@@ -2146,7 +2172,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_compute_predicate_cost
  *                                               vector[string]& rstrings,
  */
 
-static std::vector<Node>  __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_generate_ex_plan_for_stage2(std::pair<std::vector<std::pair<int,int> > ,std::vector<int> >  &__pyx_v_candset_votes, std::vector<std::string>  &__pyx_v_lstrings, std::vector<std::string>  &__pyx_v_rstrings, std::vector<Tree>  &__pyx_v_trees, int __pyx_v_orig_sample_size, int __pyx_v_n_jobs, bool __pyx_v_push_flag) {
+static std::vector<Node>  __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_generate_ex_plan_for_stage2(std::pair<std::vector<std::pair<int,int> > ,std::vector<int> >  &__pyx_v_candset_votes, std::vector<std::string>  &__pyx_v_lstrings, std::vector<std::string>  &__pyx_v_rstrings, std::vector<Tree>  &__pyx_v_trees, int __pyx_v_orig_sample_size, int __pyx_v_n_jobs, bool __pyx_v_push_flag, bool __pyx_v_random_order) {
   std::pair<std::pair<std::vector<std::string> ,std::vector<std::string> > ,std::vector<int> >  __pyx_v_sample;
   std::map<std::string,Coverage>  __pyx_v_coverage;
   std::map<std::string,double>  __pyx_v_cost;
@@ -2216,16 +2242,16 @@ static std::vector<Node>  __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_generate
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("generate_ex_plan_for_stage2", 0);
 
-  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":138
+  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":147
  *                                               vector[Tree]& trees,
- *                                               int orig_sample_size, int n_jobs, bool push_flag):
+ *                                               int orig_sample_size, int n_jobs, bool push_flag, bool random_order):
  *     cdef pair[pair[vector[string], vector[string]], vector[int]] sample = sample_pairs(             # <<<<<<<<<<<<<<
  *                                                                     candset_votes,
  *                                                                     orig_sample_size,
  */
   __pyx_v_sample = __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_sample_pairs(__pyx_v_candset_votes, __pyx_v_orig_sample_size, __pyx_v_lstrings, __pyx_v_rstrings);
 
-  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":146
+  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":155
  *     cdef omap[string, vector[double]] features
  *     cdef omap[string, double] cost
  *     cdef int i, sample_size = sample.second.size()             # <<<<<<<<<<<<<<
@@ -2234,7 +2260,7 @@ static std::vector<Node>  __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_generate
  */
   __pyx_v_sample_size = __pyx_v_sample.second.size();
 
-  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":159
+  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":168
  *     cdef omap[string, vector[double]] feature_values
  * 
  *     for tree in trees:             # <<<<<<<<<<<<<<
@@ -2248,7 +2274,7 @@ static std::vector<Node>  __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_generate
     ++__pyx_t_1;
     __pyx_v_tree = __pyx_t_2;
 
-    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":160
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":169
  * 
  *     for tree in trees:
  *         for rule in tree.rules:             # <<<<<<<<<<<<<<
@@ -2263,7 +2289,7 @@ static std::vector<Node>  __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_generate
       ++__pyx_t_3;
       __pyx_v_rule = __pyx_t_5;
 
-      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":161
+      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":170
  *     for tree in trees:
  *         for rule in tree.rules:
  *             for predicate in rule.predicates:             # <<<<<<<<<<<<<<
@@ -2278,7 +2304,7 @@ static std::vector<Node>  __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_generate
         ++__pyx_t_6;
         __pyx_v_predicate = __pyx_t_8;
 
-        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":162
+        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":171
  *         for rule in tree.rules:
  *             for predicate in rule.predicates:
  *                 feature_info[predicate.feat_name] = pair[string, string](predicate.sim_measure_type, predicate.tokenizer_type)             # <<<<<<<<<<<<<<
@@ -2289,11 +2315,11 @@ static std::vector<Node>  __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_generate
           __pyx_t_9 = std::pair<std::string,std::string> (__pyx_v_predicate.sim_measure_type, __pyx_v_predicate.tokenizer_type);
         } catch(...) {
           __Pyx_CppExn2PyErr();
-          {__pyx_filename = __pyx_f[0]; __pyx_lineno = 162; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+          {__pyx_filename = __pyx_f[0]; __pyx_lineno = 171; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
         }
         (__pyx_v_feature_info[__pyx_v_predicate.feat_name]) = __pyx_t_9;
 
-        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":163
+        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":172
  *             for predicate in rule.predicates:
  *                 feature_info[predicate.feat_name] = pair[string, string](predicate.sim_measure_type, predicate.tokenizer_type)
  *                 if predicate.is_tok_sim_measure:             # <<<<<<<<<<<<<<
@@ -2303,7 +2329,7 @@ static std::vector<Node>  __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_generate
         __pyx_t_10 = (__pyx_v_predicate.is_tok_sim_measure != 0);
         if (__pyx_t_10) {
 
-          /* "py_stringsimjoin/apply_rf/ex_plan.pyx":164
+          /* "py_stringsimjoin/apply_rf/ex_plan.pyx":173
  *                 feature_info[predicate.feat_name] = pair[string, string](predicate.sim_measure_type, predicate.tokenizer_type)
  *                 if predicate.is_tok_sim_measure:
  *                     tok_types.insert(predicate.tokenizer_type)             # <<<<<<<<<<<<<<
@@ -2314,10 +2340,10 @@ static std::vector<Node>  __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_generate
             __pyx_v_tok_types.insert(__pyx_v_predicate.tokenizer_type);
           } catch(...) {
             __Pyx_CppExn2PyErr();
-            {__pyx_filename = __pyx_f[0]; __pyx_lineno = 164; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+            {__pyx_filename = __pyx_f[0]; __pyx_lineno = 173; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
           }
 
-          /* "py_stringsimjoin/apply_rf/ex_plan.pyx":163
+          /* "py_stringsimjoin/apply_rf/ex_plan.pyx":172
  *             for predicate in rule.predicates:
  *                 feature_info[predicate.feat_name] = pair[string, string](predicate.sim_measure_type, predicate.tokenizer_type)
  *                 if predicate.is_tok_sim_measure:             # <<<<<<<<<<<<<<
@@ -2326,7 +2352,7 @@ static std::vector<Node>  __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_generate
  */
         }
 
-        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":161
+        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":170
  *     for tree in trees:
  *         for rule in tree.rules:
  *             for predicate in rule.predicates:             # <<<<<<<<<<<<<<
@@ -2335,7 +2361,7 @@ static std::vector<Node>  __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_generate
  */
       }
 
-      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":160
+      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":169
  * 
  *     for tree in trees:
  *         for rule in tree.rules:             # <<<<<<<<<<<<<<
@@ -2344,7 +2370,7 @@ static std::vector<Node>  __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_generate
  */
     }
 
-    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":159
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":168
  *     cdef omap[string, vector[double]] feature_values
  * 
  *     for tree in trees:             # <<<<<<<<<<<<<<
@@ -2353,16 +2379,16 @@ static std::vector<Node>  __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_generate
  */
   }
 
-  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":165
+  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":174
  *                 if predicate.is_tok_sim_measure:
  *                     tok_types.insert(predicate.tokenizer_type)
  *     print 't1'             # <<<<<<<<<<<<<<
  *     for tok_type in tok_types:
  *         ltokens[tok_type] = vector[vector[int]]()
  */
-  if (__Pyx_PrintOne(0, __pyx_n_s_t1) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 165; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (__Pyx_PrintOne(0, __pyx_n_s_t1) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 174; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
 
-  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":166
+  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":175
  *                     tok_types.insert(predicate.tokenizer_type)
  *     print 't1'
  *     for tok_type in tok_types:             # <<<<<<<<<<<<<<
@@ -2376,7 +2402,7 @@ static std::vector<Node>  __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_generate
     ++__pyx_t_11;
     __pyx_v_tok_type = __pyx_t_12;
 
-    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":167
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":176
  *     print 't1'
  *     for tok_type in tok_types:
  *         ltokens[tok_type] = vector[vector[int]]()             # <<<<<<<<<<<<<<
@@ -2387,11 +2413,11 @@ static std::vector<Node>  __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_generate
       __pyx_t_13 = std::vector<std::vector<int> > ();
     } catch(...) {
       __Pyx_CppExn2PyErr();
-      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 167; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 176; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     }
     (__pyx_v_ltokens[__pyx_v_tok_type]) = __pyx_t_13;
 
-    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":168
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":177
  *     for tok_type in tok_types:
  *         ltokens[tok_type] = vector[vector[int]]()
  *         rtokens[tok_type] = vector[vector[int]]()             # <<<<<<<<<<<<<<
@@ -2402,11 +2428,11 @@ static std::vector<Node>  __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_generate
       __pyx_t_13 = std::vector<std::vector<int> > ();
     } catch(...) {
       __Pyx_CppExn2PyErr();
-      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 168; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 177; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     }
     (__pyx_v_rtokens[__pyx_v_tok_type]) = __pyx_t_13;
 
-    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":169
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":178
  *         ltokens[tok_type] = vector[vector[int]]()
  *         rtokens[tok_type] = vector[vector[int]]()
  *         tokenize_without_materializing(sample.first.first, sample.first.second, tok_type,             # <<<<<<<<<<<<<<
@@ -2415,7 +2441,7 @@ static std::vector<Node>  __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_generate
  */
     __pyx_f_16py_stringsimjoin_8apply_rf_10tokenizers_tokenize_without_materializing(__pyx_v_sample.first.first, __pyx_v_sample.first.second, __pyx_v_tok_type, (__pyx_v_ltokens[__pyx_v_tok_type]), (__pyx_v_rtokens[__pyx_v_tok_type]), __pyx_v_n_jobs);
 
-    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":166
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":175
  *                     tok_types.insert(predicate.tokenizer_type)
  *     print 't1'
  *     for tok_type in tok_types:             # <<<<<<<<<<<<<<
@@ -2424,16 +2450,16 @@ static std::vector<Node>  __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_generate
  */
   }
 
-  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":172
+  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":181
  *                                        ltokens[tok_type], rtokens[tok_type], n_jobs)
  * 
  *     print 't2'             # <<<<<<<<<<<<<<
  *     for feature in feature_info:
  *         print feature.first, feature.second.first, feature.second.second
  */
-  if (__Pyx_PrintOne(0, __pyx_n_s_t2) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 172; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (__Pyx_PrintOne(0, __pyx_n_s_t2) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 181; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
 
-  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":173
+  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":182
  * 
  *     print 't2'
  *     for feature in feature_info:             # <<<<<<<<<<<<<<
@@ -2447,20 +2473,20 @@ static std::vector<Node>  __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_generate
     ++__pyx_t_14;
     __pyx_v_feature = __pyx_t_15;
 
-    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":174
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":183
  *     print 't2'
  *     for feature in feature_info:
  *         print feature.first, feature.second.first, feature.second.second             # <<<<<<<<<<<<<<
  *         if feature.second.second.compare('none') == 0:
  *             str_sim_fn = get_str_sim_function(get_sim_type(feature.second.first))
  */
-    __pyx_t_16 = __pyx_convert_PyBytes_string_to_py_std__in_string(__pyx_v_feature.first); if (unlikely(!__pyx_t_16)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 174; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_16 = __pyx_convert_PyBytes_string_to_py_std__in_string(__pyx_v_feature.first); if (unlikely(!__pyx_t_16)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 183; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_16);
-    __pyx_t_17 = __pyx_convert_PyBytes_string_to_py_std__in_string(__pyx_v_feature.second.first); if (unlikely(!__pyx_t_17)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 174; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_17 = __pyx_convert_PyBytes_string_to_py_std__in_string(__pyx_v_feature.second.first); if (unlikely(!__pyx_t_17)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 183; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_17);
-    __pyx_t_18 = __pyx_convert_PyBytes_string_to_py_std__in_string(__pyx_v_feature.second.second); if (unlikely(!__pyx_t_18)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 174; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_18 = __pyx_convert_PyBytes_string_to_py_std__in_string(__pyx_v_feature.second.second); if (unlikely(!__pyx_t_18)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 183; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_18);
-    __pyx_t_19 = PyTuple_New(3); if (unlikely(!__pyx_t_19)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 174; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_19 = PyTuple_New(3); if (unlikely(!__pyx_t_19)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 183; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_19);
     __Pyx_GIVEREF(__pyx_t_16);
     PyTuple_SET_ITEM(__pyx_t_19, 0, __pyx_t_16);
@@ -2471,21 +2497,21 @@ static std::vector<Node>  __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_generate
     __pyx_t_16 = 0;
     __pyx_t_17 = 0;
     __pyx_t_18 = 0;
-    if (__Pyx_Print(0, __pyx_t_19, 1) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 174; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    if (__Pyx_Print(0, __pyx_t_19, 1) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 183; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_DECREF(__pyx_t_19); __pyx_t_19 = 0;
 
-    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":175
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":184
  *     for feature in feature_info:
  *         print feature.first, feature.second.first, feature.second.second
  *         if feature.second.second.compare('none') == 0:             # <<<<<<<<<<<<<<
  *             str_sim_fn = get_str_sim_function(get_sim_type(feature.second.first))
  *             cost[feature.first] = 0.0
  */
-    __pyx_t_12 = __pyx_convert_string_from_py_std__in_string(__pyx_n_b_none); if (unlikely(PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 175; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_12 = __pyx_convert_string_from_py_std__in_string(__pyx_n_b_none); if (unlikely(PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 184; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __pyx_t_10 = ((__pyx_v_feature.second.second.compare(__pyx_t_12) == 0) != 0);
     if (__pyx_t_10) {
 
-      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":176
+      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":185
  *         print feature.first, feature.second.first, feature.second.second
  *         if feature.second.second.compare('none') == 0:
  *             str_sim_fn = get_str_sim_function(get_sim_type(feature.second.first))             # <<<<<<<<<<<<<<
@@ -2494,7 +2520,7 @@ static std::vector<Node>  __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_generate
  */
       __pyx_v_str_sim_fn = __pyx_f_16py_stringsimjoin_8apply_rf_5utils_get_str_sim_function(__pyx_f_16py_stringsimjoin_8apply_rf_5utils_get_sim_type(__pyx_v_feature.second.first));
 
-      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":177
+      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":186
  *         if feature.second.second.compare('none') == 0:
  *             str_sim_fn = get_str_sim_function(get_sim_type(feature.second.first))
  *             cost[feature.first] = 0.0             # <<<<<<<<<<<<<<
@@ -2503,7 +2529,7 @@ static std::vector<Node>  __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_generate
  */
       (__pyx_v_cost[__pyx_v_feature.first]) = 0.0;
 
-      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":178
+      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":187
  *             str_sim_fn = get_str_sim_function(get_sim_type(feature.second.first))
  *             cost[feature.first] = 0.0
  *             for i in xrange(sample_size):             # <<<<<<<<<<<<<<
@@ -2514,16 +2540,16 @@ static std::vector<Node>  __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_generate
       for (__pyx_t_21 = 0; __pyx_t_21 < __pyx_t_20; __pyx_t_21+=1) {
         __pyx_v_i = __pyx_t_21;
 
-        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":179
+        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":188
  *             cost[feature.first] = 0.0
  *             for i in xrange(sample_size):
  *                 start_time = time.time()             # <<<<<<<<<<<<<<
  *                 sim_score = str_sim_fn(sample.first.first[i], sample.first.second[i])
  *                 end_time = time.time()
  */
-        __pyx_t_18 = __Pyx_GetModuleGlobalName(__pyx_n_s_time); if (unlikely(!__pyx_t_18)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 179; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        __pyx_t_18 = __Pyx_GetModuleGlobalName(__pyx_n_s_time); if (unlikely(!__pyx_t_18)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 188; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
         __Pyx_GOTREF(__pyx_t_18);
-        __pyx_t_17 = __Pyx_PyObject_GetAttrStr(__pyx_t_18, __pyx_n_s_time); if (unlikely(!__pyx_t_17)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 179; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        __pyx_t_17 = __Pyx_PyObject_GetAttrStr(__pyx_t_18, __pyx_n_s_time); if (unlikely(!__pyx_t_17)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 188; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
         __Pyx_GOTREF(__pyx_t_17);
         __Pyx_DECREF(__pyx_t_18); __pyx_t_18 = 0;
         __pyx_t_18 = NULL;
@@ -2537,18 +2563,18 @@ static std::vector<Node>  __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_generate
           }
         }
         if (__pyx_t_18) {
-          __pyx_t_19 = __Pyx_PyObject_CallOneArg(__pyx_t_17, __pyx_t_18); if (unlikely(!__pyx_t_19)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 179; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+          __pyx_t_19 = __Pyx_PyObject_CallOneArg(__pyx_t_17, __pyx_t_18); if (unlikely(!__pyx_t_19)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 188; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
           __Pyx_DECREF(__pyx_t_18); __pyx_t_18 = 0;
         } else {
-          __pyx_t_19 = __Pyx_PyObject_CallNoArg(__pyx_t_17); if (unlikely(!__pyx_t_19)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 179; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+          __pyx_t_19 = __Pyx_PyObject_CallNoArg(__pyx_t_17); if (unlikely(!__pyx_t_19)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 188; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
         }
         __Pyx_GOTREF(__pyx_t_19);
         __Pyx_DECREF(__pyx_t_17); __pyx_t_17 = 0;
-        __pyx_t_22 = __pyx_PyFloat_AsDouble(__pyx_t_19); if (unlikely((__pyx_t_22 == (double)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 179; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        __pyx_t_22 = __pyx_PyFloat_AsDouble(__pyx_t_19); if (unlikely((__pyx_t_22 == (double)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 188; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
         __Pyx_DECREF(__pyx_t_19); __pyx_t_19 = 0;
         __pyx_v_start_time = __pyx_t_22;
 
-        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":180
+        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":189
  *             for i in xrange(sample_size):
  *                 start_time = time.time()
  *                 sim_score = str_sim_fn(sample.first.first[i], sample.first.second[i])             # <<<<<<<<<<<<<<
@@ -2557,16 +2583,16 @@ static std::vector<Node>  __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_generate
  */
         __pyx_v_sim_score = __pyx_v_str_sim_fn((__pyx_v_sample.first.first[__pyx_v_i]), (__pyx_v_sample.first.second[__pyx_v_i]));
 
-        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":181
+        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":190
  *                 start_time = time.time()
  *                 sim_score = str_sim_fn(sample.first.first[i], sample.first.second[i])
  *                 end_time = time.time()             # <<<<<<<<<<<<<<
  *                 cost[feature.first] += (end_time - start_time)
  *                 feature_values[feature.first].push_back(sim_score)
  */
-        __pyx_t_17 = __Pyx_GetModuleGlobalName(__pyx_n_s_time); if (unlikely(!__pyx_t_17)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 181; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        __pyx_t_17 = __Pyx_GetModuleGlobalName(__pyx_n_s_time); if (unlikely(!__pyx_t_17)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 190; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
         __Pyx_GOTREF(__pyx_t_17);
-        __pyx_t_18 = __Pyx_PyObject_GetAttrStr(__pyx_t_17, __pyx_n_s_time); if (unlikely(!__pyx_t_18)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 181; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        __pyx_t_18 = __Pyx_PyObject_GetAttrStr(__pyx_t_17, __pyx_n_s_time); if (unlikely(!__pyx_t_18)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 190; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
         __Pyx_GOTREF(__pyx_t_18);
         __Pyx_DECREF(__pyx_t_17); __pyx_t_17 = 0;
         __pyx_t_17 = NULL;
@@ -2580,18 +2606,18 @@ static std::vector<Node>  __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_generate
           }
         }
         if (__pyx_t_17) {
-          __pyx_t_19 = __Pyx_PyObject_CallOneArg(__pyx_t_18, __pyx_t_17); if (unlikely(!__pyx_t_19)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 181; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+          __pyx_t_19 = __Pyx_PyObject_CallOneArg(__pyx_t_18, __pyx_t_17); if (unlikely(!__pyx_t_19)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 190; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
           __Pyx_DECREF(__pyx_t_17); __pyx_t_17 = 0;
         } else {
-          __pyx_t_19 = __Pyx_PyObject_CallNoArg(__pyx_t_18); if (unlikely(!__pyx_t_19)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 181; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+          __pyx_t_19 = __Pyx_PyObject_CallNoArg(__pyx_t_18); if (unlikely(!__pyx_t_19)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 190; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
         }
         __Pyx_GOTREF(__pyx_t_19);
         __Pyx_DECREF(__pyx_t_18); __pyx_t_18 = 0;
-        __pyx_t_22 = __pyx_PyFloat_AsDouble(__pyx_t_19); if (unlikely((__pyx_t_22 == (double)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 181; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        __pyx_t_22 = __pyx_PyFloat_AsDouble(__pyx_t_19); if (unlikely((__pyx_t_22 == (double)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 190; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
         __Pyx_DECREF(__pyx_t_19); __pyx_t_19 = 0;
         __pyx_v_end_time = __pyx_t_22;
 
-        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":182
+        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":191
  *                 sim_score = str_sim_fn(sample.first.first[i], sample.first.second[i])
  *                 end_time = time.time()
  *                 cost[feature.first] += (end_time - start_time)             # <<<<<<<<<<<<<<
@@ -2601,7 +2627,7 @@ static std::vector<Node>  __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_generate
         __pyx_t_12 = __pyx_v_feature.first;
         (__pyx_v_cost[__pyx_t_12]) = ((__pyx_v_cost[__pyx_t_12]) + (__pyx_v_end_time - __pyx_v_start_time));
 
-        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":183
+        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":192
  *                 end_time = time.time()
  *                 cost[feature.first] += (end_time - start_time)
  *                 feature_values[feature.first].push_back(sim_score)             # <<<<<<<<<<<<<<
@@ -2612,11 +2638,11 @@ static std::vector<Node>  __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_generate
           (__pyx_v_feature_values[__pyx_v_feature.first]).push_back(__pyx_v_sim_score);
         } catch(...) {
           __Pyx_CppExn2PyErr();
-          {__pyx_filename = __pyx_f[0]; __pyx_lineno = 183; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+          {__pyx_filename = __pyx_f[0]; __pyx_lineno = 192; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
         }
       }
 
-      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":184
+      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":193
  *                 cost[feature.first] += (end_time - start_time)
  *                 feature_values[feature.first].push_back(sim_score)
  *             cost[feature.first] /= sample_size             # <<<<<<<<<<<<<<
@@ -2627,11 +2653,11 @@ static std::vector<Node>  __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_generate
       __pyx_t_22 = (__pyx_v_cost[__pyx_t_12]);
       if (unlikely(__pyx_v_sample_size == 0)) {
         PyErr_SetString(PyExc_ZeroDivisionError, "float division");
-        {__pyx_filename = __pyx_f[0]; __pyx_lineno = 184; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        {__pyx_filename = __pyx_f[0]; __pyx_lineno = 193; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       }
       (__pyx_v_cost[__pyx_t_12]) = (__pyx_t_22 / __pyx_v_sample_size);
 
-      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":175
+      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":184
  *     for feature in feature_info:
  *         print feature.first, feature.second.first, feature.second.second
  *         if feature.second.second.compare('none') == 0:             # <<<<<<<<<<<<<<
@@ -2641,7 +2667,7 @@ static std::vector<Node>  __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_generate
       goto __pyx_L14;
     }
 
-    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":186
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":195
  *             cost[feature.first] /= sample_size
  *         else:
  *             token_sim_fn = get_token_sim_function(get_sim_type(feature.second.first))             # <<<<<<<<<<<<<<
@@ -2651,7 +2677,7 @@ static std::vector<Node>  __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_generate
     /*else*/ {
       __pyx_v_token_sim_fn = __pyx_f_16py_stringsimjoin_8apply_rf_5utils_get_token_sim_function(__pyx_f_16py_stringsimjoin_8apply_rf_5utils_get_sim_type(__pyx_v_feature.second.first));
 
-      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":187
+      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":196
  *         else:
  *             token_sim_fn = get_token_sim_function(get_sim_type(feature.second.first))
  *             cost[feature.first] = 0.0             # <<<<<<<<<<<<<<
@@ -2660,7 +2686,7 @@ static std::vector<Node>  __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_generate
  */
       (__pyx_v_cost[__pyx_v_feature.first]) = 0.0;
 
-      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":188
+      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":197
  *             token_sim_fn = get_token_sim_function(get_sim_type(feature.second.first))
  *             cost[feature.first] = 0.0
  *             for i in xrange(sample_size):             # <<<<<<<<<<<<<<
@@ -2671,16 +2697,16 @@ static std::vector<Node>  __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_generate
       for (__pyx_t_21 = 0; __pyx_t_21 < __pyx_t_20; __pyx_t_21+=1) {
         __pyx_v_i = __pyx_t_21;
 
-        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":189
+        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":198
  *             cost[feature.first] = 0.0
  *             for i in xrange(sample_size):
  *                 start_time = time.time()             # <<<<<<<<<<<<<<
  *                 sim_score = token_sim_fn(ltokens[feature.second.second][i],
  *                                          rtokens[feature.second.second][i])
  */
-        __pyx_t_18 = __Pyx_GetModuleGlobalName(__pyx_n_s_time); if (unlikely(!__pyx_t_18)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 189; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        __pyx_t_18 = __Pyx_GetModuleGlobalName(__pyx_n_s_time); if (unlikely(!__pyx_t_18)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 198; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
         __Pyx_GOTREF(__pyx_t_18);
-        __pyx_t_17 = __Pyx_PyObject_GetAttrStr(__pyx_t_18, __pyx_n_s_time); if (unlikely(!__pyx_t_17)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 189; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        __pyx_t_17 = __Pyx_PyObject_GetAttrStr(__pyx_t_18, __pyx_n_s_time); if (unlikely(!__pyx_t_17)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 198; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
         __Pyx_GOTREF(__pyx_t_17);
         __Pyx_DECREF(__pyx_t_18); __pyx_t_18 = 0;
         __pyx_t_18 = NULL;
@@ -2694,18 +2720,18 @@ static std::vector<Node>  __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_generate
           }
         }
         if (__pyx_t_18) {
-          __pyx_t_19 = __Pyx_PyObject_CallOneArg(__pyx_t_17, __pyx_t_18); if (unlikely(!__pyx_t_19)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 189; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+          __pyx_t_19 = __Pyx_PyObject_CallOneArg(__pyx_t_17, __pyx_t_18); if (unlikely(!__pyx_t_19)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 198; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
           __Pyx_DECREF(__pyx_t_18); __pyx_t_18 = 0;
         } else {
-          __pyx_t_19 = __Pyx_PyObject_CallNoArg(__pyx_t_17); if (unlikely(!__pyx_t_19)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 189; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+          __pyx_t_19 = __Pyx_PyObject_CallNoArg(__pyx_t_17); if (unlikely(!__pyx_t_19)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 198; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
         }
         __Pyx_GOTREF(__pyx_t_19);
         __Pyx_DECREF(__pyx_t_17); __pyx_t_17 = 0;
-        __pyx_t_22 = __pyx_PyFloat_AsDouble(__pyx_t_19); if (unlikely((__pyx_t_22 == (double)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 189; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        __pyx_t_22 = __pyx_PyFloat_AsDouble(__pyx_t_19); if (unlikely((__pyx_t_22 == (double)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 198; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
         __Pyx_DECREF(__pyx_t_19); __pyx_t_19 = 0;
         __pyx_v_start_time = __pyx_t_22;
 
-        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":190
+        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":199
  *             for i in xrange(sample_size):
  *                 start_time = time.time()
  *                 sim_score = token_sim_fn(ltokens[feature.second.second][i],             # <<<<<<<<<<<<<<
@@ -2714,16 +2740,16 @@ static std::vector<Node>  __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_generate
  */
         __pyx_v_sim_score = __pyx_v_token_sim_fn(((__pyx_v_ltokens[__pyx_v_feature.second.second])[__pyx_v_i]), ((__pyx_v_rtokens[__pyx_v_feature.second.second])[__pyx_v_i]));
 
-        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":192
+        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":201
  *                 sim_score = token_sim_fn(ltokens[feature.second.second][i],
  *                                          rtokens[feature.second.second][i])
  *                 end_time = time.time()             # <<<<<<<<<<<<<<
  *                 cost[feature.first] += (end_time - start_time)
  *                 feature_values[feature.first].push_back(sim_score)
  */
-        __pyx_t_17 = __Pyx_GetModuleGlobalName(__pyx_n_s_time); if (unlikely(!__pyx_t_17)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 192; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        __pyx_t_17 = __Pyx_GetModuleGlobalName(__pyx_n_s_time); if (unlikely(!__pyx_t_17)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 201; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
         __Pyx_GOTREF(__pyx_t_17);
-        __pyx_t_18 = __Pyx_PyObject_GetAttrStr(__pyx_t_17, __pyx_n_s_time); if (unlikely(!__pyx_t_18)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 192; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        __pyx_t_18 = __Pyx_PyObject_GetAttrStr(__pyx_t_17, __pyx_n_s_time); if (unlikely(!__pyx_t_18)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 201; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
         __Pyx_GOTREF(__pyx_t_18);
         __Pyx_DECREF(__pyx_t_17); __pyx_t_17 = 0;
         __pyx_t_17 = NULL;
@@ -2737,18 +2763,18 @@ static std::vector<Node>  __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_generate
           }
         }
         if (__pyx_t_17) {
-          __pyx_t_19 = __Pyx_PyObject_CallOneArg(__pyx_t_18, __pyx_t_17); if (unlikely(!__pyx_t_19)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 192; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+          __pyx_t_19 = __Pyx_PyObject_CallOneArg(__pyx_t_18, __pyx_t_17); if (unlikely(!__pyx_t_19)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 201; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
           __Pyx_DECREF(__pyx_t_17); __pyx_t_17 = 0;
         } else {
-          __pyx_t_19 = __Pyx_PyObject_CallNoArg(__pyx_t_18); if (unlikely(!__pyx_t_19)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 192; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+          __pyx_t_19 = __Pyx_PyObject_CallNoArg(__pyx_t_18); if (unlikely(!__pyx_t_19)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 201; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
         }
         __Pyx_GOTREF(__pyx_t_19);
         __Pyx_DECREF(__pyx_t_18); __pyx_t_18 = 0;
-        __pyx_t_22 = __pyx_PyFloat_AsDouble(__pyx_t_19); if (unlikely((__pyx_t_22 == (double)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 192; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        __pyx_t_22 = __pyx_PyFloat_AsDouble(__pyx_t_19); if (unlikely((__pyx_t_22 == (double)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 201; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
         __Pyx_DECREF(__pyx_t_19); __pyx_t_19 = 0;
         __pyx_v_end_time = __pyx_t_22;
 
-        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":193
+        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":202
  *                                          rtokens[feature.second.second][i])
  *                 end_time = time.time()
  *                 cost[feature.first] += (end_time - start_time)             # <<<<<<<<<<<<<<
@@ -2758,7 +2784,7 @@ static std::vector<Node>  __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_generate
         __pyx_t_12 = __pyx_v_feature.first;
         (__pyx_v_cost[__pyx_t_12]) = ((__pyx_v_cost[__pyx_t_12]) + (__pyx_v_end_time - __pyx_v_start_time));
 
-        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":194
+        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":203
  *                 end_time = time.time()
  *                 cost[feature.first] += (end_time - start_time)
  *                 feature_values[feature.first].push_back(sim_score)             # <<<<<<<<<<<<<<
@@ -2769,11 +2795,11 @@ static std::vector<Node>  __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_generate
           (__pyx_v_feature_values[__pyx_v_feature.first]).push_back(__pyx_v_sim_score);
         } catch(...) {
           __Pyx_CppExn2PyErr();
-          {__pyx_filename = __pyx_f[0]; __pyx_lineno = 194; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+          {__pyx_filename = __pyx_f[0]; __pyx_lineno = 203; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
         }
       }
 
-      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":195
+      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":204
  *                 cost[feature.first] += (end_time - start_time)
  *                 feature_values[feature.first].push_back(sim_score)
  *             cost[feature.first] /= sample_size             # <<<<<<<<<<<<<<
@@ -2784,13 +2810,13 @@ static std::vector<Node>  __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_generate
       __pyx_t_22 = (__pyx_v_cost[__pyx_t_12]);
       if (unlikely(__pyx_v_sample_size == 0)) {
         PyErr_SetString(PyExc_ZeroDivisionError, "float division");
-        {__pyx_filename = __pyx_f[0]; __pyx_lineno = 195; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        {__pyx_filename = __pyx_f[0]; __pyx_lineno = 204; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       }
       (__pyx_v_cost[__pyx_t_12]) = (__pyx_t_22 / __pyx_v_sample_size);
     }
     __pyx_L14:;
 
-    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":173
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":182
  * 
  *     print 't2'
  *     for feature in feature_info:             # <<<<<<<<<<<<<<
@@ -2799,16 +2825,16 @@ static std::vector<Node>  __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_generate
  */
   }
 
-  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":196
+  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":205
  *                 feature_values[feature.first].push_back(sim_score)
  *             cost[feature.first] /= sample_size
  *     print 't3'             # <<<<<<<<<<<<<<
  *     cdef int max_size = 0
  *     cdef omap[string, vector[bool]] cov
  */
-  if (__Pyx_PrintOne(0, __pyx_n_s_t3) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 196; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (__Pyx_PrintOne(0, __pyx_n_s_t3) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 205; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
 
-  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":197
+  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":206
  *             cost[feature.first] /= sample_size
  *     print 't3'
  *     cdef int max_size = 0             # <<<<<<<<<<<<<<
@@ -2817,7 +2843,7 @@ static std::vector<Node>  __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_generate
  */
   __pyx_v_max_size = 0;
 
-  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":202
+  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":211
  *     cdef omap[int, Coverage] tree_cov
  *     cdef Coverage c1
  *     for x in xrange(trees.size()):             # <<<<<<<<<<<<<<
@@ -2828,7 +2854,7 @@ static std::vector<Node>  __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_generate
   for (__pyx_t_20 = 0; __pyx_t_20 < __pyx_t_23; __pyx_t_20+=1) {
     __pyx_v_x = __pyx_t_20;
 
-    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":203
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":212
  *     cdef Coverage c1
  *     for x in xrange(trees.size()):
  *         for y in xrange(trees[x].rules.size()):             # <<<<<<<<<<<<<<
@@ -2839,7 +2865,7 @@ static std::vector<Node>  __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_generate
     for (__pyx_t_21 = 0; __pyx_t_21 < __pyx_t_24; __pyx_t_21+=1) {
       __pyx_v_y = __pyx_t_21;
 
-      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":204
+      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":213
  *     for x in xrange(trees.size()):
  *         for y in xrange(trees[x].rules.size()):
  *             c1.reset()             # <<<<<<<<<<<<<<
@@ -2848,7 +2874,7 @@ static std::vector<Node>  __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_generate
  */
       __pyx_v_c1.reset();
 
-      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":205
+      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":214
  *         for y in xrange(trees[x].rules.size()):
  *             c1.reset()
  *             for z in xrange(trees[x].rules[y].predicates.size()):             # <<<<<<<<<<<<<<
@@ -2859,7 +2885,7 @@ static std::vector<Node>  __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_generate
       for (__pyx_t_26 = 0; __pyx_t_26 < __pyx_t_25; __pyx_t_26+=1) {
         __pyx_v_z = __pyx_t_26;
 
-        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":206
+        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":215
  *             c1.reset()
  *             for z in xrange(trees[x].rules[y].predicates.size()):
  *                 predicate = trees[x].rules[y].predicates[z]             # <<<<<<<<<<<<<<
@@ -2868,7 +2894,7 @@ static std::vector<Node>  __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_generate
  */
         __pyx_v_predicate = (((__pyx_v_trees[__pyx_v_x]).rules[__pyx_v_y]).predicates[__pyx_v_z]);
 
-        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":207
+        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":216
  *             for z in xrange(trees[x].rules[y].predicates.size()):
  *                 predicate = trees[x].rules[y].predicates[z]
  *                 trees[x].rules[y].predicates[z].set_cost(cost[predicate.feat_name])             # <<<<<<<<<<<<<<
@@ -2877,7 +2903,7 @@ static std::vector<Node>  __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_generate
  */
         (((__pyx_v_trees[__pyx_v_x]).rules[__pyx_v_y]).predicates[__pyx_v_z]).set_cost((__pyx_v_cost[__pyx_v_predicate.feat_name]));
 
-        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":208
+        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":217
  *                 predicate = trees[x].rules[y].predicates[z]
  *                 trees[x].rules[y].predicates[z].set_cost(cost[predicate.feat_name])
  *                 if cov[predicate.pred_name].size() == 0:             # <<<<<<<<<<<<<<
@@ -2887,7 +2913,7 @@ static std::vector<Node>  __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_generate
         __pyx_t_10 = (((__pyx_v_cov[__pyx_v_predicate.pred_name]).size() == 0) != 0);
         if (__pyx_t_10) {
 
-          /* "py_stringsimjoin/apply_rf/ex_plan.pyx":209
+          /* "py_stringsimjoin/apply_rf/ex_plan.pyx":218
  *                 trees[x].rules[y].predicates[z].set_cost(cost[predicate.feat_name])
  *                 if cov[predicate.pred_name].size() == 0:
  *                     comp_fn = get_comparison_function(get_comp_type(predicate.comp_op))             # <<<<<<<<<<<<<<
@@ -2896,7 +2922,7 @@ static std::vector<Node>  __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_generate
  */
           __pyx_v_comp_fn = __pyx_f_16py_stringsimjoin_8apply_rf_5utils_get_comparison_function(__pyx_f_16py_stringsimjoin_8apply_rf_5utils_get_comp_type(__pyx_v_predicate.comp_op));
 
-          /* "py_stringsimjoin/apply_rf/ex_plan.pyx":210
+          /* "py_stringsimjoin/apply_rf/ex_plan.pyx":219
  *                 if cov[predicate.pred_name].size() == 0:
  *                     comp_fn = get_comparison_function(get_comp_type(predicate.comp_op))
  *                     for i in xrange(sample_size):             # <<<<<<<<<<<<<<
@@ -2907,7 +2933,7 @@ static std::vector<Node>  __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_generate
           for (__pyx_t_28 = 0; __pyx_t_28 < __pyx_t_27; __pyx_t_28+=1) {
             __pyx_v_i = __pyx_t_28;
 
-            /* "py_stringsimjoin/apply_rf/ex_plan.pyx":211
+            /* "py_stringsimjoin/apply_rf/ex_plan.pyx":220
  *                     comp_fn = get_comparison_function(get_comp_type(predicate.comp_op))
  *                     for i in xrange(sample_size):
  *                         cov[predicate.pred_name].push_back(comp_fn(feature_values[predicate.feat_name][i], predicate.threshold))             # <<<<<<<<<<<<<<
@@ -2918,11 +2944,11 @@ static std::vector<Node>  __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_generate
               (__pyx_v_cov[__pyx_v_predicate.pred_name]).push_back(__pyx_v_comp_fn(((__pyx_v_feature_values[__pyx_v_predicate.feat_name])[__pyx_v_i]), __pyx_v_predicate.threshold));
             } catch(...) {
               __Pyx_CppExn2PyErr();
-              {__pyx_filename = __pyx_f[0]; __pyx_lineno = 211; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+              {__pyx_filename = __pyx_f[0]; __pyx_lineno = 220; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
             }
           }
 
-          /* "py_stringsimjoin/apply_rf/ex_plan.pyx":212
+          /* "py_stringsimjoin/apply_rf/ex_plan.pyx":221
  *                     for i in xrange(sample_size):
  *                         cov[predicate.pred_name].push_back(comp_fn(feature_values[predicate.feat_name][i], predicate.threshold))
  *                     if cov[predicate.pred_name].size() > max_size:             # <<<<<<<<<<<<<<
@@ -2932,7 +2958,7 @@ static std::vector<Node>  __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_generate
           __pyx_t_10 = (((__pyx_v_cov[__pyx_v_predicate.pred_name]).size() > __pyx_v_max_size) != 0);
           if (__pyx_t_10) {
 
-            /* "py_stringsimjoin/apply_rf/ex_plan.pyx":213
+            /* "py_stringsimjoin/apply_rf/ex_plan.pyx":222
  *                         cov[predicate.pred_name].push_back(comp_fn(feature_values[predicate.feat_name][i], predicate.threshold))
  *                     if cov[predicate.pred_name].size() > max_size:
  *                         max_size = cov[predicate.pred_name].size()             # <<<<<<<<<<<<<<
@@ -2941,7 +2967,7 @@ static std::vector<Node>  __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_generate
  */
             __pyx_v_max_size = (__pyx_v_cov[__pyx_v_predicate.pred_name]).size();
 
-            /* "py_stringsimjoin/apply_rf/ex_plan.pyx":212
+            /* "py_stringsimjoin/apply_rf/ex_plan.pyx":221
  *                     for i in xrange(sample_size):
  *                         cov[predicate.pred_name].push_back(comp_fn(feature_values[predicate.feat_name][i], predicate.threshold))
  *                     if cov[predicate.pred_name].size() > max_size:             # <<<<<<<<<<<<<<
@@ -2950,7 +2976,7 @@ static std::vector<Node>  __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_generate
  */
           }
 
-          /* "py_stringsimjoin/apply_rf/ex_plan.pyx":214
+          /* "py_stringsimjoin/apply_rf/ex_plan.pyx":223
  *                     if cov[predicate.pred_name].size() > max_size:
  *                         max_size = cov[predicate.pred_name].size()
  *                     coverage[predicate.pred_name] = Coverage(cov[predicate.pred_name])             # <<<<<<<<<<<<<<
@@ -2959,7 +2985,7 @@ static std::vector<Node>  __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_generate
  */
           (__pyx_v_coverage[__pyx_v_predicate.pred_name]) = Coverage((__pyx_v_cov[__pyx_v_predicate.pred_name]));
 
-          /* "py_stringsimjoin/apply_rf/ex_plan.pyx":208
+          /* "py_stringsimjoin/apply_rf/ex_plan.pyx":217
  *                 predicate = trees[x].rules[y].predicates[z]
  *                 trees[x].rules[y].predicates[z].set_cost(cost[predicate.feat_name])
  *                 if cov[predicate.pred_name].size() == 0:             # <<<<<<<<<<<<<<
@@ -2968,7 +2994,7 @@ static std::vector<Node>  __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_generate
  */
         }
 
-        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":215
+        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":224
  *                         max_size = cov[predicate.pred_name].size()
  *                     coverage[predicate.pred_name] = Coverage(cov[predicate.pred_name])
  *                 if z == 0:             # <<<<<<<<<<<<<<
@@ -2978,7 +3004,7 @@ static std::vector<Node>  __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_generate
         __pyx_t_10 = ((__pyx_v_z == 0) != 0);
         if (__pyx_t_10) {
 
-          /* "py_stringsimjoin/apply_rf/ex_plan.pyx":216
+          /* "py_stringsimjoin/apply_rf/ex_plan.pyx":225
  *                     coverage[predicate.pred_name] = Coverage(cov[predicate.pred_name])
  *                 if z == 0:
  *                     c1.or_coverage(coverage[predicate.pred_name])             # <<<<<<<<<<<<<<
@@ -2987,7 +3013,7 @@ static std::vector<Node>  __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_generate
  */
           __pyx_v_c1.or_coverage((__pyx_v_coverage[__pyx_v_predicate.pred_name]));
 
-          /* "py_stringsimjoin/apply_rf/ex_plan.pyx":215
+          /* "py_stringsimjoin/apply_rf/ex_plan.pyx":224
  *                         max_size = cov[predicate.pred_name].size()
  *                     coverage[predicate.pred_name] = Coverage(cov[predicate.pred_name])
  *                 if z == 0:             # <<<<<<<<<<<<<<
@@ -2997,7 +3023,7 @@ static std::vector<Node>  __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_generate
           goto __pyx_L29;
         }
 
-        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":218
+        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":227
  *                     c1.or_coverage(coverage[predicate.pred_name])
  *                 else:
  *                     c1.and_coverage(coverage[predicate.pred_name])             # <<<<<<<<<<<<<<
@@ -3010,7 +3036,7 @@ static std::vector<Node>  __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_generate
         __pyx_L29:;
       }
 
-      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":219
+      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":228
  *                 else:
  *                     c1.and_coverage(coverage[predicate.pred_name])
  *             tree_cov[x].or_coverage(c1)             # <<<<<<<<<<<<<<
@@ -3021,38 +3047,38 @@ static std::vector<Node>  __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_generate
     }
   }
 
-  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":220
+  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":229
  *                     c1.and_coverage(coverage[predicate.pred_name])
  *             tree_cov[x].or_coverage(c1)
  *     print 't4'             # <<<<<<<<<<<<<<
  *     cdef vector[double] tree_costs
  *     cdef vector[Node] tree_plans
  */
-  if (__Pyx_PrintOne(0, __pyx_n_s_t4) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 220; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (__Pyx_PrintOne(0, __pyx_n_s_t4) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 229; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
 
-  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":225
+  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":234
  *     cdef Node plan
  * 
  *     for i in xrange(trees.size()):             # <<<<<<<<<<<<<<
  * #        print i
- *         plan = gen_plan_for_tree(trees[i], coverage, sample_size, push_flag)
+ *         plan = gen_plan_for_tree(trees[i], coverage, sample_size, push_flag, random_order)
  */
   __pyx_t_23 = __pyx_v_trees.size();
   for (__pyx_t_20 = 0; __pyx_t_20 < __pyx_t_23; __pyx_t_20+=1) {
     __pyx_v_i = __pyx_t_20;
 
-    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":227
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":236
  *     for i in xrange(trees.size()):
  * #        print i
- *         plan = gen_plan_for_tree(trees[i], coverage, sample_size, push_flag)             # <<<<<<<<<<<<<<
+ *         plan = gen_plan_for_tree(trees[i], coverage, sample_size, push_flag, random_order)             # <<<<<<<<<<<<<<
  *         tree_plans.push_back(plan)
  *         tree_costs.push_back(compute_plan_cost(plan, coverage, sample_size))
  */
-    __pyx_v_plan = __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_gen_plan_for_tree((__pyx_v_trees[__pyx_v_i]), __pyx_v_coverage, __pyx_v_sample_size, __pyx_v_push_flag);
+    __pyx_v_plan = __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_gen_plan_for_tree((__pyx_v_trees[__pyx_v_i]), __pyx_v_coverage, __pyx_v_sample_size, __pyx_v_push_flag, __pyx_v_random_order);
 
-    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":228
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":237
  * #        print i
- *         plan = gen_plan_for_tree(trees[i], coverage, sample_size, push_flag)
+ *         plan = gen_plan_for_tree(trees[i], coverage, sample_size, push_flag, random_order)
  *         tree_plans.push_back(plan)             # <<<<<<<<<<<<<<
  *         tree_costs.push_back(compute_plan_cost(plan, coverage, sample_size))
  * 
@@ -3061,11 +3087,11 @@ static std::vector<Node>  __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_generate
       __pyx_v_tree_plans.push_back(__pyx_v_plan);
     } catch(...) {
       __Pyx_CppExn2PyErr();
-      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 228; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 237; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     }
 
-    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":229
- *         plan = gen_plan_for_tree(trees[i], coverage, sample_size, push_flag)
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":238
+ *         plan = gen_plan_for_tree(trees[i], coverage, sample_size, push_flag, random_order)
  *         tree_plans.push_back(plan)
  *         tree_costs.push_back(compute_plan_cost(plan, coverage, sample_size))             # <<<<<<<<<<<<<<
  * 
@@ -3075,40 +3101,31 @@ static std::vector<Node>  __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_generate
       __pyx_v_tree_costs.push_back(__pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_compute_plan_cost(__pyx_v_plan, __pyx_v_coverage, __pyx_v_sample_size));
     } catch(...) {
       __Pyx_CppExn2PyErr();
-      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 229; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 238; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     }
   }
 
-  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":231
+  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":240
  *         tree_costs.push_back(compute_plan_cost(plan, coverage, sample_size))
  * 
  *     print 't5'             # <<<<<<<<<<<<<<
  * #    cdef vector[int] opt_tree_seq = get_optimal_tree_seq(tree_costs, tree_cov, sample_size)
  *     cdef vector[int] opt_tree_seq = get_optimal_tree_seq_v1(tree_costs, tree_cov, sample_size, sample.second)
  */
-  if (__Pyx_PrintOne(0, __pyx_n_s_t5) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 231; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (__Pyx_PrintOne(0, __pyx_n_s_t5) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 240; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
 
-  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":233
+  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":242
  *     print 't5'
  * #    cdef vector[int] opt_tree_seq = get_optimal_tree_seq(tree_costs, tree_cov, sample_size)
  *     cdef vector[int] opt_tree_seq = get_optimal_tree_seq_v1(tree_costs, tree_cov, sample_size, sample.second)             # <<<<<<<<<<<<<<
- *     cdef vector[Node] ordered_plans
- *     print 't6'
+ * # cit worst    opt_tree_seq = [3, 0, 1, 2]
+ * #    opt_tree_seq = [1, 2, 3, 0]
  */
   __pyx_v_opt_tree_seq = __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_get_optimal_tree_seq_v1(__pyx_v_tree_costs, __pyx_v_tree_cov, __pyx_v_sample_size, __pyx_v_sample.second);
 
-  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":235
- *     cdef vector[int] opt_tree_seq = get_optimal_tree_seq_v1(tree_costs, tree_cov, sample_size, sample.second)
+  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":247
  *     cdef vector[Node] ordered_plans
- *     print 't6'             # <<<<<<<<<<<<<<
- *     for i in opt_tree_seq:
- *         print i
- */
-  if (__Pyx_PrintOne(0, __pyx_n_s_t6) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 235; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-
-  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":236
- *     cdef vector[Node] ordered_plans
- *     print 't6'
+ * 
  *     for i in opt_tree_seq:             # <<<<<<<<<<<<<<
  *         print i
  *         ordered_plans.push_back(tree_plans[i])
@@ -3120,61 +3137,52 @@ static std::vector<Node>  __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_generate
     ++__pyx_t_29;
     __pyx_v_i = __pyx_t_20;
 
-    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":237
- *     print 't6'
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":248
+ * 
  *     for i in opt_tree_seq:
  *         print i             # <<<<<<<<<<<<<<
  *         ordered_plans.push_back(tree_plans[i])
- *     print 't7'
+ * 
  */
-    __pyx_t_19 = __Pyx_PyInt_From_int(__pyx_v_i); if (unlikely(!__pyx_t_19)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 237; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_19 = __Pyx_PyInt_From_int(__pyx_v_i); if (unlikely(!__pyx_t_19)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 248; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_19);
-    if (__Pyx_PrintOne(0, __pyx_t_19) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 237; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    if (__Pyx_PrintOne(0, __pyx_t_19) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 248; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_DECREF(__pyx_t_19); __pyx_t_19 = 0;
 
-    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":238
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":249
  *     for i in opt_tree_seq:
  *         print i
  *         ordered_plans.push_back(tree_plans[i])             # <<<<<<<<<<<<<<
- *     print 't7'
+ * 
  *     return ordered_plans
  */
     try {
       __pyx_v_ordered_plans.push_back((__pyx_v_tree_plans[__pyx_v_i]));
     } catch(...) {
       __Pyx_CppExn2PyErr();
-      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 238; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 249; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     }
 
-    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":236
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":247
  *     cdef vector[Node] ordered_plans
- *     print 't6'
+ * 
  *     for i in opt_tree_seq:             # <<<<<<<<<<<<<<
  *         print i
  *         ordered_plans.push_back(tree_plans[i])
  */
   }
 
-  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":239
- *         print i
+  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":251
  *         ordered_plans.push_back(tree_plans[i])
- *     print 't7'             # <<<<<<<<<<<<<<
- *     return ordered_plans
  * 
- */
-  if (__Pyx_PrintOne(0, __pyx_n_s_t7) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 239; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-
-  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":240
- *         ordered_plans.push_back(tree_plans[i])
- *     print 't7'
  *     return ordered_plans             # <<<<<<<<<<<<<<
  * 
- * cdef Node gen_plan_for_tree(Tree& tree, omap[string, Coverage]& coverage,
+ * cdef Node generate_ex_plan_for_stage2_test(pair[vector[pair[int, int]], vector[int]]& candset_votes,
  */
   __pyx_r = __pyx_v_ordered_plans;
   goto __pyx_L0;
 
-  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":133
+  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":142
  * # This function would find an optimal ordering of the remaining trees and return
  * # a plan for each of the (n/2 - 1) trees in that order.
  * cdef vector[Node] generate_ex_plan_for_stage2(pair[vector[pair[int, int]], vector[int]]& candset_votes,             # <<<<<<<<<<<<<<
@@ -3194,15 +3202,1152 @@ static std::vector<Node>  __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_generate
   return __pyx_r;
 }
 
-/* "py_stringsimjoin/apply_rf/ex_plan.pyx":242
+/* "py_stringsimjoin/apply_rf/ex_plan.pyx":253
  *     return ordered_plans
  * 
+ * cdef Node generate_ex_plan_for_stage2_test(pair[vector[pair[int, int]], vector[int]]& candset_votes,             # <<<<<<<<<<<<<<
+ *                                               vector[string]& lstrings,
+ *                                               vector[string]& rstrings,
+ */
+
+static Node __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_generate_ex_plan_for_stage2_test(std::pair<std::vector<std::pair<int,int> > ,std::vector<int> >  &__pyx_v_candset_votes, std::vector<std::string>  &__pyx_v_lstrings, std::vector<std::string>  &__pyx_v_rstrings, std::vector<Tree>  &__pyx_v_trees, int __pyx_v_orig_sample_size, int __pyx_v_n_jobs, bool __pyx_v_push_flag) {
+  std::pair<std::pair<std::vector<std::string> ,std::vector<std::string> > ,std::vector<int> >  __pyx_v_sample;
+  std::map<std::string,Coverage>  __pyx_v_coverage;
+  std::map<std::string,double>  __pyx_v_cost;
+  int __pyx_v_i;
+  int __pyx_v_sample_size;
+  std::map<std::string,std::pair<std::string,std::string> >  __pyx_v_feature_info;
+  std::map<std::string,std::vector<std::vector<int> > >  __pyx_v_ltokens;
+  std::map<std::string,std::vector<std::vector<int> > >  __pyx_v_rtokens;
+  Tree __pyx_v_tree;
+  Rule __pyx_v_rule;
+  Predicatecpp __pyx_v_predicate;
+  std::set<std::string>  __pyx_v_tok_types;
+  double __pyx_v_sim_score;
+  double __pyx_v_start_time;
+  double __pyx_v_end_time;
+  __pyx_t_16py_stringsimjoin_8apply_rf_5utils_token_simfnptr __pyx_v_token_sim_fn;
+  __pyx_t_16py_stringsimjoin_8apply_rf_5utils_str_simfnptr __pyx_v_str_sim_fn;
+  __pyx_t_16py_stringsimjoin_8apply_rf_5utils_compfnptr __pyx_v_comp_fn;
+  std::map<std::string,std::vector<double> >  __pyx_v_feature_values;
+  std::string __pyx_v_tok_type;
+  std::pair<std::string,std::pair<std::string,std::string> >  __pyx_v_feature;
+  int __pyx_v_max_size;
+  std::map<std::string,std::vector<bool> >  __pyx_v_cov;
+  int __pyx_v_x;
+  int __pyx_v_y;
+  int __pyx_v_z;
+  std::map<int,Coverage>  __pyx_v_tree_cov;
+  Coverage __pyx_v_c1;
+  Node __pyx_v_plan;
+  Node __pyx_r;
+  __Pyx_RefNannyDeclarations
+  std::vector<Tree> ::iterator __pyx_t_1;
+  Tree __pyx_t_2;
+  std::vector<Rule> ::iterator __pyx_t_3;
+  std::vector<Rule>  *__pyx_t_4;
+  Rule __pyx_t_5;
+  std::vector<Predicatecpp> ::iterator __pyx_t_6;
+  std::vector<Predicatecpp>  *__pyx_t_7;
+  Predicatecpp __pyx_t_8;
+  std::pair<std::string,std::string>  __pyx_t_9;
+  int __pyx_t_10;
+  std::set<std::string> ::iterator __pyx_t_11;
+  std::string __pyx_t_12;
+  std::vector<std::vector<int> >  __pyx_t_13;
+  std::map<std::string,std::pair<std::string,std::string> > ::iterator __pyx_t_14;
+  std::pair<std::string,std::pair<std::string,std::string> >  __pyx_t_15;
+  PyObject *__pyx_t_16 = NULL;
+  PyObject *__pyx_t_17 = NULL;
+  PyObject *__pyx_t_18 = NULL;
+  PyObject *__pyx_t_19 = NULL;
+  int __pyx_t_20;
+  int __pyx_t_21;
+  double __pyx_t_22;
+  size_t __pyx_t_23;
+  size_t __pyx_t_24;
+  size_t __pyx_t_25;
+  int __pyx_t_26;
+  int __pyx_t_27;
+  int __pyx_t_28;
+  int __pyx_lineno = 0;
+  const char *__pyx_filename = NULL;
+  int __pyx_clineno = 0;
+  __Pyx_RefNannySetupContext("generate_ex_plan_for_stage2_test", 0);
+
+  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":258
+ *                                               vector[Tree]& trees,
+ *                                               int orig_sample_size, int n_jobs, bool push_flag):
+ *     cdef pair[pair[vector[string], vector[string]], vector[int]] sample = sample_pairs(             # <<<<<<<<<<<<<<
+ *                                                                     candset_votes,
+ *                                                                     orig_sample_size,
+ */
+  __pyx_v_sample = __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_sample_pairs(__pyx_v_candset_votes, __pyx_v_orig_sample_size, __pyx_v_lstrings, __pyx_v_rstrings);
+
+  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":266
+ *     cdef omap[string, vector[double]] features
+ *     cdef omap[string, double] cost
+ *     cdef int i, sample_size = sample.second.size()             # <<<<<<<<<<<<<<
+ *     cdef omap[string, pair[string, string]] feature_info
+ *     cdef omap[string, vector[vector[int]]] ltokens, rtokens
+ */
+  __pyx_v_sample_size = __pyx_v_sample.second.size();
+
+  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":279
+ *     cdef omap[string, vector[double]] feature_values
+ * 
+ *     for tree in trees:             # <<<<<<<<<<<<<<
+ *         for rule in tree.rules:
+ *             for predicate in rule.predicates:
+ */
+  __pyx_t_1 = __pyx_v_trees.begin();
+  for (;;) {
+    if (!(__pyx_t_1 != __pyx_v_trees.end())) break;
+    __pyx_t_2 = *__pyx_t_1;
+    ++__pyx_t_1;
+    __pyx_v_tree = __pyx_t_2;
+
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":280
+ * 
+ *     for tree in trees:
+ *         for rule in tree.rules:             # <<<<<<<<<<<<<<
+ *             for predicate in rule.predicates:
+ *                 feature_info[predicate.feat_name] = pair[string, string](predicate.sim_measure_type, predicate.tokenizer_type)
+ */
+    __pyx_t_4 = &__pyx_v_tree.rules;
+    __pyx_t_3 = __pyx_t_4->begin();
+    for (;;) {
+      if (!(__pyx_t_3 != __pyx_t_4->end())) break;
+      __pyx_t_5 = *__pyx_t_3;
+      ++__pyx_t_3;
+      __pyx_v_rule = __pyx_t_5;
+
+      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":281
+ *     for tree in trees:
+ *         for rule in tree.rules:
+ *             for predicate in rule.predicates:             # <<<<<<<<<<<<<<
+ *                 feature_info[predicate.feat_name] = pair[string, string](predicate.sim_measure_type, predicate.tokenizer_type)
+ *                 if predicate.is_tok_sim_measure:
+ */
+      __pyx_t_7 = &__pyx_v_rule.predicates;
+      __pyx_t_6 = __pyx_t_7->begin();
+      for (;;) {
+        if (!(__pyx_t_6 != __pyx_t_7->end())) break;
+        __pyx_t_8 = *__pyx_t_6;
+        ++__pyx_t_6;
+        __pyx_v_predicate = __pyx_t_8;
+
+        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":282
+ *         for rule in tree.rules:
+ *             for predicate in rule.predicates:
+ *                 feature_info[predicate.feat_name] = pair[string, string](predicate.sim_measure_type, predicate.tokenizer_type)             # <<<<<<<<<<<<<<
+ *                 if predicate.is_tok_sim_measure:
+ *                     tok_types.insert(predicate.tokenizer_type)
+ */
+        try {
+          __pyx_t_9 = std::pair<std::string,std::string> (__pyx_v_predicate.sim_measure_type, __pyx_v_predicate.tokenizer_type);
+        } catch(...) {
+          __Pyx_CppExn2PyErr();
+          {__pyx_filename = __pyx_f[0]; __pyx_lineno = 282; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        }
+        (__pyx_v_feature_info[__pyx_v_predicate.feat_name]) = __pyx_t_9;
+
+        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":283
+ *             for predicate in rule.predicates:
+ *                 feature_info[predicate.feat_name] = pair[string, string](predicate.sim_measure_type, predicate.tokenizer_type)
+ *                 if predicate.is_tok_sim_measure:             # <<<<<<<<<<<<<<
+ *                     tok_types.insert(predicate.tokenizer_type)
+ *     print 't1'
+ */
+        __pyx_t_10 = (__pyx_v_predicate.is_tok_sim_measure != 0);
+        if (__pyx_t_10) {
+
+          /* "py_stringsimjoin/apply_rf/ex_plan.pyx":284
+ *                 feature_info[predicate.feat_name] = pair[string, string](predicate.sim_measure_type, predicate.tokenizer_type)
+ *                 if predicate.is_tok_sim_measure:
+ *                     tok_types.insert(predicate.tokenizer_type)             # <<<<<<<<<<<<<<
+ *     print 't1'
+ *     for tok_type in tok_types:
+ */
+          try {
+            __pyx_v_tok_types.insert(__pyx_v_predicate.tokenizer_type);
+          } catch(...) {
+            __Pyx_CppExn2PyErr();
+            {__pyx_filename = __pyx_f[0]; __pyx_lineno = 284; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+          }
+
+          /* "py_stringsimjoin/apply_rf/ex_plan.pyx":283
+ *             for predicate in rule.predicates:
+ *                 feature_info[predicate.feat_name] = pair[string, string](predicate.sim_measure_type, predicate.tokenizer_type)
+ *                 if predicate.is_tok_sim_measure:             # <<<<<<<<<<<<<<
+ *                     tok_types.insert(predicate.tokenizer_type)
+ *     print 't1'
+ */
+        }
+
+        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":281
+ *     for tree in trees:
+ *         for rule in tree.rules:
+ *             for predicate in rule.predicates:             # <<<<<<<<<<<<<<
+ *                 feature_info[predicate.feat_name] = pair[string, string](predicate.sim_measure_type, predicate.tokenizer_type)
+ *                 if predicate.is_tok_sim_measure:
+ */
+      }
+
+      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":280
+ * 
+ *     for tree in trees:
+ *         for rule in tree.rules:             # <<<<<<<<<<<<<<
+ *             for predicate in rule.predicates:
+ *                 feature_info[predicate.feat_name] = pair[string, string](predicate.sim_measure_type, predicate.tokenizer_type)
+ */
+    }
+
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":279
+ *     cdef omap[string, vector[double]] feature_values
+ * 
+ *     for tree in trees:             # <<<<<<<<<<<<<<
+ *         for rule in tree.rules:
+ *             for predicate in rule.predicates:
+ */
+  }
+
+  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":285
+ *                 if predicate.is_tok_sim_measure:
+ *                     tok_types.insert(predicate.tokenizer_type)
+ *     print 't1'             # <<<<<<<<<<<<<<
+ *     for tok_type in tok_types:
+ *         ltokens[tok_type] = vector[vector[int]]()
+ */
+  if (__Pyx_PrintOne(0, __pyx_n_s_t1) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 285; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+
+  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":286
+ *                     tok_types.insert(predicate.tokenizer_type)
+ *     print 't1'
+ *     for tok_type in tok_types:             # <<<<<<<<<<<<<<
+ *         ltokens[tok_type] = vector[vector[int]]()
+ *         rtokens[tok_type] = vector[vector[int]]()
+ */
+  __pyx_t_11 = __pyx_v_tok_types.begin();
+  for (;;) {
+    if (!(__pyx_t_11 != __pyx_v_tok_types.end())) break;
+    __pyx_t_12 = *__pyx_t_11;
+    ++__pyx_t_11;
+    __pyx_v_tok_type = __pyx_t_12;
+
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":287
+ *     print 't1'
+ *     for tok_type in tok_types:
+ *         ltokens[tok_type] = vector[vector[int]]()             # <<<<<<<<<<<<<<
+ *         rtokens[tok_type] = vector[vector[int]]()
+ *         tokenize_without_materializing(sample.first.first, sample.first.second, tok_type,
+ */
+    try {
+      __pyx_t_13 = std::vector<std::vector<int> > ();
+    } catch(...) {
+      __Pyx_CppExn2PyErr();
+      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 287; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    }
+    (__pyx_v_ltokens[__pyx_v_tok_type]) = __pyx_t_13;
+
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":288
+ *     for tok_type in tok_types:
+ *         ltokens[tok_type] = vector[vector[int]]()
+ *         rtokens[tok_type] = vector[vector[int]]()             # <<<<<<<<<<<<<<
+ *         tokenize_without_materializing(sample.first.first, sample.first.second, tok_type,
+ *                                        ltokens[tok_type], rtokens[tok_type], n_jobs)
+ */
+    try {
+      __pyx_t_13 = std::vector<std::vector<int> > ();
+    } catch(...) {
+      __Pyx_CppExn2PyErr();
+      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 288; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    }
+    (__pyx_v_rtokens[__pyx_v_tok_type]) = __pyx_t_13;
+
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":289
+ *         ltokens[tok_type] = vector[vector[int]]()
+ *         rtokens[tok_type] = vector[vector[int]]()
+ *         tokenize_without_materializing(sample.first.first, sample.first.second, tok_type,             # <<<<<<<<<<<<<<
+ *                                        ltokens[tok_type], rtokens[tok_type], n_jobs)
+ * 
+ */
+    __pyx_f_16py_stringsimjoin_8apply_rf_10tokenizers_tokenize_without_materializing(__pyx_v_sample.first.first, __pyx_v_sample.first.second, __pyx_v_tok_type, (__pyx_v_ltokens[__pyx_v_tok_type]), (__pyx_v_rtokens[__pyx_v_tok_type]), __pyx_v_n_jobs);
+
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":286
+ *                     tok_types.insert(predicate.tokenizer_type)
+ *     print 't1'
+ *     for tok_type in tok_types:             # <<<<<<<<<<<<<<
+ *         ltokens[tok_type] = vector[vector[int]]()
+ *         rtokens[tok_type] = vector[vector[int]]()
+ */
+  }
+
+  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":292
+ *                                        ltokens[tok_type], rtokens[tok_type], n_jobs)
+ * 
+ *     print 't2'             # <<<<<<<<<<<<<<
+ *     for feature in feature_info:
+ *         print feature.first, feature.second.first, feature.second.second
+ */
+  if (__Pyx_PrintOne(0, __pyx_n_s_t2) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 292; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+
+  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":293
+ * 
+ *     print 't2'
+ *     for feature in feature_info:             # <<<<<<<<<<<<<<
+ *         print feature.first, feature.second.first, feature.second.second
+ *         if feature.second.second.compare('none') == 0:
+ */
+  __pyx_t_14 = __pyx_v_feature_info.begin();
+  for (;;) {
+    if (!(__pyx_t_14 != __pyx_v_feature_info.end())) break;
+    __pyx_t_15 = *__pyx_t_14;
+    ++__pyx_t_14;
+    __pyx_v_feature = __pyx_t_15;
+
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":294
+ *     print 't2'
+ *     for feature in feature_info:
+ *         print feature.first, feature.second.first, feature.second.second             # <<<<<<<<<<<<<<
+ *         if feature.second.second.compare('none') == 0:
+ *             str_sim_fn = get_str_sim_function(get_sim_type(feature.second.first))
+ */
+    __pyx_t_16 = __pyx_convert_PyBytes_string_to_py_std__in_string(__pyx_v_feature.first); if (unlikely(!__pyx_t_16)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 294; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __Pyx_GOTREF(__pyx_t_16);
+    __pyx_t_17 = __pyx_convert_PyBytes_string_to_py_std__in_string(__pyx_v_feature.second.first); if (unlikely(!__pyx_t_17)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 294; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __Pyx_GOTREF(__pyx_t_17);
+    __pyx_t_18 = __pyx_convert_PyBytes_string_to_py_std__in_string(__pyx_v_feature.second.second); if (unlikely(!__pyx_t_18)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 294; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __Pyx_GOTREF(__pyx_t_18);
+    __pyx_t_19 = PyTuple_New(3); if (unlikely(!__pyx_t_19)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 294; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __Pyx_GOTREF(__pyx_t_19);
+    __Pyx_GIVEREF(__pyx_t_16);
+    PyTuple_SET_ITEM(__pyx_t_19, 0, __pyx_t_16);
+    __Pyx_GIVEREF(__pyx_t_17);
+    PyTuple_SET_ITEM(__pyx_t_19, 1, __pyx_t_17);
+    __Pyx_GIVEREF(__pyx_t_18);
+    PyTuple_SET_ITEM(__pyx_t_19, 2, __pyx_t_18);
+    __pyx_t_16 = 0;
+    __pyx_t_17 = 0;
+    __pyx_t_18 = 0;
+    if (__Pyx_Print(0, __pyx_t_19, 1) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 294; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __Pyx_DECREF(__pyx_t_19); __pyx_t_19 = 0;
+
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":295
+ *     for feature in feature_info:
+ *         print feature.first, feature.second.first, feature.second.second
+ *         if feature.second.second.compare('none') == 0:             # <<<<<<<<<<<<<<
+ *             str_sim_fn = get_str_sim_function(get_sim_type(feature.second.first))
+ *             cost[feature.first] = 0.0
+ */
+    __pyx_t_12 = __pyx_convert_string_from_py_std__in_string(__pyx_n_b_none); if (unlikely(PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 295; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_10 = ((__pyx_v_feature.second.second.compare(__pyx_t_12) == 0) != 0);
+    if (__pyx_t_10) {
+
+      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":296
+ *         print feature.first, feature.second.first, feature.second.second
+ *         if feature.second.second.compare('none') == 0:
+ *             str_sim_fn = get_str_sim_function(get_sim_type(feature.second.first))             # <<<<<<<<<<<<<<
+ *             cost[feature.first] = 0.0
+ *             for i in xrange(sample_size):
+ */
+      __pyx_v_str_sim_fn = __pyx_f_16py_stringsimjoin_8apply_rf_5utils_get_str_sim_function(__pyx_f_16py_stringsimjoin_8apply_rf_5utils_get_sim_type(__pyx_v_feature.second.first));
+
+      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":297
+ *         if feature.second.second.compare('none') == 0:
+ *             str_sim_fn = get_str_sim_function(get_sim_type(feature.second.first))
+ *             cost[feature.first] = 0.0             # <<<<<<<<<<<<<<
+ *             for i in xrange(sample_size):
+ *                 start_time = time.time()
+ */
+      (__pyx_v_cost[__pyx_v_feature.first]) = 0.0;
+
+      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":298
+ *             str_sim_fn = get_str_sim_function(get_sim_type(feature.second.first))
+ *             cost[feature.first] = 0.0
+ *             for i in xrange(sample_size):             # <<<<<<<<<<<<<<
+ *                 start_time = time.time()
+ *                 sim_score = str_sim_fn(sample.first.first[i], sample.first.second[i])
+ */
+      __pyx_t_20 = __pyx_v_sample_size;
+      for (__pyx_t_21 = 0; __pyx_t_21 < __pyx_t_20; __pyx_t_21+=1) {
+        __pyx_v_i = __pyx_t_21;
+
+        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":299
+ *             cost[feature.first] = 0.0
+ *             for i in xrange(sample_size):
+ *                 start_time = time.time()             # <<<<<<<<<<<<<<
+ *                 sim_score = str_sim_fn(sample.first.first[i], sample.first.second[i])
+ *                 end_time = time.time()
+ */
+        __pyx_t_18 = __Pyx_GetModuleGlobalName(__pyx_n_s_time); if (unlikely(!__pyx_t_18)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 299; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        __Pyx_GOTREF(__pyx_t_18);
+        __pyx_t_17 = __Pyx_PyObject_GetAttrStr(__pyx_t_18, __pyx_n_s_time); if (unlikely(!__pyx_t_17)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 299; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        __Pyx_GOTREF(__pyx_t_17);
+        __Pyx_DECREF(__pyx_t_18); __pyx_t_18 = 0;
+        __pyx_t_18 = NULL;
+        if (CYTHON_COMPILING_IN_CPYTHON && unlikely(PyMethod_Check(__pyx_t_17))) {
+          __pyx_t_18 = PyMethod_GET_SELF(__pyx_t_17);
+          if (likely(__pyx_t_18)) {
+            PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_17);
+            __Pyx_INCREF(__pyx_t_18);
+            __Pyx_INCREF(function);
+            __Pyx_DECREF_SET(__pyx_t_17, function);
+          }
+        }
+        if (__pyx_t_18) {
+          __pyx_t_19 = __Pyx_PyObject_CallOneArg(__pyx_t_17, __pyx_t_18); if (unlikely(!__pyx_t_19)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 299; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+          __Pyx_DECREF(__pyx_t_18); __pyx_t_18 = 0;
+        } else {
+          __pyx_t_19 = __Pyx_PyObject_CallNoArg(__pyx_t_17); if (unlikely(!__pyx_t_19)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 299; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        }
+        __Pyx_GOTREF(__pyx_t_19);
+        __Pyx_DECREF(__pyx_t_17); __pyx_t_17 = 0;
+        __pyx_t_22 = __pyx_PyFloat_AsDouble(__pyx_t_19); if (unlikely((__pyx_t_22 == (double)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 299; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        __Pyx_DECREF(__pyx_t_19); __pyx_t_19 = 0;
+        __pyx_v_start_time = __pyx_t_22;
+
+        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":300
+ *             for i in xrange(sample_size):
+ *                 start_time = time.time()
+ *                 sim_score = str_sim_fn(sample.first.first[i], sample.first.second[i])             # <<<<<<<<<<<<<<
+ *                 end_time = time.time()
+ *                 cost[feature.first] += (end_time - start_time)
+ */
+        __pyx_v_sim_score = __pyx_v_str_sim_fn((__pyx_v_sample.first.first[__pyx_v_i]), (__pyx_v_sample.first.second[__pyx_v_i]));
+
+        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":301
+ *                 start_time = time.time()
+ *                 sim_score = str_sim_fn(sample.first.first[i], sample.first.second[i])
+ *                 end_time = time.time()             # <<<<<<<<<<<<<<
+ *                 cost[feature.first] += (end_time - start_time)
+ *                 feature_values[feature.first].push_back(sim_score)
+ */
+        __pyx_t_17 = __Pyx_GetModuleGlobalName(__pyx_n_s_time); if (unlikely(!__pyx_t_17)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 301; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        __Pyx_GOTREF(__pyx_t_17);
+        __pyx_t_18 = __Pyx_PyObject_GetAttrStr(__pyx_t_17, __pyx_n_s_time); if (unlikely(!__pyx_t_18)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 301; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        __Pyx_GOTREF(__pyx_t_18);
+        __Pyx_DECREF(__pyx_t_17); __pyx_t_17 = 0;
+        __pyx_t_17 = NULL;
+        if (CYTHON_COMPILING_IN_CPYTHON && unlikely(PyMethod_Check(__pyx_t_18))) {
+          __pyx_t_17 = PyMethod_GET_SELF(__pyx_t_18);
+          if (likely(__pyx_t_17)) {
+            PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_18);
+            __Pyx_INCREF(__pyx_t_17);
+            __Pyx_INCREF(function);
+            __Pyx_DECREF_SET(__pyx_t_18, function);
+          }
+        }
+        if (__pyx_t_17) {
+          __pyx_t_19 = __Pyx_PyObject_CallOneArg(__pyx_t_18, __pyx_t_17); if (unlikely(!__pyx_t_19)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 301; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+          __Pyx_DECREF(__pyx_t_17); __pyx_t_17 = 0;
+        } else {
+          __pyx_t_19 = __Pyx_PyObject_CallNoArg(__pyx_t_18); if (unlikely(!__pyx_t_19)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 301; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        }
+        __Pyx_GOTREF(__pyx_t_19);
+        __Pyx_DECREF(__pyx_t_18); __pyx_t_18 = 0;
+        __pyx_t_22 = __pyx_PyFloat_AsDouble(__pyx_t_19); if (unlikely((__pyx_t_22 == (double)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 301; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        __Pyx_DECREF(__pyx_t_19); __pyx_t_19 = 0;
+        __pyx_v_end_time = __pyx_t_22;
+
+        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":302
+ *                 sim_score = str_sim_fn(sample.first.first[i], sample.first.second[i])
+ *                 end_time = time.time()
+ *                 cost[feature.first] += (end_time - start_time)             # <<<<<<<<<<<<<<
+ *                 feature_values[feature.first].push_back(sim_score)
+ *             cost[feature.first] /= sample_size
+ */
+        __pyx_t_12 = __pyx_v_feature.first;
+        (__pyx_v_cost[__pyx_t_12]) = ((__pyx_v_cost[__pyx_t_12]) + (__pyx_v_end_time - __pyx_v_start_time));
+
+        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":303
+ *                 end_time = time.time()
+ *                 cost[feature.first] += (end_time - start_time)
+ *                 feature_values[feature.first].push_back(sim_score)             # <<<<<<<<<<<<<<
+ *             cost[feature.first] /= sample_size
+ *         else:
+ */
+        try {
+          (__pyx_v_feature_values[__pyx_v_feature.first]).push_back(__pyx_v_sim_score);
+        } catch(...) {
+          __Pyx_CppExn2PyErr();
+          {__pyx_filename = __pyx_f[0]; __pyx_lineno = 303; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        }
+      }
+
+      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":304
+ *                 cost[feature.first] += (end_time - start_time)
+ *                 feature_values[feature.first].push_back(sim_score)
+ *             cost[feature.first] /= sample_size             # <<<<<<<<<<<<<<
+ *         else:
+ *             token_sim_fn = get_token_sim_function(get_sim_type(feature.second.first))
+ */
+      __pyx_t_12 = __pyx_v_feature.first;
+      __pyx_t_22 = (__pyx_v_cost[__pyx_t_12]);
+      if (unlikely(__pyx_v_sample_size == 0)) {
+        PyErr_SetString(PyExc_ZeroDivisionError, "float division");
+        {__pyx_filename = __pyx_f[0]; __pyx_lineno = 304; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      }
+      (__pyx_v_cost[__pyx_t_12]) = (__pyx_t_22 / __pyx_v_sample_size);
+
+      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":295
+ *     for feature in feature_info:
+ *         print feature.first, feature.second.first, feature.second.second
+ *         if feature.second.second.compare('none') == 0:             # <<<<<<<<<<<<<<
+ *             str_sim_fn = get_str_sim_function(get_sim_type(feature.second.first))
+ *             cost[feature.first] = 0.0
+ */
+      goto __pyx_L14;
+    }
+
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":306
+ *             cost[feature.first] /= sample_size
+ *         else:
+ *             token_sim_fn = get_token_sim_function(get_sim_type(feature.second.first))             # <<<<<<<<<<<<<<
+ *             cost[feature.first] = 0.0
+ *             for i in xrange(sample_size):
+ */
+    /*else*/ {
+      __pyx_v_token_sim_fn = __pyx_f_16py_stringsimjoin_8apply_rf_5utils_get_token_sim_function(__pyx_f_16py_stringsimjoin_8apply_rf_5utils_get_sim_type(__pyx_v_feature.second.first));
+
+      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":307
+ *         else:
+ *             token_sim_fn = get_token_sim_function(get_sim_type(feature.second.first))
+ *             cost[feature.first] = 0.0             # <<<<<<<<<<<<<<
+ *             for i in xrange(sample_size):
+ *                 start_time = time.time()
+ */
+      (__pyx_v_cost[__pyx_v_feature.first]) = 0.0;
+
+      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":308
+ *             token_sim_fn = get_token_sim_function(get_sim_type(feature.second.first))
+ *             cost[feature.first] = 0.0
+ *             for i in xrange(sample_size):             # <<<<<<<<<<<<<<
+ *                 start_time = time.time()
+ *                 sim_score = token_sim_fn(ltokens[feature.second.second][i],
+ */
+      __pyx_t_20 = __pyx_v_sample_size;
+      for (__pyx_t_21 = 0; __pyx_t_21 < __pyx_t_20; __pyx_t_21+=1) {
+        __pyx_v_i = __pyx_t_21;
+
+        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":309
+ *             cost[feature.first] = 0.0
+ *             for i in xrange(sample_size):
+ *                 start_time = time.time()             # <<<<<<<<<<<<<<
+ *                 sim_score = token_sim_fn(ltokens[feature.second.second][i],
+ *                                          rtokens[feature.second.second][i])
+ */
+        __pyx_t_18 = __Pyx_GetModuleGlobalName(__pyx_n_s_time); if (unlikely(!__pyx_t_18)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 309; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        __Pyx_GOTREF(__pyx_t_18);
+        __pyx_t_17 = __Pyx_PyObject_GetAttrStr(__pyx_t_18, __pyx_n_s_time); if (unlikely(!__pyx_t_17)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 309; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        __Pyx_GOTREF(__pyx_t_17);
+        __Pyx_DECREF(__pyx_t_18); __pyx_t_18 = 0;
+        __pyx_t_18 = NULL;
+        if (CYTHON_COMPILING_IN_CPYTHON && unlikely(PyMethod_Check(__pyx_t_17))) {
+          __pyx_t_18 = PyMethod_GET_SELF(__pyx_t_17);
+          if (likely(__pyx_t_18)) {
+            PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_17);
+            __Pyx_INCREF(__pyx_t_18);
+            __Pyx_INCREF(function);
+            __Pyx_DECREF_SET(__pyx_t_17, function);
+          }
+        }
+        if (__pyx_t_18) {
+          __pyx_t_19 = __Pyx_PyObject_CallOneArg(__pyx_t_17, __pyx_t_18); if (unlikely(!__pyx_t_19)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 309; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+          __Pyx_DECREF(__pyx_t_18); __pyx_t_18 = 0;
+        } else {
+          __pyx_t_19 = __Pyx_PyObject_CallNoArg(__pyx_t_17); if (unlikely(!__pyx_t_19)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 309; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        }
+        __Pyx_GOTREF(__pyx_t_19);
+        __Pyx_DECREF(__pyx_t_17); __pyx_t_17 = 0;
+        __pyx_t_22 = __pyx_PyFloat_AsDouble(__pyx_t_19); if (unlikely((__pyx_t_22 == (double)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 309; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        __Pyx_DECREF(__pyx_t_19); __pyx_t_19 = 0;
+        __pyx_v_start_time = __pyx_t_22;
+
+        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":310
+ *             for i in xrange(sample_size):
+ *                 start_time = time.time()
+ *                 sim_score = token_sim_fn(ltokens[feature.second.second][i],             # <<<<<<<<<<<<<<
+ *                                          rtokens[feature.second.second][i])
+ *                 end_time = time.time()
+ */
+        __pyx_v_sim_score = __pyx_v_token_sim_fn(((__pyx_v_ltokens[__pyx_v_feature.second.second])[__pyx_v_i]), ((__pyx_v_rtokens[__pyx_v_feature.second.second])[__pyx_v_i]));
+
+        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":312
+ *                 sim_score = token_sim_fn(ltokens[feature.second.second][i],
+ *                                          rtokens[feature.second.second][i])
+ *                 end_time = time.time()             # <<<<<<<<<<<<<<
+ *                 cost[feature.first] += (end_time - start_time)
+ *                 feature_values[feature.first].push_back(sim_score)
+ */
+        __pyx_t_17 = __Pyx_GetModuleGlobalName(__pyx_n_s_time); if (unlikely(!__pyx_t_17)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 312; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        __Pyx_GOTREF(__pyx_t_17);
+        __pyx_t_18 = __Pyx_PyObject_GetAttrStr(__pyx_t_17, __pyx_n_s_time); if (unlikely(!__pyx_t_18)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 312; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        __Pyx_GOTREF(__pyx_t_18);
+        __Pyx_DECREF(__pyx_t_17); __pyx_t_17 = 0;
+        __pyx_t_17 = NULL;
+        if (CYTHON_COMPILING_IN_CPYTHON && unlikely(PyMethod_Check(__pyx_t_18))) {
+          __pyx_t_17 = PyMethod_GET_SELF(__pyx_t_18);
+          if (likely(__pyx_t_17)) {
+            PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_18);
+            __Pyx_INCREF(__pyx_t_17);
+            __Pyx_INCREF(function);
+            __Pyx_DECREF_SET(__pyx_t_18, function);
+          }
+        }
+        if (__pyx_t_17) {
+          __pyx_t_19 = __Pyx_PyObject_CallOneArg(__pyx_t_18, __pyx_t_17); if (unlikely(!__pyx_t_19)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 312; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+          __Pyx_DECREF(__pyx_t_17); __pyx_t_17 = 0;
+        } else {
+          __pyx_t_19 = __Pyx_PyObject_CallNoArg(__pyx_t_18); if (unlikely(!__pyx_t_19)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 312; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        }
+        __Pyx_GOTREF(__pyx_t_19);
+        __Pyx_DECREF(__pyx_t_18); __pyx_t_18 = 0;
+        __pyx_t_22 = __pyx_PyFloat_AsDouble(__pyx_t_19); if (unlikely((__pyx_t_22 == (double)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 312; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        __Pyx_DECREF(__pyx_t_19); __pyx_t_19 = 0;
+        __pyx_v_end_time = __pyx_t_22;
+
+        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":313
+ *                                          rtokens[feature.second.second][i])
+ *                 end_time = time.time()
+ *                 cost[feature.first] += (end_time - start_time)             # <<<<<<<<<<<<<<
+ *                 feature_values[feature.first].push_back(sim_score)
+ *             cost[feature.first] /= sample_size
+ */
+        __pyx_t_12 = __pyx_v_feature.first;
+        (__pyx_v_cost[__pyx_t_12]) = ((__pyx_v_cost[__pyx_t_12]) + (__pyx_v_end_time - __pyx_v_start_time));
+
+        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":314
+ *                 end_time = time.time()
+ *                 cost[feature.first] += (end_time - start_time)
+ *                 feature_values[feature.first].push_back(sim_score)             # <<<<<<<<<<<<<<
+ *             cost[feature.first] /= sample_size
+ *     print 't3'
+ */
+        try {
+          (__pyx_v_feature_values[__pyx_v_feature.first]).push_back(__pyx_v_sim_score);
+        } catch(...) {
+          __Pyx_CppExn2PyErr();
+          {__pyx_filename = __pyx_f[0]; __pyx_lineno = 314; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        }
+      }
+
+      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":315
+ *                 cost[feature.first] += (end_time - start_time)
+ *                 feature_values[feature.first].push_back(sim_score)
+ *             cost[feature.first] /= sample_size             # <<<<<<<<<<<<<<
+ *     print 't3'
+ *     cdef int max_size = 0
+ */
+      __pyx_t_12 = __pyx_v_feature.first;
+      __pyx_t_22 = (__pyx_v_cost[__pyx_t_12]);
+      if (unlikely(__pyx_v_sample_size == 0)) {
+        PyErr_SetString(PyExc_ZeroDivisionError, "float division");
+        {__pyx_filename = __pyx_f[0]; __pyx_lineno = 315; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      }
+      (__pyx_v_cost[__pyx_t_12]) = (__pyx_t_22 / __pyx_v_sample_size);
+    }
+    __pyx_L14:;
+
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":293
+ * 
+ *     print 't2'
+ *     for feature in feature_info:             # <<<<<<<<<<<<<<
+ *         print feature.first, feature.second.first, feature.second.second
+ *         if feature.second.second.compare('none') == 0:
+ */
+  }
+
+  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":316
+ *                 feature_values[feature.first].push_back(sim_score)
+ *             cost[feature.first] /= sample_size
+ *     print 't3'             # <<<<<<<<<<<<<<
+ *     cdef int max_size = 0
+ *     cdef omap[string, vector[bool]] cov
+ */
+  if (__Pyx_PrintOne(0, __pyx_n_s_t3) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 316; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+
+  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":317
+ *             cost[feature.first] /= sample_size
+ *     print 't3'
+ *     cdef int max_size = 0             # <<<<<<<<<<<<<<
+ *     cdef omap[string, vector[bool]] cov
+ *     cdef int x, y, z
+ */
+  __pyx_v_max_size = 0;
+
+  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":322
+ *     cdef omap[int, Coverage] tree_cov
+ *     cdef Coverage c1
+ *     for x in xrange(trees.size()):             # <<<<<<<<<<<<<<
+ *         for y in xrange(trees[x].rules.size()):
+ *             c1.reset()
+ */
+  __pyx_t_23 = __pyx_v_trees.size();
+  for (__pyx_t_20 = 0; __pyx_t_20 < __pyx_t_23; __pyx_t_20+=1) {
+    __pyx_v_x = __pyx_t_20;
+
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":323
+ *     cdef Coverage c1
+ *     for x in xrange(trees.size()):
+ *         for y in xrange(trees[x].rules.size()):             # <<<<<<<<<<<<<<
+ *             c1.reset()
+ *             for z in xrange(trees[x].rules[y].predicates.size()):
+ */
+    __pyx_t_24 = (__pyx_v_trees[__pyx_v_x]).rules.size();
+    for (__pyx_t_21 = 0; __pyx_t_21 < __pyx_t_24; __pyx_t_21+=1) {
+      __pyx_v_y = __pyx_t_21;
+
+      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":324
+ *     for x in xrange(trees.size()):
+ *         for y in xrange(trees[x].rules.size()):
+ *             c1.reset()             # <<<<<<<<<<<<<<
+ *             for z in xrange(trees[x].rules[y].predicates.size()):
+ *                 predicate = trees[x].rules[y].predicates[z]
+ */
+      __pyx_v_c1.reset();
+
+      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":325
+ *         for y in xrange(trees[x].rules.size()):
+ *             c1.reset()
+ *             for z in xrange(trees[x].rules[y].predicates.size()):             # <<<<<<<<<<<<<<
+ *                 predicate = trees[x].rules[y].predicates[z]
+ *                 trees[x].rules[y].predicates[z].set_cost(cost[predicate.feat_name])
+ */
+      __pyx_t_25 = ((__pyx_v_trees[__pyx_v_x]).rules[__pyx_v_y]).predicates.size();
+      for (__pyx_t_26 = 0; __pyx_t_26 < __pyx_t_25; __pyx_t_26+=1) {
+        __pyx_v_z = __pyx_t_26;
+
+        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":326
+ *             c1.reset()
+ *             for z in xrange(trees[x].rules[y].predicates.size()):
+ *                 predicate = trees[x].rules[y].predicates[z]             # <<<<<<<<<<<<<<
+ *                 trees[x].rules[y].predicates[z].set_cost(cost[predicate.feat_name])
+ *                 if cov[predicate.pred_name].size() == 0:
+ */
+        __pyx_v_predicate = (((__pyx_v_trees[__pyx_v_x]).rules[__pyx_v_y]).predicates[__pyx_v_z]);
+
+        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":327
+ *             for z in xrange(trees[x].rules[y].predicates.size()):
+ *                 predicate = trees[x].rules[y].predicates[z]
+ *                 trees[x].rules[y].predicates[z].set_cost(cost[predicate.feat_name])             # <<<<<<<<<<<<<<
+ *                 if cov[predicate.pred_name].size() == 0:
+ *                     comp_fn = get_comparison_function(get_comp_type(predicate.comp_op))
+ */
+        (((__pyx_v_trees[__pyx_v_x]).rules[__pyx_v_y]).predicates[__pyx_v_z]).set_cost((__pyx_v_cost[__pyx_v_predicate.feat_name]));
+
+        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":328
+ *                 predicate = trees[x].rules[y].predicates[z]
+ *                 trees[x].rules[y].predicates[z].set_cost(cost[predicate.feat_name])
+ *                 if cov[predicate.pred_name].size() == 0:             # <<<<<<<<<<<<<<
+ *                     comp_fn = get_comparison_function(get_comp_type(predicate.comp_op))
+ *                     for i in xrange(sample_size):
+ */
+        __pyx_t_10 = (((__pyx_v_cov[__pyx_v_predicate.pred_name]).size() == 0) != 0);
+        if (__pyx_t_10) {
+
+          /* "py_stringsimjoin/apply_rf/ex_plan.pyx":329
+ *                 trees[x].rules[y].predicates[z].set_cost(cost[predicate.feat_name])
+ *                 if cov[predicate.pred_name].size() == 0:
+ *                     comp_fn = get_comparison_function(get_comp_type(predicate.comp_op))             # <<<<<<<<<<<<<<
+ *                     for i in xrange(sample_size):
+ *                         cov[predicate.pred_name].push_back(comp_fn(feature_values[predicate.feat_name][i], predicate.threshold))
+ */
+          __pyx_v_comp_fn = __pyx_f_16py_stringsimjoin_8apply_rf_5utils_get_comparison_function(__pyx_f_16py_stringsimjoin_8apply_rf_5utils_get_comp_type(__pyx_v_predicate.comp_op));
+
+          /* "py_stringsimjoin/apply_rf/ex_plan.pyx":330
+ *                 if cov[predicate.pred_name].size() == 0:
+ *                     comp_fn = get_comparison_function(get_comp_type(predicate.comp_op))
+ *                     for i in xrange(sample_size):             # <<<<<<<<<<<<<<
+ *                         cov[predicate.pred_name].push_back(comp_fn(feature_values[predicate.feat_name][i], predicate.threshold))
+ *                     if cov[predicate.pred_name].size() > max_size:
+ */
+          __pyx_t_27 = __pyx_v_sample_size;
+          for (__pyx_t_28 = 0; __pyx_t_28 < __pyx_t_27; __pyx_t_28+=1) {
+            __pyx_v_i = __pyx_t_28;
+
+            /* "py_stringsimjoin/apply_rf/ex_plan.pyx":331
+ *                     comp_fn = get_comparison_function(get_comp_type(predicate.comp_op))
+ *                     for i in xrange(sample_size):
+ *                         cov[predicate.pred_name].push_back(comp_fn(feature_values[predicate.feat_name][i], predicate.threshold))             # <<<<<<<<<<<<<<
+ *                     if cov[predicate.pred_name].size() > max_size:
+ *                         max_size = cov[predicate.pred_name].size()
+ */
+            try {
+              (__pyx_v_cov[__pyx_v_predicate.pred_name]).push_back(__pyx_v_comp_fn(((__pyx_v_feature_values[__pyx_v_predicate.feat_name])[__pyx_v_i]), __pyx_v_predicate.threshold));
+            } catch(...) {
+              __Pyx_CppExn2PyErr();
+              {__pyx_filename = __pyx_f[0]; __pyx_lineno = 331; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+            }
+          }
+
+          /* "py_stringsimjoin/apply_rf/ex_plan.pyx":332
+ *                     for i in xrange(sample_size):
+ *                         cov[predicate.pred_name].push_back(comp_fn(feature_values[predicate.feat_name][i], predicate.threshold))
+ *                     if cov[predicate.pred_name].size() > max_size:             # <<<<<<<<<<<<<<
+ *                         max_size = cov[predicate.pred_name].size()
+ *                     coverage[predicate.pred_name] = Coverage(cov[predicate.pred_name])
+ */
+          __pyx_t_10 = (((__pyx_v_cov[__pyx_v_predicate.pred_name]).size() > __pyx_v_max_size) != 0);
+          if (__pyx_t_10) {
+
+            /* "py_stringsimjoin/apply_rf/ex_plan.pyx":333
+ *                         cov[predicate.pred_name].push_back(comp_fn(feature_values[predicate.feat_name][i], predicate.threshold))
+ *                     if cov[predicate.pred_name].size() > max_size:
+ *                         max_size = cov[predicate.pred_name].size()             # <<<<<<<<<<<<<<
+ *                     coverage[predicate.pred_name] = Coverage(cov[predicate.pred_name])
+ *                 if z == 0:
+ */
+            __pyx_v_max_size = (__pyx_v_cov[__pyx_v_predicate.pred_name]).size();
+
+            /* "py_stringsimjoin/apply_rf/ex_plan.pyx":332
+ *                     for i in xrange(sample_size):
+ *                         cov[predicate.pred_name].push_back(comp_fn(feature_values[predicate.feat_name][i], predicate.threshold))
+ *                     if cov[predicate.pred_name].size() > max_size:             # <<<<<<<<<<<<<<
+ *                         max_size = cov[predicate.pred_name].size()
+ *                     coverage[predicate.pred_name] = Coverage(cov[predicate.pred_name])
+ */
+          }
+
+          /* "py_stringsimjoin/apply_rf/ex_plan.pyx":334
+ *                     if cov[predicate.pred_name].size() > max_size:
+ *                         max_size = cov[predicate.pred_name].size()
+ *                     coverage[predicate.pred_name] = Coverage(cov[predicate.pred_name])             # <<<<<<<<<<<<<<
+ *                 if z == 0:
+ *                     c1.or_coverage(coverage[predicate.pred_name])
+ */
+          (__pyx_v_coverage[__pyx_v_predicate.pred_name]) = Coverage((__pyx_v_cov[__pyx_v_predicate.pred_name]));
+
+          /* "py_stringsimjoin/apply_rf/ex_plan.pyx":328
+ *                 predicate = trees[x].rules[y].predicates[z]
+ *                 trees[x].rules[y].predicates[z].set_cost(cost[predicate.feat_name])
+ *                 if cov[predicate.pred_name].size() == 0:             # <<<<<<<<<<<<<<
+ *                     comp_fn = get_comparison_function(get_comp_type(predicate.comp_op))
+ *                     for i in xrange(sample_size):
+ */
+        }
+
+        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":335
+ *                         max_size = cov[predicate.pred_name].size()
+ *                     coverage[predicate.pred_name] = Coverage(cov[predicate.pred_name])
+ *                 if z == 0:             # <<<<<<<<<<<<<<
+ *                     c1.or_coverage(coverage[predicate.pred_name])
+ *                 else:
+ */
+        __pyx_t_10 = ((__pyx_v_z == 0) != 0);
+        if (__pyx_t_10) {
+
+          /* "py_stringsimjoin/apply_rf/ex_plan.pyx":336
+ *                     coverage[predicate.pred_name] = Coverage(cov[predicate.pred_name])
+ *                 if z == 0:
+ *                     c1.or_coverage(coverage[predicate.pred_name])             # <<<<<<<<<<<<<<
+ *                 else:
+ *                     c1.and_coverage(coverage[predicate.pred_name])
+ */
+          __pyx_v_c1.or_coverage((__pyx_v_coverage[__pyx_v_predicate.pred_name]));
+
+          /* "py_stringsimjoin/apply_rf/ex_plan.pyx":335
+ *                         max_size = cov[predicate.pred_name].size()
+ *                     coverage[predicate.pred_name] = Coverage(cov[predicate.pred_name])
+ *                 if z == 0:             # <<<<<<<<<<<<<<
+ *                     c1.or_coverage(coverage[predicate.pred_name])
+ *                 else:
+ */
+          goto __pyx_L29;
+        }
+
+        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":338
+ *                     c1.or_coverage(coverage[predicate.pred_name])
+ *                 else:
+ *                     c1.and_coverage(coverage[predicate.pred_name])             # <<<<<<<<<<<<<<
+ *             tree_cov[x].or_coverage(c1)
+ *     print 't4'
+ */
+        /*else*/ {
+          __pyx_v_c1.and_coverage((__pyx_v_coverage[__pyx_v_predicate.pred_name]));
+        }
+        __pyx_L29:;
+      }
+
+      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":339
+ *                 else:
+ *                     c1.and_coverage(coverage[predicate.pred_name])
+ *             tree_cov[x].or_coverage(c1)             # <<<<<<<<<<<<<<
+ *     print 't4'
+ *     cdef Node plan
+ */
+      (__pyx_v_tree_cov[__pyx_v_x]).or_coverage(__pyx_v_c1);
+    }
+  }
+
+  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":340
+ *                     c1.and_coverage(coverage[predicate.pred_name])
+ *             tree_cov[x].or_coverage(c1)
+ *     print 't4'             # <<<<<<<<<<<<<<
+ *     cdef Node plan
+ *     plan = gen_plan_for_trees_stage2(trees, coverage, sample_size, push_flag)
+ */
+  if (__Pyx_PrintOne(0, __pyx_n_s_t4) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 340; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+
+  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":342
+ *     print 't4'
+ *     cdef Node plan
+ *     plan = gen_plan_for_trees_stage2(trees, coverage, sample_size, push_flag)             # <<<<<<<<<<<<<<
+ *     return plan
+ * 
+ */
+  __pyx_v_plan = __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_gen_plan_for_trees_stage2(__pyx_v_trees, __pyx_v_coverage, __pyx_v_sample_size, __pyx_v_push_flag);
+
+  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":343
+ *     cdef Node plan
+ *     plan = gen_plan_for_trees_stage2(trees, coverage, sample_size, push_flag)
+ *     return plan             # <<<<<<<<<<<<<<
+ * 
+ * cdef vector[int] get_random_filter_order(vector[int] optimal_seq):
+ */
+  __pyx_r = __pyx_v_plan;
+  goto __pyx_L0;
+
+  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":253
+ *     return ordered_plans
+ * 
+ * cdef Node generate_ex_plan_for_stage2_test(pair[vector[pair[int, int]], vector[int]]& candset_votes,             # <<<<<<<<<<<<<<
+ *                                               vector[string]& lstrings,
+ *                                               vector[string]& rstrings,
+ */
+
+  /* function exit code */
+  __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_16);
+  __Pyx_XDECREF(__pyx_t_17);
+  __Pyx_XDECREF(__pyx_t_18);
+  __Pyx_XDECREF(__pyx_t_19);
+  __Pyx_WriteUnraisable("py_stringsimjoin.apply_rf.ex_plan.generate_ex_plan_for_stage2_test", __pyx_clineno, __pyx_lineno, __pyx_filename, 0, 0);
+  __pyx_L0:;
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+/* "py_stringsimjoin/apply_rf/ex_plan.pyx":345
+ *     return plan
+ * 
+ * cdef vector[int] get_random_filter_order(vector[int] optimal_seq):             # <<<<<<<<<<<<<<
+ *     cdef vector[int] random_order
+ *     cdef int n = optimal_seq.size(), i, j
+ */
+
+static std::vector<int>  __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_get_random_filter_order(std::vector<int>  __pyx_v_optimal_seq) {
+  std::vector<int>  __pyx_v_random_order;
+  int __pyx_v_n;
+  int __pyx_v_i;
+  int __pyx_v_j;
+  PyObject *__pyx_v_used = NULL;
+  CYTHON_UNUSED int __pyx_v__;
+  std::vector<int>  __pyx_r;
+  __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
+  int __pyx_t_2;
+  int __pyx_t_3;
+  int __pyx_t_4;
+  PyObject *__pyx_t_5 = NULL;
+  PyObject *__pyx_t_6 = NULL;
+  PyObject *__pyx_t_7 = NULL;
+  Py_ssize_t __pyx_t_8;
+  PyObject *__pyx_t_9 = NULL;
+  int __pyx_t_10;
+  int __pyx_lineno = 0;
+  const char *__pyx_filename = NULL;
+  int __pyx_clineno = 0;
+  __Pyx_RefNannySetupContext("get_random_filter_order", 0);
+
+  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":347
+ * cdef vector[int] get_random_filter_order(vector[int] optimal_seq):
+ *     cdef vector[int] random_order
+ *     cdef int n = optimal_seq.size(), i, j             # <<<<<<<<<<<<<<
+ *     used = [False for _ in xrange(n)]
+ *     i = 0
+ */
+  __pyx_v_n = __pyx_v_optimal_seq.size();
+
+  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":348
+ *     cdef vector[int] random_order
+ *     cdef int n = optimal_seq.size(), i, j
+ *     used = [False for _ in xrange(n)]             # <<<<<<<<<<<<<<
+ *     i = 0
+ *     while i < n:
+ */
+  __pyx_t_1 = PyList_New(0); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 348; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_1);
+  __pyx_t_2 = __pyx_v_n;
+  for (__pyx_t_3 = 0; __pyx_t_3 < __pyx_t_2; __pyx_t_3+=1) {
+    __pyx_v__ = __pyx_t_3;
+    if (unlikely(__Pyx_ListComp_Append(__pyx_t_1, (PyObject*)Py_False))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 348; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  }
+  __pyx_v_used = ((PyObject*)__pyx_t_1);
+  __pyx_t_1 = 0;
+
+  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":349
+ *     cdef int n = optimal_seq.size(), i, j
+ *     used = [False for _ in xrange(n)]
+ *     i = 0             # <<<<<<<<<<<<<<
+ *     while i < n:
+ *         j = random.randint(0, n-1)
+ */
+  __pyx_v_i = 0;
+
+  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":350
+ *     used = [False for _ in xrange(n)]
+ *     i = 0
+ *     while i < n:             # <<<<<<<<<<<<<<
+ *         j = random.randint(0, n-1)
+ *         if not used[j]:
+ */
+  while (1) {
+    __pyx_t_4 = ((__pyx_v_i < __pyx_v_n) != 0);
+    if (!__pyx_t_4) break;
+
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":351
+ *     i = 0
+ *     while i < n:
+ *         j = random.randint(0, n-1)             # <<<<<<<<<<<<<<
+ *         if not used[j]:
+ *             random_order.push_back(optimal_seq[j])
+ */
+    __pyx_t_5 = __Pyx_GetModuleGlobalName(__pyx_n_s_random); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 351; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __Pyx_GOTREF(__pyx_t_5);
+    __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_t_5, __pyx_n_s_randint); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 351; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __Pyx_GOTREF(__pyx_t_6);
+    __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
+    __pyx_t_5 = __Pyx_PyInt_From_long((__pyx_v_n - 1)); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 351; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __Pyx_GOTREF(__pyx_t_5);
+    __pyx_t_7 = NULL;
+    __pyx_t_8 = 0;
+    if (CYTHON_COMPILING_IN_CPYTHON && unlikely(PyMethod_Check(__pyx_t_6))) {
+      __pyx_t_7 = PyMethod_GET_SELF(__pyx_t_6);
+      if (likely(__pyx_t_7)) {
+        PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_6);
+        __Pyx_INCREF(__pyx_t_7);
+        __Pyx_INCREF(function);
+        __Pyx_DECREF_SET(__pyx_t_6, function);
+        __pyx_t_8 = 1;
+      }
+    }
+    __pyx_t_9 = PyTuple_New(2+__pyx_t_8); if (unlikely(!__pyx_t_9)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 351; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __Pyx_GOTREF(__pyx_t_9);
+    if (__pyx_t_7) {
+      __Pyx_GIVEREF(__pyx_t_7); PyTuple_SET_ITEM(__pyx_t_9, 0, __pyx_t_7); __pyx_t_7 = NULL;
+    }
+    __Pyx_INCREF(__pyx_int_0);
+    __Pyx_GIVEREF(__pyx_int_0);
+    PyTuple_SET_ITEM(__pyx_t_9, 0+__pyx_t_8, __pyx_int_0);
+    __Pyx_GIVEREF(__pyx_t_5);
+    PyTuple_SET_ITEM(__pyx_t_9, 1+__pyx_t_8, __pyx_t_5);
+    __pyx_t_5 = 0;
+    __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_6, __pyx_t_9, NULL); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 351; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __Pyx_GOTREF(__pyx_t_1);
+    __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
+    __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
+    __pyx_t_2 = __Pyx_PyInt_As_int(__pyx_t_1); if (unlikely((__pyx_t_2 == (int)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 351; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+    __pyx_v_j = __pyx_t_2;
+
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":352
+ *     while i < n:
+ *         j = random.randint(0, n-1)
+ *         if not used[j]:             # <<<<<<<<<<<<<<
+ *             random_order.push_back(optimal_seq[j])
+ *             used[j] = True
+ */
+    __pyx_t_1 = __Pyx_GetItemInt_List(__pyx_v_used, __pyx_v_j, int, 1, __Pyx_PyInt_From_int, 1, 1, 1); if (unlikely(__pyx_t_1 == NULL)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 352; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
+    __Pyx_GOTREF(__pyx_t_1);
+    __pyx_t_4 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_4 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 352; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+    __pyx_t_10 = ((!__pyx_t_4) != 0);
+    if (__pyx_t_10) {
+
+      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":353
+ *         j = random.randint(0, n-1)
+ *         if not used[j]:
+ *             random_order.push_back(optimal_seq[j])             # <<<<<<<<<<<<<<
+ *             used[j] = True
+ *             i += 1
+ */
+      try {
+        __pyx_v_random_order.push_back((__pyx_v_optimal_seq[__pyx_v_j]));
+      } catch(...) {
+        __Pyx_CppExn2PyErr();
+        {__pyx_filename = __pyx_f[0]; __pyx_lineno = 353; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      }
+
+      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":354
+ *         if not used[j]:
+ *             random_order.push_back(optimal_seq[j])
+ *             used[j] = True             # <<<<<<<<<<<<<<
+ *             i += 1
+ *     return random_order
+ */
+      if (unlikely(__Pyx_SetItemInt(__pyx_v_used, __pyx_v_j, Py_True, int, 1, __Pyx_PyInt_From_int, 1, 1, 1) < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 354; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+
+      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":355
+ *             random_order.push_back(optimal_seq[j])
+ *             used[j] = True
+ *             i += 1             # <<<<<<<<<<<<<<
+ *     return random_order
+ * 
+ */
+      __pyx_v_i = (__pyx_v_i + 1);
+
+      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":352
+ *     while i < n:
+ *         j = random.randint(0, n-1)
+ *         if not used[j]:             # <<<<<<<<<<<<<<
+ *             random_order.push_back(optimal_seq[j])
+ *             used[j] = True
+ */
+    }
+  }
+
+  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":356
+ *             used[j] = True
+ *             i += 1
+ *     return random_order             # <<<<<<<<<<<<<<
+ * 
+ * cdef Node gen_plan_for_tree(Tree& tree, omap[string, Coverage]& coverage,
+ */
+  __pyx_r = __pyx_v_random_order;
+  goto __pyx_L0;
+
+  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":345
+ *     return plan
+ * 
+ * cdef vector[int] get_random_filter_order(vector[int] optimal_seq):             # <<<<<<<<<<<<<<
+ *     cdef vector[int] random_order
+ *     cdef int n = optimal_seq.size(), i, j
+ */
+
+  /* function exit code */
+  __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
+  __Pyx_XDECREF(__pyx_t_5);
+  __Pyx_XDECREF(__pyx_t_6);
+  __Pyx_XDECREF(__pyx_t_7);
+  __Pyx_XDECREF(__pyx_t_9);
+  __Pyx_WriteUnraisable("py_stringsimjoin.apply_rf.ex_plan.get_random_filter_order", __pyx_clineno, __pyx_lineno, __pyx_filename, 0, 0);
+  __pyx_L0:;
+  __Pyx_XDECREF(__pyx_v_used);
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+/* "py_stringsimjoin/apply_rf/ex_plan.pyx":358
+ *     return random_order
+ * 
  * cdef Node gen_plan_for_tree(Tree& tree, omap[string, Coverage]& coverage,             # <<<<<<<<<<<<<<
- *                             const int& sample_size, bool push_flag):
+ *                             const int& sample_size, bool push_flag, bool random_order):
  *     cdef Rule rule
  */
 
-static Node __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_gen_plan_for_tree(Tree &__pyx_v_tree, std::map<std::string,Coverage>  &__pyx_v_coverage, int const &__pyx_v_sample_size, bool __pyx_v_push_flag) {
+static Node __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_gen_plan_for_tree(Tree &__pyx_v_tree, std::map<std::string,Coverage>  &__pyx_v_coverage, int const &__pyx_v_sample_size, bool __pyx_v_push_flag, bool __pyx_v_random_order) {
   Rule __pyx_v_rule;
   std::vector<int>  __pyx_v_optimal_seq;
   std::vector<Node>  __pyx_v_nodes;
@@ -3218,22 +4363,24 @@ static Node __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_gen_plan_for_tree(Tree
   std::vector<Rule>  *__pyx_t_2;
   Rule __pyx_t_3;
   std::vector<Node>  __pyx_t_4;
-  std::string __pyx_t_5;
-  std::vector<int> ::iterator __pyx_t_6;
-  int __pyx_t_7;
+  int __pyx_t_5;
+  std::string __pyx_t_6;
+  std::vector<int> ::iterator __pyx_t_7;
   int __pyx_t_8;
-  size_t __pyx_t_9;
+  PyObject *__pyx_t_9 = NULL;
+  PyObject *__pyx_t_10 = NULL;
+  size_t __pyx_t_11;
   int __pyx_lineno = 0;
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("gen_plan_for_tree", 0);
 
-  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":251
+  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":367
  *     cdef int i
  * 
  *     for rule in tree.rules:             # <<<<<<<<<<<<<<
  *         nodes = vector[Node]()
- *  #       print 'test1'
+ * 
  */
   __pyx_t_2 = &__pyx_v_tree.rules;
   __pyx_t_1 = __pyx_t_2->begin();
@@ -3243,42 +4390,70 @@ static Node __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_gen_plan_for_tree(Tree
     ++__pyx_t_1;
     __pyx_v_rule = __pyx_t_3;
 
-    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":252
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":368
  * 
  *     for rule in tree.rules:
  *         nodes = vector[Node]()             # <<<<<<<<<<<<<<
- *  #       print 'test1'
+ * 
  *         optimal_seq = get_optimal_filter_seq(rule.predicates, coverage, sample_size)
  */
     try {
       __pyx_t_4 = std::vector<Node> ();
     } catch(...) {
       __Pyx_CppExn2PyErr();
-      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 252; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 368; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     }
     __pyx_v_nodes = __pyx_t_4;
 
-    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":254
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":370
  *         nodes = vector[Node]()
- *  #       print 'test1'
+ * 
  *         optimal_seq = get_optimal_filter_seq(rule.predicates, coverage, sample_size)             # <<<<<<<<<<<<<<
- * #        print 'test2'
- *         node_type = "ROOT"
+ *         if random_order:
+ *             optimal_seq = get_random_filter_order(optimal_seq)
  */
     __pyx_v_optimal_seq = __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_get_optimal_filter_seq(__pyx_v_rule.predicates, __pyx_v_coverage, __pyx_v_sample_size);
 
-    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":256
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":371
+ * 
  *         optimal_seq = get_optimal_filter_seq(rule.predicates, coverage, sample_size)
- * #        print 'test2'
+ *         if random_order:             # <<<<<<<<<<<<<<
+ *             optimal_seq = get_random_filter_order(optimal_seq)
+ * 
+ */
+    __pyx_t_5 = (__pyx_v_random_order != 0);
+    if (__pyx_t_5) {
+
+      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":372
+ *         optimal_seq = get_optimal_filter_seq(rule.predicates, coverage, sample_size)
+ *         if random_order:
+ *             optimal_seq = get_random_filter_order(optimal_seq)             # <<<<<<<<<<<<<<
+ * 
+ *         node_type = "ROOT"
+ */
+      __pyx_v_optimal_seq = __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_get_random_filter_order(__pyx_v_optimal_seq);
+
+      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":371
+ * 
+ *         optimal_seq = get_optimal_filter_seq(rule.predicates, coverage, sample_size)
+ *         if random_order:             # <<<<<<<<<<<<<<
+ *             optimal_seq = get_random_filter_order(optimal_seq)
+ * 
+ */
+    }
+
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":374
+ *             optimal_seq = get_random_filter_order(optimal_seq)
+ * 
  *         node_type = "ROOT"             # <<<<<<<<<<<<<<
  *         nodes.push_back(Node(node_type))
  * 
  */
-    __pyx_t_5 = __pyx_convert_string_from_py_std__in_string(__pyx_n_b_ROOT); if (unlikely(PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 256; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-    __pyx_v_node_type = __pyx_t_5;
+    __pyx_t_6 = __pyx_convert_string_from_py_std__in_string(__pyx_n_b_ROOT); if (unlikely(PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 374; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_v_node_type = __pyx_t_6;
 
-    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":257
- * #        print 'test2'
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":375
+ * 
  *         node_type = "ROOT"
  *         nodes.push_back(Node(node_type))             # <<<<<<<<<<<<<<
  * 
@@ -3288,34 +4463,34 @@ static Node __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_gen_plan_for_tree(Tree
       __pyx_v_nodes.push_back(Node(__pyx_v_node_type));
     } catch(...) {
       __Pyx_CppExn2PyErr();
-      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 257; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 375; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     }
 
-    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":259
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":377
  *         nodes.push_back(Node(node_type))
  * 
  *         for i in optimal_seq:             # <<<<<<<<<<<<<<
  *             node_type = "FILTER"
  *             new_node = Node(node_type)
  */
-    __pyx_t_6 = __pyx_v_optimal_seq.begin();
+    __pyx_t_7 = __pyx_v_optimal_seq.begin();
     for (;;) {
-      if (!(__pyx_t_6 != __pyx_v_optimal_seq.end())) break;
-      __pyx_t_7 = *__pyx_t_6;
-      ++__pyx_t_6;
-      __pyx_v_i = __pyx_t_7;
+      if (!(__pyx_t_7 != __pyx_v_optimal_seq.end())) break;
+      __pyx_t_8 = *__pyx_t_7;
+      ++__pyx_t_7;
+      __pyx_v_i = __pyx_t_8;
 
-      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":260
+      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":378
  * 
  *         for i in optimal_seq:
  *             node_type = "FILTER"             # <<<<<<<<<<<<<<
  *             new_node = Node(node_type)
  *             new_node.predicates.push_back(rule.predicates[i])
  */
-      __pyx_t_5 = __pyx_convert_string_from_py_std__in_string(__pyx_n_b_FILTER); if (unlikely(PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 260; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-      __pyx_v_node_type = __pyx_t_5;
+      __pyx_t_6 = __pyx_convert_string_from_py_std__in_string(__pyx_n_b_FILTER); if (unlikely(PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 378; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_v_node_type = __pyx_t_6;
 
-      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":261
+      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":379
  *         for i in optimal_seq:
  *             node_type = "FILTER"
  *             new_node = Node(node_type)             # <<<<<<<<<<<<<<
@@ -3324,7 +4499,7 @@ static Node __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_gen_plan_for_tree(Tree
  */
       __pyx_v_new_node = Node(__pyx_v_node_type);
 
-      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":262
+      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":380
  *             node_type = "FILTER"
  *             new_node = Node(node_type)
  *             new_node.predicates.push_back(rule.predicates[i])             # <<<<<<<<<<<<<<
@@ -3335,10 +4510,10 @@ static Node __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_gen_plan_for_tree(Tree
         __pyx_v_new_node.predicates.push_back((__pyx_v_rule.predicates[__pyx_v_i]));
       } catch(...) {
         __Pyx_CppExn2PyErr();
-        {__pyx_filename = __pyx_f[0]; __pyx_lineno = 262; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        {__pyx_filename = __pyx_f[0]; __pyx_lineno = 380; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       }
 
-      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":263
+      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":381
  *             new_node = Node(node_type)
  *             new_node.predicates.push_back(rule.predicates[i])
  *             nodes.push_back(new_node)             # <<<<<<<<<<<<<<
@@ -3349,10 +4524,10 @@ static Node __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_gen_plan_for_tree(Tree
         __pyx_v_nodes.push_back(__pyx_v_new_node);
       } catch(...) {
         __Pyx_CppExn2PyErr();
-        {__pyx_filename = __pyx_f[0]; __pyx_lineno = 263; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        {__pyx_filename = __pyx_f[0]; __pyx_lineno = 381; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       }
 
-      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":259
+      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":377
  *         nodes.push_back(Node(node_type))
  * 
  *         for i in optimal_seq:             # <<<<<<<<<<<<<<
@@ -3361,51 +4536,71 @@ static Node __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_gen_plan_for_tree(Tree
  */
     }
 
-    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":265
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":383
  *             nodes.push_back(new_node)
  * 
  *         node_type = "OUTPUT"             # <<<<<<<<<<<<<<
  *         new_node = Node(node_type)
  *         nodes.push_back(new_node)
  */
-    __pyx_t_5 = __pyx_convert_string_from_py_std__in_string(__pyx_n_b_OUTPUT); if (unlikely(PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 265; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-    __pyx_v_node_type = __pyx_t_5;
+    __pyx_t_6 = __pyx_convert_string_from_py_std__in_string(__pyx_n_b_OUTPUT); if (unlikely(PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 383; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_v_node_type = __pyx_t_6;
 
-    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":266
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":384
  * 
  *         node_type = "OUTPUT"
  *         new_node = Node(node_type)             # <<<<<<<<<<<<<<
  *         nodes.push_back(new_node)
- * #        print 'n ', nodes.size()
+ *         print 'n ', nodes.size()
  */
     __pyx_v_new_node = Node(__pyx_v_node_type);
 
-    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":267
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":385
  *         node_type = "OUTPUT"
  *         new_node = Node(node_type)
  *         nodes.push_back(new_node)             # <<<<<<<<<<<<<<
- * #        print 'n ', nodes.size()
+ *         print 'n ', nodes.size()
  *         for i in xrange(nodes.size() - 2, -1, -1):
  */
     try {
       __pyx_v_nodes.push_back(__pyx_v_new_node);
     } catch(...) {
       __Pyx_CppExn2PyErr();
-      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 267; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 385; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     }
 
-    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":269
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":386
+ *         new_node = Node(node_type)
  *         nodes.push_back(new_node)
- * #        print 'n ', nodes.size()
+ *         print 'n ', nodes.size()             # <<<<<<<<<<<<<<
+ *         for i in xrange(nodes.size() - 2, -1, -1):
+ *             nodes[i].add_child(nodes[i+1])
+ */
+    __pyx_t_9 = __Pyx_PyInt_FromSize_t(__pyx_v_nodes.size()); if (unlikely(!__pyx_t_9)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 386; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __Pyx_GOTREF(__pyx_t_9);
+    __pyx_t_10 = PyTuple_New(2); if (unlikely(!__pyx_t_10)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 386; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __Pyx_GOTREF(__pyx_t_10);
+    __Pyx_INCREF(__pyx_kp_s_n);
+    __Pyx_GIVEREF(__pyx_kp_s_n);
+    PyTuple_SET_ITEM(__pyx_t_10, 0, __pyx_kp_s_n);
+    __Pyx_GIVEREF(__pyx_t_9);
+    PyTuple_SET_ITEM(__pyx_t_10, 1, __pyx_t_9);
+    __pyx_t_9 = 0;
+    if (__Pyx_Print(0, __pyx_t_10, 1) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 386; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
+
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":387
+ *         nodes.push_back(new_node)
+ *         print 'n ', nodes.size()
  *         for i in xrange(nodes.size() - 2, -1, -1):             # <<<<<<<<<<<<<<
  *             nodes[i].add_child(nodes[i+1])
  *         plans.push_back(nodes[0])
  */
-    for (__pyx_t_7 = (__pyx_v_nodes.size() - 2); __pyx_t_7 > -1L; __pyx_t_7-=1) {
-      __pyx_v_i = __pyx_t_7;
+    for (__pyx_t_8 = (__pyx_v_nodes.size() - 2); __pyx_t_8 > -1L; __pyx_t_8-=1) {
+      __pyx_v_i = __pyx_t_8;
 
-      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":270
- * #        print 'n ', nodes.size()
+      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":388
+ *         print 'n ', nodes.size()
  *         for i in xrange(nodes.size() - 2, -1, -1):
  *             nodes[i].add_child(nodes[i+1])             # <<<<<<<<<<<<<<
  *         plans.push_back(nodes[0])
@@ -3414,7 +4609,7 @@ static Node __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_gen_plan_for_tree(Tree
       (__pyx_v_nodes[__pyx_v_i]).add_child((__pyx_v_nodes[(__pyx_v_i + 1)]));
     }
 
-    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":271
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":389
  *         for i in xrange(nodes.size() - 2, -1, -1):
  *             nodes[i].add_child(nodes[i+1])
  *         plans.push_back(nodes[0])             # <<<<<<<<<<<<<<
@@ -3425,29 +4620,29 @@ static Node __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_gen_plan_for_tree(Tree
       __pyx_v_plans.push_back((__pyx_v_nodes[0]));
     } catch(...) {
       __Pyx_CppExn2PyErr();
-      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 271; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 389; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     }
 
-    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":251
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":367
  *     cdef int i
  * 
  *     for rule in tree.rules:             # <<<<<<<<<<<<<<
  *         nodes = vector[Node]()
- *  #       print 'test1'
+ * 
  */
   }
 
-  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":276
+  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":394
  *     cdef Node combined_plan
  * 
  *     if push_flag:             # <<<<<<<<<<<<<<
  *         push_filters(plans, pushed_plans)
  * 
  */
-  __pyx_t_8 = (__pyx_v_push_flag != 0);
-  if (__pyx_t_8) {
+  __pyx_t_5 = (__pyx_v_push_flag != 0);
+  if (__pyx_t_5) {
 
-    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":277
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":395
  * 
  *     if push_flag:
  *         push_filters(plans, pushed_plans)             # <<<<<<<<<<<<<<
@@ -3456,28 +4651,28 @@ static Node __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_gen_plan_for_tree(Tree
  */
     __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_push_filters(__pyx_v_plans, __pyx_v_pushed_plans);
 
-    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":279
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":397
  *         push_filters(plans, pushed_plans)
  * 
  *         for i in range(pushed_plans.size()):             # <<<<<<<<<<<<<<
  *             if i == 0:
  *                 combined_plan = pushed_plans[i]
  */
-    __pyx_t_9 = __pyx_v_pushed_plans.size();
-    for (__pyx_t_7 = 0; __pyx_t_7 < __pyx_t_9; __pyx_t_7+=1) {
-      __pyx_v_i = __pyx_t_7;
+    __pyx_t_11 = __pyx_v_pushed_plans.size();
+    for (__pyx_t_8 = 0; __pyx_t_8 < __pyx_t_11; __pyx_t_8+=1) {
+      __pyx_v_i = __pyx_t_8;
 
-      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":280
+      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":398
  * 
  *         for i in range(pushed_plans.size()):
  *             if i == 0:             # <<<<<<<<<<<<<<
  *                 combined_plan = pushed_plans[i]
  *             else:
  */
-      __pyx_t_8 = ((__pyx_v_i == 0) != 0);
-      if (__pyx_t_8) {
+      __pyx_t_5 = ((__pyx_v_i == 0) != 0);
+      if (__pyx_t_5) {
 
-        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":281
+        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":399
  *         for i in range(pushed_plans.size()):
  *             if i == 0:
  *                 combined_plan = pushed_plans[i]             # <<<<<<<<<<<<<<
@@ -3486,62 +4681,62 @@ static Node __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_gen_plan_for_tree(Tree
  */
         __pyx_v_combined_plan = (__pyx_v_pushed_plans[__pyx_v_i]);
 
-        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":280
+        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":398
  * 
  *         for i in range(pushed_plans.size()):
  *             if i == 0:             # <<<<<<<<<<<<<<
  *                 combined_plan = pushed_plans[i]
  *             else:
  */
-        goto __pyx_L12;
+        goto __pyx_L13;
       }
 
-      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":283
+      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":401
  *                 combined_plan = pushed_plans[i]
  *             else:
  *                 combined_plan = merge_plans_stage2(combined_plan, pushed_plans[i])             # <<<<<<<<<<<<<<
+ * 
  *     else:
- *         for i in range(plans.size()):
  */
       /*else*/ {
         __pyx_v_combined_plan = __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_merge_plans_stage2(__pyx_v_combined_plan, (__pyx_v_pushed_plans[__pyx_v_i]));
       }
-      __pyx_L12:;
+      __pyx_L13:;
     }
 
-    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":276
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":394
  *     cdef Node combined_plan
  * 
  *     if push_flag:             # <<<<<<<<<<<<<<
  *         push_filters(plans, pushed_plans)
  * 
  */
-    goto __pyx_L9;
+    goto __pyx_L10;
   }
 
-  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":285
- *                 combined_plan = merge_plans_stage2(combined_plan, pushed_plans[i])
+  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":404
+ * 
  *     else:
  *         for i in range(plans.size()):             # <<<<<<<<<<<<<<
  *             if i == 0:
  *                 combined_plan = plans[i]
  */
   /*else*/ {
-    __pyx_t_9 = __pyx_v_plans.size();
-    for (__pyx_t_7 = 0; __pyx_t_7 < __pyx_t_9; __pyx_t_7+=1) {
-      __pyx_v_i = __pyx_t_7;
+    __pyx_t_11 = __pyx_v_plans.size();
+    for (__pyx_t_8 = 0; __pyx_t_8 < __pyx_t_11; __pyx_t_8+=1) {
+      __pyx_v_i = __pyx_t_8;
 
-      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":286
+      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":405
  *     else:
  *         for i in range(plans.size()):
  *             if i == 0:             # <<<<<<<<<<<<<<
  *                 combined_plan = plans[i]
  *             else:
  */
-      __pyx_t_8 = ((__pyx_v_i == 0) != 0);
-      if (__pyx_t_8) {
+      __pyx_t_5 = ((__pyx_v_i == 0) != 0);
+      if (__pyx_t_5) {
 
-        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":287
+        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":406
  *         for i in range(plans.size()):
  *             if i == 0:
  *                 combined_plan = plans[i]             # <<<<<<<<<<<<<<
@@ -3550,17 +4745,17 @@ static Node __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_gen_plan_for_tree(Tree
  */
         __pyx_v_combined_plan = (__pyx_v_plans[__pyx_v_i]);
 
-        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":286
+        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":405
  *     else:
  *         for i in range(plans.size()):
  *             if i == 0:             # <<<<<<<<<<<<<<
  *                 combined_plan = plans[i]
  *             else:
  */
-        goto __pyx_L15;
+        goto __pyx_L16;
       }
 
-      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":289
+      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":408
  *                 combined_plan = plans[i]
  *             else:
  *                 combined_plan = merge_plans_stage2(combined_plan, plans[i])             # <<<<<<<<<<<<<<
@@ -3570,39 +4765,483 @@ static Node __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_gen_plan_for_tree(Tree
       /*else*/ {
         __pyx_v_combined_plan = __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_merge_plans_stage2(__pyx_v_combined_plan, (__pyx_v_plans[__pyx_v_i]));
       }
-      __pyx_L15:;
+      __pyx_L16:;
     }
   }
-  __pyx_L9:;
+  __pyx_L10:;
 
-  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":291
+  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":410
  *                 combined_plan = merge_plans_stage2(combined_plan, plans[i])
  * 
  *     return combined_plan             # <<<<<<<<<<<<<<
  * 
- * cdef double compute_plan_cost(Node& plan, omap[string, Coverage]& coverage, const int& sample_size):
+ * cdef Node gen_plan_for_trees_stage2(vector[Tree]& trees, omap[string, Coverage]& coverage,
  */
   __pyx_r = __pyx_v_combined_plan;
   goto __pyx_L0;
 
-  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":242
- *     return ordered_plans
+  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":358
+ *     return random_order
  * 
  * cdef Node gen_plan_for_tree(Tree& tree, omap[string, Coverage]& coverage,             # <<<<<<<<<<<<<<
- *                             const int& sample_size, bool push_flag):
+ *                             const int& sample_size, bool push_flag, bool random_order):
  *     cdef Rule rule
  */
 
   /* function exit code */
   __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_9);
+  __Pyx_XDECREF(__pyx_t_10);
   __Pyx_WriteUnraisable("py_stringsimjoin.apply_rf.ex_plan.gen_plan_for_tree", __pyx_clineno, __pyx_lineno, __pyx_filename, 0, 0);
   __pyx_L0:;
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-/* "py_stringsimjoin/apply_rf/ex_plan.pyx":293
+/* "py_stringsimjoin/apply_rf/ex_plan.pyx":412
  *     return combined_plan
+ * 
+ * cdef Node gen_plan_for_trees_stage2(vector[Tree]& trees, omap[string, Coverage]& coverage,             # <<<<<<<<<<<<<<
+ *                             const int& sample_size, bool push_flag):
+ *     cdef Rule rule
+ */
+
+static Node __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_gen_plan_for_trees_stage2(std::vector<Tree>  &__pyx_v_trees, std::map<std::string,Coverage>  &__pyx_v_coverage, int const &__pyx_v_sample_size, bool __pyx_v_push_flag) {
+  Rule __pyx_v_rule;
+  std::vector<int>  __pyx_v_optimal_seq;
+  std::vector<Node>  __pyx_v_nodes;
+  std::vector<Node>  __pyx_v_plans;
+  Node __pyx_v_new_node;
+  std::string __pyx_v_node_type;
+  Tree __pyx_v_tree;
+  int __pyx_v_i;
+  std::vector<Node>  __pyx_v_pushed_plans;
+  Node __pyx_v_combined_plan;
+  Node __pyx_r;
+  __Pyx_RefNannyDeclarations
+  std::vector<Tree> ::iterator __pyx_t_1;
+  Tree __pyx_t_2;
+  std::vector<Rule> ::iterator __pyx_t_3;
+  std::vector<Rule>  *__pyx_t_4;
+  Rule __pyx_t_5;
+  std::vector<Node>  __pyx_t_6;
+  std::string __pyx_t_7;
+  std::vector<int> ::iterator __pyx_t_8;
+  int __pyx_t_9;
+  int __pyx_t_10;
+  size_t __pyx_t_11;
+  int __pyx_lineno = 0;
+  const char *__pyx_filename = NULL;
+  int __pyx_clineno = 0;
+  __Pyx_RefNannySetupContext("gen_plan_for_trees_stage2", 0);
+
+  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":422
+ *     cdef int i
+ * 
+ *     for tree in trees:             # <<<<<<<<<<<<<<
+ *         for rule in tree.rules:
+ *             nodes = vector[Node]()
+ */
+  __pyx_t_1 = __pyx_v_trees.begin();
+  for (;;) {
+    if (!(__pyx_t_1 != __pyx_v_trees.end())) break;
+    __pyx_t_2 = *__pyx_t_1;
+    ++__pyx_t_1;
+    __pyx_v_tree = __pyx_t_2;
+
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":423
+ * 
+ *     for tree in trees:
+ *         for rule in tree.rules:             # <<<<<<<<<<<<<<
+ *             nodes = vector[Node]()
+ *  #       print 'test1'
+ */
+    __pyx_t_4 = &__pyx_v_tree.rules;
+    __pyx_t_3 = __pyx_t_4->begin();
+    for (;;) {
+      if (!(__pyx_t_3 != __pyx_t_4->end())) break;
+      __pyx_t_5 = *__pyx_t_3;
+      ++__pyx_t_3;
+      __pyx_v_rule = __pyx_t_5;
+
+      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":424
+ *     for tree in trees:
+ *         for rule in tree.rules:
+ *             nodes = vector[Node]()             # <<<<<<<<<<<<<<
+ *  #       print 'test1'
+ *             optimal_seq = get_optimal_filter_seq(rule.predicates, coverage, sample_size)
+ */
+      try {
+        __pyx_t_6 = std::vector<Node> ();
+      } catch(...) {
+        __Pyx_CppExn2PyErr();
+        {__pyx_filename = __pyx_f[0]; __pyx_lineno = 424; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      }
+      __pyx_v_nodes = __pyx_t_6;
+
+      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":426
+ *             nodes = vector[Node]()
+ *  #       print 'test1'
+ *             optimal_seq = get_optimal_filter_seq(rule.predicates, coverage, sample_size)             # <<<<<<<<<<<<<<
+ * #        print 'test2'
+ *             node_type = "ROOT"
+ */
+      __pyx_v_optimal_seq = __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_get_optimal_filter_seq(__pyx_v_rule.predicates, __pyx_v_coverage, __pyx_v_sample_size);
+
+      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":428
+ *             optimal_seq = get_optimal_filter_seq(rule.predicates, coverage, sample_size)
+ * #        print 'test2'
+ *             node_type = "ROOT"             # <<<<<<<<<<<<<<
+ *             nodes.push_back(Node(node_type))
+ * 
+ */
+      __pyx_t_7 = __pyx_convert_string_from_py_std__in_string(__pyx_n_b_ROOT); if (unlikely(PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 428; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_v_node_type = __pyx_t_7;
+
+      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":429
+ * #        print 'test2'
+ *             node_type = "ROOT"
+ *             nodes.push_back(Node(node_type))             # <<<<<<<<<<<<<<
+ * 
+ *             for i in optimal_seq:
+ */
+      try {
+        __pyx_v_nodes.push_back(Node(__pyx_v_node_type));
+      } catch(...) {
+        __Pyx_CppExn2PyErr();
+        {__pyx_filename = __pyx_f[0]; __pyx_lineno = 429; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      }
+
+      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":431
+ *             nodes.push_back(Node(node_type))
+ * 
+ *             for i in optimal_seq:             # <<<<<<<<<<<<<<
+ *                 node_type = "FILTER"
+ *                 new_node = Node(node_type)
+ */
+      __pyx_t_8 = __pyx_v_optimal_seq.begin();
+      for (;;) {
+        if (!(__pyx_t_8 != __pyx_v_optimal_seq.end())) break;
+        __pyx_t_9 = *__pyx_t_8;
+        ++__pyx_t_8;
+        __pyx_v_i = __pyx_t_9;
+
+        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":432
+ * 
+ *             for i in optimal_seq:
+ *                 node_type = "FILTER"             # <<<<<<<<<<<<<<
+ *                 new_node = Node(node_type)
+ *                 new_node.predicates.push_back(rule.predicates[i])
+ */
+        __pyx_t_7 = __pyx_convert_string_from_py_std__in_string(__pyx_n_b_FILTER); if (unlikely(PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 432; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        __pyx_v_node_type = __pyx_t_7;
+
+        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":433
+ *             for i in optimal_seq:
+ *                 node_type = "FILTER"
+ *                 new_node = Node(node_type)             # <<<<<<<<<<<<<<
+ *                 new_node.predicates.push_back(rule.predicates[i])
+ *                 nodes.push_back(new_node)
+ */
+        __pyx_v_new_node = Node(__pyx_v_node_type);
+
+        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":434
+ *                 node_type = "FILTER"
+ *                 new_node = Node(node_type)
+ *                 new_node.predicates.push_back(rule.predicates[i])             # <<<<<<<<<<<<<<
+ *                 nodes.push_back(new_node)
+ * 
+ */
+        try {
+          __pyx_v_new_node.predicates.push_back((__pyx_v_rule.predicates[__pyx_v_i]));
+        } catch(...) {
+          __Pyx_CppExn2PyErr();
+          {__pyx_filename = __pyx_f[0]; __pyx_lineno = 434; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        }
+
+        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":435
+ *                 new_node = Node(node_type)
+ *                 new_node.predicates.push_back(rule.predicates[i])
+ *                 nodes.push_back(new_node)             # <<<<<<<<<<<<<<
+ * 
+ *             node_type = "OUTPUT"
+ */
+        try {
+          __pyx_v_nodes.push_back(__pyx_v_new_node);
+        } catch(...) {
+          __Pyx_CppExn2PyErr();
+          {__pyx_filename = __pyx_f[0]; __pyx_lineno = 435; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        }
+
+        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":431
+ *             nodes.push_back(Node(node_type))
+ * 
+ *             for i in optimal_seq:             # <<<<<<<<<<<<<<
+ *                 node_type = "FILTER"
+ *                 new_node = Node(node_type)
+ */
+      }
+
+      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":437
+ *                 nodes.push_back(new_node)
+ * 
+ *             node_type = "OUTPUT"             # <<<<<<<<<<<<<<
+ *             new_node = Node(node_type)
+ *             new_node.set_tree_id(tree.tree_id)
+ */
+      __pyx_t_7 = __pyx_convert_string_from_py_std__in_string(__pyx_n_b_OUTPUT); if (unlikely(PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 437; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_v_node_type = __pyx_t_7;
+
+      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":438
+ * 
+ *             node_type = "OUTPUT"
+ *             new_node = Node(node_type)             # <<<<<<<<<<<<<<
+ *             new_node.set_tree_id(tree.tree_id)
+ *             nodes.push_back(new_node)
+ */
+      __pyx_v_new_node = Node(__pyx_v_node_type);
+
+      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":439
+ *             node_type = "OUTPUT"
+ *             new_node = Node(node_type)
+ *             new_node.set_tree_id(tree.tree_id)             # <<<<<<<<<<<<<<
+ *             nodes.push_back(new_node)
+ * #        print 'n ', nodes.size()
+ */
+      __pyx_v_new_node.set_tree_id(__pyx_v_tree.tree_id);
+
+      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":440
+ *             new_node = Node(node_type)
+ *             new_node.set_tree_id(tree.tree_id)
+ *             nodes.push_back(new_node)             # <<<<<<<<<<<<<<
+ * #        print 'n ', nodes.size()
+ *             for i in xrange(nodes.size() - 2, -1, -1):
+ */
+      try {
+        __pyx_v_nodes.push_back(__pyx_v_new_node);
+      } catch(...) {
+        __Pyx_CppExn2PyErr();
+        {__pyx_filename = __pyx_f[0]; __pyx_lineno = 440; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      }
+
+      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":442
+ *             nodes.push_back(new_node)
+ * #        print 'n ', nodes.size()
+ *             for i in xrange(nodes.size() - 2, -1, -1):             # <<<<<<<<<<<<<<
+ *                 nodes[i].add_child(nodes[i+1])
+ *             plans.push_back(nodes[0])
+ */
+      for (__pyx_t_9 = (__pyx_v_nodes.size() - 2); __pyx_t_9 > -1L; __pyx_t_9-=1) {
+        __pyx_v_i = __pyx_t_9;
+
+        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":443
+ * #        print 'n ', nodes.size()
+ *             for i in xrange(nodes.size() - 2, -1, -1):
+ *                 nodes[i].add_child(nodes[i+1])             # <<<<<<<<<<<<<<
+ *             plans.push_back(nodes[0])
+ * 
+ */
+        (__pyx_v_nodes[__pyx_v_i]).add_child((__pyx_v_nodes[(__pyx_v_i + 1)]));
+      }
+
+      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":444
+ *             for i in xrange(nodes.size() - 2, -1, -1):
+ *                 nodes[i].add_child(nodes[i+1])
+ *             plans.push_back(nodes[0])             # <<<<<<<<<<<<<<
+ * 
+ *     cdef vector[Node] pushed_plans
+ */
+      try {
+        __pyx_v_plans.push_back((__pyx_v_nodes[0]));
+      } catch(...) {
+        __Pyx_CppExn2PyErr();
+        {__pyx_filename = __pyx_f[0]; __pyx_lineno = 444; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      }
+
+      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":423
+ * 
+ *     for tree in trees:
+ *         for rule in tree.rules:             # <<<<<<<<<<<<<<
+ *             nodes = vector[Node]()
+ *  #       print 'test1'
+ */
+    }
+
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":422
+ *     cdef int i
+ * 
+ *     for tree in trees:             # <<<<<<<<<<<<<<
+ *         for rule in tree.rules:
+ *             nodes = vector[Node]()
+ */
+  }
+
+  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":449
+ *     cdef Node combined_plan
+ * 
+ *     if push_flag:             # <<<<<<<<<<<<<<
+ *         push_filters(plans, pushed_plans)
+ * 
+ */
+  __pyx_t_10 = (__pyx_v_push_flag != 0);
+  if (__pyx_t_10) {
+
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":450
+ * 
+ *     if push_flag:
+ *         push_filters(plans, pushed_plans)             # <<<<<<<<<<<<<<
+ * 
+ *         for i in range(pushed_plans.size()):
+ */
+    __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_push_filters(__pyx_v_plans, __pyx_v_pushed_plans);
+
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":452
+ *         push_filters(plans, pushed_plans)
+ * 
+ *         for i in range(pushed_plans.size()):             # <<<<<<<<<<<<<<
+ *             if i == 0:
+ *                 combined_plan = pushed_plans[i]
+ */
+    __pyx_t_11 = __pyx_v_pushed_plans.size();
+    for (__pyx_t_9 = 0; __pyx_t_9 < __pyx_t_11; __pyx_t_9+=1) {
+      __pyx_v_i = __pyx_t_9;
+
+      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":453
+ * 
+ *         for i in range(pushed_plans.size()):
+ *             if i == 0:             # <<<<<<<<<<<<<<
+ *                 combined_plan = pushed_plans[i]
+ *             else:
+ */
+      __pyx_t_10 = ((__pyx_v_i == 0) != 0);
+      if (__pyx_t_10) {
+
+        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":454
+ *         for i in range(pushed_plans.size()):
+ *             if i == 0:
+ *                 combined_plan = pushed_plans[i]             # <<<<<<<<<<<<<<
+ *             else:
+ *                 combined_plan = merge_plans_stage2(combined_plan, pushed_plans[i])
+ */
+        __pyx_v_combined_plan = (__pyx_v_pushed_plans[__pyx_v_i]);
+
+        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":453
+ * 
+ *         for i in range(pushed_plans.size()):
+ *             if i == 0:             # <<<<<<<<<<<<<<
+ *                 combined_plan = pushed_plans[i]
+ *             else:
+ */
+        goto __pyx_L14;
+      }
+
+      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":456
+ *                 combined_plan = pushed_plans[i]
+ *             else:
+ *                 combined_plan = merge_plans_stage2(combined_plan, pushed_plans[i])             # <<<<<<<<<<<<<<
+ *     else:
+ *         for i in range(plans.size()):
+ */
+      /*else*/ {
+        __pyx_v_combined_plan = __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_merge_plans_stage2(__pyx_v_combined_plan, (__pyx_v_pushed_plans[__pyx_v_i]));
+      }
+      __pyx_L14:;
+    }
+
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":449
+ *     cdef Node combined_plan
+ * 
+ *     if push_flag:             # <<<<<<<<<<<<<<
+ *         push_filters(plans, pushed_plans)
+ * 
+ */
+    goto __pyx_L11;
+  }
+
+  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":458
+ *                 combined_plan = merge_plans_stage2(combined_plan, pushed_plans[i])
+ *     else:
+ *         for i in range(plans.size()):             # <<<<<<<<<<<<<<
+ *             if i == 0:
+ *                 combined_plan = plans[i]
+ */
+  /*else*/ {
+    __pyx_t_11 = __pyx_v_plans.size();
+    for (__pyx_t_9 = 0; __pyx_t_9 < __pyx_t_11; __pyx_t_9+=1) {
+      __pyx_v_i = __pyx_t_9;
+
+      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":459
+ *     else:
+ *         for i in range(plans.size()):
+ *             if i == 0:             # <<<<<<<<<<<<<<
+ *                 combined_plan = plans[i]
+ *             else:
+ */
+      __pyx_t_10 = ((__pyx_v_i == 0) != 0);
+      if (__pyx_t_10) {
+
+        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":460
+ *         for i in range(plans.size()):
+ *             if i == 0:
+ *                 combined_plan = plans[i]             # <<<<<<<<<<<<<<
+ *             else:
+ *                 combined_plan = merge_plans_stage2(combined_plan, plans[i])
+ */
+        __pyx_v_combined_plan = (__pyx_v_plans[__pyx_v_i]);
+
+        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":459
+ *     else:
+ *         for i in range(plans.size()):
+ *             if i == 0:             # <<<<<<<<<<<<<<
+ *                 combined_plan = plans[i]
+ *             else:
+ */
+        goto __pyx_L17;
+      }
+
+      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":462
+ *                 combined_plan = plans[i]
+ *             else:
+ *                 combined_plan = merge_plans_stage2(combined_plan, plans[i])             # <<<<<<<<<<<<<<
+ * 
+ *     return combined_plan
+ */
+      /*else*/ {
+        __pyx_v_combined_plan = __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_merge_plans_stage2(__pyx_v_combined_plan, (__pyx_v_plans[__pyx_v_i]));
+      }
+      __pyx_L17:;
+    }
+  }
+  __pyx_L11:;
+
+  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":464
+ *                 combined_plan = merge_plans_stage2(combined_plan, plans[i])
+ * 
+ *     return combined_plan             # <<<<<<<<<<<<<<
+ * 
+ * 
+ */
+  __pyx_r = __pyx_v_combined_plan;
+  goto __pyx_L0;
+
+  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":412
+ *     return combined_plan
+ * 
+ * cdef Node gen_plan_for_trees_stage2(vector[Tree]& trees, omap[string, Coverage]& coverage,             # <<<<<<<<<<<<<<
+ *                             const int& sample_size, bool push_flag):
+ *     cdef Rule rule
+ */
+
+  /* function exit code */
+  __pyx_L1_error:;
+  __Pyx_WriteUnraisable("py_stringsimjoin.apply_rf.ex_plan.gen_plan_for_trees_stage2", __pyx_clineno, __pyx_lineno, __pyx_filename, 0, 0);
+  __pyx_L0:;
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+/* "py_stringsimjoin/apply_rf/ex_plan.pyx":467
+ * 
  * 
  * cdef double compute_plan_cost(Node& plan, omap[string, Coverage]& coverage, const int& sample_size):             # <<<<<<<<<<<<<<
  *     cdef vector[bool] bool_vector
@@ -3627,7 +5266,7 @@ static double __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_compute_plan_cost(No
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("compute_plan_cost", 0);
 
-  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":297
+  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":471
  *     cdef Coverage cov
  *     cdef int i
  *     for i in xrange(coverage[plan.children[0].predicates[0].pred_name].size):             # <<<<<<<<<<<<<<
@@ -3638,7 +5277,7 @@ static double __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_compute_plan_cost(No
   for (__pyx_t_2 = 0; __pyx_t_2 < __pyx_t_1; __pyx_t_2+=1) {
     __pyx_v_i = __pyx_t_2;
 
-    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":298
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":472
  *     cdef int i
  *     for i in xrange(coverage[plan.children[0].predicates[0].pred_name].size):
  *         bool_vector.push_back(True)             # <<<<<<<<<<<<<<
@@ -3649,11 +5288,11 @@ static double __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_compute_plan_cost(No
       __pyx_v_bool_vector.push_back(1);
     } catch(...) {
       __Pyx_CppExn2PyErr();
-      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 298; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 472; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     }
   }
 
-  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":299
+  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":473
  *     for i in xrange(coverage[plan.children[0].predicates[0].pred_name].size):
  *         bool_vector.push_back(True)
  *     cov = Coverage(bool_vector)             # <<<<<<<<<<<<<<
@@ -3662,7 +5301,7 @@ static double __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_compute_plan_cost(No
  */
   __pyx_v_cov = Coverage(__pyx_v_bool_vector);
 
-  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":300
+  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":474
  *         bool_vector.push_back(True)
  *     cov = Coverage(bool_vector)
  *     cdef double cost = 0.0             # <<<<<<<<<<<<<<
@@ -3671,7 +5310,7 @@ static double __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_compute_plan_cost(No
  */
   __pyx_v_cost = 0.0;
 
-  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":302
+  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":476
  *     cdef double cost = 0.0
  *     cdef Node child_node
  *     for child_node in plan.children:             # <<<<<<<<<<<<<<
@@ -3686,7 +5325,7 @@ static double __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_compute_plan_cost(No
     ++__pyx_t_3;
     __pyx_v_child_node = __pyx_t_5;
 
-    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":303
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":477
  *     cdef Node child_node
  *     for child_node in plan.children:
  *         cost += compute_subtree_cost(child_node, cov, coverage, sample_size)             # <<<<<<<<<<<<<<
@@ -3695,7 +5334,7 @@ static double __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_compute_plan_cost(No
  */
     __pyx_v_cost = (__pyx_v_cost + __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_compute_subtree_cost(__pyx_v_child_node, __pyx_v_cov, __pyx_v_coverage, __pyx_v_sample_size));
 
-    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":302
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":476
  *     cdef double cost = 0.0
  *     cdef Node child_node
  *     for child_node in plan.children:             # <<<<<<<<<<<<<<
@@ -3704,7 +5343,7 @@ static double __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_compute_plan_cost(No
  */
   }
 
-  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":304
+  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":478
  *     for child_node in plan.children:
  *         cost += compute_subtree_cost(child_node, cov, coverage, sample_size)
  *     return cost             # <<<<<<<<<<<<<<
@@ -3714,8 +5353,8 @@ static double __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_compute_plan_cost(No
   __pyx_r = __pyx_v_cost;
   goto __pyx_L0;
 
-  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":293
- *     return combined_plan
+  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":467
+ * 
  * 
  * cdef double compute_plan_cost(Node& plan, omap[string, Coverage]& coverage, const int& sample_size):             # <<<<<<<<<<<<<<
  *     cdef vector[bool] bool_vector
@@ -3731,7 +5370,7 @@ static double __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_compute_plan_cost(No
   return __pyx_r;
 }
 
-/* "py_stringsimjoin/apply_rf/ex_plan.pyx":306
+/* "py_stringsimjoin/apply_rf/ex_plan.pyx":480
  *     return cost
  * 
  * cdef double compute_subtree_cost(Node plan, Coverage curr_cov, omap[string, Coverage]& coverage, const int& sample_size):             # <<<<<<<<<<<<<<
@@ -3757,18 +5396,18 @@ static double __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_compute_subtree_cost
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("compute_subtree_cost", 0);
 
-  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":307
+  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":481
  * 
  * cdef double compute_subtree_cost(Node plan, Coverage curr_cov, omap[string, Coverage]& coverage, const int& sample_size):
  *     if plan.node_type.compare("OUTPUT") == 0:             # <<<<<<<<<<<<<<
  *         return 0.0
  * 
  */
-  __pyx_t_1 = __pyx_convert_string_from_py_std__in_string(__pyx_n_b_OUTPUT); if (unlikely(PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 307; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = __pyx_convert_string_from_py_std__in_string(__pyx_n_b_OUTPUT); if (unlikely(PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 481; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_t_2 = ((__pyx_v_plan.node_type.compare(__pyx_t_1) == 0) != 0);
   if (__pyx_t_2) {
 
-    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":308
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":482
  * cdef double compute_subtree_cost(Node plan, Coverage curr_cov, omap[string, Coverage]& coverage, const int& sample_size):
  *     if plan.node_type.compare("OUTPUT") == 0:
  *         return 0.0             # <<<<<<<<<<<<<<
@@ -3778,7 +5417,7 @@ static double __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_compute_subtree_cost
     __pyx_r = 0.0;
     goto __pyx_L0;
 
-    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":307
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":481
  * 
  * cdef double compute_subtree_cost(Node plan, Coverage curr_cov, omap[string, Coverage]& coverage, const int& sample_size):
  *     if plan.node_type.compare("OUTPUT") == 0:             # <<<<<<<<<<<<<<
@@ -3787,7 +5426,7 @@ static double __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_compute_subtree_cost
  */
   }
 
-  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":310
+  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":484
  *         return 0.0
  * 
  *     cdef double child_cost = 0.0             # <<<<<<<<<<<<<<
@@ -3796,7 +5435,7 @@ static double __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_compute_subtree_cost
  */
   __pyx_v_child_cost = 0.0;
 
-  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":313
+  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":487
  *     cdef Node child_node
  *     cdef Coverage cov
  *     cov.or_coverage(curr_cov)             # <<<<<<<<<<<<<<
@@ -3805,7 +5444,7 @@ static double __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_compute_subtree_cost
  */
   __pyx_v_cov.or_coverage(__pyx_v_curr_cov);
 
-  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":314
+  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":488
  *     cdef Coverage cov
  *     cov.or_coverage(curr_cov)
  *     cov.and_coverage(coverage[plan.predicates[0].pred_name])             # <<<<<<<<<<<<<<
@@ -3814,7 +5453,7 @@ static double __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_compute_subtree_cost
  */
   __pyx_v_cov.and_coverage((__pyx_v_coverage[(__pyx_v_plan.predicates[0]).pred_name]));
 
-  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":315
+  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":489
  *     cov.or_coverage(curr_cov)
  *     cov.and_coverage(coverage[plan.predicates[0].pred_name])
  *     for child_node in plan.children:             # <<<<<<<<<<<<<<
@@ -3829,7 +5468,7 @@ static double __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_compute_subtree_cost
     ++__pyx_t_3;
     __pyx_v_child_node = __pyx_t_5;
 
-    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":316
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":490
  *     cov.and_coverage(coverage[plan.predicates[0].pred_name])
  *     for child_node in plan.children:
  *         child_cost += compute_subtree_cost(child_node, cov, coverage, sample_size)             # <<<<<<<<<<<<<<
@@ -3838,7 +5477,7 @@ static double __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_compute_subtree_cost
  */
     __pyx_v_child_cost = (__pyx_v_child_cost + __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_compute_subtree_cost(__pyx_v_child_node, __pyx_v_cov, __pyx_v_coverage, __pyx_v_sample_size));
 
-    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":315
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":489
  *     cov.or_coverage(curr_cov)
  *     cov.and_coverage(coverage[plan.predicates[0].pred_name])
  *     for child_node in plan.children:             # <<<<<<<<<<<<<<
@@ -3847,7 +5486,7 @@ static double __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_compute_subtree_cost
  */
   }
 
-  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":318
+  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":492
  *         child_cost += compute_subtree_cost(child_node, cov, coverage, sample_size)
  * 
  *     cdef double sel = <double>curr_cov.sum() / <double>sample_size             # <<<<<<<<<<<<<<
@@ -3857,22 +5496,22 @@ static double __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_compute_subtree_cost
   __pyx_t_6 = ((double)__pyx_v_curr_cov.sum());
   if (unlikely(((double)__pyx_v_sample_size) == 0)) {
     PyErr_SetString(PyExc_ZeroDivisionError, "float division");
-    {__pyx_filename = __pyx_f[0]; __pyx_lineno = 318; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    {__pyx_filename = __pyx_f[0]; __pyx_lineno = 492; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   }
   __pyx_v_sel = (__pyx_t_6 / ((double)__pyx_v_sample_size));
 
-  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":320
+  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":494
  *     cdef double sel = <double>curr_cov.sum() / <double>sample_size
  * 
  *     if plan.node_type.compare("SELECT") == 0:             # <<<<<<<<<<<<<<
  *         return child_cost
  * 
  */
-  __pyx_t_1 = __pyx_convert_string_from_py_std__in_string(__pyx_n_b_SELECT); if (unlikely(PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 320; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = __pyx_convert_string_from_py_std__in_string(__pyx_n_b_SELECT); if (unlikely(PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 494; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_t_2 = ((__pyx_v_plan.node_type.compare(__pyx_t_1) == 0) != 0);
   if (__pyx_t_2) {
 
-    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":321
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":495
  * 
  *     if plan.node_type.compare("SELECT") == 0:
  *         return child_cost             # <<<<<<<<<<<<<<
@@ -3882,7 +5521,7 @@ static double __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_compute_subtree_cost
     __pyx_r = __pyx_v_child_cost;
     goto __pyx_L0;
 
-    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":320
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":494
  *     cdef double sel = <double>curr_cov.sum() / <double>sample_size
  * 
  *     if plan.node_type.compare("SELECT") == 0:             # <<<<<<<<<<<<<<
@@ -3891,7 +5530,7 @@ static double __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_compute_subtree_cost
  */
   }
 
-  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":323
+  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":497
  *         return child_cost
  * 
  *     return sel * plan.predicates[0].cost + child_cost             # <<<<<<<<<<<<<<
@@ -3901,7 +5540,7 @@ static double __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_compute_subtree_cost
   __pyx_r = ((__pyx_v_sel * (__pyx_v_plan.predicates[0]).cost) + __pyx_v_child_cost);
   goto __pyx_L0;
 
-  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":306
+  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":480
  *     return cost
  * 
  * cdef double compute_subtree_cost(Node plan, Coverage curr_cov, omap[string, Coverage]& coverage, const int& sample_size):             # <<<<<<<<<<<<<<
@@ -3918,7 +5557,7 @@ static double __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_compute_subtree_cost
   return __pyx_r;
 }
 
-/* "py_stringsimjoin/apply_rf/ex_plan.pyx":325
+/* "py_stringsimjoin/apply_rf/ex_plan.pyx":499
  *     return sel * plan.predicates[0].cost + child_cost
  * 
  * cdef Node merge_plans_stage2(Node plan1, Node plan2):             # <<<<<<<<<<<<<<
@@ -3943,7 +5582,7 @@ static Node __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_merge_plans_stage2(Nod
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("merge_plans_stage2", 0);
 
-  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":326
+  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":500
  * 
  * cdef Node merge_plans_stage2(Node plan1, Node plan2):
  *     cdef Node new_node, plan2_node = plan2.children[0]             # <<<<<<<<<<<<<<
@@ -3952,17 +5591,17 @@ static Node __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_merge_plans_stage2(Nod
  */
   __pyx_v_plan2_node = (__pyx_v_plan2.children[0]);
 
-  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":328
+  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":502
  *     cdef Node new_node, plan2_node = plan2.children[0]
  *     cdef Predicatecpp pred1, pred2
  *     cdef string node_type = "SELECT"             # <<<<<<<<<<<<<<
  *     pred2 = plan2_node.predicates[0]
  *     cdef int i=0
  */
-  __pyx_t_1 = __pyx_convert_string_from_py_std__in_string(__pyx_n_b_SELECT); if (unlikely(PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 328; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = __pyx_convert_string_from_py_std__in_string(__pyx_n_b_SELECT); if (unlikely(PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 502; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_v_node_type = __pyx_t_1;
 
-  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":329
+  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":503
  *     cdef Predicatecpp pred1, pred2
  *     cdef string node_type = "SELECT"
  *     pred2 = plan2_node.predicates[0]             # <<<<<<<<<<<<<<
@@ -3971,7 +5610,7 @@ static Node __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_merge_plans_stage2(Nod
  */
   __pyx_v_pred2 = (__pyx_v_plan2_node.predicates[0]);
 
-  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":330
+  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":504
  *     cdef string node_type = "SELECT"
  *     pred2 = plan2_node.predicates[0]
  *     cdef int i=0             # <<<<<<<<<<<<<<
@@ -3980,7 +5619,7 @@ static Node __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_merge_plans_stage2(Nod
  */
   __pyx_v_i = 0;
 
-  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":332
+  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":506
  *     cdef int i=0
  * 
  *     while i < plan1.children.size():             # <<<<<<<<<<<<<<
@@ -3991,7 +5630,7 @@ static Node __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_merge_plans_stage2(Nod
     __pyx_t_2 = ((__pyx_v_i < __pyx_v_plan1.children.size()) != 0);
     if (!__pyx_t_2) break;
 
-    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":334
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":508
  *     while i < plan1.children.size():
  * #        print 'sib : ', plan1.children[i].node_type
  *         if plan1.children[i].predicates[0].feat_name.compare(pred2.feat_name) == 0:             # <<<<<<<<<<<<<<
@@ -4001,7 +5640,7 @@ static Node __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_merge_plans_stage2(Nod
     __pyx_t_2 = ((((__pyx_v_plan1.children[__pyx_v_i]).predicates[0]).feat_name.compare(__pyx_v_pred2.feat_name) == 0) != 0);
     if (__pyx_t_2) {
 
-      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":335
+      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":509
  * #        print 'sib : ', plan1.children[i].node_type
  *         if plan1.children[i].predicates[0].feat_name.compare(pred2.feat_name) == 0:
  *             break             # <<<<<<<<<<<<<<
@@ -4010,7 +5649,7 @@ static Node __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_merge_plans_stage2(Nod
  */
       goto __pyx_L4_break;
 
-      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":334
+      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":508
  *     while i < plan1.children.size():
  * #        print 'sib : ', plan1.children[i].node_type
  *         if plan1.children[i].predicates[0].feat_name.compare(pred2.feat_name) == 0:             # <<<<<<<<<<<<<<
@@ -4019,7 +5658,7 @@ static Node __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_merge_plans_stage2(Nod
  */
     }
 
-    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":336
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":510
  *         if plan1.children[i].predicates[0].feat_name.compare(pred2.feat_name) == 0:
  *             break
  *         i += 1             # <<<<<<<<<<<<<<
@@ -4030,7 +5669,7 @@ static Node __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_merge_plans_stage2(Nod
   }
   __pyx_L4_break:;
 
-  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":338
+  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":512
  *         i += 1
  * 
  *     if i == plan1.children.size():             # <<<<<<<<<<<<<<
@@ -4040,7 +5679,7 @@ static Node __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_merge_plans_stage2(Nod
   __pyx_t_2 = ((__pyx_v_i == __pyx_v_plan1.children.size()) != 0);
   if (__pyx_t_2) {
 
-    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":339
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":513
  * 
  *     if i == plan1.children.size():
  *         plan1.add_child(plan2.children[0])             # <<<<<<<<<<<<<<
@@ -4049,7 +5688,7 @@ static Node __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_merge_plans_stage2(Nod
  */
     __pyx_v_plan1.add_child((__pyx_v_plan2.children[0]));
 
-    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":340
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":514
  *     if i == plan1.children.size():
  *         plan1.add_child(plan2.children[0])
  *         return plan1             # <<<<<<<<<<<<<<
@@ -4059,7 +5698,7 @@ static Node __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_merge_plans_stage2(Nod
     __pyx_r = __pyx_v_plan1;
     goto __pyx_L0;
 
-    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":338
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":512
  *         i += 1
  * 
  *     if i == plan1.children.size():             # <<<<<<<<<<<<<<
@@ -4068,7 +5707,7 @@ static Node __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_merge_plans_stage2(Nod
  */
   }
 
-  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":343
+  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":517
  * 
  * #    print 't1', plan2_node.node_type
  *     pred1 = plan1.children[i].predicates[0]             # <<<<<<<<<<<<<<
@@ -4077,28 +5716,28 @@ static Node __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_merge_plans_stage2(Nod
  */
   __pyx_v_pred1 = ((__pyx_v_plan1.children[__pyx_v_i]).predicates[0]);
 
-  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":345
+  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":519
  *     pred1 = plan1.children[i].predicates[0]
  *     cdef vector[Predicatecpp] preds
  *     if plan1.children[i].node_type.compare("FEATURE") == 0:             # <<<<<<<<<<<<<<
  *         node_type = "SELECT"
  *         plan2_node.set_node_type(node_type)
  */
-  __pyx_t_1 = __pyx_convert_string_from_py_std__in_string(__pyx_n_b_FEATURE); if (unlikely(PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 345; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = __pyx_convert_string_from_py_std__in_string(__pyx_n_b_FEATURE); if (unlikely(PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 519; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_t_2 = (((__pyx_v_plan1.children[__pyx_v_i]).node_type.compare(__pyx_t_1) == 0) != 0);
   if (__pyx_t_2) {
 
-    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":346
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":520
  *     cdef vector[Predicatecpp] preds
  *     if plan1.children[i].node_type.compare("FEATURE") == 0:
  *         node_type = "SELECT"             # <<<<<<<<<<<<<<
  *         plan2_node.set_node_type(node_type)
  *         plan1.children[i].add_child(plan2_node)
  */
-    __pyx_t_1 = __pyx_convert_string_from_py_std__in_string(__pyx_n_b_SELECT); if (unlikely(PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 346; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_1 = __pyx_convert_string_from_py_std__in_string(__pyx_n_b_SELECT); if (unlikely(PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 520; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __pyx_v_node_type = __pyx_t_1;
 
-    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":347
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":521
  *     if plan1.children[i].node_type.compare("FEATURE") == 0:
  *         node_type = "SELECT"
  *         plan2_node.set_node_type(node_type)             # <<<<<<<<<<<<<<
@@ -4107,7 +5746,7 @@ static Node __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_merge_plans_stage2(Nod
  */
     __pyx_v_plan2_node.set_node_type(__pyx_v_node_type);
 
-    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":348
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":522
  *         node_type = "SELECT"
  *         plan2_node.set_node_type(node_type)
  *         plan1.children[i].add_child(plan2_node)             # <<<<<<<<<<<<<<
@@ -4116,7 +5755,7 @@ static Node __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_merge_plans_stage2(Nod
  */
     (__pyx_v_plan1.children[__pyx_v_i]).add_child(__pyx_v_plan2_node);
 
-    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":345
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":519
  *     pred1 = plan1.children[i].predicates[0]
  *     cdef vector[Predicatecpp] preds
  *     if plan1.children[i].node_type.compare("FEATURE") == 0:             # <<<<<<<<<<<<<<
@@ -4126,28 +5765,28 @@ static Node __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_merge_plans_stage2(Nod
     goto __pyx_L7;
   }
 
-  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":349
+  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":523
  *         plan2_node.set_node_type(node_type)
  *         plan1.children[i].add_child(plan2_node)
  *     elif plan1.children[i].node_type.compare("FILTER") == 0:             # <<<<<<<<<<<<<<
  *         node_type = "SELECT"
  *         plan2_node.set_node_type(node_type)
  */
-  __pyx_t_1 = __pyx_convert_string_from_py_std__in_string(__pyx_n_b_FILTER); if (unlikely(PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 349; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = __pyx_convert_string_from_py_std__in_string(__pyx_n_b_FILTER); if (unlikely(PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 523; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_t_2 = (((__pyx_v_plan1.children[__pyx_v_i]).node_type.compare(__pyx_t_1) == 0) != 0);
   if (__pyx_t_2) {
 
-    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":350
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":524
  *         plan1.children[i].add_child(plan2_node)
  *     elif plan1.children[i].node_type.compare("FILTER") == 0:
  *         node_type = "SELECT"             # <<<<<<<<<<<<<<
  *         plan2_node.set_node_type(node_type)
  * 
  */
-    __pyx_t_1 = __pyx_convert_string_from_py_std__in_string(__pyx_n_b_SELECT); if (unlikely(PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 350; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_1 = __pyx_convert_string_from_py_std__in_string(__pyx_n_b_SELECT); if (unlikely(PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 524; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __pyx_v_node_type = __pyx_t_1;
 
-    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":351
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":525
  *     elif plan1.children[i].node_type.compare("FILTER") == 0:
  *         node_type = "SELECT"
  *         plan2_node.set_node_type(node_type)             # <<<<<<<<<<<<<<
@@ -4156,7 +5795,7 @@ static Node __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_merge_plans_stage2(Nod
  */
     __pyx_v_plan2_node.set_node_type(__pyx_v_node_type);
 
-    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":353
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":527
  *         plan2_node.set_node_type(node_type)
  * 
  *         plan1.children[i].set_node_type(node_type)             # <<<<<<<<<<<<<<
@@ -4165,7 +5804,7 @@ static Node __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_merge_plans_stage2(Nod
  */
     (__pyx_v_plan1.children[__pyx_v_i]).set_node_type(__pyx_v_node_type);
 
-    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":355
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":529
  *         plan1.children[i].set_node_type(node_type)
  * 
  *         preds.push_back(plan1.children[i].predicates[0])             # <<<<<<<<<<<<<<
@@ -4176,20 +5815,20 @@ static Node __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_merge_plans_stage2(Nod
       __pyx_v_preds.push_back(((__pyx_v_plan1.children[__pyx_v_i]).predicates[0]));
     } catch(...) {
       __Pyx_CppExn2PyErr();
-      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 355; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 529; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     }
 
-    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":356
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":530
  * 
  *         preds.push_back(plan1.children[i].predicates[0])
  *         new_node = Node(preds, "FEATURE")             # <<<<<<<<<<<<<<
  *         new_node.add_child(plan1.children[i])
  *         new_node.add_child(plan2_node)
  */
-    __pyx_t_1 = __pyx_convert_string_from_py_std__in_string(__pyx_n_b_FEATURE); if (unlikely(PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 356; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_1 = __pyx_convert_string_from_py_std__in_string(__pyx_n_b_FEATURE); if (unlikely(PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 530; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __pyx_v_new_node = Node(__pyx_v_preds, __pyx_t_1);
 
-    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":357
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":531
  *         preds.push_back(plan1.children[i].predicates[0])
  *         new_node = Node(preds, "FEATURE")
  *         new_node.add_child(plan1.children[i])             # <<<<<<<<<<<<<<
@@ -4198,7 +5837,7 @@ static Node __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_merge_plans_stage2(Nod
  */
     __pyx_v_new_node.add_child((__pyx_v_plan1.children[__pyx_v_i]));
 
-    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":358
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":532
  *         new_node = Node(preds, "FEATURE")
  *         new_node.add_child(plan1.children[i])
  *         new_node.add_child(plan2_node)             # <<<<<<<<<<<<<<
@@ -4207,7 +5846,7 @@ static Node __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_merge_plans_stage2(Nod
  */
     __pyx_v_new_node.add_child(__pyx_v_plan2_node);
 
-    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":360
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":534
  *         new_node.add_child(plan2_node)
  * 
  *         plan1.remove_child(plan1.children[i])             # <<<<<<<<<<<<<<
@@ -4216,7 +5855,7 @@ static Node __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_merge_plans_stage2(Nod
  */
     __pyx_v_plan1.remove_child((__pyx_v_plan1.children[__pyx_v_i]));
 
-    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":361
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":535
  * 
  *         plan1.remove_child(plan1.children[i])
  *         plan1.add_child(new_node)             # <<<<<<<<<<<<<<
@@ -4225,7 +5864,7 @@ static Node __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_merge_plans_stage2(Nod
  */
     __pyx_v_plan1.add_child(__pyx_v_new_node);
 
-    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":349
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":523
  *         plan2_node.set_node_type(node_type)
  *         plan1.children[i].add_child(plan2_node)
  *     elif plan1.children[i].node_type.compare("FILTER") == 0:             # <<<<<<<<<<<<<<
@@ -4235,7 +5874,7 @@ static Node __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_merge_plans_stage2(Nod
   }
   __pyx_L7:;
 
-  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":362
+  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":536
  *         plan1.remove_child(plan1.children[i])
  *         plan1.add_child(new_node)
  *     return plan1             # <<<<<<<<<<<<<<
@@ -4245,7 +5884,7 @@ static Node __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_merge_plans_stage2(Nod
   __pyx_r = __pyx_v_plan1;
   goto __pyx_L0;
 
-  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":325
+  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":499
  *     return sel * plan.predicates[0].cost + child_cost
  * 
  * cdef Node merge_plans_stage2(Node plan1, Node plan2):             # <<<<<<<<<<<<<<
@@ -4261,7 +5900,7 @@ static Node __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_merge_plans_stage2(Nod
   return __pyx_r;
 }
 
-/* "py_stringsimjoin/apply_rf/ex_plan.pyx":365
+/* "py_stringsimjoin/apply_rf/ex_plan.pyx":539
  * 
  * # Ordering a set of filter predicates
  * cdef vector[int] get_optimal_filter_seq(vector[Predicatecpp]& predicates,             # <<<<<<<<<<<<<<
@@ -4281,42 +5920,65 @@ static std::vector<int>  __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_get_optim
   double __pyx_v_pred_score;
   std::vector<int>  __pyx_r;
   __Pyx_RefNannyDeclarations
-  int __pyx_t_1;
-  int __pyx_t_2;
+  PyObject *__pyx_t_1 = NULL;
+  PyObject *__pyx_t_2 = NULL;
   int __pyx_t_3;
   int __pyx_t_4;
   int __pyx_t_5;
   int __pyx_t_6;
-  double __pyx_t_7;
-  double __pyx_t_8;
+  int __pyx_t_7;
+  int __pyx_t_8;
+  double __pyx_t_9;
+  double __pyx_t_10;
+  int __pyx_t_11;
   int __pyx_lineno = 0;
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("get_optimal_filter_seq", 0);
 
-  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":371
+  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":545
  *     cdef vector[bool] selected_predicates
  *     cdef Coverage prev_coverage
  *     cdef int i, j = 0, n=predicates.size(), max_pred             # <<<<<<<<<<<<<<
  *     cdef double max_score, pred_score
- * 
+ *     print 'num preds : ', n
  */
   __pyx_v_j = 0;
   __pyx_v_n = __pyx_v_predicates.size();
 
-  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":374
+  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":547
+ *     cdef int i, j = 0, n=predicates.size(), max_pred
  *     cdef double max_score, pred_score
- * 
+ *     print 'num preds : ', n             # <<<<<<<<<<<<<<
+ *     for i in xrange(n):
+ *         selected_predicates.push_back(False)
+ */
+  __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_v_n); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 547; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_1);
+  __pyx_t_2 = PyTuple_New(2); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 547; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_2);
+  __Pyx_INCREF(__pyx_kp_s_num_preds);
+  __Pyx_GIVEREF(__pyx_kp_s_num_preds);
+  PyTuple_SET_ITEM(__pyx_t_2, 0, __pyx_kp_s_num_preds);
+  __Pyx_GIVEREF(__pyx_t_1);
+  PyTuple_SET_ITEM(__pyx_t_2, 1, __pyx_t_1);
+  __pyx_t_1 = 0;
+  if (__Pyx_Print(0, __pyx_t_2, 1) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 547; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+
+  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":548
+ *     cdef double max_score, pred_score
+ *     print 'num preds : ', n
  *     for i in xrange(n):             # <<<<<<<<<<<<<<
  *         selected_predicates.push_back(False)
  * 
  */
-  __pyx_t_1 = __pyx_v_n;
-  for (__pyx_t_2 = 0; __pyx_t_2 < __pyx_t_1; __pyx_t_2+=1) {
-    __pyx_v_i = __pyx_t_2;
+  __pyx_t_3 = __pyx_v_n;
+  for (__pyx_t_4 = 0; __pyx_t_4 < __pyx_t_3; __pyx_t_4+=1) {
+    __pyx_v_i = __pyx_t_4;
 
-    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":375
- * 
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":549
+ *     print 'num preds : ', n
  *     for i in xrange(n):
  *         selected_predicates.push_back(False)             # <<<<<<<<<<<<<<
  * 
@@ -4326,22 +5988,22 @@ static std::vector<int>  __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_get_optim
       __pyx_v_selected_predicates.push_back(0);
     } catch(...) {
       __Pyx_CppExn2PyErr();
-      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 375; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 549; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     }
   }
 
-  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":377
+  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":551
  *         selected_predicates.push_back(False)
  * 
  *     for j in xrange(n):             # <<<<<<<<<<<<<<
  *         max_score = 0.0
  *         max_pred = -1
  */
-  __pyx_t_1 = __pyx_v_n;
-  for (__pyx_t_2 = 0; __pyx_t_2 < __pyx_t_1; __pyx_t_2+=1) {
-    __pyx_v_j = __pyx_t_2;
+  __pyx_t_3 = __pyx_v_n;
+  for (__pyx_t_4 = 0; __pyx_t_4 < __pyx_t_3; __pyx_t_4+=1) {
+    __pyx_v_j = __pyx_t_4;
 
-    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":378
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":552
  * 
  *     for j in xrange(n):
  *         max_score = 0.0             # <<<<<<<<<<<<<<
@@ -4350,7 +6012,7 @@ static std::vector<int>  __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_get_optim
  */
     __pyx_v_max_score = 0.0;
 
-    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":379
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":553
  *     for j in xrange(n):
  *         max_score = 0.0
  *         max_pred = -1             # <<<<<<<<<<<<<<
@@ -4359,28 +6021,28 @@ static std::vector<int>  __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_get_optim
  */
     __pyx_v_max_pred = -1;
 
-    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":381
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":555
  *         max_pred = -1
  * 
  *         for i in xrange(n):             # <<<<<<<<<<<<<<
  *             if selected_predicates[i]:
  *                 continue
  */
-    __pyx_t_3 = __pyx_v_n;
-    for (__pyx_t_4 = 0; __pyx_t_4 < __pyx_t_3; __pyx_t_4+=1) {
-      __pyx_v_i = __pyx_t_4;
+    __pyx_t_5 = __pyx_v_n;
+    for (__pyx_t_6 = 0; __pyx_t_6 < __pyx_t_5; __pyx_t_6+=1) {
+      __pyx_v_i = __pyx_t_6;
 
-      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":382
+      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":556
  * 
  *         for i in xrange(n):
  *             if selected_predicates[i]:             # <<<<<<<<<<<<<<
  *                 continue
  * 
  */
-      __pyx_t_5 = ((__pyx_v_selected_predicates[__pyx_v_i]) != 0);
-      if (__pyx_t_5) {
+      __pyx_t_7 = ((__pyx_v_selected_predicates[__pyx_v_i]) != 0);
+      if (__pyx_t_7) {
 
-        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":383
+        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":557
  *         for i in xrange(n):
  *             if selected_predicates[i]:
  *                 continue             # <<<<<<<<<<<<<<
@@ -4389,7 +6051,7 @@ static std::vector<int>  __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_get_optim
  */
         goto __pyx_L7_continue;
 
-        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":382
+        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":556
  * 
  *         for i in xrange(n):
  *             if selected_predicates[i]:             # <<<<<<<<<<<<<<
@@ -4398,41 +6060,41 @@ static std::vector<int>  __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_get_optim
  */
       }
 
-      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":385
+      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":559
  *                 continue
  * 
  *             if j == 0:             # <<<<<<<<<<<<<<
  *                 pred_score = (1.0 - (coverage[predicates[i].pred_name].count / sample_size)) / predicates[i].cost
  *             else:
  */
-      __pyx_t_5 = ((__pyx_v_j == 0) != 0);
-      if (__pyx_t_5) {
+      __pyx_t_7 = ((__pyx_v_j == 0) != 0);
+      if (__pyx_t_7) {
 
-        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":386
+        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":560
  * 
  *             if j == 0:
  *                 pred_score = (1.0 - (coverage[predicates[i].pred_name].count / sample_size)) / predicates[i].cost             # <<<<<<<<<<<<<<
  *             else:
  *                 pred_score = (1.0 - (prev_coverage.and_sum(coverage[predicates[i].pred_name]) / sample_size)) / predicates[i].cost
  */
-        __pyx_t_6 = (__pyx_v_coverage[(__pyx_v_predicates[__pyx_v_i]).pred_name]).count;
+        __pyx_t_8 = (__pyx_v_coverage[(__pyx_v_predicates[__pyx_v_i]).pred_name]).count;
         if (unlikely(__pyx_v_sample_size == 0)) {
           PyErr_SetString(PyExc_ZeroDivisionError, "integer division or modulo by zero");
-          {__pyx_filename = __pyx_f[0]; __pyx_lineno = 386; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+          {__pyx_filename = __pyx_f[0]; __pyx_lineno = 560; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
         }
-        else if (sizeof(int) == sizeof(long) && (!(((int const )-1) > 0)) && unlikely(__pyx_v_sample_size == (int const )-1)  && unlikely(UNARY_NEG_WOULD_OVERFLOW(__pyx_t_6))) {
+        else if (sizeof(int) == sizeof(long) && (!(((int const )-1) > 0)) && unlikely(__pyx_v_sample_size == (int const )-1)  && unlikely(UNARY_NEG_WOULD_OVERFLOW(__pyx_t_8))) {
           PyErr_SetString(PyExc_OverflowError, "value too large to perform division");
-          {__pyx_filename = __pyx_f[0]; __pyx_lineno = 386; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+          {__pyx_filename = __pyx_f[0]; __pyx_lineno = 560; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
         }
-        __pyx_t_7 = (1.0 - __Pyx_div_int(__pyx_t_6, __pyx_v_sample_size));
-        __pyx_t_8 = (__pyx_v_predicates[__pyx_v_i]).cost;
-        if (unlikely(__pyx_t_8 == 0)) {
+        __pyx_t_9 = (1.0 - __Pyx_div_int(__pyx_t_8, __pyx_v_sample_size));
+        __pyx_t_10 = (__pyx_v_predicates[__pyx_v_i]).cost;
+        if (unlikely(__pyx_t_10 == 0)) {
           PyErr_SetString(PyExc_ZeroDivisionError, "float division");
-          {__pyx_filename = __pyx_f[0]; __pyx_lineno = 386; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+          {__pyx_filename = __pyx_f[0]; __pyx_lineno = 560; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
         }
-        __pyx_v_pred_score = (__pyx_t_7 / __pyx_t_8);
+        __pyx_v_pred_score = (__pyx_t_9 / __pyx_t_10);
 
-        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":385
+        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":559
  *                 continue
  * 
  *             if j == 0:             # <<<<<<<<<<<<<<
@@ -4442,54 +6104,62 @@ static std::vector<int>  __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_get_optim
         goto __pyx_L10;
       }
 
-      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":388
+      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":562
  *                 pred_score = (1.0 - (coverage[predicates[i].pred_name].count / sample_size)) / predicates[i].cost
  *             else:
  *                 pred_score = (1.0 - (prev_coverage.and_sum(coverage[predicates[i].pred_name]) / sample_size)) / predicates[i].cost             # <<<<<<<<<<<<<<
  * 
- * #            print pred_score, max_score
+ *             #print pred_score, max_score
  */
       /*else*/ {
-        __pyx_t_6 = __pyx_v_prev_coverage.and_sum((__pyx_v_coverage[(__pyx_v_predicates[__pyx_v_i]).pred_name]));
+        __pyx_t_8 = __pyx_v_prev_coverage.and_sum((__pyx_v_coverage[(__pyx_v_predicates[__pyx_v_i]).pred_name]));
         if (unlikely(__pyx_v_sample_size == 0)) {
           PyErr_SetString(PyExc_ZeroDivisionError, "integer division or modulo by zero");
-          {__pyx_filename = __pyx_f[0]; __pyx_lineno = 388; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+          {__pyx_filename = __pyx_f[0]; __pyx_lineno = 562; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
         }
-        else if (sizeof(int) == sizeof(long) && (!(((int const )-1) > 0)) && unlikely(__pyx_v_sample_size == (int const )-1)  && unlikely(UNARY_NEG_WOULD_OVERFLOW(__pyx_t_6))) {
+        else if (sizeof(int) == sizeof(long) && (!(((int const )-1) > 0)) && unlikely(__pyx_v_sample_size == (int const )-1)  && unlikely(UNARY_NEG_WOULD_OVERFLOW(__pyx_t_8))) {
           PyErr_SetString(PyExc_OverflowError, "value too large to perform division");
-          {__pyx_filename = __pyx_f[0]; __pyx_lineno = 388; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+          {__pyx_filename = __pyx_f[0]; __pyx_lineno = 562; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
         }
-        __pyx_t_8 = (1.0 - __Pyx_div_int(__pyx_t_6, __pyx_v_sample_size));
-        __pyx_t_7 = (__pyx_v_predicates[__pyx_v_i]).cost;
-        if (unlikely(__pyx_t_7 == 0)) {
+        __pyx_t_10 = (1.0 - __Pyx_div_int(__pyx_t_8, __pyx_v_sample_size));
+        __pyx_t_9 = (__pyx_v_predicates[__pyx_v_i]).cost;
+        if (unlikely(__pyx_t_9 == 0)) {
           PyErr_SetString(PyExc_ZeroDivisionError, "float division");
-          {__pyx_filename = __pyx_f[0]; __pyx_lineno = 388; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+          {__pyx_filename = __pyx_f[0]; __pyx_lineno = 562; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
         }
-        __pyx_v_pred_score = (__pyx_t_8 / __pyx_t_7);
+        __pyx_v_pred_score = (__pyx_t_10 / __pyx_t_9);
       }
       __pyx_L10:;
 
-      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":392
- * #            print pred_score, max_score
+      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":566
+ *             #print pred_score, max_score
  * 
- *             if pred_score > max_score:             # <<<<<<<<<<<<<<
+ *             if pred_score > max_score or max_score == 0.0:             # <<<<<<<<<<<<<<
  *                 max_score = pred_score
  *                 max_pred = i
  */
-      __pyx_t_5 = ((__pyx_v_pred_score > __pyx_v_max_score) != 0);
-      if (__pyx_t_5) {
+      __pyx_t_11 = ((__pyx_v_pred_score > __pyx_v_max_score) != 0);
+      if (!__pyx_t_11) {
+      } else {
+        __pyx_t_7 = __pyx_t_11;
+        goto __pyx_L12_bool_binop_done;
+      }
+      __pyx_t_11 = ((__pyx_v_max_score == 0.0) != 0);
+      __pyx_t_7 = __pyx_t_11;
+      __pyx_L12_bool_binop_done:;
+      if (__pyx_t_7) {
 
-        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":393
+        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":567
  * 
- *             if pred_score > max_score:
+ *             if pred_score > max_score or max_score == 0.0:
  *                 max_score = pred_score             # <<<<<<<<<<<<<<
  *                 max_pred = i
  * 
  */
         __pyx_v_max_score = __pyx_v_pred_score;
 
-        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":394
- *             if pred_score > max_score:
+        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":568
+ *             if pred_score > max_score or max_score == 0.0:
  *                 max_score = pred_score
  *                 max_pred = i             # <<<<<<<<<<<<<<
  * 
@@ -4497,10 +6167,10 @@ static std::vector<int>  __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_get_optim
  */
         __pyx_v_max_pred = __pyx_v_i;
 
-        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":392
- * #            print pred_score, max_score
+        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":566
+ *             #print pred_score, max_score
  * 
- *             if pred_score > max_score:             # <<<<<<<<<<<<<<
+ *             if pred_score > max_score or max_score == 0.0:             # <<<<<<<<<<<<<<
  *                 max_score = pred_score
  *                 max_pred = i
  */
@@ -4508,41 +6178,41 @@ static std::vector<int>  __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_get_optim
       __pyx_L7_continue:;
     }
 
-    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":396
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":570
  *                 max_pred = i
  * 
  *         optimal_seq.push_back(max_pred)             # <<<<<<<<<<<<<<
  *         selected_predicates[max_pred] = True
- *         if j == 0:
+ * 
  */
     try {
       __pyx_v_optimal_seq.push_back(__pyx_v_max_pred);
     } catch(...) {
       __Pyx_CppExn2PyErr();
-      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 396; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 570; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     }
 
-    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":397
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":571
  * 
  *         optimal_seq.push_back(max_pred)
  *         selected_predicates[max_pred] = True             # <<<<<<<<<<<<<<
+ * 
  *         if j == 0:
- *             prev_coverage.or_coverage(coverage[predicates[max_pred].pred_name])
  */
     (__pyx_v_selected_predicates[__pyx_v_max_pred]) = 1;
 
-    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":398
- *         optimal_seq.push_back(max_pred)
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":573
  *         selected_predicates[max_pred] = True
+ * 
  *         if j == 0:             # <<<<<<<<<<<<<<
  *             prev_coverage.or_coverage(coverage[predicates[max_pred].pred_name])
  *         else:
  */
-    __pyx_t_5 = ((__pyx_v_j == 0) != 0);
-    if (__pyx_t_5) {
+    __pyx_t_7 = ((__pyx_v_j == 0) != 0);
+    if (__pyx_t_7) {
 
-      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":399
- *         selected_predicates[max_pred] = True
+      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":574
+ * 
  *         if j == 0:
  *             prev_coverage.or_coverage(coverage[predicates[max_pred].pred_name])             # <<<<<<<<<<<<<<
  *         else:
@@ -4550,17 +6220,17 @@ static std::vector<int>  __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_get_optim
  */
       __pyx_v_prev_coverage.or_coverage((__pyx_v_coverage[(__pyx_v_predicates[__pyx_v_max_pred]).pred_name]));
 
-      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":398
- *         optimal_seq.push_back(max_pred)
+      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":573
  *         selected_predicates[max_pred] = True
+ * 
  *         if j == 0:             # <<<<<<<<<<<<<<
  *             prev_coverage.or_coverage(coverage[predicates[max_pred].pred_name])
  *         else:
  */
-      goto __pyx_L12;
+      goto __pyx_L14;
     }
 
-    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":401
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":576
  *             prev_coverage.or_coverage(coverage[predicates[max_pred].pred_name])
  *         else:
  *             prev_coverage.and_coverage(coverage[predicates[max_pred].pred_name])             # <<<<<<<<<<<<<<
@@ -4570,10 +6240,10 @@ static std::vector<int>  __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_get_optim
     /*else*/ {
       __pyx_v_prev_coverage.and_coverage((__pyx_v_coverage[(__pyx_v_predicates[__pyx_v_max_pred]).pred_name]));
     }
-    __pyx_L12:;
+    __pyx_L14:;
   }
 
-  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":403
+  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":578
  *             prev_coverage.and_coverage(coverage[predicates[max_pred].pred_name])
  * 
  *     return optimal_seq             # <<<<<<<<<<<<<<
@@ -4583,7 +6253,7 @@ static std::vector<int>  __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_get_optim
   __pyx_r = __pyx_v_optimal_seq;
   goto __pyx_L0;
 
-  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":365
+  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":539
  * 
  * # Ordering a set of filter predicates
  * cdef vector[int] get_optimal_filter_seq(vector[Predicatecpp]& predicates,             # <<<<<<<<<<<<<<
@@ -4593,13 +6263,15 @@ static std::vector<int>  __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_get_optim
 
   /* function exit code */
   __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
+  __Pyx_XDECREF(__pyx_t_2);
   __Pyx_WriteUnraisable("py_stringsimjoin.apply_rf.ex_plan.get_optimal_filter_seq", __pyx_clineno, __pyx_lineno, __pyx_filename, 0, 0);
   __pyx_L0:;
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-/* "py_stringsimjoin/apply_rf/ex_plan.pyx":406
+/* "py_stringsimjoin/apply_rf/ex_plan.pyx":581
  * 
  * # Ordering a set of trees
  * cdef vector[int] get_optimal_tree_seq(vector[double] costs,             # <<<<<<<<<<<<<<
@@ -4627,12 +6299,13 @@ static std::vector<int>  __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_get_optim
   int __pyx_t_6;
   double __pyx_t_7;
   double __pyx_t_8;
+  int __pyx_t_9;
   int __pyx_lineno = 0;
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("get_optimal_tree_seq", 0);
 
-  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":412
+  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":587
  *     cdef vector[bool] selected_trees
  *     cdef Coverage prev_coverage
  *     cdef int i, j = 0, n=costs.size(), max_tree             # <<<<<<<<<<<<<<
@@ -4642,7 +6315,7 @@ static std::vector<int>  __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_get_optim
   __pyx_v_j = 0;
   __pyx_v_n = __pyx_v_costs.size();
 
-  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":415
+  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":590
  *     cdef double max_score, tree_score
  * 
  *     for i in xrange(n):             # <<<<<<<<<<<<<<
@@ -4653,7 +6326,7 @@ static std::vector<int>  __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_get_optim
   for (__pyx_t_2 = 0; __pyx_t_2 < __pyx_t_1; __pyx_t_2+=1) {
     __pyx_v_i = __pyx_t_2;
 
-    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":416
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":591
  * 
  *     for i in xrange(n):
  *         selected_trees.push_back(False)             # <<<<<<<<<<<<<<
@@ -4664,11 +6337,11 @@ static std::vector<int>  __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_get_optim
       __pyx_v_selected_trees.push_back(0);
     } catch(...) {
       __Pyx_CppExn2PyErr();
-      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 416; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 591; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     }
   }
 
-  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":418
+  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":593
  *         selected_trees.push_back(False)
  * 
  *     for j in xrange(n):             # <<<<<<<<<<<<<<
@@ -4679,7 +6352,7 @@ static std::vector<int>  __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_get_optim
   for (__pyx_t_2 = 0; __pyx_t_2 < __pyx_t_1; __pyx_t_2+=1) {
     __pyx_v_j = __pyx_t_2;
 
-    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":419
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":594
  * 
  *     for j in xrange(n):
  *         max_score = 0.0             # <<<<<<<<<<<<<<
@@ -4688,7 +6361,7 @@ static std::vector<int>  __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_get_optim
  */
     __pyx_v_max_score = 0.0;
 
-    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":420
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":595
  *     for j in xrange(n):
  *         max_score = 0.0
  *         max_tree = -1             # <<<<<<<<<<<<<<
@@ -4697,7 +6370,7 @@ static std::vector<int>  __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_get_optim
  */
     __pyx_v_max_tree = -1;
 
-    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":422
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":597
  *         max_tree = -1
  * 
  *         for i in xrange(n):             # <<<<<<<<<<<<<<
@@ -4708,7 +6381,7 @@ static std::vector<int>  __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_get_optim
     for (__pyx_t_4 = 0; __pyx_t_4 < __pyx_t_3; __pyx_t_4+=1) {
       __pyx_v_i = __pyx_t_4;
 
-      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":423
+      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":598
  * 
  *         for i in xrange(n):
  *             if selected_trees[i]:             # <<<<<<<<<<<<<<
@@ -4718,7 +6391,7 @@ static std::vector<int>  __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_get_optim
       __pyx_t_5 = ((__pyx_v_selected_trees[__pyx_v_i]) != 0);
       if (__pyx_t_5) {
 
-        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":424
+        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":599
  *         for i in xrange(n):
  *             if selected_trees[i]:
  *                 continue             # <<<<<<<<<<<<<<
@@ -4727,7 +6400,7 @@ static std::vector<int>  __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_get_optim
  */
         goto __pyx_L7_continue;
 
-        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":423
+        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":598
  * 
  *         for i in xrange(n):
  *             if selected_trees[i]:             # <<<<<<<<<<<<<<
@@ -4736,7 +6409,7 @@ static std::vector<int>  __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_get_optim
  */
       }
 
-      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":426
+      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":601
  *                 continue
  * 
  *             if j == 0:             # <<<<<<<<<<<<<<
@@ -4746,7 +6419,7 @@ static std::vector<int>  __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_get_optim
       __pyx_t_5 = ((__pyx_v_j == 0) != 0);
       if (__pyx_t_5) {
 
-        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":427
+        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":602
  * 
  *             if j == 0:
  *                 tree_score = (1.0 - (coverage[i].sum() / sample_size)) / costs[i]             # <<<<<<<<<<<<<<
@@ -4756,21 +6429,21 @@ static std::vector<int>  __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_get_optim
         __pyx_t_6 = (__pyx_v_coverage[__pyx_v_i]).sum();
         if (unlikely(__pyx_v_sample_size == 0)) {
           PyErr_SetString(PyExc_ZeroDivisionError, "integer division or modulo by zero");
-          {__pyx_filename = __pyx_f[0]; __pyx_lineno = 427; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+          {__pyx_filename = __pyx_f[0]; __pyx_lineno = 602; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
         }
         else if (sizeof(int) == sizeof(long) && (!(((int const )-1) > 0)) && unlikely(__pyx_v_sample_size == (int const )-1)  && unlikely(UNARY_NEG_WOULD_OVERFLOW(__pyx_t_6))) {
           PyErr_SetString(PyExc_OverflowError, "value too large to perform division");
-          {__pyx_filename = __pyx_f[0]; __pyx_lineno = 427; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+          {__pyx_filename = __pyx_f[0]; __pyx_lineno = 602; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
         }
         __pyx_t_7 = (1.0 - __Pyx_div_int(__pyx_t_6, __pyx_v_sample_size));
         __pyx_t_8 = (__pyx_v_costs[__pyx_v_i]);
         if (unlikely(__pyx_t_8 == 0)) {
           PyErr_SetString(PyExc_ZeroDivisionError, "float division");
-          {__pyx_filename = __pyx_f[0]; __pyx_lineno = 427; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+          {__pyx_filename = __pyx_f[0]; __pyx_lineno = 602; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
         }
         __pyx_v_tree_score = (__pyx_t_7 / __pyx_t_8);
 
-        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":426
+        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":601
  *                 continue
  * 
  *             if j == 0:             # <<<<<<<<<<<<<<
@@ -4780,7 +6453,7 @@ static std::vector<int>  __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_get_optim
         goto __pyx_L10;
       }
 
-      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":429
+      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":604
  *                 tree_score = (1.0 - (coverage[i].sum() / sample_size)) / costs[i]
  *             else:
  *                 tree_score = (1.0 - (prev_coverage.and_sum(coverage[i]) / sample_size)) / costs[i]             # <<<<<<<<<<<<<<
@@ -4791,43 +6464,51 @@ static std::vector<int>  __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_get_optim
         __pyx_t_6 = __pyx_v_prev_coverage.and_sum((__pyx_v_coverage[__pyx_v_i]));
         if (unlikely(__pyx_v_sample_size == 0)) {
           PyErr_SetString(PyExc_ZeroDivisionError, "integer division or modulo by zero");
-          {__pyx_filename = __pyx_f[0]; __pyx_lineno = 429; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+          {__pyx_filename = __pyx_f[0]; __pyx_lineno = 604; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
         }
         else if (sizeof(int) == sizeof(long) && (!(((int const )-1) > 0)) && unlikely(__pyx_v_sample_size == (int const )-1)  && unlikely(UNARY_NEG_WOULD_OVERFLOW(__pyx_t_6))) {
           PyErr_SetString(PyExc_OverflowError, "value too large to perform division");
-          {__pyx_filename = __pyx_f[0]; __pyx_lineno = 429; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+          {__pyx_filename = __pyx_f[0]; __pyx_lineno = 604; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
         }
         __pyx_t_8 = (1.0 - __Pyx_div_int(__pyx_t_6, __pyx_v_sample_size));
         __pyx_t_7 = (__pyx_v_costs[__pyx_v_i]);
         if (unlikely(__pyx_t_7 == 0)) {
           PyErr_SetString(PyExc_ZeroDivisionError, "float division");
-          {__pyx_filename = __pyx_f[0]; __pyx_lineno = 429; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+          {__pyx_filename = __pyx_f[0]; __pyx_lineno = 604; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
         }
         __pyx_v_tree_score = (__pyx_t_8 / __pyx_t_7);
       }
       __pyx_L10:;
 
-      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":433
+      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":608
  * #            print tree_score, max_score
  * 
- *             if tree_score > max_score:             # <<<<<<<<<<<<<<
+ *             if tree_score > max_score or max_score == 0.0:             # <<<<<<<<<<<<<<
  *                 max_score = tree_score
  *                 max_tree = i
  */
-      __pyx_t_5 = ((__pyx_v_tree_score > __pyx_v_max_score) != 0);
+      __pyx_t_9 = ((__pyx_v_tree_score > __pyx_v_max_score) != 0);
+      if (!__pyx_t_9) {
+      } else {
+        __pyx_t_5 = __pyx_t_9;
+        goto __pyx_L12_bool_binop_done;
+      }
+      __pyx_t_9 = ((__pyx_v_max_score == 0.0) != 0);
+      __pyx_t_5 = __pyx_t_9;
+      __pyx_L12_bool_binop_done:;
       if (__pyx_t_5) {
 
-        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":434
+        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":609
  * 
- *             if tree_score > max_score:
+ *             if tree_score > max_score or max_score == 0.0:
  *                 max_score = tree_score             # <<<<<<<<<<<<<<
  *                 max_tree = i
  * 
  */
         __pyx_v_max_score = __pyx_v_tree_score;
 
-        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":435
- *             if tree_score > max_score:
+        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":610
+ *             if tree_score > max_score or max_score == 0.0:
  *                 max_score = tree_score
  *                 max_tree = i             # <<<<<<<<<<<<<<
  * 
@@ -4835,10 +6516,10 @@ static std::vector<int>  __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_get_optim
  */
         __pyx_v_max_tree = __pyx_v_i;
 
-        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":433
+        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":608
  * #            print tree_score, max_score
  * 
- *             if tree_score > max_score:             # <<<<<<<<<<<<<<
+ *             if tree_score > max_score or max_score == 0.0:             # <<<<<<<<<<<<<<
  *                 max_score = tree_score
  *                 max_tree = i
  */
@@ -4846,7 +6527,7 @@ static std::vector<int>  __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_get_optim
       __pyx_L7_continue:;
     }
 
-    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":437
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":612
  *                 max_tree = i
  * 
  *         optimal_seq.push_back(max_tree)             # <<<<<<<<<<<<<<
@@ -4857,10 +6538,10 @@ static std::vector<int>  __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_get_optim
       __pyx_v_optimal_seq.push_back(__pyx_v_max_tree);
     } catch(...) {
       __Pyx_CppExn2PyErr();
-      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 437; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 612; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     }
 
-    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":438
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":613
  * 
  *         optimal_seq.push_back(max_tree)
  *         selected_trees[max_tree] = True             # <<<<<<<<<<<<<<
@@ -4869,7 +6550,7 @@ static std::vector<int>  __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_get_optim
  */
     (__pyx_v_selected_trees[__pyx_v_max_tree]) = 1;
 
-    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":439
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":614
  *         optimal_seq.push_back(max_tree)
  *         selected_trees[max_tree] = True
  *         if j == 0:             # <<<<<<<<<<<<<<
@@ -4879,7 +6560,7 @@ static std::vector<int>  __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_get_optim
     __pyx_t_5 = ((__pyx_v_j == 0) != 0);
     if (__pyx_t_5) {
 
-      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":440
+      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":615
  *         selected_trees[max_tree] = True
  *         if j == 0:
  *             prev_coverage.or_coverage(coverage[max_tree])             # <<<<<<<<<<<<<<
@@ -4888,17 +6569,17 @@ static std::vector<int>  __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_get_optim
  */
       __pyx_v_prev_coverage.or_coverage((__pyx_v_coverage[__pyx_v_max_tree]));
 
-      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":439
+      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":614
  *         optimal_seq.push_back(max_tree)
  *         selected_trees[max_tree] = True
  *         if j == 0:             # <<<<<<<<<<<<<<
  *             prev_coverage.or_coverage(coverage[max_tree])
  *         else:
  */
-      goto __pyx_L12;
+      goto __pyx_L14;
     }
 
-    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":442
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":617
  *             prev_coverage.or_coverage(coverage[max_tree])
  *         else:
  *             prev_coverage.and_coverage(coverage[max_tree])             # <<<<<<<<<<<<<<
@@ -4908,10 +6589,10 @@ static std::vector<int>  __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_get_optim
     /*else*/ {
       __pyx_v_prev_coverage.and_coverage((__pyx_v_coverage[__pyx_v_max_tree]));
     }
-    __pyx_L12:;
+    __pyx_L14:;
   }
 
-  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":444
+  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":619
  *             prev_coverage.and_coverage(coverage[max_tree])
  * 
  *     return optimal_seq             # <<<<<<<<<<<<<<
@@ -4921,7 +6602,7 @@ static std::vector<int>  __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_get_optim
   __pyx_r = __pyx_v_optimal_seq;
   goto __pyx_L0;
 
-  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":406
+  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":581
  * 
  * # Ordering a set of trees
  * cdef vector[int] get_optimal_tree_seq(vector[double] costs,             # <<<<<<<<<<<<<<
@@ -4937,7 +6618,7 @@ static std::vector<int>  __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_get_optim
   return __pyx_r;
 }
 
-/* "py_stringsimjoin/apply_rf/ex_plan.pyx":446
+/* "py_stringsimjoin/apply_rf/ex_plan.pyx":621
  *     return optimal_seq
  * 
  * cdef vector[int] get_optimal_tree_seq_v1(vector[double]& costs,             # <<<<<<<<<<<<<<
@@ -4968,12 +6649,13 @@ static std::vector<int>  __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_get_optim
   int __pyx_t_7;
   double __pyx_t_8;
   double __pyx_t_9;
+  int __pyx_t_10;
   int __pyx_lineno = 0;
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("get_optimal_tree_seq_v1", 0);
 
-  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":452
+  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":627
  *     cdef vector[int] optimal_seq, curr_votes
  *     cdef vector[bool] selected_trees
  *     cdef int i, j = 0, n=costs.size(), max_tree, k, d             # <<<<<<<<<<<<<<
@@ -4983,7 +6665,7 @@ static std::vector<int>  __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_get_optim
   __pyx_v_j = 0;
   __pyx_v_n = __pyx_v_costs.size();
 
-  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":455
+  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":630
  *     cdef double max_score, tree_score
  * 
  *     for i in xrange(n):             # <<<<<<<<<<<<<<
@@ -4994,7 +6676,7 @@ static std::vector<int>  __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_get_optim
   for (__pyx_t_2 = 0; __pyx_t_2 < __pyx_t_1; __pyx_t_2+=1) {
     __pyx_v_i = __pyx_t_2;
 
-    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":456
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":631
  * 
  *     for i in xrange(n):
  *         selected_trees.push_back(False)             # <<<<<<<<<<<<<<
@@ -5005,11 +6687,11 @@ static std::vector<int>  __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_get_optim
       __pyx_v_selected_trees.push_back(0);
     } catch(...) {
       __Pyx_CppExn2PyErr();
-      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 456; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 631; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     }
   }
 
-  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":458
+  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":633
  *         selected_trees.push_back(False)
  * 
  *     for i in xrange(sample_size):             # <<<<<<<<<<<<<<
@@ -5020,7 +6702,7 @@ static std::vector<int>  __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_get_optim
   for (__pyx_t_2 = 0; __pyx_t_2 < __pyx_t_1; __pyx_t_2+=1) {
     __pyx_v_i = __pyx_t_2;
 
-    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":459
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":634
  * 
  *     for i in xrange(sample_size):
  *         curr_votes.push_back(votes[i])             # <<<<<<<<<<<<<<
@@ -5031,11 +6713,11 @@ static std::vector<int>  __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_get_optim
       __pyx_v_curr_votes.push_back((__pyx_v_votes[__pyx_v_i]));
     } catch(...) {
       __Pyx_CppExn2PyErr();
-      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 459; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 634; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     }
   }
 
-  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":461
+  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":636
  *         curr_votes.push_back(votes[i])
  * 
  *     for j in xrange(n):             # <<<<<<<<<<<<<<
@@ -5046,7 +6728,7 @@ static std::vector<int>  __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_get_optim
   for (__pyx_t_2 = 0; __pyx_t_2 < __pyx_t_1; __pyx_t_2+=1) {
     __pyx_v_j = __pyx_t_2;
 
-    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":462
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":637
  * 
  *     for j in xrange(n):
  *         max_score = 0.0             # <<<<<<<<<<<<<<
@@ -5055,7 +6737,7 @@ static std::vector<int>  __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_get_optim
  */
     __pyx_v_max_score = 0.0;
 
-    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":463
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":638
  *     for j in xrange(n):
  *         max_score = 0.0
  *         max_tree = -1             # <<<<<<<<<<<<<<
@@ -5064,7 +6746,7 @@ static std::vector<int>  __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_get_optim
  */
     __pyx_v_max_tree = -1;
 
-    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":465
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":640
  *         max_tree = -1
  * 
  *         for i in xrange(n):             # <<<<<<<<<<<<<<
@@ -5075,7 +6757,7 @@ static std::vector<int>  __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_get_optim
     for (__pyx_t_4 = 0; __pyx_t_4 < __pyx_t_3; __pyx_t_4+=1) {
       __pyx_v_i = __pyx_t_4;
 
-      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":466
+      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":641
  * 
  *         for i in xrange(n):
  *             if selected_trees[i]:             # <<<<<<<<<<<<<<
@@ -5085,7 +6767,7 @@ static std::vector<int>  __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_get_optim
       __pyx_t_5 = ((__pyx_v_selected_trees[__pyx_v_i]) != 0);
       if (__pyx_t_5) {
 
-        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":467
+        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":642
  *         for i in xrange(n):
  *             if selected_trees[i]:
  *                 continue             # <<<<<<<<<<<<<<
@@ -5094,7 +6776,7 @@ static std::vector<int>  __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_get_optim
  */
         goto __pyx_L9_continue;
 
-        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":466
+        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":641
  * 
  *         for i in xrange(n):
  *             if selected_trees[i]:             # <<<<<<<<<<<<<<
@@ -5103,7 +6785,7 @@ static std::vector<int>  __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_get_optim
  */
       }
 
-      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":469
+      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":644
  *                 continue
  * 
  *             d = 0             # <<<<<<<<<<<<<<
@@ -5112,7 +6794,7 @@ static std::vector<int>  __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_get_optim
  */
       __pyx_v_d = 0;
 
-      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":471
+      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":646
  *             d = 0
  * 
  *             for k in xrange(sample_size):             # <<<<<<<<<<<<<<
@@ -5123,7 +6805,7 @@ static std::vector<int>  __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_get_optim
       for (__pyx_t_7 = 0; __pyx_t_7 < __pyx_t_6; __pyx_t_7+=1) {
         __pyx_v_k = __pyx_t_7;
 
-        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":472
+        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":647
  * 
  *             for k in xrange(sample_size):
  *                 if curr_votes[k] != -1:             # <<<<<<<<<<<<<<
@@ -5133,7 +6815,7 @@ static std::vector<int>  __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_get_optim
         __pyx_t_5 = (((__pyx_v_curr_votes[__pyx_v_k]) != -1L) != 0);
         if (__pyx_t_5) {
 
-          /* "py_stringsimjoin/apply_rf/ex_plan.pyx":473
+          /* "py_stringsimjoin/apply_rf/ex_plan.pyx":648
  *             for k in xrange(sample_size):
  *                 if curr_votes[k] != -1:
  *                     if coverage[i].index(k):             # <<<<<<<<<<<<<<
@@ -5143,7 +6825,7 @@ static std::vector<int>  __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_get_optim
           __pyx_t_5 = ((__pyx_v_coverage[__pyx_v_i]).index(__pyx_v_k) != 0);
           if (__pyx_t_5) {
 
-            /* "py_stringsimjoin/apply_rf/ex_plan.pyx":474
+            /* "py_stringsimjoin/apply_rf/ex_plan.pyx":649
  *                 if curr_votes[k] != -1:
  *                     if coverage[i].index(k):
  *                         if curr_votes[k] + 1 >= 5:             # <<<<<<<<<<<<<<
@@ -5153,7 +6835,7 @@ static std::vector<int>  __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_get_optim
             __pyx_t_5 = ((((__pyx_v_curr_votes[__pyx_v_k]) + 1) >= 5) != 0);
             if (__pyx_t_5) {
 
-              /* "py_stringsimjoin/apply_rf/ex_plan.pyx":475
+              /* "py_stringsimjoin/apply_rf/ex_plan.pyx":650
  *                     if coverage[i].index(k):
  *                         if curr_votes[k] + 1 >= 5:
  *                             d += 1             # <<<<<<<<<<<<<<
@@ -5162,7 +6844,7 @@ static std::vector<int>  __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_get_optim
  */
               __pyx_v_d = (__pyx_v_d + 1);
 
-              /* "py_stringsimjoin/apply_rf/ex_plan.pyx":474
+              /* "py_stringsimjoin/apply_rf/ex_plan.pyx":649
  *                 if curr_votes[k] != -1:
  *                     if coverage[i].index(k):
  *                         if curr_votes[k] + 1 >= 5:             # <<<<<<<<<<<<<<
@@ -5171,7 +6853,7 @@ static std::vector<int>  __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_get_optim
  */
             }
 
-            /* "py_stringsimjoin/apply_rf/ex_plan.pyx":473
+            /* "py_stringsimjoin/apply_rf/ex_plan.pyx":648
  *             for k in xrange(sample_size):
  *                 if curr_votes[k] != -1:
  *                     if coverage[i].index(k):             # <<<<<<<<<<<<<<
@@ -5181,7 +6863,7 @@ static std::vector<int>  __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_get_optim
             goto __pyx_L15;
           }
 
-          /* "py_stringsimjoin/apply_rf/ex_plan.pyx":477
+          /* "py_stringsimjoin/apply_rf/ex_plan.pyx":652
  *                             d += 1
  *                     else:
  *                         if curr_votes[k] + n - j - 1 < 5:             # <<<<<<<<<<<<<<
@@ -5192,7 +6874,7 @@ static std::vector<int>  __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_get_optim
             __pyx_t_5 = ((((((__pyx_v_curr_votes[__pyx_v_k]) + __pyx_v_n) - __pyx_v_j) - 1) < 5) != 0);
             if (__pyx_t_5) {
 
-              /* "py_stringsimjoin/apply_rf/ex_plan.pyx":478
+              /* "py_stringsimjoin/apply_rf/ex_plan.pyx":653
  *                     else:
  *                         if curr_votes[k] + n - j - 1 < 5:
  *                             d += 1             # <<<<<<<<<<<<<<
@@ -5201,7 +6883,7 @@ static std::vector<int>  __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_get_optim
  */
               __pyx_v_d = (__pyx_v_d + 1);
 
-              /* "py_stringsimjoin/apply_rf/ex_plan.pyx":477
+              /* "py_stringsimjoin/apply_rf/ex_plan.pyx":652
  *                             d += 1
  *                     else:
  *                         if curr_votes[k] + n - j - 1 < 5:             # <<<<<<<<<<<<<<
@@ -5212,7 +6894,7 @@ static std::vector<int>  __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_get_optim
           }
           __pyx_L15:;
 
-          /* "py_stringsimjoin/apply_rf/ex_plan.pyx":472
+          /* "py_stringsimjoin/apply_rf/ex_plan.pyx":647
  * 
  *             for k in xrange(sample_size):
  *                 if curr_votes[k] != -1:             # <<<<<<<<<<<<<<
@@ -5222,46 +6904,54 @@ static std::vector<int>  __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_get_optim
         }
       }
 
-      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":480
+      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":655
  *                             d += 1
  * 
  *             tree_score = (<double>d / <double>sample_size) / costs[i]             # <<<<<<<<<<<<<<
  * 
- *             if tree_score > max_score:
+ *             if tree_score > max_score or max_score == 0.0:
  */
       if (unlikely(((double)__pyx_v_sample_size) == 0)) {
         PyErr_SetString(PyExc_ZeroDivisionError, "float division");
-        {__pyx_filename = __pyx_f[0]; __pyx_lineno = 480; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        {__pyx_filename = __pyx_f[0]; __pyx_lineno = 655; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       }
       __pyx_t_8 = (((double)__pyx_v_d) / ((double)__pyx_v_sample_size));
       __pyx_t_9 = (__pyx_v_costs[__pyx_v_i]);
       if (unlikely(__pyx_t_9 == 0)) {
         PyErr_SetString(PyExc_ZeroDivisionError, "float division");
-        {__pyx_filename = __pyx_f[0]; __pyx_lineno = 480; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        {__pyx_filename = __pyx_f[0]; __pyx_lineno = 655; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       }
       __pyx_v_tree_score = (__pyx_t_8 / __pyx_t_9);
 
-      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":482
+      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":657
  *             tree_score = (<double>d / <double>sample_size) / costs[i]
  * 
- *             if tree_score > max_score:             # <<<<<<<<<<<<<<
+ *             if tree_score > max_score or max_score == 0.0:             # <<<<<<<<<<<<<<
  *                 max_score = tree_score
  *                 max_tree = i
  */
-      __pyx_t_5 = ((__pyx_v_tree_score > __pyx_v_max_score) != 0);
+      __pyx_t_10 = ((__pyx_v_tree_score > __pyx_v_max_score) != 0);
+      if (!__pyx_t_10) {
+      } else {
+        __pyx_t_5 = __pyx_t_10;
+        goto __pyx_L19_bool_binop_done;
+      }
+      __pyx_t_10 = ((__pyx_v_max_score == 0.0) != 0);
+      __pyx_t_5 = __pyx_t_10;
+      __pyx_L19_bool_binop_done:;
       if (__pyx_t_5) {
 
-        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":483
+        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":658
  * 
- *             if tree_score > max_score:
+ *             if tree_score > max_score or max_score == 0.0:
  *                 max_score = tree_score             # <<<<<<<<<<<<<<
  *                 max_tree = i
  * 
  */
         __pyx_v_max_score = __pyx_v_tree_score;
 
-        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":484
- *             if tree_score > max_score:
+        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":659
+ *             if tree_score > max_score or max_score == 0.0:
  *                 max_score = tree_score
  *                 max_tree = i             # <<<<<<<<<<<<<<
  * 
@@ -5269,10 +6959,10 @@ static std::vector<int>  __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_get_optim
  */
         __pyx_v_max_tree = __pyx_v_i;
 
-        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":482
+        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":657
  *             tree_score = (<double>d / <double>sample_size) / costs[i]
  * 
- *             if tree_score > max_score:             # <<<<<<<<<<<<<<
+ *             if tree_score > max_score or max_score == 0.0:             # <<<<<<<<<<<<<<
  *                 max_score = tree_score
  *                 max_tree = i
  */
@@ -5280,7 +6970,7 @@ static std::vector<int>  __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_get_optim
       __pyx_L9_continue:;
     }
 
-    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":486
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":661
  *                 max_tree = i
  * 
  *         optimal_seq.push_back(max_tree)             # <<<<<<<<<<<<<<
@@ -5291,10 +6981,10 @@ static std::vector<int>  __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_get_optim
       __pyx_v_optimal_seq.push_back(__pyx_v_max_tree);
     } catch(...) {
       __Pyx_CppExn2PyErr();
-      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 486; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 661; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     }
 
-    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":487
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":662
  * 
  *         optimal_seq.push_back(max_tree)
  *         selected_trees[max_tree] = True             # <<<<<<<<<<<<<<
@@ -5303,7 +6993,7 @@ static std::vector<int>  __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_get_optim
  */
     (__pyx_v_selected_trees[__pyx_v_max_tree]) = 1;
 
-    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":488
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":663
  *         optimal_seq.push_back(max_tree)
  *         selected_trees[max_tree] = True
  *         for k in xrange(sample_size):             # <<<<<<<<<<<<<<
@@ -5314,7 +7004,7 @@ static std::vector<int>  __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_get_optim
     for (__pyx_t_4 = 0; __pyx_t_4 < __pyx_t_3; __pyx_t_4+=1) {
       __pyx_v_k = __pyx_t_4;
 
-      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":489
+      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":664
  *         selected_trees[max_tree] = True
  *         for k in xrange(sample_size):
  *             if curr_votes[k] != -1:             # <<<<<<<<<<<<<<
@@ -5324,7 +7014,7 @@ static std::vector<int>  __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_get_optim
       __pyx_t_5 = (((__pyx_v_curr_votes[__pyx_v_k]) != -1L) != 0);
       if (__pyx_t_5) {
 
-        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":490
+        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":665
  *         for k in xrange(sample_size):
  *             if curr_votes[k] != -1:
  *                 if coverage[max_tree].index(k):             # <<<<<<<<<<<<<<
@@ -5334,7 +7024,7 @@ static std::vector<int>  __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_get_optim
         __pyx_t_5 = ((__pyx_v_coverage[__pyx_v_max_tree]).index(__pyx_v_k) != 0);
         if (__pyx_t_5) {
 
-          /* "py_stringsimjoin/apply_rf/ex_plan.pyx":491
+          /* "py_stringsimjoin/apply_rf/ex_plan.pyx":666
  *             if curr_votes[k] != -1:
  *                 if coverage[max_tree].index(k):
  *                     if curr_votes[k] + 1 >= 5:             # <<<<<<<<<<<<<<
@@ -5344,7 +7034,7 @@ static std::vector<int>  __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_get_optim
           __pyx_t_5 = ((((__pyx_v_curr_votes[__pyx_v_k]) + 1) >= 5) != 0);
           if (__pyx_t_5) {
 
-            /* "py_stringsimjoin/apply_rf/ex_plan.pyx":492
+            /* "py_stringsimjoin/apply_rf/ex_plan.pyx":667
  *                 if coverage[max_tree].index(k):
  *                     if curr_votes[k] + 1 >= 5:
  *                         curr_votes[k] = -1             # <<<<<<<<<<<<<<
@@ -5353,7 +7043,7 @@ static std::vector<int>  __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_get_optim
  */
             (__pyx_v_curr_votes[__pyx_v_k]) = -1;
 
-            /* "py_stringsimjoin/apply_rf/ex_plan.pyx":491
+            /* "py_stringsimjoin/apply_rf/ex_plan.pyx":666
  *             if curr_votes[k] != -1:
  *                 if coverage[max_tree].index(k):
  *                     if curr_votes[k] + 1 >= 5:             # <<<<<<<<<<<<<<
@@ -5362,17 +7052,17 @@ static std::vector<int>  __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_get_optim
  */
           }
 
-          /* "py_stringsimjoin/apply_rf/ex_plan.pyx":490
+          /* "py_stringsimjoin/apply_rf/ex_plan.pyx":665
  *         for k in xrange(sample_size):
  *             if curr_votes[k] != -1:
  *                 if coverage[max_tree].index(k):             # <<<<<<<<<<<<<<
  *                     if curr_votes[k] + 1 >= 5:
  *                         curr_votes[k] = -1
  */
-          goto __pyx_L22;
+          goto __pyx_L24;
         }
 
-        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":494
+        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":669
  *                         curr_votes[k] = -1
  *                 else:
  *                     if curr_votes[k] + n - j - 1 < 5:             # <<<<<<<<<<<<<<
@@ -5383,7 +7073,7 @@ static std::vector<int>  __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_get_optim
           __pyx_t_5 = ((((((__pyx_v_curr_votes[__pyx_v_k]) + __pyx_v_n) - __pyx_v_j) - 1) < 5) != 0);
           if (__pyx_t_5) {
 
-            /* "py_stringsimjoin/apply_rf/ex_plan.pyx":495
+            /* "py_stringsimjoin/apply_rf/ex_plan.pyx":670
  *                 else:
  *                     if curr_votes[k] + n - j - 1 < 5:
  *                         curr_votes[k] = -1             # <<<<<<<<<<<<<<
@@ -5392,7 +7082,7 @@ static std::vector<int>  __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_get_optim
  */
             (__pyx_v_curr_votes[__pyx_v_k]) = -1;
 
-            /* "py_stringsimjoin/apply_rf/ex_plan.pyx":494
+            /* "py_stringsimjoin/apply_rf/ex_plan.pyx":669
  *                         curr_votes[k] = -1
  *                 else:
  *                     if curr_votes[k] + n - j - 1 < 5:             # <<<<<<<<<<<<<<
@@ -5401,9 +7091,9 @@ static std::vector<int>  __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_get_optim
  */
           }
         }
-        __pyx_L22:;
+        __pyx_L24:;
 
-        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":489
+        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":664
  *         selected_trees[max_tree] = True
  *         for k in xrange(sample_size):
  *             if curr_votes[k] != -1:             # <<<<<<<<<<<<<<
@@ -5414,7 +7104,7 @@ static std::vector<int>  __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_get_optim
     }
   }
 
-  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":497
+  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":672
  *                         curr_votes[k] = -1
  * 
  *     return optimal_seq             # <<<<<<<<<<<<<<
@@ -5424,7 +7114,7 @@ static std::vector<int>  __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_get_optim
   __pyx_r = __pyx_v_optimal_seq;
   goto __pyx_L0;
 
-  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":446
+  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":621
  *     return optimal_seq
  * 
  * cdef vector[int] get_optimal_tree_seq_v1(vector[double]& costs,             # <<<<<<<<<<<<<<
@@ -5440,7 +7130,7 @@ static std::vector<int>  __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_get_optim
   return __pyx_r;
 }
 
-/* "py_stringsimjoin/apply_rf/ex_plan.pyx":500
+/* "py_stringsimjoin/apply_rf/ex_plan.pyx":675
  * 
  * 
  * cdef Node optimize_plans(omap[int, vector[Node]]& plans,             # <<<<<<<<<<<<<<
@@ -5487,19 +7177,19 @@ static Node __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_optimize_plans(std::ma
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("optimize_plans", 0);
 
-  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":503
+  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":678
  *                          omap[int, vector[int]]& num_join_nodes,
  *                          vector[bool]& selected_trees, bool push_flag):
  *     py_map = {}             # <<<<<<<<<<<<<<
  *     cdef int i, j,m=0,n,k
  * 
  */
-  __pyx_t_1 = PyDict_New(); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 503; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = PyDict_New(); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 678; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_v_py_map = ((PyObject*)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":504
+  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":679
  *                          vector[bool]& selected_trees, bool push_flag):
  *     py_map = {}
  *     cdef int i, j,m=0,n,k             # <<<<<<<<<<<<<<
@@ -5508,19 +7198,19 @@ static Node __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_optimize_plans(std::ma
  */
   __pyx_v_m = 0;
 
-  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":509
+  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":684
  *     cdef vector[int] num_join_nodes_to_optimize
  * 
  *     selected_join_preds = {}             # <<<<<<<<<<<<<<
  *     for i in range(selected_trees.size()):
  *         if not selected_trees[i]:
  */
-  __pyx_t_1 = PyDict_New(); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 509; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = PyDict_New(); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 684; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_v_selected_join_preds = ((PyObject*)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":510
+  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":685
  * 
  *     selected_join_preds = {}
  *     for i in range(selected_trees.size()):             # <<<<<<<<<<<<<<
@@ -5531,7 +7221,7 @@ static Node __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_optimize_plans(std::ma
   for (__pyx_t_3 = 0; __pyx_t_3 < __pyx_t_2; __pyx_t_3+=1) {
     __pyx_v_i = __pyx_t_3;
 
-    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":511
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":686
  *     selected_join_preds = {}
  *     for i in range(selected_trees.size()):
  *         if not selected_trees[i]:             # <<<<<<<<<<<<<<
@@ -5541,7 +7231,7 @@ static Node __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_optimize_plans(std::ma
     __pyx_t_4 = ((!((__pyx_v_selected_trees[__pyx_v_i]) != 0)) != 0);
     if (__pyx_t_4) {
 
-      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":512
+      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":687
  *     for i in range(selected_trees.size()):
  *         if not selected_trees[i]:
  *             continue             # <<<<<<<<<<<<<<
@@ -5550,7 +7240,7 @@ static Node __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_optimize_plans(std::ma
  */
       goto __pyx_L3_continue;
 
-      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":511
+      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":686
  *     selected_join_preds = {}
  *     for i in range(selected_trees.size()):
  *         if not selected_trees[i]:             # <<<<<<<<<<<<<<
@@ -5559,18 +7249,18 @@ static Node __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_optimize_plans(std::ma
  */
     }
 
-    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":513
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":688
  *         if not selected_trees[i]:
  *             continue
  *         print i, plans[i].size()             # <<<<<<<<<<<<<<
  *         for j in range(plans[i].size()):
  *             if num_join_nodes[i][j] == 1:
  */
-    __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_v_i); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 513; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_v_i); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 688; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_1);
-    __pyx_t_5 = __Pyx_PyInt_FromSize_t((__pyx_v_plans[__pyx_v_i]).size()); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 513; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_5 = __Pyx_PyInt_FromSize_t((__pyx_v_plans[__pyx_v_i]).size()); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 688; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_5);
-    __pyx_t_6 = PyTuple_New(2); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 513; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_6 = PyTuple_New(2); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 688; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_6);
     __Pyx_GIVEREF(__pyx_t_1);
     PyTuple_SET_ITEM(__pyx_t_6, 0, __pyx_t_1);
@@ -5578,10 +7268,10 @@ static Node __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_optimize_plans(std::ma
     PyTuple_SET_ITEM(__pyx_t_6, 1, __pyx_t_5);
     __pyx_t_1 = 0;
     __pyx_t_5 = 0;
-    if (__Pyx_Print(0, __pyx_t_6, 1) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 513; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    if (__Pyx_Print(0, __pyx_t_6, 1) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 688; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
 
-    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":514
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":689
  *             continue
  *         print i, plans[i].size()
  *         for j in range(plans[i].size()):             # <<<<<<<<<<<<<<
@@ -5592,7 +7282,7 @@ static Node __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_optimize_plans(std::ma
     for (__pyx_t_8 = 0; __pyx_t_8 < __pyx_t_7; __pyx_t_8+=1) {
       __pyx_v_j = __pyx_t_8;
 
-      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":515
+      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":690
  *         print i, plans[i].size()
  *         for j in range(plans[i].size()):
  *             if num_join_nodes[i][j] == 1:             # <<<<<<<<<<<<<<
@@ -5602,7 +7292,7 @@ static Node __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_optimize_plans(std::ma
       __pyx_t_4 = ((((__pyx_v_num_join_nodes[__pyx_v_i])[__pyx_v_j]) == 1) != 0);
       if (__pyx_t_4) {
 
-        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":516
+        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":691
  *         for j in range(plans[i].size()):
  *             if num_join_nodes[i][j] == 1:
  *                 optimized_plans.push_back(plans[i][j])             # <<<<<<<<<<<<<<
@@ -5613,22 +7303,22 @@ static Node __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_optimize_plans(std::ma
           __pyx_v_optimized_plans.push_back(((__pyx_v_plans[__pyx_v_i])[__pyx_v_j]));
         } catch(...) {
           __Pyx_CppExn2PyErr();
-          {__pyx_filename = __pyx_f[0]; __pyx_lineno = 516; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+          {__pyx_filename = __pyx_f[0]; __pyx_lineno = 691; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
         }
 
-        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":517
+        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":692
  *             if num_join_nodes[i][j] == 1:
  *                 optimized_plans.push_back(plans[i][j])
  *                 selected_join_preds[plans[i][j].children[0].predicates[0].feat_name] = True             # <<<<<<<<<<<<<<
  *             else:
  *                 plans_to_optimize.push_back(plans[i][j])
  */
-        __pyx_t_6 = __pyx_convert_PyBytes_string_to_py_std__in_string(((((__pyx_v_plans[__pyx_v_i])[__pyx_v_j]).children[0]).predicates[0]).feat_name); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 517; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        __pyx_t_6 = __pyx_convert_PyBytes_string_to_py_std__in_string(((((__pyx_v_plans[__pyx_v_i])[__pyx_v_j]).children[0]).predicates[0]).feat_name); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 692; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
         __Pyx_GOTREF(__pyx_t_6);
-        if (unlikely(PyDict_SetItem(__pyx_v_selected_join_preds, __pyx_t_6, Py_True) < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 517; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        if (unlikely(PyDict_SetItem(__pyx_v_selected_join_preds, __pyx_t_6, Py_True) < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 692; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
         __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
 
-        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":515
+        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":690
  *         print i, plans[i].size()
  *         for j in range(plans[i].size()):
  *             if num_join_nodes[i][j] == 1:             # <<<<<<<<<<<<<<
@@ -5638,7 +7328,7 @@ static Node __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_optimize_plans(std::ma
         goto __pyx_L8;
       }
 
-      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":519
+      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":694
  *                 selected_join_preds[plans[i][j].children[0].predicates[0].feat_name] = True
  *             else:
  *                 plans_to_optimize.push_back(plans[i][j])             # <<<<<<<<<<<<<<
@@ -5650,10 +7340,10 @@ static Node __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_optimize_plans(std::ma
           __pyx_v_plans_to_optimize.push_back(((__pyx_v_plans[__pyx_v_i])[__pyx_v_j]));
         } catch(...) {
           __Pyx_CppExn2PyErr();
-          {__pyx_filename = __pyx_f[0]; __pyx_lineno = 519; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+          {__pyx_filename = __pyx_f[0]; __pyx_lineno = 694; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
         }
 
-        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":520
+        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":695
  *             else:
  *                 plans_to_optimize.push_back(plans[i][j])
  *                 num_join_nodes_to_optimize.push_back(num_join_nodes[i][j])             # <<<<<<<<<<<<<<
@@ -5664,25 +7354,25 @@ static Node __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_optimize_plans(std::ma
           __pyx_v_num_join_nodes_to_optimize.push_back(((__pyx_v_num_join_nodes[__pyx_v_i])[__pyx_v_j]));
         } catch(...) {
           __Pyx_CppExn2PyErr();
-          {__pyx_filename = __pyx_f[0]; __pyx_lineno = 520; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+          {__pyx_filename = __pyx_f[0]; __pyx_lineno = 695; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
         }
 
-        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":521
+        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":696
  *                 plans_to_optimize.push_back(plans[i][j])
  *                 num_join_nodes_to_optimize.push_back(num_join_nodes[i][j])
  *                 py_map[m] = plans[i][j].children[0].predicates[0].cost             # <<<<<<<<<<<<<<
  *                 m += 1
  * 
  */
-        __pyx_t_6 = PyFloat_FromDouble(((((__pyx_v_plans[__pyx_v_i])[__pyx_v_j]).children[0]).predicates[0]).cost); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 521; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        __pyx_t_6 = PyFloat_FromDouble(((((__pyx_v_plans[__pyx_v_i])[__pyx_v_j]).children[0]).predicates[0]).cost); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 696; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
         __Pyx_GOTREF(__pyx_t_6);
-        __pyx_t_5 = __Pyx_PyInt_From_int(__pyx_v_m); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 521; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        __pyx_t_5 = __Pyx_PyInt_From_int(__pyx_v_m); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 696; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
         __Pyx_GOTREF(__pyx_t_5);
-        if (unlikely(PyDict_SetItem(__pyx_v_py_map, __pyx_t_5, __pyx_t_6) < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 521; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        if (unlikely(PyDict_SetItem(__pyx_v_py_map, __pyx_t_5, __pyx_t_6) < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 696; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
         __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
         __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
 
-        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":522
+        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":697
  *                 num_join_nodes_to_optimize.push_back(num_join_nodes[i][j])
  *                 py_map[m] = plans[i][j].children[0].predicates[0].cost
  *                 m += 1             # <<<<<<<<<<<<<<
@@ -5696,33 +7386,33 @@ static Node __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_optimize_plans(std::ma
     __pyx_L3_continue:;
   }
 
-  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":529
+  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":704
  *     cdef vector[int] pred_index
  * 
  *     pyl = sorted(py_map, key=py_map.get, reverse=True)             # <<<<<<<<<<<<<<
  *     for k in pyl:
  *         flag = True
  */
-  __pyx_t_6 = PyTuple_New(1); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 529; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_6 = PyTuple_New(1); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 704; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_6);
   __Pyx_INCREF(__pyx_v_py_map);
   __Pyx_GIVEREF(__pyx_v_py_map);
   PyTuple_SET_ITEM(__pyx_t_6, 0, __pyx_v_py_map);
-  __pyx_t_5 = PyDict_New(); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 529; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_5 = PyDict_New(); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 704; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_5);
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_py_map, __pyx_n_s_get); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 529; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_py_map, __pyx_n_s_get); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 704; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
-  if (PyDict_SetItem(__pyx_t_5, __pyx_n_s_key, __pyx_t_1) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 529; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (PyDict_SetItem(__pyx_t_5, __pyx_n_s_key, __pyx_t_1) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 704; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  if (PyDict_SetItem(__pyx_t_5, __pyx_n_s_reverse, Py_True) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 529; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_sorted, __pyx_t_6, __pyx_t_5); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 529; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (PyDict_SetItem(__pyx_t_5, __pyx_n_s_reverse, Py_True) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 704; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_sorted, __pyx_t_6, __pyx_t_5); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 704; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
   __pyx_v_pyl = __pyx_t_1;
   __pyx_t_1 = 0;
 
-  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":530
+  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":705
  * 
  *     pyl = sorted(py_map, key=py_map.get, reverse=True)
  *     for k in pyl:             # <<<<<<<<<<<<<<
@@ -5733,26 +7423,26 @@ static Node __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_optimize_plans(std::ma
     __pyx_t_1 = __pyx_v_pyl; __Pyx_INCREF(__pyx_t_1); __pyx_t_9 = 0;
     __pyx_t_10 = NULL;
   } else {
-    __pyx_t_9 = -1; __pyx_t_1 = PyObject_GetIter(__pyx_v_pyl); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 530; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_9 = -1; __pyx_t_1 = PyObject_GetIter(__pyx_v_pyl); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 705; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_1);
-    __pyx_t_10 = Py_TYPE(__pyx_t_1)->tp_iternext; if (unlikely(!__pyx_t_10)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 530; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_10 = Py_TYPE(__pyx_t_1)->tp_iternext; if (unlikely(!__pyx_t_10)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 705; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   }
   for (;;) {
     if (likely(!__pyx_t_10)) {
       if (likely(PyList_CheckExact(__pyx_t_1))) {
         if (__pyx_t_9 >= PyList_GET_SIZE(__pyx_t_1)) break;
         #if CYTHON_COMPILING_IN_CPYTHON
-        __pyx_t_5 = PyList_GET_ITEM(__pyx_t_1, __pyx_t_9); __Pyx_INCREF(__pyx_t_5); __pyx_t_9++; if (unlikely(0 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 530; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        __pyx_t_5 = PyList_GET_ITEM(__pyx_t_1, __pyx_t_9); __Pyx_INCREF(__pyx_t_5); __pyx_t_9++; if (unlikely(0 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 705; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
         #else
-        __pyx_t_5 = PySequence_ITEM(__pyx_t_1, __pyx_t_9); __pyx_t_9++; if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 530; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        __pyx_t_5 = PySequence_ITEM(__pyx_t_1, __pyx_t_9); __pyx_t_9++; if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 705; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
         __Pyx_GOTREF(__pyx_t_5);
         #endif
       } else {
         if (__pyx_t_9 >= PyTuple_GET_SIZE(__pyx_t_1)) break;
         #if CYTHON_COMPILING_IN_CPYTHON
-        __pyx_t_5 = PyTuple_GET_ITEM(__pyx_t_1, __pyx_t_9); __Pyx_INCREF(__pyx_t_5); __pyx_t_9++; if (unlikely(0 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 530; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        __pyx_t_5 = PyTuple_GET_ITEM(__pyx_t_1, __pyx_t_9); __Pyx_INCREF(__pyx_t_5); __pyx_t_9++; if (unlikely(0 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 705; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
         #else
-        __pyx_t_5 = PySequence_ITEM(__pyx_t_1, __pyx_t_9); __pyx_t_9++; if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 530; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        __pyx_t_5 = PySequence_ITEM(__pyx_t_1, __pyx_t_9); __pyx_t_9++; if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 705; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
         __Pyx_GOTREF(__pyx_t_5);
         #endif
       }
@@ -5762,17 +7452,17 @@ static Node __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_optimize_plans(std::ma
         PyObject* exc_type = PyErr_Occurred();
         if (exc_type) {
           if (likely(exc_type == PyExc_StopIteration || PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) PyErr_Clear();
-          else {__pyx_filename = __pyx_f[0]; __pyx_lineno = 530; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+          else {__pyx_filename = __pyx_f[0]; __pyx_lineno = 705; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
         }
         break;
       }
       __Pyx_GOTREF(__pyx_t_5);
     }
-    __pyx_t_3 = __Pyx_PyInt_As_int(__pyx_t_5); if (unlikely((__pyx_t_3 == (int)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 530; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_3 = __Pyx_PyInt_As_int(__pyx_t_5); if (unlikely((__pyx_t_3 == (int)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 705; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
     __pyx_v_k = __pyx_t_3;
 
-    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":531
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":706
  *     pyl = sorted(py_map, key=py_map.get, reverse=True)
  *     for k in pyl:
  *         flag = True             # <<<<<<<<<<<<<<
@@ -5781,7 +7471,7 @@ static Node __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_optimize_plans(std::ma
  */
     __pyx_v_flag = 1;
 
-    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":532
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":707
  *     for k in pyl:
  *         flag = True
  *         curr_node = plans_to_optimize[k].children[0]             # <<<<<<<<<<<<<<
@@ -5790,7 +7480,7 @@ static Node __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_optimize_plans(std::ma
  */
     __pyx_v_curr_node = ((__pyx_v_plans_to_optimize[__pyx_v_k]).children[0]);
 
-    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":533
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":708
  *         flag = True
  *         curr_node = plans_to_optimize[k].children[0]
  *         m = num_join_nodes_to_optimize[k]             # <<<<<<<<<<<<<<
@@ -5799,7 +7489,7 @@ static Node __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_optimize_plans(std::ma
  */
     __pyx_v_m = (__pyx_v_num_join_nodes_to_optimize[__pyx_v_k]);
 
-    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":534
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":709
  *         curr_node = plans_to_optimize[k].children[0]
  *         m = num_join_nodes_to_optimize[k]
  *         for n in range(1, m):             # <<<<<<<<<<<<<<
@@ -5810,7 +7500,7 @@ static Node __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_optimize_plans(std::ma
     for (__pyx_t_8 = 1; __pyx_t_8 < __pyx_t_3; __pyx_t_8+=1) {
       __pyx_v_n = __pyx_t_8;
 
-      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":535
+      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":710
  *         m = num_join_nodes_to_optimize[k]
  *         for n in range(1, m):
  *             curr_node = curr_node.children[0]             # <<<<<<<<<<<<<<
@@ -5819,16 +7509,16 @@ static Node __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_optimize_plans(std::ma
  */
       __pyx_v_curr_node = (__pyx_v_curr_node.children[0]);
 
-      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":536
+      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":711
  *         for n in range(1, m):
  *             curr_node = curr_node.children[0]
  *             if selected_join_preds.get(curr_node.predicates[0].feat_name) is not None:             # <<<<<<<<<<<<<<
  *                 plans_to_update.push_back(k)
  *                 pred_index.push_back(n)
  */
-      __pyx_t_5 = __pyx_convert_PyBytes_string_to_py_std__in_string((__pyx_v_curr_node.predicates[0]).feat_name); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 536; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_5 = __pyx_convert_PyBytes_string_to_py_std__in_string((__pyx_v_curr_node.predicates[0]).feat_name); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 711; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_GOTREF(__pyx_t_5);
-      __pyx_t_6 = __Pyx_PyDict_GetItemDefault(__pyx_v_selected_join_preds, __pyx_t_5, Py_None); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 536; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_6 = __Pyx_PyDict_GetItemDefault(__pyx_v_selected_join_preds, __pyx_t_5, Py_None); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 711; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_GOTREF(__pyx_t_6);
       __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
       __pyx_t_4 = (__pyx_t_6 != Py_None);
@@ -5836,7 +7526,7 @@ static Node __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_optimize_plans(std::ma
       __pyx_t_11 = (__pyx_t_4 != 0);
       if (__pyx_t_11) {
 
-        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":537
+        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":712
  *             curr_node = curr_node.children[0]
  *             if selected_join_preds.get(curr_node.predicates[0].feat_name) is not None:
  *                 plans_to_update.push_back(k)             # <<<<<<<<<<<<<<
@@ -5847,10 +7537,10 @@ static Node __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_optimize_plans(std::ma
           __pyx_v_plans_to_update.push_back(__pyx_v_k);
         } catch(...) {
           __Pyx_CppExn2PyErr();
-          {__pyx_filename = __pyx_f[0]; __pyx_lineno = 537; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+          {__pyx_filename = __pyx_f[0]; __pyx_lineno = 712; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
         }
 
-        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":538
+        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":713
  *             if selected_join_preds.get(curr_node.predicates[0].feat_name) is not None:
  *                 plans_to_update.push_back(k)
  *                 pred_index.push_back(n)             # <<<<<<<<<<<<<<
@@ -5861,10 +7551,10 @@ static Node __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_optimize_plans(std::ma
           __pyx_v_pred_index.push_back(__pyx_v_n);
         } catch(...) {
           __Pyx_CppExn2PyErr();
-          {__pyx_filename = __pyx_f[0]; __pyx_lineno = 538; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+          {__pyx_filename = __pyx_f[0]; __pyx_lineno = 713; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
         }
 
-        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":539
+        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":714
  *                 plans_to_update.push_back(k)
  *                 pred_index.push_back(n)
  *                 flag = False             # <<<<<<<<<<<<<<
@@ -5873,7 +7563,7 @@ static Node __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_optimize_plans(std::ma
  */
         __pyx_v_flag = 0;
 
-        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":540
+        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":715
  *                 pred_index.push_back(n)
  *                 flag = False
  *                 break             # <<<<<<<<<<<<<<
@@ -5882,7 +7572,7 @@ static Node __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_optimize_plans(std::ma
  */
         goto __pyx_L12_break;
 
-        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":536
+        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":711
  *         for n in range(1, m):
  *             curr_node = curr_node.children[0]
  *             if selected_join_preds.get(curr_node.predicates[0].feat_name) is not None:             # <<<<<<<<<<<<<<
@@ -5893,7 +7583,7 @@ static Node __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_optimize_plans(std::ma
     }
     __pyx_L12_break:;
 
-    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":541
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":716
  *                 flag = False
  *                 break
  *         if flag:             # <<<<<<<<<<<<<<
@@ -5903,7 +7593,7 @@ static Node __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_optimize_plans(std::ma
     __pyx_t_11 = (__pyx_v_flag != 0);
     if (__pyx_t_11) {
 
-      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":542
+      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":717
  *                 break
  *         if flag:
  *             optimized_plans.push_back(plans_to_optimize[k])             # <<<<<<<<<<<<<<
@@ -5914,22 +7604,22 @@ static Node __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_optimize_plans(std::ma
         __pyx_v_optimized_plans.push_back((__pyx_v_plans_to_optimize[__pyx_v_k]));
       } catch(...) {
         __Pyx_CppExn2PyErr();
-        {__pyx_filename = __pyx_f[0]; __pyx_lineno = 542; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        {__pyx_filename = __pyx_f[0]; __pyx_lineno = 717; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       }
 
-      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":543
+      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":718
  *         if flag:
  *             optimized_plans.push_back(plans_to_optimize[k])
  *             selected_join_preds[plans_to_optimize[k].children[0].predicates[0].feat_name] = True             # <<<<<<<<<<<<<<
  * 
  *     generate_new_plans(plans_to_optimize, plans_to_update, pred_index,
  */
-      __pyx_t_6 = __pyx_convert_PyBytes_string_to_py_std__in_string((((__pyx_v_plans_to_optimize[__pyx_v_k]).children[0]).predicates[0]).feat_name); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 543; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_6 = __pyx_convert_PyBytes_string_to_py_std__in_string((((__pyx_v_plans_to_optimize[__pyx_v_k]).children[0]).predicates[0]).feat_name); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 718; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_GOTREF(__pyx_t_6);
-      if (unlikely(PyDict_SetItem(__pyx_v_selected_join_preds, __pyx_t_6, Py_True) < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 543; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      if (unlikely(PyDict_SetItem(__pyx_v_selected_join_preds, __pyx_t_6, Py_True) < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 718; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
 
-      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":541
+      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":716
  *                 flag = False
  *                 break
  *         if flag:             # <<<<<<<<<<<<<<
@@ -5938,7 +7628,7 @@ static Node __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_optimize_plans(std::ma
  */
     }
 
-    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":530
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":705
  * 
  *     pyl = sorted(py_map, key=py_map.get, reverse=True)
  *     for k in pyl:             # <<<<<<<<<<<<<<
@@ -5948,7 +7638,7 @@ static Node __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_optimize_plans(std::ma
   }
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":545
+  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":720
  *             selected_join_preds[plans_to_optimize[k].children[0].predicates[0].feat_name] = True
  * 
  *     generate_new_plans(plans_to_optimize, plans_to_update, pred_index,             # <<<<<<<<<<<<<<
@@ -5957,7 +7647,7 @@ static Node __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_optimize_plans(std::ma
  */
   __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_generate_new_plans(__pyx_v_plans_to_optimize, __pyx_v_plans_to_update, __pyx_v_pred_index, __pyx_v_optimized_plans);
 
-  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":550
+  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":725
  *     cdef vector[Node] reordered_plans
  *     cdef vector[bool] overlap_join_plans
  *     for i in range(optimized_plans.size()):             # <<<<<<<<<<<<<<
@@ -5968,18 +7658,18 @@ static Node __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_optimize_plans(std::ma
   for (__pyx_t_3 = 0; __pyx_t_3 < __pyx_t_2; __pyx_t_3+=1) {
     __pyx_v_i = __pyx_t_3;
 
-    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":551
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":726
  *     cdef vector[bool] overlap_join_plans
  *     for i in range(optimized_plans.size()):
  *         if optimized_plans[i].children[0].predicates[0].sim_measure_type.compare("OVERLAP_COEFFICIENT") == 0:             # <<<<<<<<<<<<<<
  *             overlap_join_plans.push_back(True)
  *             reordered_plans.push_back(optimized_plans[i])
  */
-    __pyx_t_12 = __pyx_convert_string_from_py_std__in_string(__pyx_n_b_OVERLAP_COEFFICIENT); if (unlikely(PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 551; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_12 = __pyx_convert_string_from_py_std__in_string(__pyx_n_b_OVERLAP_COEFFICIENT); if (unlikely(PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 726; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __pyx_t_11 = (((((__pyx_v_optimized_plans[__pyx_v_i]).children[0]).predicates[0]).sim_measure_type.compare(__pyx_t_12) == 0) != 0);
     if (__pyx_t_11) {
 
-      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":552
+      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":727
  *     for i in range(optimized_plans.size()):
  *         if optimized_plans[i].children[0].predicates[0].sim_measure_type.compare("OVERLAP_COEFFICIENT") == 0:
  *             overlap_join_plans.push_back(True)             # <<<<<<<<<<<<<<
@@ -5990,10 +7680,10 @@ static Node __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_optimize_plans(std::ma
         __pyx_v_overlap_join_plans.push_back(1);
       } catch(...) {
         __Pyx_CppExn2PyErr();
-        {__pyx_filename = __pyx_f[0]; __pyx_lineno = 552; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        {__pyx_filename = __pyx_f[0]; __pyx_lineno = 727; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       }
 
-      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":553
+      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":728
  *         if optimized_plans[i].children[0].predicates[0].sim_measure_type.compare("OVERLAP_COEFFICIENT") == 0:
  *             overlap_join_plans.push_back(True)
  *             reordered_plans.push_back(optimized_plans[i])             # <<<<<<<<<<<<<<
@@ -6004,10 +7694,10 @@ static Node __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_optimize_plans(std::ma
         __pyx_v_reordered_plans.push_back((__pyx_v_optimized_plans[__pyx_v_i]));
       } catch(...) {
         __Pyx_CppExn2PyErr();
-        {__pyx_filename = __pyx_f[0]; __pyx_lineno = 553; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        {__pyx_filename = __pyx_f[0]; __pyx_lineno = 728; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       }
 
-      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":551
+      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":726
  *     cdef vector[bool] overlap_join_plans
  *     for i in range(optimized_plans.size()):
  *         if optimized_plans[i].children[0].predicates[0].sim_measure_type.compare("OVERLAP_COEFFICIENT") == 0:             # <<<<<<<<<<<<<<
@@ -6017,7 +7707,7 @@ static Node __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_optimize_plans(std::ma
       goto __pyx_L17;
     }
 
-    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":555
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":730
  *             reordered_plans.push_back(optimized_plans[i])
  *         else:
  *             overlap_join_plans.push_back(False)             # <<<<<<<<<<<<<<
@@ -6029,13 +7719,13 @@ static Node __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_optimize_plans(std::ma
         __pyx_v_overlap_join_plans.push_back(0);
       } catch(...) {
         __Pyx_CppExn2PyErr();
-        {__pyx_filename = __pyx_f[0]; __pyx_lineno = 555; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        {__pyx_filename = __pyx_f[0]; __pyx_lineno = 730; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       }
     }
     __pyx_L17:;
   }
 
-  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":557
+  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":732
  *             overlap_join_plans.push_back(False)
  * 
  *     for i in range(overlap_join_plans.size()):             # <<<<<<<<<<<<<<
@@ -6046,7 +7736,7 @@ static Node __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_optimize_plans(std::ma
   for (__pyx_t_3 = 0; __pyx_t_3 < __pyx_t_2; __pyx_t_3+=1) {
     __pyx_v_i = __pyx_t_3;
 
-    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":558
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":733
  * 
  *     for i in range(overlap_join_plans.size()):
  *         if not overlap_join_plans[i]:             # <<<<<<<<<<<<<<
@@ -6056,7 +7746,7 @@ static Node __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_optimize_plans(std::ma
     __pyx_t_11 = ((!((__pyx_v_overlap_join_plans[__pyx_v_i]) != 0)) != 0);
     if (__pyx_t_11) {
 
-      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":559
+      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":734
  *     for i in range(overlap_join_plans.size()):
  *         if not overlap_join_plans[i]:
  *             reordered_plans.push_back(optimized_plans[i])             # <<<<<<<<<<<<<<
@@ -6067,10 +7757,10 @@ static Node __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_optimize_plans(std::ma
         __pyx_v_reordered_plans.push_back((__pyx_v_optimized_plans[__pyx_v_i]));
       } catch(...) {
         __Pyx_CppExn2PyErr();
-        {__pyx_filename = __pyx_f[0]; __pyx_lineno = 559; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        {__pyx_filename = __pyx_f[0]; __pyx_lineno = 734; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       }
 
-      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":558
+      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":733
  * 
  *     for i in range(overlap_join_plans.size()):
  *         if not overlap_join_plans[i]:             # <<<<<<<<<<<<<<
@@ -6080,7 +7770,7 @@ static Node __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_optimize_plans(std::ma
     }
   }
 
-  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":564
+  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":739
  *     cdef Node optimized_plan
  * 
  *     if push_flag:             # <<<<<<<<<<<<<<
@@ -6090,7 +7780,7 @@ static Node __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_optimize_plans(std::ma
   __pyx_t_11 = (__pyx_v_push_flag != 0);
   if (__pyx_t_11) {
 
-    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":565
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":740
  * 
  *     if push_flag:
  *         push_filters(reordered_plans, pushed_optimized_plans)             # <<<<<<<<<<<<<<
@@ -6099,7 +7789,7 @@ static Node __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_optimize_plans(std::ma
  */
     __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_push_filters(__pyx_v_reordered_plans, __pyx_v_pushed_optimized_plans);
 
-    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":567
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":742
  *         push_filters(reordered_plans, pushed_optimized_plans)
  * 
  *         for i in range(pushed_optimized_plans.size()):             # <<<<<<<<<<<<<<
@@ -6110,7 +7800,7 @@ static Node __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_optimize_plans(std::ma
     for (__pyx_t_3 = 0; __pyx_t_3 < __pyx_t_2; __pyx_t_3+=1) {
       __pyx_v_i = __pyx_t_3;
 
-      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":568
+      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":743
  * 
  *         for i in range(pushed_optimized_plans.size()):
  *             if i == 0:             # <<<<<<<<<<<<<<
@@ -6120,7 +7810,7 @@ static Node __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_optimize_plans(std::ma
       __pyx_t_11 = ((__pyx_v_i == 0) != 0);
       if (__pyx_t_11) {
 
-        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":569
+        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":744
  *         for i in range(pushed_optimized_plans.size()):
  *             if i == 0:
  *                 optimized_plan = pushed_optimized_plans[i]             # <<<<<<<<<<<<<<
@@ -6129,7 +7819,7 @@ static Node __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_optimize_plans(std::ma
  */
         __pyx_v_optimized_plan = (__pyx_v_pushed_optimized_plans[__pyx_v_i]);
 
-        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":568
+        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":743
  * 
  *         for i in range(pushed_optimized_plans.size()):
  *             if i == 0:             # <<<<<<<<<<<<<<
@@ -6139,7 +7829,7 @@ static Node __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_optimize_plans(std::ma
         goto __pyx_L24;
       }
 
-      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":571
+      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":746
  *                 optimized_plan = pushed_optimized_plans[i]
  *             else:
  *                 optimized_plan = merge_plans(optimized_plan, pushed_optimized_plans[i])             # <<<<<<<<<<<<<<
@@ -6152,7 +7842,7 @@ static Node __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_optimize_plans(std::ma
       __pyx_L24:;
     }
 
-    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":564
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":739
  *     cdef Node optimized_plan
  * 
  *     if push_flag:             # <<<<<<<<<<<<<<
@@ -6162,7 +7852,7 @@ static Node __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_optimize_plans(std::ma
     goto __pyx_L21;
   }
 
-  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":573
+  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":748
  *                 optimized_plan = merge_plans(optimized_plan, pushed_optimized_plans[i])
  *     else:
  *         for i in range(reordered_plans.size()):             # <<<<<<<<<<<<<<
@@ -6174,7 +7864,7 @@ static Node __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_optimize_plans(std::ma
     for (__pyx_t_3 = 0; __pyx_t_3 < __pyx_t_2; __pyx_t_3+=1) {
       __pyx_v_i = __pyx_t_3;
 
-      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":574
+      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":749
  *     else:
  *         for i in range(reordered_plans.size()):
  *             if i == 0:             # <<<<<<<<<<<<<<
@@ -6184,7 +7874,7 @@ static Node __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_optimize_plans(std::ma
       __pyx_t_11 = ((__pyx_v_i == 0) != 0);
       if (__pyx_t_11) {
 
-        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":575
+        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":750
  *         for i in range(reordered_plans.size()):
  *             if i == 0:
  *                 optimized_plan = reordered_plans[i]             # <<<<<<<<<<<<<<
@@ -6193,7 +7883,7 @@ static Node __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_optimize_plans(std::ma
  */
         __pyx_v_optimized_plan = (__pyx_v_reordered_plans[__pyx_v_i]);
 
-        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":574
+        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":749
  *     else:
  *         for i in range(reordered_plans.size()):
  *             if i == 0:             # <<<<<<<<<<<<<<
@@ -6203,7 +7893,7 @@ static Node __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_optimize_plans(std::ma
         goto __pyx_L27;
       }
 
-      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":577
+      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":752
  *                 optimized_plan = reordered_plans[i]
  *             else:
  *                 optimized_plan = merge_plans(optimized_plan, reordered_plans[i])             # <<<<<<<<<<<<<<
@@ -6218,7 +7908,7 @@ static Node __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_optimize_plans(std::ma
   }
   __pyx_L21:;
 
-  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":579
+  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":754
  *                 optimized_plan = merge_plans(optimized_plan, reordered_plans[i])
  * 
  *     return optimized_plan             # <<<<<<<<<<<<<<
@@ -6228,7 +7918,7 @@ static Node __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_optimize_plans(std::ma
   __pyx_r = __pyx_v_optimized_plan;
   goto __pyx_L0;
 
-  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":500
+  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":675
  * 
  * 
  * cdef Node optimize_plans(omap[int, vector[Node]]& plans,             # <<<<<<<<<<<<<<
@@ -6250,7 +7940,7 @@ static Node __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_optimize_plans(std::ma
   return __pyx_r;
 }
 
-/* "py_stringsimjoin/apply_rf/ex_plan.pyx":581
+/* "py_stringsimjoin/apply_rf/ex_plan.pyx":756
  *     return optimized_plan
  * 
  * cdef void push_filters(vector[Node]& plans, vector[Node]& new_plans):             # <<<<<<<<<<<<<<
@@ -6283,7 +7973,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_push_filters(std::vect
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("push_filters", 0);
 
-  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":586
+  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":761
  *     cdef string node_type
  *     cdef Node curr_node, new_node
  *     for i in range(plans.size()):             # <<<<<<<<<<<<<<
@@ -6294,7 +7984,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_push_filters(std::vect
   for (__pyx_t_2 = 0; __pyx_t_2 < __pyx_t_1; __pyx_t_2+=1) {
     __pyx_v_i = __pyx_t_2;
 
-    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":587
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":762
  *     cdef Node curr_node, new_node
  *     for i in range(plans.size()):
  *         curr_node = plans[i]             # <<<<<<<<<<<<<<
@@ -6303,7 +7993,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_push_filters(std::vect
  */
     __pyx_v_curr_node = (__pyx_v_plans[__pyx_v_i]);
 
-    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":588
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":763
  *     for i in range(plans.size()):
  *         curr_node = plans[i]
  *         nodes = vector[Node]()             # <<<<<<<<<<<<<<
@@ -6314,11 +8004,11 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_push_filters(std::vect
       __pyx_t_3 = std::vector<Node> ();
     } catch(...) {
       __Pyx_CppExn2PyErr();
-      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 588; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 763; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     }
     __pyx_v_nodes = __pyx_t_3;
 
-    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":589
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":764
  *         curr_node = plans[i]
  *         nodes = vector[Node]()
  *         new_node = Node(curr_node.node_type)             # <<<<<<<<<<<<<<
@@ -6327,7 +8017,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_push_filters(std::vect
  */
     __pyx_v_new_node = Node(__pyx_v_curr_node.node_type);
 
-    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":590
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":765
  *         nodes = vector[Node]()
  *         new_node = Node(curr_node.node_type)
  *         new_node.set_tree_id(curr_node.tree_id)             # <<<<<<<<<<<<<<
@@ -6336,7 +8026,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_push_filters(std::vect
  */
     __pyx_v_new_node.set_tree_id(__pyx_v_curr_node.tree_id);
 
-    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":591
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":766
  *         new_node = Node(curr_node.node_type)
  *         new_node.set_tree_id(curr_node.tree_id)
  *         new_node.set_rule_id(curr_node.rule_id)             # <<<<<<<<<<<<<<
@@ -6345,7 +8035,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_push_filters(std::vect
  */
     __pyx_v_new_node.set_rule_id(__pyx_v_curr_node.rule_id);
 
-    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":592
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":767
  *         new_node.set_tree_id(curr_node.tree_id)
  *         new_node.set_rule_id(curr_node.rule_id)
  *         nodes.push_back(new_node)             # <<<<<<<<<<<<<<
@@ -6356,10 +8046,10 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_push_filters(std::vect
       __pyx_v_nodes.push_back(__pyx_v_new_node);
     } catch(...) {
       __Pyx_CppExn2PyErr();
-      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 592; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 767; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     }
 
-    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":593
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":768
  *         new_node.set_rule_id(curr_node.rule_id)
  *         nodes.push_back(new_node)
  *         curr_node = curr_node.children[0]             # <<<<<<<<<<<<<<
@@ -6368,7 +8058,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_push_filters(std::vect
  */
     __pyx_v_curr_node = (__pyx_v_curr_node.children[0]);
 
-    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":594
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":769
  *         nodes.push_back(new_node)
  *         curr_node = curr_node.children[0]
  *         j = 1             # <<<<<<<<<<<<<<
@@ -6377,19 +8067,19 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_push_filters(std::vect
  */
     __pyx_v_j = 1;
 
-    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":595
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":770
  *         curr_node = curr_node.children[0]
  *         j = 1
  *         seen_tok = {}             # <<<<<<<<<<<<<<
  *         while curr_node.node_type.compare("OUTPUT") != 0:
  *             if curr_node.node_type.compare("JOIN") == 0:
  */
-    __pyx_t_4 = PyDict_New(); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 595; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_4 = PyDict_New(); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 770; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_4);
     __Pyx_XDECREF_SET(__pyx_v_seen_tok, ((PyObject*)__pyx_t_4));
     __pyx_t_4 = 0;
 
-    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":596
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":771
  *         j = 1
  *         seen_tok = {}
  *         while curr_node.node_type.compare("OUTPUT") != 0:             # <<<<<<<<<<<<<<
@@ -6397,22 +8087,22 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_push_filters(std::vect
  *                 new_node = Node(curr_node.node_type)
  */
     while (1) {
-      __pyx_t_5 = __pyx_convert_string_from_py_std__in_string(__pyx_n_b_OUTPUT); if (unlikely(PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 596; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_5 = __pyx_convert_string_from_py_std__in_string(__pyx_n_b_OUTPUT); if (unlikely(PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 771; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __pyx_t_6 = ((__pyx_v_curr_node.node_type.compare(__pyx_t_5) != 0) != 0);
       if (!__pyx_t_6) break;
 
-      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":597
+      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":772
  *         seen_tok = {}
  *         while curr_node.node_type.compare("OUTPUT") != 0:
  *             if curr_node.node_type.compare("JOIN") == 0:             # <<<<<<<<<<<<<<
  *                 new_node = Node(curr_node.node_type)
  *                 new_node.predicates.push_back(curr_node.predicates[0])
  */
-      __pyx_t_5 = __pyx_convert_string_from_py_std__in_string(__pyx_n_b_JOIN); if (unlikely(PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 597; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_5 = __pyx_convert_string_from_py_std__in_string(__pyx_n_b_JOIN); if (unlikely(PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 772; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __pyx_t_6 = ((__pyx_v_curr_node.node_type.compare(__pyx_t_5) == 0) != 0);
       if (__pyx_t_6) {
 
-        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":598
+        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":773
  *         while curr_node.node_type.compare("OUTPUT") != 0:
  *             if curr_node.node_type.compare("JOIN") == 0:
  *                 new_node = Node(curr_node.node_type)             # <<<<<<<<<<<<<<
@@ -6421,7 +8111,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_push_filters(std::vect
  */
         __pyx_v_new_node = Node(__pyx_v_curr_node.node_type);
 
-        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":599
+        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":774
  *             if curr_node.node_type.compare("JOIN") == 0:
  *                 new_node = Node(curr_node.node_type)
  *                 new_node.predicates.push_back(curr_node.predicates[0])             # <<<<<<<<<<<<<<
@@ -6432,10 +8122,10 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_push_filters(std::vect
           __pyx_v_new_node.predicates.push_back((__pyx_v_curr_node.predicates[0]));
         } catch(...) {
           __Pyx_CppExn2PyErr();
-          {__pyx_filename = __pyx_f[0]; __pyx_lineno = 599; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+          {__pyx_filename = __pyx_f[0]; __pyx_lineno = 774; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
         }
 
-        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":600
+        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":775
  *                 new_node = Node(curr_node.node_type)
  *                 new_node.predicates.push_back(curr_node.predicates[0])
  *                 nodes.push_back(new_node)             # <<<<<<<<<<<<<<
@@ -6446,10 +8136,10 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_push_filters(std::vect
           __pyx_v_nodes.push_back(__pyx_v_new_node);
         } catch(...) {
           __Pyx_CppExn2PyErr();
-          {__pyx_filename = __pyx_f[0]; __pyx_lineno = 600; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+          {__pyx_filename = __pyx_f[0]; __pyx_lineno = 775; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
         }
 
-        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":601
+        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":776
  *                 new_node.predicates.push_back(curr_node.predicates[0])
  *                 nodes.push_back(new_node)
  *                 curr_node = curr_node.children[0]             # <<<<<<<<<<<<<<
@@ -6458,7 +8148,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_push_filters(std::vect
  */
         __pyx_v_curr_node = (__pyx_v_curr_node.children[0]);
 
-        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":602
+        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":777
  *                 nodes.push_back(new_node)
  *                 curr_node = curr_node.children[0]
  *                 j += 1             # <<<<<<<<<<<<<<
@@ -6467,7 +8157,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_push_filters(std::vect
  */
         __pyx_v_j = (__pyx_v_j + 1);
 
-        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":603
+        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":778
  *                 curr_node = curr_node.children[0]
  *                 j += 1
  *                 continue             # <<<<<<<<<<<<<<
@@ -6476,7 +8166,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_push_filters(std::vect
  */
         goto __pyx_L5_continue;
 
-        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":597
+        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":772
  *         seen_tok = {}
  *         while curr_node.node_type.compare("OUTPUT") != 0:
  *             if curr_node.node_type.compare("JOIN") == 0:             # <<<<<<<<<<<<<<
@@ -6485,14 +8175,14 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_push_filters(std::vect
  */
       }
 
-      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":604
+      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":779
  *                 j += 1
  *                 continue
  *             if (curr_node.predicates[0].tokenizer_type.compare("none") == 0 or             # <<<<<<<<<<<<<<
  *                 seen_tok.get(curr_node.predicates[0].tokenizer_type) is None):
  *                 new_node = Node(curr_node.node_type)
  */
-      __pyx_t_5 = __pyx_convert_string_from_py_std__in_string(__pyx_n_b_none); if (unlikely(PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 604; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_5 = __pyx_convert_string_from_py_std__in_string(__pyx_n_b_none); if (unlikely(PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 779; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __pyx_t_7 = (((__pyx_v_curr_node.predicates[0]).tokenizer_type.compare(__pyx_t_5) == 0) != 0);
       if (!__pyx_t_7) {
       } else {
@@ -6500,16 +8190,16 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_push_filters(std::vect
         goto __pyx_L9_bool_binop_done;
       }
 
-      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":605
+      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":780
  *                 continue
  *             if (curr_node.predicates[0].tokenizer_type.compare("none") == 0 or
  *                 seen_tok.get(curr_node.predicates[0].tokenizer_type) is None):             # <<<<<<<<<<<<<<
  *                 new_node = Node(curr_node.node_type)
  *                 new_node.predicates.push_back(curr_node.predicates[0])
  */
-      __pyx_t_4 = __pyx_convert_PyBytes_string_to_py_std__in_string((__pyx_v_curr_node.predicates[0]).tokenizer_type); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 605; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_4 = __pyx_convert_PyBytes_string_to_py_std__in_string((__pyx_v_curr_node.predicates[0]).tokenizer_type); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 780; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_GOTREF(__pyx_t_4);
-      __pyx_t_8 = __Pyx_PyDict_GetItemDefault(__pyx_v_seen_tok, __pyx_t_4, Py_None); if (unlikely(!__pyx_t_8)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 605; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_8 = __Pyx_PyDict_GetItemDefault(__pyx_v_seen_tok, __pyx_t_4, Py_None); if (unlikely(!__pyx_t_8)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 780; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_GOTREF(__pyx_t_8);
       __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
       __pyx_t_7 = (__pyx_t_8 == Py_None);
@@ -6518,7 +8208,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_push_filters(std::vect
       __pyx_t_6 = __pyx_t_9;
       __pyx_L9_bool_binop_done:;
 
-      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":604
+      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":779
  *                 j += 1
  *                 continue
  *             if (curr_node.predicates[0].tokenizer_type.compare("none") == 0 or             # <<<<<<<<<<<<<<
@@ -6527,7 +8217,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_push_filters(std::vect
  */
       if (__pyx_t_6) {
 
-        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":606
+        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":781
  *             if (curr_node.predicates[0].tokenizer_type.compare("none") == 0 or
  *                 seen_tok.get(curr_node.predicates[0].tokenizer_type) is None):
  *                 new_node = Node(curr_node.node_type)             # <<<<<<<<<<<<<<
@@ -6536,7 +8226,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_push_filters(std::vect
  */
         __pyx_v_new_node = Node(__pyx_v_curr_node.node_type);
 
-        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":607
+        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":782
  *                 seen_tok.get(curr_node.predicates[0].tokenizer_type) is None):
  *                 new_node = Node(curr_node.node_type)
  *                 new_node.predicates.push_back(curr_node.predicates[0])             # <<<<<<<<<<<<<<
@@ -6547,10 +8237,10 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_push_filters(std::vect
           __pyx_v_new_node.predicates.push_back((__pyx_v_curr_node.predicates[0]));
         } catch(...) {
           __Pyx_CppExn2PyErr();
-          {__pyx_filename = __pyx_f[0]; __pyx_lineno = 607; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+          {__pyx_filename = __pyx_f[0]; __pyx_lineno = 782; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
         }
 
-        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":608
+        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":783
  *                 new_node = Node(curr_node.node_type)
  *                 new_node.predicates.push_back(curr_node.predicates[0])
  *                 nodes.push_back(new_node)             # <<<<<<<<<<<<<<
@@ -6561,25 +8251,25 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_push_filters(std::vect
           __pyx_v_nodes.push_back(__pyx_v_new_node);
         } catch(...) {
           __Pyx_CppExn2PyErr();
-          {__pyx_filename = __pyx_f[0]; __pyx_lineno = 608; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+          {__pyx_filename = __pyx_f[0]; __pyx_lineno = 783; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
         }
 
-        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":609
+        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":784
  *                 new_node.predicates.push_back(curr_node.predicates[0])
  *                 nodes.push_back(new_node)
  *                 seen_tok[curr_node.predicates[0].tokenizer_type] = j             # <<<<<<<<<<<<<<
  *                 j += 1
  *             else:
  */
-        __pyx_t_8 = __Pyx_PyInt_From_int(__pyx_v_j); if (unlikely(!__pyx_t_8)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 609; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        __pyx_t_8 = __Pyx_PyInt_From_int(__pyx_v_j); if (unlikely(!__pyx_t_8)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 784; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
         __Pyx_GOTREF(__pyx_t_8);
-        __pyx_t_4 = __pyx_convert_PyBytes_string_to_py_std__in_string((__pyx_v_curr_node.predicates[0]).tokenizer_type); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 609; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        __pyx_t_4 = __pyx_convert_PyBytes_string_to_py_std__in_string((__pyx_v_curr_node.predicates[0]).tokenizer_type); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 784; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
         __Pyx_GOTREF(__pyx_t_4);
-        if (unlikely(PyDict_SetItem(__pyx_v_seen_tok, __pyx_t_4, __pyx_t_8) < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 609; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        if (unlikely(PyDict_SetItem(__pyx_v_seen_tok, __pyx_t_4, __pyx_t_8) < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 784; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
         __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
         __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
 
-        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":610
+        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":785
  *                 nodes.push_back(new_node)
  *                 seen_tok[curr_node.predicates[0].tokenizer_type] = j
  *                 j += 1             # <<<<<<<<<<<<<<
@@ -6588,7 +8278,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_push_filters(std::vect
  */
         __pyx_v_j = (__pyx_v_j + 1);
 
-        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":604
+        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":779
  *                 j += 1
  *                 continue
  *             if (curr_node.predicates[0].tokenizer_type.compare("none") == 0 or             # <<<<<<<<<<<<<<
@@ -6598,7 +8288,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_push_filters(std::vect
         goto __pyx_L8;
       }
 
-      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":612
+      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":787
  *                 j += 1
  *             else:
  *                 nodes[seen_tok[curr_node.predicates[0].tokenizer_type]].predicates.push_back(curr_node.predicates[0])             # <<<<<<<<<<<<<<
@@ -6606,23 +8296,23 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_push_filters(std::vect
  *             curr_node = curr_node.children[0]
  */
       /*else*/ {
-        __pyx_t_8 = __pyx_convert_PyBytes_string_to_py_std__in_string((__pyx_v_curr_node.predicates[0]).tokenizer_type); if (unlikely(!__pyx_t_8)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 612; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        __pyx_t_8 = __pyx_convert_PyBytes_string_to_py_std__in_string((__pyx_v_curr_node.predicates[0]).tokenizer_type); if (unlikely(!__pyx_t_8)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 787; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
         __Pyx_GOTREF(__pyx_t_8);
-        __pyx_t_4 = __Pyx_PyDict_GetItem(__pyx_v_seen_tok, __pyx_t_8); if (unlikely(__pyx_t_4 == NULL)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 612; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
+        __pyx_t_4 = __Pyx_PyDict_GetItem(__pyx_v_seen_tok, __pyx_t_8); if (unlikely(__pyx_t_4 == NULL)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 787; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
         __Pyx_GOTREF(__pyx_t_4);
         __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
-        __pyx_t_10 = __Pyx_PyInt_As_size_t(__pyx_t_4); if (unlikely((__pyx_t_10 == (size_t)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 612; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        __pyx_t_10 = __Pyx_PyInt_As_size_t(__pyx_t_4); if (unlikely((__pyx_t_10 == (size_t)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 787; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
         __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
         try {
           (__pyx_v_nodes[__pyx_t_10]).predicates.push_back((__pyx_v_curr_node.predicates[0]));
         } catch(...) {
           __Pyx_CppExn2PyErr();
-          {__pyx_filename = __pyx_f[0]; __pyx_lineno = 612; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+          {__pyx_filename = __pyx_f[0]; __pyx_lineno = 787; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
         }
       }
       __pyx_L8:;
 
-      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":614
+      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":789
  *                 nodes[seen_tok[curr_node.predicates[0].tokenizer_type]].predicates.push_back(curr_node.predicates[0])
  * 
  *             curr_node = curr_node.children[0]             # <<<<<<<<<<<<<<
@@ -6633,7 +8323,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_push_filters(std::vect
       __pyx_L5_continue:;
     }
 
-    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":616
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":791
  *             curr_node = curr_node.children[0]
  * 
  *         new_node = Node(curr_node.node_type)             # <<<<<<<<<<<<<<
@@ -6642,7 +8332,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_push_filters(std::vect
  */
     __pyx_v_new_node = Node(__pyx_v_curr_node.node_type);
 
-    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":617
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":792
  * 
  *         new_node = Node(curr_node.node_type)
  *         new_node.set_tree_id(curr_node.tree_id)             # <<<<<<<<<<<<<<
@@ -6651,7 +8341,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_push_filters(std::vect
  */
     __pyx_v_new_node.set_tree_id(__pyx_v_curr_node.tree_id);
 
-    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":618
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":793
  *         new_node = Node(curr_node.node_type)
  *         new_node.set_tree_id(curr_node.tree_id)
  *         new_node.set_rule_id(curr_node.rule_id)             # <<<<<<<<<<<<<<
@@ -6660,7 +8350,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_push_filters(std::vect
  */
     __pyx_v_new_node.set_rule_id(__pyx_v_curr_node.rule_id);
 
-    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":619
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":794
  *         new_node.set_tree_id(curr_node.tree_id)
  *         new_node.set_rule_id(curr_node.rule_id)
  *         nodes.push_back(new_node)             # <<<<<<<<<<<<<<
@@ -6671,10 +8361,10 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_push_filters(std::vect
       __pyx_v_nodes.push_back(__pyx_v_new_node);
     } catch(...) {
       __Pyx_CppExn2PyErr();
-      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 619; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 794; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     }
 
-    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":621
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":796
  *         nodes.push_back(new_node)
  * 
  *         for k in xrange(nodes.size() - 2, -1, -1):             # <<<<<<<<<<<<<<
@@ -6684,7 +8374,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_push_filters(std::vect
     for (__pyx_t_11 = (__pyx_v_nodes.size() - 2); __pyx_t_11 > -1L; __pyx_t_11-=1) {
       __pyx_v_k = __pyx_t_11;
 
-      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":622
+      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":797
  * 
  *         for k in xrange(nodes.size() - 2, -1, -1):
  *             nodes[k].add_child(nodes[k+1])             # <<<<<<<<<<<<<<
@@ -6694,7 +8384,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_push_filters(std::vect
       (__pyx_v_nodes[__pyx_v_k]).add_child((__pyx_v_nodes[(__pyx_v_k + 1)]));
     }
 
-    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":624
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":799
  *             nodes[k].add_child(nodes[k+1])
  * 
  *         new_plans.push_back(nodes[0])             # <<<<<<<<<<<<<<
@@ -6705,11 +8395,11 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_push_filters(std::vect
       __pyx_v_new_plans.push_back((__pyx_v_nodes[0]));
     } catch(...) {
       __Pyx_CppExn2PyErr();
-      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 624; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 799; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     }
   }
 
-  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":581
+  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":756
  *     return optimized_plan
  * 
  * cdef void push_filters(vector[Node]& plans, vector[Node]& new_plans):             # <<<<<<<<<<<<<<
@@ -6728,7 +8418,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_push_filters(std::vect
   __Pyx_RefNannyFinishContext();
 }
 
-/* "py_stringsimjoin/apply_rf/ex_plan.pyx":627
+/* "py_stringsimjoin/apply_rf/ex_plan.pyx":802
  * 
  * 
  * cdef void generate_new_plans(vector[Node]& old_plans,             # <<<<<<<<<<<<<<
@@ -6762,7 +8452,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_generate_new_plans(std
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("generate_new_plans", 0);
 
-  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":637
+  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":812
  *     cdef bool join_pred
  *     cdef string node_type
  *     for i in range(pred_index.size()):             # <<<<<<<<<<<<<<
@@ -6773,7 +8463,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_generate_new_plans(std
   for (__pyx_t_2 = 0; __pyx_t_2 < __pyx_t_1; __pyx_t_2+=1) {
     __pyx_v_i = __pyx_t_2;
 
-    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":639
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":814
  *     for i in range(pred_index.size()):
  * 
  *         preds.clear()             # <<<<<<<<<<<<<<
@@ -6782,7 +8472,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_generate_new_plans(std
  */
     __pyx_v_preds.clear();
 
-    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":641
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":816
  *         preds.clear()
  * 
  *         tree_id = old_plans[plans_to_update[i]].tree_id             # <<<<<<<<<<<<<<
@@ -6792,7 +8482,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_generate_new_plans(std
     __pyx_t_3 = (__pyx_v_old_plans[(__pyx_v_plans_to_update[__pyx_v_i])]).tree_id;
     __pyx_v_tree_id = __pyx_t_3;
 
-    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":642
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":817
  * 
  *         tree_id = old_plans[plans_to_update[i]].tree_id
  *         rule_id = old_plans[plans_to_update[i]].rule_id             # <<<<<<<<<<<<<<
@@ -6802,7 +8492,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_generate_new_plans(std
     __pyx_t_3 = (__pyx_v_old_plans[(__pyx_v_plans_to_update[__pyx_v_i])]).rule_id;
     __pyx_v_rule_id = __pyx_t_3;
 
-    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":643
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":818
  *         tree_id = old_plans[plans_to_update[i]].tree_id
  *         rule_id = old_plans[plans_to_update[i]].rule_id
  *         curr_node = old_plans[plans_to_update[i]].children[0]             # <<<<<<<<<<<<<<
@@ -6811,7 +8501,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_generate_new_plans(std
  */
     __pyx_v_curr_node = ((__pyx_v_old_plans[(__pyx_v_plans_to_update[__pyx_v_i])]).children[0]);
 
-    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":645
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":820
  *         curr_node = old_plans[plans_to_update[i]].children[0]
  * 
  *         while curr_node.node_type.compare("OUTPUT") != 0:             # <<<<<<<<<<<<<<
@@ -6819,11 +8509,11 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_generate_new_plans(std
  *             curr_node = curr_node.children[0]
  */
     while (1) {
-      __pyx_t_4 = __pyx_convert_string_from_py_std__in_string(__pyx_n_b_OUTPUT); if (unlikely(PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 645; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_4 = __pyx_convert_string_from_py_std__in_string(__pyx_n_b_OUTPUT); if (unlikely(PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 820; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __pyx_t_5 = ((__pyx_v_curr_node.node_type.compare(__pyx_t_4) != 0) != 0);
       if (!__pyx_t_5) break;
 
-      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":646
+      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":821
  * 
  *         while curr_node.node_type.compare("OUTPUT") != 0:
  *             preds.push_back(curr_node.predicates[0])             # <<<<<<<<<<<<<<
@@ -6834,10 +8524,10 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_generate_new_plans(std
         __pyx_v_preds.push_back((__pyx_v_curr_node.predicates[0]));
       } catch(...) {
         __Pyx_CppExn2PyErr();
-        {__pyx_filename = __pyx_f[0]; __pyx_lineno = 646; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        {__pyx_filename = __pyx_f[0]; __pyx_lineno = 821; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       }
 
-      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":647
+      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":822
  *         while curr_node.node_type.compare("OUTPUT") != 0:
  *             preds.push_back(curr_node.predicates[0])
  *             curr_node = curr_node.children[0]             # <<<<<<<<<<<<<<
@@ -6847,7 +8537,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_generate_new_plans(std
       __pyx_v_curr_node = (__pyx_v_curr_node.children[0]);
     }
 
-    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":649
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":824
  *             curr_node = curr_node.children[0]
  * 
  *         nodes = vector[Node]()             # <<<<<<<<<<<<<<
@@ -6858,21 +8548,21 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_generate_new_plans(std
       __pyx_t_6 = std::vector<Node> ();
     } catch(...) {
       __Pyx_CppExn2PyErr();
-      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 649; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 824; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     }
     __pyx_v_nodes = __pyx_t_6;
 
-    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":650
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":825
  * 
  *         nodes = vector[Node]()
  *         node_type = "ROOT"             # <<<<<<<<<<<<<<
  *         new_node = Node(node_type)
  *         new_node.set_tree_id(tree_id)
  */
-    __pyx_t_4 = __pyx_convert_string_from_py_std__in_string(__pyx_n_b_ROOT); if (unlikely(PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 650; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_4 = __pyx_convert_string_from_py_std__in_string(__pyx_n_b_ROOT); if (unlikely(PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 825; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __pyx_v_node_type = __pyx_t_4;
 
-    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":651
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":826
  *         nodes = vector[Node]()
  *         node_type = "ROOT"
  *         new_node = Node(node_type)             # <<<<<<<<<<<<<<
@@ -6881,7 +8571,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_generate_new_plans(std
  */
     __pyx_v_new_node = Node(__pyx_v_node_type);
 
-    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":652
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":827
  *         node_type = "ROOT"
  *         new_node = Node(node_type)
  *         new_node.set_tree_id(tree_id)             # <<<<<<<<<<<<<<
@@ -6890,7 +8580,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_generate_new_plans(std
  */
     __pyx_v_new_node.set_tree_id(__pyx_v_tree_id);
 
-    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":653
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":828
  *         new_node = Node(node_type)
  *         new_node.set_tree_id(tree_id)
  *         new_node.set_rule_id(rule_id)             # <<<<<<<<<<<<<<
@@ -6899,7 +8589,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_generate_new_plans(std
  */
     __pyx_v_new_node.set_rule_id(__pyx_v_rule_id);
 
-    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":654
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":829
  *         new_node.set_tree_id(tree_id)
  *         new_node.set_rule_id(rule_id)
  *         nodes.push_back(new_node)             # <<<<<<<<<<<<<<
@@ -6910,10 +8600,10 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_generate_new_plans(std
       __pyx_v_nodes.push_back(__pyx_v_new_node);
     } catch(...) {
       __Pyx_CppExn2PyErr();
-      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 654; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 829; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     }
 
-    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":656
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":831
  *         nodes.push_back(new_node)
  * 
  *         join_pred = True             # <<<<<<<<<<<<<<
@@ -6922,7 +8612,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_generate_new_plans(std
  */
     __pyx_v_join_pred = 1;
 
-    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":658
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":833
  *         join_pred = True
  * 
  *         for j in range(preds.size()):             # <<<<<<<<<<<<<<
@@ -6933,7 +8623,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_generate_new_plans(std
     for (__pyx_t_3 = 0; __pyx_t_3 < __pyx_t_7; __pyx_t_3+=1) {
       __pyx_v_j = __pyx_t_3;
 
-      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":659
+      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":834
  * 
  *         for j in range(preds.size()):
  *             pin = j             # <<<<<<<<<<<<<<
@@ -6942,7 +8632,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_generate_new_plans(std
  */
       __pyx_v_pin = __pyx_v_j;
 
-      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":660
+      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":835
  *         for j in range(preds.size()):
  *             pin = j
  *             if j == 0:             # <<<<<<<<<<<<<<
@@ -6952,7 +8642,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_generate_new_plans(std
       __pyx_t_5 = ((__pyx_v_j == 0) != 0);
       if (__pyx_t_5) {
 
-        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":661
+        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":836
  *             pin = j
  *             if j == 0:
  *                 pin = pred_index[i]             # <<<<<<<<<<<<<<
@@ -6961,7 +8651,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_generate_new_plans(std
  */
         __pyx_v_pin = (__pyx_v_pred_index[__pyx_v_i]);
 
-        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":660
+        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":835
  *         for j in range(preds.size()):
  *             pin = j
  *             if j == 0:             # <<<<<<<<<<<<<<
@@ -6971,7 +8661,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_generate_new_plans(std
         goto __pyx_L9;
       }
 
-      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":662
+      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":837
  *             if j == 0:
  *                 pin = pred_index[i]
  *             elif j == pred_index[i]:             # <<<<<<<<<<<<<<
@@ -6981,7 +8671,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_generate_new_plans(std
       __pyx_t_5 = ((__pyx_v_j == (__pyx_v_pred_index[__pyx_v_i])) != 0);
       if (__pyx_t_5) {
 
-        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":663
+        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":838
  *                 pin = pred_index[i]
  *             elif j == pred_index[i]:
  *                 pin = 0             # <<<<<<<<<<<<<<
@@ -6990,7 +8680,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_generate_new_plans(std
  */
         __pyx_v_pin = 0;
 
-        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":662
+        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":837
  *             if j == 0:
  *                 pin = pred_index[i]
  *             elif j == pred_index[i]:             # <<<<<<<<<<<<<<
@@ -7000,17 +8690,17 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_generate_new_plans(std
       }
       __pyx_L9:;
 
-      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":664
+      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":839
  *             elif j == pred_index[i]:
  *                 pin = 0
  *             node_type = "FILTER"             # <<<<<<<<<<<<<<
  *             if join_pred:
  *                 node_type = "JOIN"
  */
-      __pyx_t_4 = __pyx_convert_string_from_py_std__in_string(__pyx_n_b_FILTER); if (unlikely(PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 664; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_4 = __pyx_convert_string_from_py_std__in_string(__pyx_n_b_FILTER); if (unlikely(PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 839; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __pyx_v_node_type = __pyx_t_4;
 
-      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":665
+      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":840
  *                 pin = 0
  *             node_type = "FILTER"
  *             if join_pred:             # <<<<<<<<<<<<<<
@@ -7020,17 +8710,17 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_generate_new_plans(std
       __pyx_t_5 = (__pyx_v_join_pred != 0);
       if (__pyx_t_5) {
 
-        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":666
+        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":841
  *             node_type = "FILTER"
  *             if join_pred:
  *                 node_type = "JOIN"             # <<<<<<<<<<<<<<
  *                 join_pred = False
  * 
  */
-        __pyx_t_4 = __pyx_convert_string_from_py_std__in_string(__pyx_n_b_JOIN); if (unlikely(PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 666; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        __pyx_t_4 = __pyx_convert_string_from_py_std__in_string(__pyx_n_b_JOIN); if (unlikely(PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 841; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
         __pyx_v_node_type = __pyx_t_4;
 
-        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":667
+        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":842
  *             if join_pred:
  *                 node_type = "JOIN"
  *                 join_pred = False             # <<<<<<<<<<<<<<
@@ -7039,7 +8729,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_generate_new_plans(std
  */
         __pyx_v_join_pred = 0;
 
-        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":665
+        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":840
  *                 pin = 0
  *             node_type = "FILTER"
  *             if join_pred:             # <<<<<<<<<<<<<<
@@ -7048,7 +8738,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_generate_new_plans(std
  */
       }
 
-      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":669
+      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":844
  *                 join_pred = False
  * 
  *             new_node = Node(node_type)             # <<<<<<<<<<<<<<
@@ -7057,7 +8747,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_generate_new_plans(std
  */
       __pyx_v_new_node = Node(__pyx_v_node_type);
 
-      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":670
+      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":845
  * 
  *             new_node = Node(node_type)
  *             new_node.predicates.push_back(preds[pin])             # <<<<<<<<<<<<<<
@@ -7068,10 +8758,10 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_generate_new_plans(std
         __pyx_v_new_node.predicates.push_back((__pyx_v_preds[__pyx_v_pin]));
       } catch(...) {
         __Pyx_CppExn2PyErr();
-        {__pyx_filename = __pyx_f[0]; __pyx_lineno = 670; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        {__pyx_filename = __pyx_f[0]; __pyx_lineno = 845; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       }
 
-      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":671
+      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":846
  *             new_node = Node(node_type)
  *             new_node.predicates.push_back(preds[pin])
  *             nodes.push_back(new_node)             # <<<<<<<<<<<<<<
@@ -7082,21 +8772,21 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_generate_new_plans(std
         __pyx_v_nodes.push_back(__pyx_v_new_node);
       } catch(...) {
         __Pyx_CppExn2PyErr();
-        {__pyx_filename = __pyx_f[0]; __pyx_lineno = 671; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        {__pyx_filename = __pyx_f[0]; __pyx_lineno = 846; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       }
     }
 
-    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":673
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":848
  *             nodes.push_back(new_node)
  * 
  *         node_type = "OUTPUT"             # <<<<<<<<<<<<<<
  *         new_node = Node(node_type)
  *         new_node.set_tree_id(tree_id)
  */
-    __pyx_t_4 = __pyx_convert_string_from_py_std__in_string(__pyx_n_b_OUTPUT); if (unlikely(PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 673; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_4 = __pyx_convert_string_from_py_std__in_string(__pyx_n_b_OUTPUT); if (unlikely(PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 848; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __pyx_v_node_type = __pyx_t_4;
 
-    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":674
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":849
  * 
  *         node_type = "OUTPUT"
  *         new_node = Node(node_type)             # <<<<<<<<<<<<<<
@@ -7105,7 +8795,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_generate_new_plans(std
  */
     __pyx_v_new_node = Node(__pyx_v_node_type);
 
-    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":675
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":850
  *         node_type = "OUTPUT"
  *         new_node = Node(node_type)
  *         new_node.set_tree_id(tree_id)             # <<<<<<<<<<<<<<
@@ -7114,7 +8804,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_generate_new_plans(std
  */
     __pyx_v_new_node.set_tree_id(__pyx_v_tree_id);
 
-    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":676
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":851
  *         new_node = Node(node_type)
  *         new_node.set_tree_id(tree_id)
  *         new_node.set_rule_id(rule_id)             # <<<<<<<<<<<<<<
@@ -7123,7 +8813,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_generate_new_plans(std
  */
     __pyx_v_new_node.set_rule_id(__pyx_v_rule_id);
 
-    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":677
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":852
  *         new_node.set_tree_id(tree_id)
  *         new_node.set_rule_id(rule_id)
  *         nodes.push_back(new_node)             # <<<<<<<<<<<<<<
@@ -7134,10 +8824,10 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_generate_new_plans(std
       __pyx_v_nodes.push_back(__pyx_v_new_node);
     } catch(...) {
       __Pyx_CppExn2PyErr();
-      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 677; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 852; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     }
 
-    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":678
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":853
  *         new_node.set_rule_id(rule_id)
  *         nodes.push_back(new_node)
  *         for k in xrange(nodes.size() - 2, -1, -1):             # <<<<<<<<<<<<<<
@@ -7147,7 +8837,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_generate_new_plans(std
     for (__pyx_t_3 = (__pyx_v_nodes.size() - 2); __pyx_t_3 > -1L; __pyx_t_3-=1) {
       __pyx_v_k = __pyx_t_3;
 
-      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":679
+      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":854
  *         nodes.push_back(new_node)
  *         for k in xrange(nodes.size() - 2, -1, -1):
  *             nodes[k].add_child(nodes[k+1])             # <<<<<<<<<<<<<<
@@ -7157,7 +8847,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_generate_new_plans(std
       (__pyx_v_nodes[__pyx_v_k]).add_child((__pyx_v_nodes[(__pyx_v_k + 1)]));
     }
 
-    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":681
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":856
  *             nodes[k].add_child(nodes[k+1])
  * 
  *         new_plans.push_back(nodes[0])             # <<<<<<<<<<<<<<
@@ -7168,11 +8858,11 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_generate_new_plans(std
       __pyx_v_new_plans.push_back((__pyx_v_nodes[0]));
     } catch(...) {
       __Pyx_CppExn2PyErr();
-      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 681; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 856; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     }
   }
 
-  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":627
+  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":802
  * 
  * 
  * cdef void generate_new_plans(vector[Node]& old_plans,             # <<<<<<<<<<<<<<
@@ -7188,7 +8878,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_generate_new_plans(std
   __Pyx_RefNannyFinishContext();
 }
 
-/* "py_stringsimjoin/apply_rf/ex_plan.pyx":683
+/* "py_stringsimjoin/apply_rf/ex_plan.pyx":858
  *         new_plans.push_back(nodes[0])
  * 
  * cdef double compute_cost_of_combined_plan(omap[int, vector[Node]]& plans,             # <<<<<<<<<<<<<<
@@ -7221,7 +8911,7 @@ static double __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_compute_cost_of_comb
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("compute_cost_of_combined_plan", 0);
 
-  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":690
+  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":865
  *     cdef Node stage1_plan, stage2_plan
  *     cdef Coverage prev_coverage
  *     cdef int i, j, num_trees = selected_trees.size()             # <<<<<<<<<<<<<<
@@ -7230,7 +8920,7 @@ static double __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_compute_cost_of_comb
  */
   __pyx_v_num_trees = __pyx_v_selected_trees.size();
 
-  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":692
+  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":867
  *     cdef int i, j, num_trees = selected_trees.size()
  *     cdef bool flag1, flag2
  *     flag1 = True             # <<<<<<<<<<<<<<
@@ -7239,7 +8929,7 @@ static double __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_compute_cost_of_comb
  */
   __pyx_v_flag1 = 1;
 
-  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":693
+  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":868
  *     cdef bool flag1, flag2
  *     flag1 = True
  *     flag2 = True             # <<<<<<<<<<<<<<
@@ -7248,7 +8938,7 @@ static double __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_compute_cost_of_comb
  */
   __pyx_v_flag2 = 1;
 
-  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":694
+  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":869
  *     flag1 = True
  *     flag2 = True
  *     for i in range(num_trees):             # <<<<<<<<<<<<<<
@@ -7259,7 +8949,7 @@ static double __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_compute_cost_of_comb
   for (__pyx_t_2 = 0; __pyx_t_2 < __pyx_t_1; __pyx_t_2+=1) {
     __pyx_v_i = __pyx_t_2;
 
-    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":695
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":870
  *     flag2 = True
  *     for i in range(num_trees):
  *         if selected_trees[i]:             # <<<<<<<<<<<<<<
@@ -7269,7 +8959,7 @@ static double __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_compute_cost_of_comb
     __pyx_t_3 = ((__pyx_v_selected_trees[__pyx_v_i]) != 0);
     if (__pyx_t_3) {
 
-      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":696
+      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":871
  *     for i in range(num_trees):
  *         if selected_trees[i]:
  *             prev_coverage.or_coverage(tree_cov[i])             # <<<<<<<<<<<<<<
@@ -7278,7 +8968,7 @@ static double __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_compute_cost_of_comb
  */
       __pyx_v_prev_coverage.or_coverage((__pyx_v_tree_cov[__pyx_v_i]));
 
-      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":697
+      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":872
  *         if selected_trees[i]:
  *             prev_coverage.or_coverage(tree_cov[i])
  *             for j in range(plans[i].size()):             # <<<<<<<<<<<<<<
@@ -7289,7 +8979,7 @@ static double __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_compute_cost_of_comb
       for (__pyx_t_5 = 0; __pyx_t_5 < __pyx_t_4; __pyx_t_5+=1) {
         __pyx_v_j = __pyx_t_5;
 
-        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":698
+        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":873
  *             prev_coverage.or_coverage(tree_cov[i])
  *             for j in range(plans[i].size()):
  *                 if flag1:             # <<<<<<<<<<<<<<
@@ -7299,7 +8989,7 @@ static double __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_compute_cost_of_comb
         __pyx_t_3 = (__pyx_v_flag1 != 0);
         if (__pyx_t_3) {
 
-          /* "py_stringsimjoin/apply_rf/ex_plan.pyx":699
+          /* "py_stringsimjoin/apply_rf/ex_plan.pyx":874
  *             for j in range(plans[i].size()):
  *                 if flag1:
  *                     stage1_plan = plans[i][j]             # <<<<<<<<<<<<<<
@@ -7308,7 +8998,7 @@ static double __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_compute_cost_of_comb
  */
           __pyx_v_stage1_plan = ((__pyx_v_plans[__pyx_v_i])[__pyx_v_j]);
 
-          /* "py_stringsimjoin/apply_rf/ex_plan.pyx":700
+          /* "py_stringsimjoin/apply_rf/ex_plan.pyx":875
  *                 if flag1:
  *                     stage1_plan = plans[i][j]
  *                     flag1 = False             # <<<<<<<<<<<<<<
@@ -7317,7 +9007,7 @@ static double __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_compute_cost_of_comb
  */
           __pyx_v_flag1 = 0;
 
-          /* "py_stringsimjoin/apply_rf/ex_plan.pyx":698
+          /* "py_stringsimjoin/apply_rf/ex_plan.pyx":873
  *             prev_coverage.or_coverage(tree_cov[i])
  *             for j in range(plans[i].size()):
  *                 if flag1:             # <<<<<<<<<<<<<<
@@ -7327,7 +9017,7 @@ static double __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_compute_cost_of_comb
           goto __pyx_L8;
         }
 
-        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":702
+        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":877
  *                     flag1 = False
  *                 else:
  *                     stage1_plan = merge_plans(stage1_plan, plans[i][j])             # <<<<<<<<<<<<<<
@@ -7340,7 +9030,7 @@ static double __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_compute_cost_of_comb
         __pyx_L8:;
       }
 
-      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":695
+      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":870
  *     flag2 = True
  *     for i in range(num_trees):
  *         if selected_trees[i]:             # <<<<<<<<<<<<<<
@@ -7350,7 +9040,7 @@ static double __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_compute_cost_of_comb
       goto __pyx_L5;
     }
 
-    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":704
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":879
  *                     stage1_plan = merge_plans(stage1_plan, plans[i][j])
  *         else:
  *             for j in range(plans[i].size()):             # <<<<<<<<<<<<<<
@@ -7362,7 +9052,7 @@ static double __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_compute_cost_of_comb
       for (__pyx_t_5 = 0; __pyx_t_5 < __pyx_t_4; __pyx_t_5+=1) {
         __pyx_v_j = __pyx_t_5;
 
-        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":705
+        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":880
  *         else:
  *             for j in range(plans[i].size()):
  *                 if flag2:             # <<<<<<<<<<<<<<
@@ -7372,7 +9062,7 @@ static double __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_compute_cost_of_comb
         __pyx_t_3 = (__pyx_v_flag2 != 0);
         if (__pyx_t_3) {
 
-          /* "py_stringsimjoin/apply_rf/ex_plan.pyx":706
+          /* "py_stringsimjoin/apply_rf/ex_plan.pyx":881
  *             for j in range(plans[i].size()):
  *                 if flag2:
  *                     stage2_plan = plans[i][j]             # <<<<<<<<<<<<<<
@@ -7381,7 +9071,7 @@ static double __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_compute_cost_of_comb
  */
           __pyx_v_stage2_plan = ((__pyx_v_plans[__pyx_v_i])[__pyx_v_j]);
 
-          /* "py_stringsimjoin/apply_rf/ex_plan.pyx":707
+          /* "py_stringsimjoin/apply_rf/ex_plan.pyx":882
  *                 if flag2:
  *                     stage2_plan = plans[i][j]
  *                     flag2 = False             # <<<<<<<<<<<<<<
@@ -7390,7 +9080,7 @@ static double __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_compute_cost_of_comb
  */
           __pyx_v_flag2 = 0;
 
-          /* "py_stringsimjoin/apply_rf/ex_plan.pyx":705
+          /* "py_stringsimjoin/apply_rf/ex_plan.pyx":880
  *         else:
  *             for j in range(plans[i].size()):
  *                 if flag2:             # <<<<<<<<<<<<<<
@@ -7400,7 +9090,7 @@ static double __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_compute_cost_of_comb
           goto __pyx_L11;
         }
 
-        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":709
+        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":884
  *                     flag2 = False
  *                 else:
  *                     stage2_plan = merge_plans(stage2_plan, plans[i][j])             # <<<<<<<<<<<<<<
@@ -7416,7 +9106,7 @@ static double __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_compute_cost_of_comb
     __pyx_L5:;
   }
 
-  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":711
+  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":886
  *                     stage2_plan = merge_plans(stage2_plan, plans[i][j])
  *     cdef double selectivity, stage1_cost, stage2_cost
  *     stage1_cost = compute_plan_cost(stage1_plan, coverage, sample_size)             # <<<<<<<<<<<<<<
@@ -7425,7 +9115,7 @@ static double __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_compute_cost_of_comb
  */
   __pyx_v_stage1_cost = __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_compute_plan_cost(__pyx_v_stage1_plan, __pyx_v_coverage, __pyx_v_sample_size);
 
-  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":712
+  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":887
  *     cdef double selectivity, stage1_cost, stage2_cost
  *     stage1_cost = compute_plan_cost(stage1_plan, coverage, sample_size)
  *     stage2_cost = compute_plan_cost(stage2_plan, coverage, sample_size)             # <<<<<<<<<<<<<<
@@ -7434,7 +9124,7 @@ static double __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_compute_cost_of_comb
  */
   __pyx_v_stage2_cost = __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_compute_plan_cost(__pyx_v_stage2_plan, __pyx_v_coverage, __pyx_v_sample_size);
 
-  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":713
+  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":888
  *     stage1_cost = compute_plan_cost(stage1_plan, coverage, sample_size)
  *     stage2_cost = compute_plan_cost(stage2_plan, coverage, sample_size)
  *     selectivity = <double>prev_coverage.sum() / <double>sample_size             # <<<<<<<<<<<<<<
@@ -7444,11 +9134,11 @@ static double __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_compute_cost_of_comb
   __pyx_t_6 = ((double)__pyx_v_prev_coverage.sum());
   if (unlikely(((double)__pyx_v_sample_size) == 0)) {
     PyErr_SetString(PyExc_ZeroDivisionError, "float division");
-    {__pyx_filename = __pyx_f[0]; __pyx_lineno = 713; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    {__pyx_filename = __pyx_f[0]; __pyx_lineno = 888; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   }
   __pyx_v_selectivity = (__pyx_t_6 / ((double)__pyx_v_sample_size));
 
-  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":714
+  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":889
  *     stage2_cost = compute_plan_cost(stage2_plan, coverage, sample_size)
  *     selectivity = <double>prev_coverage.sum() / <double>sample_size
  *     return stage1_cost + selectivity*stage2_cost             # <<<<<<<<<<<<<<
@@ -7458,7 +9148,7 @@ static double __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_compute_cost_of_comb
   __pyx_r = (__pyx_v_stage1_cost + (__pyx_v_selectivity * __pyx_v_stage2_cost));
   goto __pyx_L0;
 
-  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":683
+  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":858
  *         new_plans.push_back(nodes[0])
  * 
  * cdef double compute_cost_of_combined_plan(omap[int, vector[Node]]& plans,             # <<<<<<<<<<<<<<
@@ -7475,7 +9165,7 @@ static double __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_compute_cost_of_comb
   return __pyx_r;
 }
 
-/* "py_stringsimjoin/apply_rf/ex_plan.pyx":716
+/* "py_stringsimjoin/apply_rf/ex_plan.pyx":891
  *     return stage1_cost + selectivity*stage2_cost
  * 
  * cdef void find_random_subset(vector[bool]& selected_trees):             # <<<<<<<<<<<<<<
@@ -7503,7 +9193,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_find_random_subset(std
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("find_random_subset", 0);
 
-  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":717
+  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":892
  * 
  * cdef void find_random_subset(vector[bool]& selected_trees):
  *     cdef int num_trees = selected_trees.size(), num_trees_to_remove, i, j             # <<<<<<<<<<<<<<
@@ -7512,7 +9202,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_find_random_subset(std
  */
   __pyx_v_num_trees = __pyx_v_selected_trees.size();
 
-  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":718
+  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":893
  * cdef void find_random_subset(vector[bool]& selected_trees):
  *     cdef int num_trees = selected_trees.size(), num_trees_to_remove, i, j
  *     num_trees_to_remove = num_trees - (num_trees / 2) - 1             # <<<<<<<<<<<<<<
@@ -7521,7 +9211,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_find_random_subset(std
  */
   __pyx_v_num_trees_to_remove = ((__pyx_v_num_trees - __Pyx_div_long(__pyx_v_num_trees, 2)) - 1);
 
-  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":719
+  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":894
  *     cdef int num_trees = selected_trees.size(), num_trees_to_remove, i, j
  *     num_trees_to_remove = num_trees - (num_trees / 2) - 1
  *     i = 0             # <<<<<<<<<<<<<<
@@ -7530,7 +9220,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_find_random_subset(std
  */
   __pyx_v_i = 0;
 
-  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":720
+  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":895
  *     num_trees_to_remove = num_trees - (num_trees / 2) - 1
  *     i = 0
  *     while i < num_trees_to_remove:             # <<<<<<<<<<<<<<
@@ -7541,7 +9231,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_find_random_subset(std
     __pyx_t_1 = ((__pyx_v_i < __pyx_v_num_trees_to_remove) != 0);
     if (!__pyx_t_1) break;
 
-    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":721
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":896
  *     i = 0
  *     while i < num_trees_to_remove:
  *         j = -1             # <<<<<<<<<<<<<<
@@ -7550,7 +9240,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_find_random_subset(std
  */
     __pyx_v_j = -1;
 
-    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":722
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":897
  *     while i < num_trees_to_remove:
  *         j = -1
  *         while j == -1 or (not selected_trees[j]):             # <<<<<<<<<<<<<<
@@ -7569,19 +9259,19 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_find_random_subset(std
       __pyx_L7_bool_binop_done:;
       if (!__pyx_t_1) break;
 
-      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":723
+      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":898
  *         j = -1
  *         while j == -1 or (not selected_trees[j]):
  *             j = random.randint(0, num_trees - 1)             # <<<<<<<<<<<<<<
  *         selected_trees[j] = False
  *         i += 1
  */
-      __pyx_t_4 = __Pyx_GetModuleGlobalName(__pyx_n_s_random); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 723; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_4 = __Pyx_GetModuleGlobalName(__pyx_n_s_random); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 898; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_GOTREF(__pyx_t_4);
-      __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_n_s_randint); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 723; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_n_s_randint); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 898; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_GOTREF(__pyx_t_5);
       __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-      __pyx_t_4 = __Pyx_PyInt_From_long((__pyx_v_num_trees - 1)); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 723; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_4 = __Pyx_PyInt_From_long((__pyx_v_num_trees - 1)); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 898; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_GOTREF(__pyx_t_4);
       __pyx_t_6 = NULL;
       __pyx_t_7 = 0;
@@ -7595,7 +9285,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_find_random_subset(std
           __pyx_t_7 = 1;
         }
       }
-      __pyx_t_8 = PyTuple_New(2+__pyx_t_7); if (unlikely(!__pyx_t_8)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 723; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_8 = PyTuple_New(2+__pyx_t_7); if (unlikely(!__pyx_t_8)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 898; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_GOTREF(__pyx_t_8);
       if (__pyx_t_6) {
         __Pyx_GIVEREF(__pyx_t_6); PyTuple_SET_ITEM(__pyx_t_8, 0, __pyx_t_6); __pyx_t_6 = NULL;
@@ -7606,16 +9296,16 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_find_random_subset(std
       __Pyx_GIVEREF(__pyx_t_4);
       PyTuple_SET_ITEM(__pyx_t_8, 1+__pyx_t_7, __pyx_t_4);
       __pyx_t_4 = 0;
-      __pyx_t_3 = __Pyx_PyObject_Call(__pyx_t_5, __pyx_t_8, NULL); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 723; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_3 = __Pyx_PyObject_Call(__pyx_t_5, __pyx_t_8, NULL); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 898; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_GOTREF(__pyx_t_3);
       __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
       __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-      __pyx_t_9 = __Pyx_PyInt_As_int(__pyx_t_3); if (unlikely((__pyx_t_9 == (int)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 723; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_9 = __Pyx_PyInt_As_int(__pyx_t_3); if (unlikely((__pyx_t_9 == (int)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 898; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
       __pyx_v_j = __pyx_t_9;
     }
 
-    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":724
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":899
  *         while j == -1 or (not selected_trees[j]):
  *             j = random.randint(0, num_trees - 1)
  *         selected_trees[j] = False             # <<<<<<<<<<<<<<
@@ -7624,7 +9314,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_find_random_subset(std
  */
     (__pyx_v_selected_trees[__pyx_v_j]) = 0;
 
-    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":725
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":900
  *             j = random.randint(0, num_trees - 1)
  *         selected_trees[j] = False
  *         i += 1             # <<<<<<<<<<<<<<
@@ -7634,7 +9324,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_find_random_subset(std
     __pyx_v_i = (__pyx_v_i + 1);
   }
 
-  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":716
+  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":891
  *     return stage1_cost + selectivity*stage2_cost
  * 
  * cdef void find_random_subset(vector[bool]& selected_trees):             # <<<<<<<<<<<<<<
@@ -7655,7 +9345,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_find_random_subset(std
   __Pyx_RefNannyFinishContext();
 }
 
-/* "py_stringsimjoin/apply_rf/ex_plan.pyx":727
+/* "py_stringsimjoin/apply_rf/ex_plan.pyx":902
  *         i += 1
  * 
  * cdef void find_optimal_subset(omap[int, vector[Node]]& plans,             # <<<<<<<<<<<<<<
@@ -7663,7 +9353,8 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_find_random_subset(std
  *                          omap[int, Coverage]& tree_cov,
  */
 
-static void __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_find_optimal_subset(std::map<int,std::vector<Node> >  &__pyx_v_plans, std::map<std::string,Coverage>  &__pyx_v_coverage, std::map<int,Coverage>  &__pyx_v_tree_cov, std::vector<bool>  &__pyx_v_selected_trees, int const __pyx_v_sample_size) {
+static void __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_find_optimal_subset(std::map<int,std::vector<Node> >  &__pyx_v_plans, std::map<std::string,Coverage>  &__pyx_v_coverage, std::map<int,Coverage>  &__pyx_v_tree_cov, std::vector<bool>  &__pyx_v_selected_trees, int const __pyx_v_sample_size, struct __pyx_opt_args_16py_stringsimjoin_8apply_rf_7ex_plan_find_optimal_subset *__pyx_optional_args) {
+  PyObject *__pyx_v_num_trees_for_blocking = ((PyObject *)__pyx_int_6);
   Node __pyx_v_combined_plan;
   int __pyx_v_i;
   int __pyx_v_j;
@@ -7681,10 +9372,21 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_find_optimal_subset(st
   size_t __pyx_t_3;
   int __pyx_t_4;
   int __pyx_t_5;
-  int __pyx_t_6;
+  PyObject *__pyx_t_6 = NULL;
+  PyObject *__pyx_t_7 = NULL;
+  int __pyx_t_8;
+  int __pyx_t_9;
+  int __pyx_lineno = 0;
+  const char *__pyx_filename = NULL;
+  int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("find_optimal_subset", 0);
+  if (__pyx_optional_args) {
+    if (__pyx_optional_args->__pyx_n > 0) {
+      __pyx_v_num_trees_for_blocking = __pyx_optional_args->num_trees_for_blocking;
+    }
+  }
 
-  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":734
+  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":909
  * 
  *     cdef Node combined_plan
  *     cdef int i, j, num_trees = selected_trees.size(), num_trees_to_remove             # <<<<<<<<<<<<<<
@@ -7693,7 +9395,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_find_optimal_subset(st
  */
   __pyx_v_num_trees = __pyx_v_selected_trees.size();
 
-  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":737
+  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":912
  *     cdef bool flag
  * 
  *     flag = True             # <<<<<<<<<<<<<<
@@ -7702,7 +9404,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_find_optimal_subset(st
  */
   __pyx_v_flag = 1;
 
-  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":739
+  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":914
  *     flag = True
  * 
  *     for i in range(num_trees):             # <<<<<<<<<<<<<<
@@ -7713,7 +9415,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_find_optimal_subset(st
   for (__pyx_t_2 = 0; __pyx_t_2 < __pyx_t_1; __pyx_t_2+=1) {
     __pyx_v_i = __pyx_t_2;
 
-    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":740
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":915
  * 
  *     for i in range(num_trees):
  *         for j in range(plans[i].size()):             # <<<<<<<<<<<<<<
@@ -7724,7 +9426,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_find_optimal_subset(st
     for (__pyx_t_4 = 0; __pyx_t_4 < __pyx_t_3; __pyx_t_4+=1) {
       __pyx_v_j = __pyx_t_4;
 
-      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":741
+      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":916
  *     for i in range(num_trees):
  *         for j in range(plans[i].size()):
  *             if flag:             # <<<<<<<<<<<<<<
@@ -7734,7 +9436,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_find_optimal_subset(st
       __pyx_t_5 = (__pyx_v_flag != 0);
       if (__pyx_t_5) {
 
-        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":742
+        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":917
  *         for j in range(plans[i].size()):
  *             if flag:
  *                 combined_plan = plans[i][j]             # <<<<<<<<<<<<<<
@@ -7743,7 +9445,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_find_optimal_subset(st
  */
         __pyx_v_combined_plan = ((__pyx_v_plans[__pyx_v_i])[__pyx_v_j]);
 
-        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":743
+        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":918
  *             if flag:
  *                 combined_plan = plans[i][j]
  *                 flag = False             # <<<<<<<<<<<<<<
@@ -7752,7 +9454,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_find_optimal_subset(st
  */
         __pyx_v_flag = 0;
 
-        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":741
+        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":916
  *     for i in range(num_trees):
  *         for j in range(plans[i].size()):
  *             if flag:             # <<<<<<<<<<<<<<
@@ -7762,7 +9464,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_find_optimal_subset(st
         goto __pyx_L7;
       }
 
-      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":745
+      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":920
  *                 flag = False
  *             else:
  *                 combined_plan = merge_plans(combined_plan, plans[i][j])             # <<<<<<<<<<<<<<
@@ -7776,27 +9478,34 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_find_optimal_subset(st
     }
   }
 
-  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":747
+  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":922
  *                 combined_plan = merge_plans(combined_plan, plans[i][j])
  * 
  *     cdef double cost, curr_cost = compute_plan_cost(combined_plan, coverage, sample_size)             # <<<<<<<<<<<<<<
  * 
- *     num_trees_to_remove = num_trees - (num_trees / 2) - 1
+ *     #num_trees_to_remove = num_trees - (num_trees / 2) - 1
  */
   __pyx_v_curr_cost = __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_compute_plan_cost(__pyx_v_combined_plan, __pyx_v_coverage, __pyx_v_sample_size);
 
-  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":749
- *     cdef double cost, curr_cost = compute_plan_cost(combined_plan, coverage, sample_size)
+  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":925
  * 
- *     num_trees_to_remove = num_trees - (num_trees / 2) - 1             # <<<<<<<<<<<<<<
- * 
+ *     #num_trees_to_remove = num_trees - (num_trees / 2) - 1
+ *     num_trees_to_remove = num_trees - num_trees_for_blocking             # <<<<<<<<<<<<<<
  *     for j in xrange(num_trees_to_remove):
+ *         max_reduction = 0.0
  */
-  __pyx_v_num_trees_to_remove = ((__pyx_v_num_trees - __Pyx_div_long(__pyx_v_num_trees, 2)) - 1);
+  __pyx_t_6 = __Pyx_PyInt_From_int(__pyx_v_num_trees); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 925; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_6);
+  __pyx_t_7 = PyNumber_Subtract(__pyx_t_6, __pyx_v_num_trees_for_blocking); if (unlikely(!__pyx_t_7)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 925; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_7);
+  __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
+  __pyx_t_1 = __Pyx_PyInt_As_int(__pyx_t_7); if (unlikely((__pyx_t_1 == (int)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 925; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
+  __pyx_v_num_trees_to_remove = __pyx_t_1;
 
-  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":751
- *     num_trees_to_remove = num_trees - (num_trees / 2) - 1
- * 
+  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":926
+ *     #num_trees_to_remove = num_trees - (num_trees / 2) - 1
+ *     num_trees_to_remove = num_trees - num_trees_for_blocking
  *     for j in xrange(num_trees_to_remove):             # <<<<<<<<<<<<<<
  *         max_reduction = 0.0
  *         max_cost = 0.0
@@ -7805,8 +9514,8 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_find_optimal_subset(st
   for (__pyx_t_2 = 0; __pyx_t_2 < __pyx_t_1; __pyx_t_2+=1) {
     __pyx_v_j = __pyx_t_2;
 
-    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":752
- * 
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":927
+ *     num_trees_to_remove = num_trees - num_trees_for_blocking
  *     for j in xrange(num_trees_to_remove):
  *         max_reduction = 0.0             # <<<<<<<<<<<<<<
  *         max_cost = 0.0
@@ -7814,7 +9523,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_find_optimal_subset(st
  */
     __pyx_v_max_reduction = 0.0;
 
-    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":753
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":928
  *     for j in xrange(num_trees_to_remove):
  *         max_reduction = 0.0
  *         max_cost = 0.0             # <<<<<<<<<<<<<<
@@ -7823,7 +9532,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_find_optimal_subset(st
  */
     __pyx_v_max_cost = 0.0;
 
-    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":754
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":929
  *         max_reduction = 0.0
  *         max_cost = 0.0
  *         max_tree = -1             # <<<<<<<<<<<<<<
@@ -7832,7 +9541,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_find_optimal_subset(st
  */
     __pyx_v_max_tree = -1L;
 
-    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":755
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":930
  *         max_cost = 0.0
  *         max_tree = -1
  *         for i in xrange(num_trees):             # <<<<<<<<<<<<<<
@@ -7840,10 +9549,10 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_find_optimal_subset(st
  *                 continue
  */
     __pyx_t_4 = __pyx_v_num_trees;
-    for (__pyx_t_6 = 0; __pyx_t_6 < __pyx_t_4; __pyx_t_6+=1) {
-      __pyx_v_i = __pyx_t_6;
+    for (__pyx_t_8 = 0; __pyx_t_8 < __pyx_t_4; __pyx_t_8+=1) {
+      __pyx_v_i = __pyx_t_8;
 
-      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":756
+      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":931
  *         max_tree = -1
  *         for i in xrange(num_trees):
  *             if not selected_trees[i]:             # <<<<<<<<<<<<<<
@@ -7853,16 +9562,16 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_find_optimal_subset(st
       __pyx_t_5 = ((!((__pyx_v_selected_trees[__pyx_v_i]) != 0)) != 0);
       if (__pyx_t_5) {
 
-        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":757
+        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":932
  *         for i in xrange(num_trees):
  *             if not selected_trees[i]:
  *                 continue             # <<<<<<<<<<<<<<
  *             selected_trees[i] = False
- *             cost = compute_cost_of_combined_plan(plans, coverage, tree_cov,
+ * 
  */
         goto __pyx_L10_continue;
 
-        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":756
+        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":931
  *         max_tree = -1
  *         for i in xrange(num_trees):
  *             if not selected_trees[i]:             # <<<<<<<<<<<<<<
@@ -7871,54 +9580,62 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_find_optimal_subset(st
  */
       }
 
-      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":758
+      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":933
  *             if not selected_trees[i]:
  *                 continue
  *             selected_trees[i] = False             # <<<<<<<<<<<<<<
+ * 
  *             cost = compute_cost_of_combined_plan(plans, coverage, tree_cov,
- *                                                  sample_size, selected_trees)
  */
       (__pyx_v_selected_trees[__pyx_v_i]) = 0;
 
-      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":759
- *                 continue
+      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":935
  *             selected_trees[i] = False
+ * 
  *             cost = compute_cost_of_combined_plan(plans, coverage, tree_cov,             # <<<<<<<<<<<<<<
  *                                                  sample_size, selected_trees)
  *             selected_trees[i] = True
  */
       __pyx_v_cost = __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_compute_cost_of_combined_plan(__pyx_v_plans, __pyx_v_coverage, __pyx_v_tree_cov, __pyx_v_sample_size, __pyx_v_selected_trees);
 
-      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":761
+      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":937
  *             cost = compute_cost_of_combined_plan(plans, coverage, tree_cov,
  *                                                  sample_size, selected_trees)
  *             selected_trees[i] = True             # <<<<<<<<<<<<<<
- *             if curr_cost - cost >= max_reduction:
+ *             if curr_cost - cost >= max_reduction or max_reduction == 0.0:
  *                 max_reduction = curr_cost - cost
  */
       (__pyx_v_selected_trees[__pyx_v_i]) = 1;
 
-      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":762
+      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":938
  *                                                  sample_size, selected_trees)
  *             selected_trees[i] = True
- *             if curr_cost - cost >= max_reduction:             # <<<<<<<<<<<<<<
+ *             if curr_cost - cost >= max_reduction or max_reduction == 0.0:             # <<<<<<<<<<<<<<
  *                 max_reduction = curr_cost - cost
  *                 max_cost = cost
  */
-      __pyx_t_5 = (((__pyx_v_curr_cost - __pyx_v_cost) >= __pyx_v_max_reduction) != 0);
+      __pyx_t_9 = (((__pyx_v_curr_cost - __pyx_v_cost) >= __pyx_v_max_reduction) != 0);
+      if (!__pyx_t_9) {
+      } else {
+        __pyx_t_5 = __pyx_t_9;
+        goto __pyx_L14_bool_binop_done;
+      }
+      __pyx_t_9 = ((__pyx_v_max_reduction == 0.0) != 0);
+      __pyx_t_5 = __pyx_t_9;
+      __pyx_L14_bool_binop_done:;
       if (__pyx_t_5) {
 
-        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":763
+        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":939
  *             selected_trees[i] = True
- *             if curr_cost - cost >= max_reduction:
+ *             if curr_cost - cost >= max_reduction or max_reduction == 0.0:
  *                 max_reduction = curr_cost - cost             # <<<<<<<<<<<<<<
  *                 max_cost = cost
  *                 max_tree = i
  */
         __pyx_v_max_reduction = (__pyx_v_curr_cost - __pyx_v_cost);
 
-        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":764
- *             if curr_cost - cost >= max_reduction:
+        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":940
+ *             if curr_cost - cost >= max_reduction or max_reduction == 0.0:
  *                 max_reduction = curr_cost - cost
  *                 max_cost = cost             # <<<<<<<<<<<<<<
  *                 max_tree = i
@@ -7926,7 +9643,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_find_optimal_subset(st
  */
         __pyx_v_max_cost = __pyx_v_cost;
 
-        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":765
+        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":941
  *                 max_reduction = curr_cost - cost
  *                 max_cost = cost
  *                 max_tree = i             # <<<<<<<<<<<<<<
@@ -7935,10 +9652,10 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_find_optimal_subset(st
  */
         __pyx_v_max_tree = __pyx_v_i;
 
-        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":762
+        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":938
  *                                                  sample_size, selected_trees)
  *             selected_trees[i] = True
- *             if curr_cost - cost >= max_reduction:             # <<<<<<<<<<<<<<
+ *             if curr_cost - cost >= max_reduction or max_reduction == 0.0:             # <<<<<<<<<<<<<<
  *                 max_reduction = curr_cost - cost
  *                 max_cost = cost
  */
@@ -7946,7 +9663,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_find_optimal_subset(st
       __pyx_L10_continue:;
     }
 
-    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":766
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":942
  *                 max_cost = cost
  *                 max_tree = i
  *         selected_trees[max_tree] = False             # <<<<<<<<<<<<<<
@@ -7955,17 +9672,17 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_find_optimal_subset(st
  */
     (__pyx_v_selected_trees[__pyx_v_max_tree]) = 0;
 
-    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":767
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":943
  *                 max_tree = i
  *         selected_trees[max_tree] = False
  *         curr_cost = max_cost             # <<<<<<<<<<<<<<
  * 
- * cdef omap[int, vector[Node]] get_plans_for_rules(vector[Tree]& trees,
+ * 
  */
     __pyx_v_curr_cost = __pyx_v_max_cost;
   }
 
-  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":727
+  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":902
  *         i += 1
  * 
  * cdef void find_optimal_subset(omap[int, vector[Node]]& plans,             # <<<<<<<<<<<<<<
@@ -7974,11 +9691,17 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_find_optimal_subset(st
  */
 
   /* function exit code */
+  goto __pyx_L0;
+  __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_6);
+  __Pyx_XDECREF(__pyx_t_7);
+  __Pyx_WriteUnraisable("py_stringsimjoin.apply_rf.ex_plan.find_optimal_subset", __pyx_clineno, __pyx_lineno, __pyx_filename, 0, 0);
+  __pyx_L0:;
   __Pyx_RefNannyFinishContext();
 }
 
-/* "py_stringsimjoin/apply_rf/ex_plan.pyx":769
- *         curr_cost = max_cost
+/* "py_stringsimjoin/apply_rf/ex_plan.pyx":946
+ * 
  * 
  * cdef omap[int, vector[Node]] get_plans_for_rules(vector[Tree]& trees,             # <<<<<<<<<<<<<<
  *                                      omap[string, Coverage]& coverage,
@@ -8001,7 +9724,7 @@ static std::map<int,std::vector<Node> >  __pyx_f_16py_stringsimjoin_8apply_rf_7e
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("get_plans_for_rules", 0);
 
-  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":778
+  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":955
  *     cdef omap[int, vector[Node]] plans
  *     cdef omap[int, vector[int]] num_join_nodes
  *     cdef int i, j = 0, k, n=trees.size(), max_tree, num_trees_to_select             # <<<<<<<<<<<<<<
@@ -8011,43 +9734,43 @@ static std::map<int,std::vector<Node> >  __pyx_f_16py_stringsimjoin_8apply_rf_7e
   __pyx_v_j = 0;
   __pyx_v_n = __pyx_v_trees.size();
 
-  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":781
+  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":958
  * 
  *     cdef vector[Tree] tmp_vec
  *     for i in xrange(n):             # <<<<<<<<<<<<<<
  *         tmp_vec.push_back(trees[i])
- *         generate_local_optimal_plans(tmp_vec, coverage, sample_size, plans[i], num_join_nodes[i])
+ *         generate_local_optimal_plans(tmp_vec, coverage, sample_size, plans[i], num_join_nodes[i], False)
  */
   __pyx_t_1 = __pyx_v_n;
   for (__pyx_t_2 = 0; __pyx_t_2 < __pyx_t_1; __pyx_t_2+=1) {
     __pyx_v_i = __pyx_t_2;
 
-    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":782
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":959
  *     cdef vector[Tree] tmp_vec
  *     for i in xrange(n):
  *         tmp_vec.push_back(trees[i])             # <<<<<<<<<<<<<<
- *         generate_local_optimal_plans(tmp_vec, coverage, sample_size, plans[i], num_join_nodes[i])
+ *         generate_local_optimal_plans(tmp_vec, coverage, sample_size, plans[i], num_join_nodes[i], False)
  *         tmp_vec.clear()
  */
     try {
       __pyx_v_tmp_vec.push_back((__pyx_v_trees[__pyx_v_i]));
     } catch(...) {
       __Pyx_CppExn2PyErr();
-      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 782; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 959; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     }
 
-    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":783
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":960
  *     for i in xrange(n):
  *         tmp_vec.push_back(trees[i])
- *         generate_local_optimal_plans(tmp_vec, coverage, sample_size, plans[i], num_join_nodes[i])             # <<<<<<<<<<<<<<
+ *         generate_local_optimal_plans(tmp_vec, coverage, sample_size, plans[i], num_join_nodes[i], False)             # <<<<<<<<<<<<<<
  *         tmp_vec.clear()
  *     return plans
  */
-    __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_generate_local_optimal_plans(__pyx_v_tmp_vec, __pyx_v_coverage, __pyx_v_sample_size, (__pyx_v_plans[__pyx_v_i]), (__pyx_v_num_join_nodes[__pyx_v_i]));
+    __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_generate_local_optimal_plans(__pyx_v_tmp_vec, __pyx_v_coverage, __pyx_v_sample_size, (__pyx_v_plans[__pyx_v_i]), (__pyx_v_num_join_nodes[__pyx_v_i]), 0);
 
-    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":784
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":961
  *         tmp_vec.push_back(trees[i])
- *         generate_local_optimal_plans(tmp_vec, coverage, sample_size, plans[i], num_join_nodes[i])
+ *         generate_local_optimal_plans(tmp_vec, coverage, sample_size, plans[i], num_join_nodes[i], False)
  *         tmp_vec.clear()             # <<<<<<<<<<<<<<
  *     return plans
  * 
@@ -8055,8 +9778,8 @@ static std::map<int,std::vector<Node> >  __pyx_f_16py_stringsimjoin_8apply_rf_7e
     __pyx_v_tmp_vec.clear();
   }
 
-  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":785
- *         generate_local_optimal_plans(tmp_vec, coverage, sample_size, plans[i], num_join_nodes[i])
+  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":962
+ *         generate_local_optimal_plans(tmp_vec, coverage, sample_size, plans[i], num_join_nodes[i], False)
  *         tmp_vec.clear()
  *     return plans             # <<<<<<<<<<<<<<
  * 
@@ -8065,8 +9788,8 @@ static std::map<int,std::vector<Node> >  __pyx_f_16py_stringsimjoin_8apply_rf_7e
   __pyx_r = __pyx_v_plans;
   goto __pyx_L0;
 
-  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":769
- *         curr_cost = max_cost
+  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":946
+ * 
  * 
  * cdef omap[int, vector[Node]] get_plans_for_rules(vector[Tree]& trees,             # <<<<<<<<<<<<<<
  *                                      omap[string, Coverage]& coverage,
@@ -8081,7 +9804,7 @@ static std::map<int,std::vector<Node> >  __pyx_f_16py_stringsimjoin_8apply_rf_7e
   return __pyx_r;
 }
 
-/* "py_stringsimjoin/apply_rf/ex_plan.pyx":787
+/* "py_stringsimjoin/apply_rf/ex_plan.pyx":964
  *     return plans
  * 
  * cdef Node get_default_execution_plan(vector[Tree]& trees,             # <<<<<<<<<<<<<<
@@ -8089,14 +9812,14 @@ static std::map<int,std::vector<Node> >  __pyx_f_16py_stringsimjoin_8apply_rf_7e
  *                                      omap[int, Coverage]& tree_cov,
  */
 
-static Node __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_get_default_execution_plan(std::vector<Tree>  &__pyx_v_trees, std::map<std::string,Coverage>  &__pyx_v_coverage, std::map<int,Coverage>  &__pyx_v_tree_cov, int const __pyx_v_sample_size, std::vector<Tree>  &__pyx_v_sel_trees, std::vector<Tree>  &__pyx_v_rem_trees, bool __pyx_v_reuse_flag, bool __pyx_v_push_flag, PyObject *__pyx_v_tree_list) {
+static Node __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_get_default_execution_plan(std::vector<Tree>  &__pyx_v_trees, std::map<std::string,Coverage>  &__pyx_v_coverage, std::map<int,Coverage>  &__pyx_v_tree_cov, int const __pyx_v_sample_size, std::vector<Tree>  &__pyx_v_sel_trees, std::vector<Tree>  &__pyx_v_rem_trees, bool __pyx_v_reuse_flag, bool __pyx_v_push_flag, PyObject *__pyx_v_tree_list, PyObject *__pyx_v_num_trees_for_blocking, bool __pyx_v_random_order) {
   std::map<int,std::vector<Node> >  __pyx_v_plans;
   std::map<int,std::vector<int> >  __pyx_v_num_join_nodes;
   std::vector<bool>  __pyx_v_selected_trees;
   int __pyx_v_i;
   int __pyx_v_j;
   int __pyx_v_n;
-  CYTHON_UNUSED int __pyx_v_num_trees_to_select;
+  int __pyx_v_num_trees_to_select;
   std::vector<Tree>  __pyx_v_tmp_vec;
   std::vector<Node>  __pyx_v_pushed_plans;
   Node __pyx_v_combined_plan;
@@ -8110,14 +9833,15 @@ static Node __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_get_default_execution_
   PyObject *__pyx_t_5 = NULL;
   PyObject *(*__pyx_t_6)(PyObject *);
   PyObject *__pyx_t_7 = NULL;
-  size_t __pyx_t_8;
-  int __pyx_t_9;
+  struct __pyx_opt_args_16py_stringsimjoin_8apply_rf_7ex_plan_find_optimal_subset __pyx_t_8;
+  size_t __pyx_t_9;
+  int __pyx_t_10;
   int __pyx_lineno = 0;
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("get_default_execution_plan", 0);
 
-  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":800
+  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":978
  *     cdef vector[bool] selected_trees
  *     cdef Coverage prev_coverage
  *     cdef int i, j = 0, k, n=trees.size(), max_tree, num_trees_to_select             # <<<<<<<<<<<<<<
@@ -8127,61 +9851,62 @@ static Node __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_get_default_execution_
   __pyx_v_j = 0;
   __pyx_v_n = __pyx_v_trees.size();
 
-  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":804
+  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":982
  * 
  *     cdef vector[Tree] tmp_vec
  *     for i in xrange(n):             # <<<<<<<<<<<<<<
  *         tmp_vec.push_back(trees[i])
- *         generate_local_optimal_plans(tmp_vec, coverage, sample_size, plans[i], num_join_nodes[i])
+ *         generate_local_optimal_plans(tmp_vec, coverage, sample_size, plans[i], num_join_nodes[i], random_order)
  */
   __pyx_t_1 = __pyx_v_n;
   for (__pyx_t_2 = 0; __pyx_t_2 < __pyx_t_1; __pyx_t_2+=1) {
     __pyx_v_i = __pyx_t_2;
 
-    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":805
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":983
  *     cdef vector[Tree] tmp_vec
  *     for i in xrange(n):
  *         tmp_vec.push_back(trees[i])             # <<<<<<<<<<<<<<
- *         generate_local_optimal_plans(tmp_vec, coverage, sample_size, plans[i], num_join_nodes[i])
+ *         generate_local_optimal_plans(tmp_vec, coverage, sample_size, plans[i], num_join_nodes[i], random_order)
  *         tmp_vec.clear()
  */
     try {
       __pyx_v_tmp_vec.push_back((__pyx_v_trees[__pyx_v_i]));
     } catch(...) {
       __Pyx_CppExn2PyErr();
-      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 805; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 983; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     }
 
-    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":806
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":984
  *     for i in xrange(n):
  *         tmp_vec.push_back(trees[i])
- *         generate_local_optimal_plans(tmp_vec, coverage, sample_size, plans[i], num_join_nodes[i])             # <<<<<<<<<<<<<<
+ *         generate_local_optimal_plans(tmp_vec, coverage, sample_size, plans[i], num_join_nodes[i], random_order)             # <<<<<<<<<<<<<<
  *         tmp_vec.clear()
  * 
  */
-    __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_generate_local_optimal_plans(__pyx_v_tmp_vec, __pyx_v_coverage, __pyx_v_sample_size, (__pyx_v_plans[__pyx_v_i]), (__pyx_v_num_join_nodes[__pyx_v_i]));
+    __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_generate_local_optimal_plans(__pyx_v_tmp_vec, __pyx_v_coverage, __pyx_v_sample_size, (__pyx_v_plans[__pyx_v_i]), (__pyx_v_num_join_nodes[__pyx_v_i]), __pyx_v_random_order);
 
-    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":807
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":985
  *         tmp_vec.push_back(trees[i])
- *         generate_local_optimal_plans(tmp_vec, coverage, sample_size, plans[i], num_join_nodes[i])
+ *         generate_local_optimal_plans(tmp_vec, coverage, sample_size, plans[i], num_join_nodes[i], random_order)
  *         tmp_vec.clear()             # <<<<<<<<<<<<<<
  * 
- *     num_trees_to_select = (n / 2) + 1
+ * #    num_trees_to_select = (n / 2) + 1
  */
     __pyx_v_tmp_vec.clear();
   }
 
-  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":809
- *         tmp_vec.clear()
+  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":988
  * 
- *     num_trees_to_select = (n / 2) + 1             # <<<<<<<<<<<<<<
+ * #    num_trees_to_select = (n / 2) + 1
+ *     num_trees_to_select = num_trees_for_blocking             # <<<<<<<<<<<<<<
  * #    num_trees_to_select = n
  *     for i in xrange(n):
  */
-  __pyx_v_num_trees_to_select = (__Pyx_div_long(__pyx_v_n, 2) + 1);
+  __pyx_t_1 = __Pyx_PyInt_As_int(__pyx_v_num_trees_for_blocking); if (unlikely((__pyx_t_1 == (int)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 988; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_v_num_trees_to_select = __pyx_t_1;
 
-  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":811
- *     num_trees_to_select = (n / 2) + 1
+  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":990
+ *     num_trees_to_select = num_trees_for_blocking
  * #    num_trees_to_select = n
  *     for i in xrange(n):             # <<<<<<<<<<<<<<
  *         selected_trees.push_back(True)
@@ -8191,7 +9916,7 @@ static Node __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_get_default_execution_
   for (__pyx_t_2 = 0; __pyx_t_2 < __pyx_t_1; __pyx_t_2+=1) {
     __pyx_v_i = __pyx_t_2;
 
-    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":812
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":991
  * #    num_trees_to_select = n
  *     for i in xrange(n):
  *         selected_trees.push_back(True)             # <<<<<<<<<<<<<<
@@ -8202,32 +9927,23 @@ static Node __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_get_default_execution_
       __pyx_v_selected_trees.push_back(1);
     } catch(...) {
       __Pyx_CppExn2PyErr();
-      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 812; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 991; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     }
   }
 
-  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":861
- *     '''
- * #    cit_trees = [0, 2, 3, 5]
- *     find_optimal_subset(plans, coverage, tree_cov, selected_trees, sample_size)             # <<<<<<<<<<<<<<
+  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1042
  * 
- *     if len(tree_list) > 1:
- */
-  __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_find_optimal_subset(__pyx_v_plans, __pyx_v_coverage, __pyx_v_tree_cov, __pyx_v_selected_trees, __pyx_v_sample_size);
-
-  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":863
- *     find_optimal_subset(plans, coverage, tree_cov, selected_trees, sample_size)
- * 
+ * #    find_optimal_subset(plans, coverage, tree_cov, selected_trees, sample_size)
  *     if len(tree_list) > 1:             # <<<<<<<<<<<<<<
  *         for i in xrange(n):
  *             selected_trees[i] = False
  */
-  __pyx_t_3 = PyObject_Length(__pyx_v_tree_list); if (unlikely(__pyx_t_3 == -1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 863; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_3 = PyObject_Length(__pyx_v_tree_list); if (unlikely(__pyx_t_3 == -1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1042; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_t_4 = ((__pyx_t_3 > 1) != 0);
   if (__pyx_t_4) {
 
-    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":864
- * 
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1043
+ * #    find_optimal_subset(plans, coverage, tree_cov, selected_trees, sample_size)
  *     if len(tree_list) > 1:
  *         for i in xrange(n):             # <<<<<<<<<<<<<<
  *             selected_trees[i] = False
@@ -8237,7 +9953,7 @@ static Node __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_get_default_execution_
     for (__pyx_t_2 = 0; __pyx_t_2 < __pyx_t_1; __pyx_t_2+=1) {
       __pyx_v_i = __pyx_t_2;
 
-      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":865
+      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1044
  *     if len(tree_list) > 1:
  *         for i in xrange(n):
  *             selected_trees[i] = False             # <<<<<<<<<<<<<<
@@ -8247,37 +9963,37 @@ static Node __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_get_default_execution_
       (__pyx_v_selected_trees[__pyx_v_i]) = 0;
     }
 
-    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":866
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1045
  *         for i in xrange(n):
  *             selected_trees[i] = False
  *         for i in tree_list:             # <<<<<<<<<<<<<<
  *             selected_trees[i] = True
- * 
+ *     else:
  */
     if (likely(PyList_CheckExact(__pyx_v_tree_list)) || PyTuple_CheckExact(__pyx_v_tree_list)) {
       __pyx_t_5 = __pyx_v_tree_list; __Pyx_INCREF(__pyx_t_5); __pyx_t_3 = 0;
       __pyx_t_6 = NULL;
     } else {
-      __pyx_t_3 = -1; __pyx_t_5 = PyObject_GetIter(__pyx_v_tree_list); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 866; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_3 = -1; __pyx_t_5 = PyObject_GetIter(__pyx_v_tree_list); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1045; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_GOTREF(__pyx_t_5);
-      __pyx_t_6 = Py_TYPE(__pyx_t_5)->tp_iternext; if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 866; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_6 = Py_TYPE(__pyx_t_5)->tp_iternext; if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1045; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     }
     for (;;) {
       if (likely(!__pyx_t_6)) {
         if (likely(PyList_CheckExact(__pyx_t_5))) {
           if (__pyx_t_3 >= PyList_GET_SIZE(__pyx_t_5)) break;
           #if CYTHON_COMPILING_IN_CPYTHON
-          __pyx_t_7 = PyList_GET_ITEM(__pyx_t_5, __pyx_t_3); __Pyx_INCREF(__pyx_t_7); __pyx_t_3++; if (unlikely(0 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 866; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+          __pyx_t_7 = PyList_GET_ITEM(__pyx_t_5, __pyx_t_3); __Pyx_INCREF(__pyx_t_7); __pyx_t_3++; if (unlikely(0 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1045; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
           #else
-          __pyx_t_7 = PySequence_ITEM(__pyx_t_5, __pyx_t_3); __pyx_t_3++; if (unlikely(!__pyx_t_7)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 866; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+          __pyx_t_7 = PySequence_ITEM(__pyx_t_5, __pyx_t_3); __pyx_t_3++; if (unlikely(!__pyx_t_7)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1045; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
           __Pyx_GOTREF(__pyx_t_7);
           #endif
         } else {
           if (__pyx_t_3 >= PyTuple_GET_SIZE(__pyx_t_5)) break;
           #if CYTHON_COMPILING_IN_CPYTHON
-          __pyx_t_7 = PyTuple_GET_ITEM(__pyx_t_5, __pyx_t_3); __Pyx_INCREF(__pyx_t_7); __pyx_t_3++; if (unlikely(0 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 866; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+          __pyx_t_7 = PyTuple_GET_ITEM(__pyx_t_5, __pyx_t_3); __Pyx_INCREF(__pyx_t_7); __pyx_t_3++; if (unlikely(0 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1045; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
           #else
-          __pyx_t_7 = PySequence_ITEM(__pyx_t_5, __pyx_t_3); __pyx_t_3++; if (unlikely(!__pyx_t_7)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 866; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+          __pyx_t_7 = PySequence_ITEM(__pyx_t_5, __pyx_t_3); __pyx_t_3++; if (unlikely(!__pyx_t_7)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1045; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
           __Pyx_GOTREF(__pyx_t_7);
           #endif
         }
@@ -8287,54 +10003,72 @@ static Node __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_get_default_execution_
           PyObject* exc_type = PyErr_Occurred();
           if (exc_type) {
             if (likely(exc_type == PyExc_StopIteration || PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) PyErr_Clear();
-            else {__pyx_filename = __pyx_f[0]; __pyx_lineno = 866; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+            else {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1045; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
           }
           break;
         }
         __Pyx_GOTREF(__pyx_t_7);
       }
-      __pyx_t_1 = __Pyx_PyInt_As_int(__pyx_t_7); if (unlikely((__pyx_t_1 == (int)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 866; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_1 = __Pyx_PyInt_As_int(__pyx_t_7); if (unlikely((__pyx_t_1 == (int)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1045; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
       __pyx_v_i = __pyx_t_1;
 
-      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":867
+      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1046
  *             selected_trees[i] = False
  *         for i in tree_list:
  *             selected_trees[i] = True             # <<<<<<<<<<<<<<
- * 
- * #    find_random_subset(selected_trees)
+ *     else:
+ *         find_optimal_subset(plans, coverage, tree_cov, selected_trees, sample_size, num_trees_to_select)
  */
       (__pyx_v_selected_trees[__pyx_v_i]) = 1;
 
-      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":866
+      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1045
  *         for i in xrange(n):
  *             selected_trees[i] = False
  *         for i in tree_list:             # <<<<<<<<<<<<<<
  *             selected_trees[i] = True
- * 
+ *     else:
  */
     }
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
 
-    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":863
- *     find_optimal_subset(plans, coverage, tree_cov, selected_trees, sample_size)
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1042
  * 
+ * #    find_optimal_subset(plans, coverage, tree_cov, selected_trees, sample_size)
  *     if len(tree_list) > 1:             # <<<<<<<<<<<<<<
  *         for i in xrange(n):
  *             selected_trees[i] = False
  */
+    goto __pyx_L7;
   }
 
-  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":870
+  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1048
+ *             selected_trees[i] = True
+ *     else:
+ *         find_optimal_subset(plans, coverage, tree_cov, selected_trees, sample_size, num_trees_to_select)             # <<<<<<<<<<<<<<
+ * 
+ * #    find_random_subset(selected_trees)
+ */
+  /*else*/ {
+    __pyx_t_5 = __Pyx_PyInt_From_int(__pyx_v_num_trees_to_select); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1048; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __Pyx_GOTREF(__pyx_t_5);
+    __pyx_t_8.__pyx_n = 1;
+    __pyx_t_8.num_trees_for_blocking = __pyx_t_5;
+    __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_find_optimal_subset(__pyx_v_plans, __pyx_v_coverage, __pyx_v_tree_cov, __pyx_v_selected_trees, __pyx_v_sample_size, &__pyx_t_8); 
+    __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
+  }
+  __pyx_L7:;
+
+  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1051
  * 
  * #    find_random_subset(selected_trees)
  *     print 'total number of trees : ' , n             # <<<<<<<<<<<<<<
  *     print 'selected trees : '
  * 
  */
-  __pyx_t_5 = __Pyx_PyInt_From_int(__pyx_v_n); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 870; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_5 = __Pyx_PyInt_From_int(__pyx_v_n); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1051; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_5);
-  __pyx_t_7 = PyTuple_New(2); if (unlikely(!__pyx_t_7)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 870; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_7 = PyTuple_New(2); if (unlikely(!__pyx_t_7)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1051; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_7);
   __Pyx_INCREF(__pyx_kp_s_total_number_of_trees);
   __Pyx_GIVEREF(__pyx_kp_s_total_number_of_trees);
@@ -8342,19 +10076,19 @@ static Node __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_get_default_execution_
   __Pyx_GIVEREF(__pyx_t_5);
   PyTuple_SET_ITEM(__pyx_t_7, 1, __pyx_t_5);
   __pyx_t_5 = 0;
-  if (__Pyx_Print(0, __pyx_t_7, 1) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 870; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (__Pyx_Print(0, __pyx_t_7, 1) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1051; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
 
-  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":871
+  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1052
  * #    find_random_subset(selected_trees)
  *     print 'total number of trees : ' , n
  *     print 'selected trees : '             # <<<<<<<<<<<<<<
  * 
  *     for i in xrange(n):
  */
-  if (__Pyx_PrintOne(0, __pyx_kp_s_selected_trees) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 871; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (__Pyx_PrintOne(0, __pyx_kp_s_selected_trees) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1052; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
 
-  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":873
+  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1054
  *     print 'selected trees : '
  * 
  *     for i in xrange(n):             # <<<<<<<<<<<<<<
@@ -8365,7 +10099,7 @@ static Node __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_get_default_execution_
   for (__pyx_t_2 = 0; __pyx_t_2 < __pyx_t_1; __pyx_t_2+=1) {
     __pyx_v_i = __pyx_t_2;
 
-    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":874
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1055
  * 
  *     for i in xrange(n):
  *         if not selected_trees[i]:             # <<<<<<<<<<<<<<
@@ -8375,7 +10109,7 @@ static Node __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_get_default_execution_
     __pyx_t_4 = ((!((__pyx_v_selected_trees[__pyx_v_i]) != 0)) != 0);
     if (__pyx_t_4) {
 
-      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":875
+      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1056
  *     for i in xrange(n):
  *         if not selected_trees[i]:
  *             rem_trees.push_back(trees[i])             # <<<<<<<<<<<<<<
@@ -8386,10 +10120,10 @@ static Node __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_get_default_execution_
         __pyx_v_rem_trees.push_back((__pyx_v_trees[__pyx_v_i]));
       } catch(...) {
         __Pyx_CppExn2PyErr();
-        {__pyx_filename = __pyx_f[0]; __pyx_lineno = 875; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1056; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       }
 
-      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":874
+      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1055
  * 
  *     for i in xrange(n):
  *         if not selected_trees[i]:             # <<<<<<<<<<<<<<
@@ -8399,7 +10133,7 @@ static Node __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_get_default_execution_
       goto __pyx_L14;
     }
 
-    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":877
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1058
  *             rem_trees.push_back(trees[i])
  *         else:
  *             sel_trees.push_back(trees[i])             # <<<<<<<<<<<<<<
@@ -8411,13 +10145,13 @@ static Node __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_get_default_execution_
         __pyx_v_sel_trees.push_back((__pyx_v_trees[__pyx_v_i]));
       } catch(...) {
         __Pyx_CppExn2PyErr();
-        {__pyx_filename = __pyx_f[0]; __pyx_lineno = 877; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1058; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       }
     }
     __pyx_L14:;
   }
 
-  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":879
+  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1060
  *             sel_trees.push_back(trees[i])
  * 
  *     if reuse_flag:             # <<<<<<<<<<<<<<
@@ -8427,7 +10161,7 @@ static Node __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_get_default_execution_
   __pyx_t_4 = (__pyx_v_reuse_flag != 0);
   if (__pyx_t_4) {
 
-    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":880
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1061
  * 
  *     if reuse_flag:
  *         return optimize_plans(plans, num_join_nodes, selected_trees, push_flag)             # <<<<<<<<<<<<<<
@@ -8437,7 +10171,7 @@ static Node __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_get_default_execution_
     __pyx_r = __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_optimize_plans(__pyx_v_plans, __pyx_v_num_join_nodes, __pyx_v_selected_trees, __pyx_v_push_flag);
     goto __pyx_L0;
 
-    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":879
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1060
  *             sel_trees.push_back(trees[i])
  * 
  *     if reuse_flag:             # <<<<<<<<<<<<<<
@@ -8446,7 +10180,7 @@ static Node __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_get_default_execution_
  */
   }
 
-  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":886
+  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1067
  *     cdef vector[Node] overall_plans
  * 
  *     for i in xrange(n):             # <<<<<<<<<<<<<<
@@ -8457,18 +10191,18 @@ static Node __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_get_default_execution_
   for (__pyx_t_2 = 0; __pyx_t_2 < __pyx_t_1; __pyx_t_2+=1) {
     __pyx_v_i = __pyx_t_2;
 
-    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":887
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1068
  * 
  *     for i in xrange(n):
  *         for j in xrange(plans[i].size()):             # <<<<<<<<<<<<<<
  *             overall_plans.push_back(plans[i][j])
  * 
  */
-    __pyx_t_8 = (__pyx_v_plans[__pyx_v_i]).size();
-    for (__pyx_t_9 = 0; __pyx_t_9 < __pyx_t_8; __pyx_t_9+=1) {
-      __pyx_v_j = __pyx_t_9;
+    __pyx_t_9 = (__pyx_v_plans[__pyx_v_i]).size();
+    for (__pyx_t_10 = 0; __pyx_t_10 < __pyx_t_9; __pyx_t_10+=1) {
+      __pyx_v_j = __pyx_t_10;
 
-      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":888
+      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1069
  *     for i in xrange(n):
  *         for j in xrange(plans[i].size()):
  *             overall_plans.push_back(plans[i][j])             # <<<<<<<<<<<<<<
@@ -8479,12 +10213,12 @@ static Node __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_get_default_execution_
         __pyx_v_overall_plans.push_back(((__pyx_v_plans[__pyx_v_i])[__pyx_v_j]));
       } catch(...) {
         __Pyx_CppExn2PyErr();
-        {__pyx_filename = __pyx_f[0]; __pyx_lineno = 888; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1069; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       }
     }
   }
 
-  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":890
+  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1071
  *             overall_plans.push_back(plans[i][j])
  * 
  *     if push_flag:             # <<<<<<<<<<<<<<
@@ -8494,7 +10228,7 @@ static Node __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_get_default_execution_
   __pyx_t_4 = (__pyx_v_push_flag != 0);
   if (__pyx_t_4) {
 
-    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":891
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1072
  * 
  *     if push_flag:
  *         push_filters(overall_plans, pushed_plans)             # <<<<<<<<<<<<<<
@@ -8503,18 +10237,18 @@ static Node __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_get_default_execution_
  */
     __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_push_filters(__pyx_v_overall_plans, __pyx_v_pushed_plans);
 
-    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":893
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1074
  *         push_filters(overall_plans, pushed_plans)
  * 
  *         for i in range(pushed_plans.size()):             # <<<<<<<<<<<<<<
  *             if i == 0:
  *                 combined_plan = pushed_plans[i]
  */
-    __pyx_t_8 = __pyx_v_pushed_plans.size();
-    for (__pyx_t_1 = 0; __pyx_t_1 < __pyx_t_8; __pyx_t_1+=1) {
+    __pyx_t_9 = __pyx_v_pushed_plans.size();
+    for (__pyx_t_1 = 0; __pyx_t_1 < __pyx_t_9; __pyx_t_1+=1) {
       __pyx_v_i = __pyx_t_1;
 
-      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":894
+      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1075
  * 
  *         for i in range(pushed_plans.size()):
  *             if i == 0:             # <<<<<<<<<<<<<<
@@ -8524,7 +10258,7 @@ static Node __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_get_default_execution_
       __pyx_t_4 = ((__pyx_v_i == 0) != 0);
       if (__pyx_t_4) {
 
-        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":895
+        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1076
  *         for i in range(pushed_plans.size()):
  *             if i == 0:
  *                 combined_plan = pushed_plans[i]             # <<<<<<<<<<<<<<
@@ -8533,7 +10267,7 @@ static Node __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_get_default_execution_
  */
         __pyx_v_combined_plan = (__pyx_v_pushed_plans[__pyx_v_i]);
 
-        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":894
+        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1075
  * 
  *         for i in range(pushed_plans.size()):
  *             if i == 0:             # <<<<<<<<<<<<<<
@@ -8543,7 +10277,7 @@ static Node __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_get_default_execution_
         goto __pyx_L23;
       }
 
-      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":897
+      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1078
  *                 combined_plan = pushed_plans[i]
  *             else:
  *                 combined_plan = merge_plans(combined_plan, pushed_plans[i])             # <<<<<<<<<<<<<<
@@ -8556,7 +10290,7 @@ static Node __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_get_default_execution_
       __pyx_L23:;
     }
 
-    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":890
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1071
  *             overall_plans.push_back(plans[i][j])
  * 
  *     if push_flag:             # <<<<<<<<<<<<<<
@@ -8566,7 +10300,7 @@ static Node __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_get_default_execution_
     goto __pyx_L20;
   }
 
-  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":899
+  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1080
  *                 combined_plan = merge_plans(combined_plan, pushed_plans[i])
  *     else:
  *         for i in range(overall_plans.size()):             # <<<<<<<<<<<<<<
@@ -8574,11 +10308,11 @@ static Node __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_get_default_execution_
  *                 combined_plan = overall_plans[i]
  */
   /*else*/ {
-    __pyx_t_8 = __pyx_v_overall_plans.size();
-    for (__pyx_t_1 = 0; __pyx_t_1 < __pyx_t_8; __pyx_t_1+=1) {
+    __pyx_t_9 = __pyx_v_overall_plans.size();
+    for (__pyx_t_1 = 0; __pyx_t_1 < __pyx_t_9; __pyx_t_1+=1) {
       __pyx_v_i = __pyx_t_1;
 
-      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":900
+      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1081
  *     else:
  *         for i in range(overall_plans.size()):
  *             if i == 0:             # <<<<<<<<<<<<<<
@@ -8588,7 +10322,7 @@ static Node __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_get_default_execution_
       __pyx_t_4 = ((__pyx_v_i == 0) != 0);
       if (__pyx_t_4) {
 
-        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":901
+        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1082
  *         for i in range(overall_plans.size()):
  *             if i == 0:
  *                 combined_plan = overall_plans[i]             # <<<<<<<<<<<<<<
@@ -8597,7 +10331,7 @@ static Node __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_get_default_execution_
  */
         __pyx_v_combined_plan = (__pyx_v_overall_plans[__pyx_v_i]);
 
-        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":900
+        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1081
  *     else:
  *         for i in range(overall_plans.size()):
  *             if i == 0:             # <<<<<<<<<<<<<<
@@ -8607,7 +10341,7 @@ static Node __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_get_default_execution_
         goto __pyx_L26;
       }
 
-      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":903
+      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1084
  *                 combined_plan = overall_plans[i]
  *             else:
  *                 combined_plan = merge_plans(combined_plan, overall_plans[i])             # <<<<<<<<<<<<<<
@@ -8622,17 +10356,17 @@ static Node __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_get_default_execution_
   }
   __pyx_L20:;
 
-  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":905
+  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1086
  *                 combined_plan = merge_plans(combined_plan, overall_plans[i])
  * 
  *     return combined_plan             # <<<<<<<<<<<<<<
  * 
- * cdef void generate_local_optimal_plans(vector[Tree]& trees,
+ * cdef pair[vector[int], int] get_random_order(pair[vector[int], int] optimal_seq):
  */
   __pyx_r = __pyx_v_combined_plan;
   goto __pyx_L0;
 
-  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":787
+  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":964
  *     return plans
  * 
  * cdef Node get_default_execution_plan(vector[Tree]& trees,             # <<<<<<<<<<<<<<
@@ -8650,15 +10384,396 @@ static Node __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_get_default_execution_
   return __pyx_r;
 }
 
-/* "py_stringsimjoin/apply_rf/ex_plan.pyx":907
+/* "py_stringsimjoin/apply_rf/ex_plan.pyx":1088
  *     return combined_plan
+ * 
+ * cdef pair[vector[int], int] get_random_order(pair[vector[int], int] optimal_seq):             # <<<<<<<<<<<<<<
+ *     cdef pair[vector[int], int] random_order
+ *     cdef int total_nodes=optimal_seq.first.size(), join_nodes = optimal_seq.second
+ */
+
+static std::pair<std::vector<int> ,int>  __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_get_random_order(std::pair<std::vector<int> ,int>  __pyx_v_optimal_seq) {
+  std::pair<std::vector<int> ,int>  __pyx_v_random_order;
+  int __pyx_v_total_nodes;
+  int __pyx_v_join_nodes;
+  std::vector<int>  __pyx_v_rand_seq;
+  PyObject *__pyx_v_used = NULL;
+  int __pyx_v_i;
+  int __pyx_v_j;
+  CYTHON_UNUSED int __pyx_v__;
+  std::pair<std::vector<int> ,int>  __pyx_r;
+  __Pyx_RefNannyDeclarations
+  int __pyx_t_1;
+  PyObject *__pyx_t_2 = NULL;
+  int __pyx_t_3;
+  int __pyx_t_4;
+  PyObject *__pyx_t_5 = NULL;
+  PyObject *__pyx_t_6 = NULL;
+  PyObject *__pyx_t_7 = NULL;
+  Py_ssize_t __pyx_t_8;
+  PyObject *__pyx_t_9 = NULL;
+  int __pyx_t_10;
+  PyObject *__pyx_t_11 = NULL;
+  int __pyx_lineno = 0;
+  const char *__pyx_filename = NULL;
+  int __pyx_clineno = 0;
+  __Pyx_RefNannySetupContext("get_random_order", 0);
+
+  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1090
+ * cdef pair[vector[int], int] get_random_order(pair[vector[int], int] optimal_seq):
+ *     cdef pair[vector[int], int] random_order
+ *     cdef int total_nodes=optimal_seq.first.size(), join_nodes = optimal_seq.second             # <<<<<<<<<<<<<<
+ *     cdef vector[int] rand_seq
+ * 
+ */
+  __pyx_v_total_nodes = __pyx_v_optimal_seq.first.size();
+  __pyx_t_1 = __pyx_v_optimal_seq.second;
+  __pyx_v_join_nodes = __pyx_t_1;
+
+  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1093
+ *     cdef vector[int] rand_seq
+ * 
+ *     used = [False for _ in xrange(total_nodes)]             # <<<<<<<<<<<<<<
+ *     rand_seq.push_back(optimal_seq.first[0])
+ *     used[0] = True
+ */
+  __pyx_t_2 = PyList_New(0); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1093; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_2);
+  __pyx_t_1 = __pyx_v_total_nodes;
+  for (__pyx_t_3 = 0; __pyx_t_3 < __pyx_t_1; __pyx_t_3+=1) {
+    __pyx_v__ = __pyx_t_3;
+    if (unlikely(__Pyx_ListComp_Append(__pyx_t_2, (PyObject*)Py_False))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1093; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  }
+  __pyx_v_used = ((PyObject*)__pyx_t_2);
+  __pyx_t_2 = 0;
+
+  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1094
+ * 
+ *     used = [False for _ in xrange(total_nodes)]
+ *     rand_seq.push_back(optimal_seq.first[0])             # <<<<<<<<<<<<<<
+ *     used[0] = True
+ * 
+ */
+  try {
+    __pyx_v_rand_seq.push_back((__pyx_v_optimal_seq.first[0]));
+  } catch(...) {
+    __Pyx_CppExn2PyErr();
+    {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1094; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  }
+
+  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1095
+ *     used = [False for _ in xrange(total_nodes)]
+ *     rand_seq.push_back(optimal_seq.first[0])
+ *     used[0] = True             # <<<<<<<<<<<<<<
+ * 
+ *     cdef int i = 1, j
+ */
+  if (unlikely(__Pyx_SetItemInt(__pyx_v_used, 0, Py_True, long, 1, __Pyx_PyInt_From_long, 1, 0, 1) < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1095; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+
+  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1097
+ *     used[0] = True
+ * 
+ *     cdef int i = 1, j             # <<<<<<<<<<<<<<
+ *     while i < join_nodes:
+ *         j = random.randint(1, join_nodes - 1)
+ */
+  __pyx_v_i = 1;
+
+  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1098
+ * 
+ *     cdef int i = 1, j
+ *     while i < join_nodes:             # <<<<<<<<<<<<<<
+ *         j = random.randint(1, join_nodes - 1)
+ *         if not used[j]:
+ */
+  while (1) {
+    __pyx_t_4 = ((__pyx_v_i < __pyx_v_join_nodes) != 0);
+    if (!__pyx_t_4) break;
+
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1099
+ *     cdef int i = 1, j
+ *     while i < join_nodes:
+ *         j = random.randint(1, join_nodes - 1)             # <<<<<<<<<<<<<<
+ *         if not used[j]:
+ *             rand_seq.push_back(optimal_seq.first[j])
+ */
+    __pyx_t_5 = __Pyx_GetModuleGlobalName(__pyx_n_s_random); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1099; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __Pyx_GOTREF(__pyx_t_5);
+    __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_t_5, __pyx_n_s_randint); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1099; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __Pyx_GOTREF(__pyx_t_6);
+    __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
+    __pyx_t_5 = __Pyx_PyInt_From_long((__pyx_v_join_nodes - 1)); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1099; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __Pyx_GOTREF(__pyx_t_5);
+    __pyx_t_7 = NULL;
+    __pyx_t_8 = 0;
+    if (CYTHON_COMPILING_IN_CPYTHON && unlikely(PyMethod_Check(__pyx_t_6))) {
+      __pyx_t_7 = PyMethod_GET_SELF(__pyx_t_6);
+      if (likely(__pyx_t_7)) {
+        PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_6);
+        __Pyx_INCREF(__pyx_t_7);
+        __Pyx_INCREF(function);
+        __Pyx_DECREF_SET(__pyx_t_6, function);
+        __pyx_t_8 = 1;
+      }
+    }
+    __pyx_t_9 = PyTuple_New(2+__pyx_t_8); if (unlikely(!__pyx_t_9)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1099; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __Pyx_GOTREF(__pyx_t_9);
+    if (__pyx_t_7) {
+      __Pyx_GIVEREF(__pyx_t_7); PyTuple_SET_ITEM(__pyx_t_9, 0, __pyx_t_7); __pyx_t_7 = NULL;
+    }
+    __Pyx_INCREF(__pyx_int_1);
+    __Pyx_GIVEREF(__pyx_int_1);
+    PyTuple_SET_ITEM(__pyx_t_9, 0+__pyx_t_8, __pyx_int_1);
+    __Pyx_GIVEREF(__pyx_t_5);
+    PyTuple_SET_ITEM(__pyx_t_9, 1+__pyx_t_8, __pyx_t_5);
+    __pyx_t_5 = 0;
+    __pyx_t_2 = __Pyx_PyObject_Call(__pyx_t_6, __pyx_t_9, NULL); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1099; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __Pyx_GOTREF(__pyx_t_2);
+    __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
+    __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
+    __pyx_t_1 = __Pyx_PyInt_As_int(__pyx_t_2); if (unlikely((__pyx_t_1 == (int)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1099; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+    __pyx_v_j = __pyx_t_1;
+
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1100
+ *     while i < join_nodes:
+ *         j = random.randint(1, join_nodes - 1)
+ *         if not used[j]:             # <<<<<<<<<<<<<<
+ *             rand_seq.push_back(optimal_seq.first[j])
+ *             used[j] = True
+ */
+    __pyx_t_2 = __Pyx_GetItemInt_List(__pyx_v_used, __pyx_v_j, int, 1, __Pyx_PyInt_From_int, 1, 1, 1); if (unlikely(__pyx_t_2 == NULL)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1100; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
+    __Pyx_GOTREF(__pyx_t_2);
+    __pyx_t_4 = __Pyx_PyObject_IsTrue(__pyx_t_2); if (unlikely(__pyx_t_4 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1100; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+    __pyx_t_10 = ((!__pyx_t_4) != 0);
+    if (__pyx_t_10) {
+
+      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1101
+ *         j = random.randint(1, join_nodes - 1)
+ *         if not used[j]:
+ *             rand_seq.push_back(optimal_seq.first[j])             # <<<<<<<<<<<<<<
+ *             used[j] = True
+ *             i += 1
+ */
+      try {
+        __pyx_v_rand_seq.push_back((__pyx_v_optimal_seq.first[__pyx_v_j]));
+      } catch(...) {
+        __Pyx_CppExn2PyErr();
+        {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1101; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      }
+
+      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1102
+ *         if not used[j]:
+ *             rand_seq.push_back(optimal_seq.first[j])
+ *             used[j] = True             # <<<<<<<<<<<<<<
+ *             i += 1
+ *     i = 0
+ */
+      if (unlikely(__Pyx_SetItemInt(__pyx_v_used, __pyx_v_j, Py_True, int, 1, __Pyx_PyInt_From_int, 1, 1, 1) < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1102; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+
+      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1103
+ *             rand_seq.push_back(optimal_seq.first[j])
+ *             used[j] = True
+ *             i += 1             # <<<<<<<<<<<<<<
+ *     i = 0
+ *     while i < total_nodes - join_nodes:
+ */
+      __pyx_v_i = (__pyx_v_i + 1);
+
+      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1100
+ *     while i < join_nodes:
+ *         j = random.randint(1, join_nodes - 1)
+ *         if not used[j]:             # <<<<<<<<<<<<<<
+ *             rand_seq.push_back(optimal_seq.first[j])
+ *             used[j] = True
+ */
+    }
+  }
+
+  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1104
+ *             used[j] = True
+ *             i += 1
+ *     i = 0             # <<<<<<<<<<<<<<
+ *     while i < total_nodes - join_nodes:
+ *         j = random.randint(join_nodes, total_nodes - 1)
+ */
+  __pyx_v_i = 0;
+
+  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1105
+ *             i += 1
+ *     i = 0
+ *     while i < total_nodes - join_nodes:             # <<<<<<<<<<<<<<
+ *         j = random.randint(join_nodes, total_nodes - 1)
+ *         if not used[j]:
+ */
+  while (1) {
+    __pyx_t_10 = ((__pyx_v_i < (__pyx_v_total_nodes - __pyx_v_join_nodes)) != 0);
+    if (!__pyx_t_10) break;
+
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1106
+ *     i = 0
+ *     while i < total_nodes - join_nodes:
+ *         j = random.randint(join_nodes, total_nodes - 1)             # <<<<<<<<<<<<<<
+ *         if not used[j]:
+ *             rand_seq.push_back(optimal_seq.first[j])
+ */
+    __pyx_t_6 = __Pyx_GetModuleGlobalName(__pyx_n_s_random); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1106; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __Pyx_GOTREF(__pyx_t_6);
+    __pyx_t_9 = __Pyx_PyObject_GetAttrStr(__pyx_t_6, __pyx_n_s_randint); if (unlikely(!__pyx_t_9)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1106; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __Pyx_GOTREF(__pyx_t_9);
+    __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
+    __pyx_t_6 = __Pyx_PyInt_From_int(__pyx_v_join_nodes); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1106; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __Pyx_GOTREF(__pyx_t_6);
+    __pyx_t_5 = __Pyx_PyInt_From_long((__pyx_v_total_nodes - 1)); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1106; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __Pyx_GOTREF(__pyx_t_5);
+    __pyx_t_7 = NULL;
+    __pyx_t_8 = 0;
+    if (CYTHON_COMPILING_IN_CPYTHON && unlikely(PyMethod_Check(__pyx_t_9))) {
+      __pyx_t_7 = PyMethod_GET_SELF(__pyx_t_9);
+      if (likely(__pyx_t_7)) {
+        PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_9);
+        __Pyx_INCREF(__pyx_t_7);
+        __Pyx_INCREF(function);
+        __Pyx_DECREF_SET(__pyx_t_9, function);
+        __pyx_t_8 = 1;
+      }
+    }
+    __pyx_t_11 = PyTuple_New(2+__pyx_t_8); if (unlikely(!__pyx_t_11)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1106; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __Pyx_GOTREF(__pyx_t_11);
+    if (__pyx_t_7) {
+      __Pyx_GIVEREF(__pyx_t_7); PyTuple_SET_ITEM(__pyx_t_11, 0, __pyx_t_7); __pyx_t_7 = NULL;
+    }
+    __Pyx_GIVEREF(__pyx_t_6);
+    PyTuple_SET_ITEM(__pyx_t_11, 0+__pyx_t_8, __pyx_t_6);
+    __Pyx_GIVEREF(__pyx_t_5);
+    PyTuple_SET_ITEM(__pyx_t_11, 1+__pyx_t_8, __pyx_t_5);
+    __pyx_t_6 = 0;
+    __pyx_t_5 = 0;
+    __pyx_t_2 = __Pyx_PyObject_Call(__pyx_t_9, __pyx_t_11, NULL); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1106; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __Pyx_GOTREF(__pyx_t_2);
+    __Pyx_DECREF(__pyx_t_11); __pyx_t_11 = 0;
+    __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
+    __pyx_t_1 = __Pyx_PyInt_As_int(__pyx_t_2); if (unlikely((__pyx_t_1 == (int)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1106; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+    __pyx_v_j = __pyx_t_1;
+
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1107
+ *     while i < total_nodes - join_nodes:
+ *         j = random.randint(join_nodes, total_nodes - 1)
+ *         if not used[j]:             # <<<<<<<<<<<<<<
+ *             rand_seq.push_back(optimal_seq.first[j])
+ *             used[j] = True
+ */
+    __pyx_t_2 = __Pyx_GetItemInt_List(__pyx_v_used, __pyx_v_j, int, 1, __Pyx_PyInt_From_int, 1, 1, 1); if (unlikely(__pyx_t_2 == NULL)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1107; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
+    __Pyx_GOTREF(__pyx_t_2);
+    __pyx_t_10 = __Pyx_PyObject_IsTrue(__pyx_t_2); if (unlikely(__pyx_t_10 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1107; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+    __pyx_t_4 = ((!__pyx_t_10) != 0);
+    if (__pyx_t_4) {
+
+      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1108
+ *         j = random.randint(join_nodes, total_nodes - 1)
+ *         if not used[j]:
+ *             rand_seq.push_back(optimal_seq.first[j])             # <<<<<<<<<<<<<<
+ *             used[j] = True
+ *             i += 1
+ */
+      try {
+        __pyx_v_rand_seq.push_back((__pyx_v_optimal_seq.first[__pyx_v_j]));
+      } catch(...) {
+        __Pyx_CppExn2PyErr();
+        {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1108; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      }
+
+      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1109
+ *         if not used[j]:
+ *             rand_seq.push_back(optimal_seq.first[j])
+ *             used[j] = True             # <<<<<<<<<<<<<<
+ *             i += 1
+ * 
+ */
+      if (unlikely(__Pyx_SetItemInt(__pyx_v_used, __pyx_v_j, Py_True, int, 1, __Pyx_PyInt_From_int, 1, 1, 1) < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1109; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+
+      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1110
+ *             rand_seq.push_back(optimal_seq.first[j])
+ *             used[j] = True
+ *             i += 1             # <<<<<<<<<<<<<<
+ * 
+ *     random_order.first = rand_seq
+ */
+      __pyx_v_i = (__pyx_v_i + 1);
+
+      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1107
+ *     while i < total_nodes - join_nodes:
+ *         j = random.randint(join_nodes, total_nodes - 1)
+ *         if not used[j]:             # <<<<<<<<<<<<<<
+ *             rand_seq.push_back(optimal_seq.first[j])
+ *             used[j] = True
+ */
+    }
+  }
+
+  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1112
+ *             i += 1
+ * 
+ *     random_order.first = rand_seq             # <<<<<<<<<<<<<<
+ *     random_order.second = join_nodes
+ *     return random_order
+ */
+  __pyx_v_random_order.first = __pyx_v_rand_seq;
+
+  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1113
+ * 
+ *     random_order.first = rand_seq
+ *     random_order.second = join_nodes             # <<<<<<<<<<<<<<
+ *     return random_order
+ * 
+ */
+  __pyx_v_random_order.second = __pyx_v_join_nodes;
+
+  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1114
+ *     random_order.first = rand_seq
+ *     random_order.second = join_nodes
+ *     return random_order             # <<<<<<<<<<<<<<
+ * 
+ * cdef void generate_local_optimal_plans(vector[Tree]& trees,
+ */
+  __pyx_r = __pyx_v_random_order;
+  goto __pyx_L0;
+
+  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1088
+ *     return combined_plan
+ * 
+ * cdef pair[vector[int], int] get_random_order(pair[vector[int], int] optimal_seq):             # <<<<<<<<<<<<<<
+ *     cdef pair[vector[int], int] random_order
+ *     cdef int total_nodes=optimal_seq.first.size(), join_nodes = optimal_seq.second
+ */
+
+  /* function exit code */
+  __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_2);
+  __Pyx_XDECREF(__pyx_t_5);
+  __Pyx_XDECREF(__pyx_t_6);
+  __Pyx_XDECREF(__pyx_t_7);
+  __Pyx_XDECREF(__pyx_t_9);
+  __Pyx_XDECREF(__pyx_t_11);
+  __Pyx_WriteUnraisable("py_stringsimjoin.apply_rf.ex_plan.get_random_order", __pyx_clineno, __pyx_lineno, __pyx_filename, 0, 0);
+  __pyx_L0:;
+  __Pyx_XDECREF(__pyx_v_used);
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+/* "py_stringsimjoin/apply_rf/ex_plan.pyx":1116
+ *     return random_order
  * 
  * cdef void generate_local_optimal_plans(vector[Tree]& trees,             # <<<<<<<<<<<<<<
  *                                        omap[string, Coverage]& coverage,
  *                                        int sample_size,
  */
 
-static void __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_generate_local_optimal_plans(std::vector<Tree>  &__pyx_v_trees, std::map<std::string,Coverage>  &__pyx_v_coverage, int __pyx_v_sample_size, std::vector<Node>  &__pyx_v_plans, std::vector<int>  &__pyx_v_num_join_nodes) {
+static void __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_generate_local_optimal_plans(std::vector<Tree>  &__pyx_v_trees, std::map<std::string,Coverage>  &__pyx_v_coverage, int __pyx_v_sample_size, std::vector<Node>  &__pyx_v_plans, std::vector<int>  &__pyx_v_num_join_nodes, bool __pyx_v_random_order) {
   Tree __pyx_v_tree;
   Rule __pyx_v_rule;
   std::pair<std::vector<int> ,int>  __pyx_v_optimal_seq;
@@ -8676,17 +10791,17 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_generate_local_optimal
   std::vector<Rule>  *__pyx_t_4;
   Rule __pyx_t_5;
   std::vector<Node>  __pyx_t_6;
-  std::string __pyx_t_7;
-  std::vector<int> ::iterator __pyx_t_8;
-  std::vector<int>  *__pyx_t_9;
-  int __pyx_t_10;
+  int __pyx_t_7;
+  std::string __pyx_t_8;
+  std::vector<int> ::iterator __pyx_t_9;
+  std::vector<int>  *__pyx_t_10;
   int __pyx_t_11;
   int __pyx_lineno = 0;
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("generate_local_optimal_plans", 0);
 
-  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":917
+  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1127
  *     cdef Node root, new_node, curr_node
  *     cdef string node_type
  *     cdef int i, rule_id, tree_id = 0             # <<<<<<<<<<<<<<
@@ -8695,7 +10810,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_generate_local_optimal
  */
   __pyx_v_tree_id = 0;
 
-  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":920
+  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1130
  *     cdef bool join_pred
  * 
  *     for tree in trees:             # <<<<<<<<<<<<<<
@@ -8709,7 +10824,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_generate_local_optimal
     ++__pyx_t_1;
     __pyx_v_tree = __pyx_t_2;
 
-    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":921
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1131
  * 
  *     for tree in trees:
  *         rule_id = 0             # <<<<<<<<<<<<<<
@@ -8718,7 +10833,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_generate_local_optimal
  */
     __pyx_v_rule_id = 0;
 
-    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":922
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1132
  *     for tree in trees:
  *         rule_id = 0
  *         for rule in tree.rules:             # <<<<<<<<<<<<<<
@@ -8733,42 +10848,70 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_generate_local_optimal
       ++__pyx_t_3;
       __pyx_v_rule = __pyx_t_5;
 
-      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":923
+      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1133
  *         rule_id = 0
  *         for rule in tree.rules:
  *             nodes = vector[Node]()             # <<<<<<<<<<<<<<
  *             optimal_seq = get_optimal_predicate_seq(rule.predicates, coverage, sample_size)
- *             node_type = "ROOT"
+ *             if random_order:
  */
       try {
         __pyx_t_6 = std::vector<Node> ();
       } catch(...) {
         __Pyx_CppExn2PyErr();
-        {__pyx_filename = __pyx_f[0]; __pyx_lineno = 923; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1133; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       }
       __pyx_v_nodes = __pyx_t_6;
 
-      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":924
+      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1134
  *         for rule in tree.rules:
  *             nodes = vector[Node]()
  *             optimal_seq = get_optimal_predicate_seq(rule.predicates, coverage, sample_size)             # <<<<<<<<<<<<<<
- *             node_type = "ROOT"
- *             new_node = Node(node_type)
+ *             if random_order:
+ *                 optimal_seq = get_random_order(optimal_seq)
  */
       __pyx_v_optimal_seq = __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_get_optimal_predicate_seq(__pyx_v_rule.predicates, __pyx_v_coverage, __pyx_v_sample_size);
 
-      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":925
+      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1135
  *             nodes = vector[Node]()
  *             optimal_seq = get_optimal_predicate_seq(rule.predicates, coverage, sample_size)
+ *             if random_order:             # <<<<<<<<<<<<<<
+ *                 optimal_seq = get_random_order(optimal_seq)
+ *             node_type = "ROOT"
+ */
+      __pyx_t_7 = (__pyx_v_random_order != 0);
+      if (__pyx_t_7) {
+
+        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1136
+ *             optimal_seq = get_optimal_predicate_seq(rule.predicates, coverage, sample_size)
+ *             if random_order:
+ *                 optimal_seq = get_random_order(optimal_seq)             # <<<<<<<<<<<<<<
+ *             node_type = "ROOT"
+ *             new_node = Node(node_type)
+ */
+        __pyx_v_optimal_seq = __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_get_random_order(__pyx_v_optimal_seq);
+
+        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1135
+ *             nodes = vector[Node]()
+ *             optimal_seq = get_optimal_predicate_seq(rule.predicates, coverage, sample_size)
+ *             if random_order:             # <<<<<<<<<<<<<<
+ *                 optimal_seq = get_random_order(optimal_seq)
+ *             node_type = "ROOT"
+ */
+      }
+
+      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1137
+ *             if random_order:
+ *                 optimal_seq = get_random_order(optimal_seq)
  *             node_type = "ROOT"             # <<<<<<<<<<<<<<
  *             new_node = Node(node_type)
  *             new_node.set_tree_id(tree.tree_id)
  */
-      __pyx_t_7 = __pyx_convert_string_from_py_std__in_string(__pyx_n_b_ROOT); if (unlikely(PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 925; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-      __pyx_v_node_type = __pyx_t_7;
+      __pyx_t_8 = __pyx_convert_string_from_py_std__in_string(__pyx_n_b_ROOT); if (unlikely(PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1137; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_v_node_type = __pyx_t_8;
 
-      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":926
- *             optimal_seq = get_optimal_predicate_seq(rule.predicates, coverage, sample_size)
+      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1138
+ *                 optimal_seq = get_random_order(optimal_seq)
  *             node_type = "ROOT"
  *             new_node = Node(node_type)             # <<<<<<<<<<<<<<
  *             new_node.set_tree_id(tree.tree_id)
@@ -8776,7 +10919,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_generate_local_optimal
  */
       __pyx_v_new_node = Node(__pyx_v_node_type);
 
-      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":927
+      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1139
  *             node_type = "ROOT"
  *             new_node = Node(node_type)
  *             new_node.set_tree_id(tree.tree_id)             # <<<<<<<<<<<<<<
@@ -8785,7 +10928,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_generate_local_optimal
  */
       __pyx_v_new_node.set_tree_id(__pyx_v_tree.tree_id);
 
-      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":928
+      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1140
  *             new_node = Node(node_type)
  *             new_node.set_tree_id(tree.tree_id)
  *             new_node.set_rule_id(rule_id)             # <<<<<<<<<<<<<<
@@ -8794,7 +10937,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_generate_local_optimal
  */
       __pyx_v_new_node.set_rule_id(__pyx_v_rule_id);
 
-      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":929
+      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1141
  *             new_node.set_tree_id(tree.tree_id)
  *             new_node.set_rule_id(rule_id)
  *             nodes.push_back(new_node)             # <<<<<<<<<<<<<<
@@ -8805,10 +10948,10 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_generate_local_optimal
         __pyx_v_nodes.push_back(__pyx_v_new_node);
       } catch(...) {
         __Pyx_CppExn2PyErr();
-        {__pyx_filename = __pyx_f[0]; __pyx_lineno = 929; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1141; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       }
 
-      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":930
+      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1142
  *             new_node.set_rule_id(rule_id)
  *             nodes.push_back(new_node)
  *             join_pred = True             # <<<<<<<<<<<<<<
@@ -8817,52 +10960,52 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_generate_local_optimal
  */
       __pyx_v_join_pred = 1;
 
-      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":932
+      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1144
  *             join_pred = True
  * 
  *             for i in optimal_seq.first:             # <<<<<<<<<<<<<<
  *                 node_type = "FILTER"
  *                 if join_pred:
  */
-      __pyx_t_9 = &__pyx_v_optimal_seq.first;
-      __pyx_t_8 = __pyx_t_9->begin();
+      __pyx_t_10 = &__pyx_v_optimal_seq.first;
+      __pyx_t_9 = __pyx_t_10->begin();
       for (;;) {
-        if (!(__pyx_t_8 != __pyx_t_9->end())) break;
-        __pyx_t_10 = *__pyx_t_8;
-        ++__pyx_t_8;
-        __pyx_v_i = __pyx_t_10;
+        if (!(__pyx_t_9 != __pyx_t_10->end())) break;
+        __pyx_t_11 = *__pyx_t_9;
+        ++__pyx_t_9;
+        __pyx_v_i = __pyx_t_11;
 
-        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":933
+        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1145
  * 
  *             for i in optimal_seq.first:
  *                 node_type = "FILTER"             # <<<<<<<<<<<<<<
  *                 if join_pred:
  *                     node_type = "JOIN"
  */
-        __pyx_t_7 = __pyx_convert_string_from_py_std__in_string(__pyx_n_b_FILTER); if (unlikely(PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 933; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-        __pyx_v_node_type = __pyx_t_7;
+        __pyx_t_8 = __pyx_convert_string_from_py_std__in_string(__pyx_n_b_FILTER); if (unlikely(PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1145; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        __pyx_v_node_type = __pyx_t_8;
 
-        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":934
+        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1146
  *             for i in optimal_seq.first:
  *                 node_type = "FILTER"
  *                 if join_pred:             # <<<<<<<<<<<<<<
  *                     node_type = "JOIN"
  *                     join_pred = False
  */
-        __pyx_t_11 = (__pyx_v_join_pred != 0);
-        if (__pyx_t_11) {
+        __pyx_t_7 = (__pyx_v_join_pred != 0);
+        if (__pyx_t_7) {
 
-          /* "py_stringsimjoin/apply_rf/ex_plan.pyx":935
+          /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1147
  *                 node_type = "FILTER"
  *                 if join_pred:
  *                     node_type = "JOIN"             # <<<<<<<<<<<<<<
  *                     join_pred = False
  * 
  */
-          __pyx_t_7 = __pyx_convert_string_from_py_std__in_string(__pyx_n_b_JOIN); if (unlikely(PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 935; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-          __pyx_v_node_type = __pyx_t_7;
+          __pyx_t_8 = __pyx_convert_string_from_py_std__in_string(__pyx_n_b_JOIN); if (unlikely(PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1147; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+          __pyx_v_node_type = __pyx_t_8;
 
-          /* "py_stringsimjoin/apply_rf/ex_plan.pyx":936
+          /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1148
  *                 if join_pred:
  *                     node_type = "JOIN"
  *                     join_pred = False             # <<<<<<<<<<<<<<
@@ -8871,7 +11014,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_generate_local_optimal
  */
           __pyx_v_join_pred = 0;
 
-          /* "py_stringsimjoin/apply_rf/ex_plan.pyx":934
+          /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1146
  *             for i in optimal_seq.first:
  *                 node_type = "FILTER"
  *                 if join_pred:             # <<<<<<<<<<<<<<
@@ -8880,7 +11023,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_generate_local_optimal
  */
         }
 
-        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":938
+        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1150
  *                     join_pred = False
  * 
  *                 new_node = Node(node_type)             # <<<<<<<<<<<<<<
@@ -8889,7 +11032,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_generate_local_optimal
  */
         __pyx_v_new_node = Node(__pyx_v_node_type);
 
-        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":939
+        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1151
  * 
  *                 new_node = Node(node_type)
  *                 new_node.predicates.push_back(rule.predicates[i])             # <<<<<<<<<<<<<<
@@ -8900,10 +11043,10 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_generate_local_optimal
           __pyx_v_new_node.predicates.push_back((__pyx_v_rule.predicates[__pyx_v_i]));
         } catch(...) {
           __Pyx_CppExn2PyErr();
-          {__pyx_filename = __pyx_f[0]; __pyx_lineno = 939; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+          {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1151; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
         }
 
-        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":940
+        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1152
  *                 new_node = Node(node_type)
  *                 new_node.predicates.push_back(rule.predicates[i])
  *                 nodes.push_back(new_node)             # <<<<<<<<<<<<<<
@@ -8914,10 +11057,10 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_generate_local_optimal
           __pyx_v_nodes.push_back(__pyx_v_new_node);
         } catch(...) {
           __Pyx_CppExn2PyErr();
-          {__pyx_filename = __pyx_f[0]; __pyx_lineno = 940; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+          {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1152; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
         }
 
-        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":932
+        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1144
  *             join_pred = True
  * 
  *             for i in optimal_seq.first:             # <<<<<<<<<<<<<<
@@ -8926,17 +11069,17 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_generate_local_optimal
  */
       }
 
-      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":942
+      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1154
  *                 nodes.push_back(new_node)
  * 
  *             node_type = "OUTPUT"             # <<<<<<<<<<<<<<
  *             new_node = Node(node_type)
  *             new_node.set_tree_id(tree.tree_id)
  */
-      __pyx_t_7 = __pyx_convert_string_from_py_std__in_string(__pyx_n_b_OUTPUT); if (unlikely(PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 942; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-      __pyx_v_node_type = __pyx_t_7;
+      __pyx_t_8 = __pyx_convert_string_from_py_std__in_string(__pyx_n_b_OUTPUT); if (unlikely(PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1154; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_v_node_type = __pyx_t_8;
 
-      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":943
+      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1155
  * 
  *             node_type = "OUTPUT"
  *             new_node = Node(node_type)             # <<<<<<<<<<<<<<
@@ -8945,7 +11088,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_generate_local_optimal
  */
       __pyx_v_new_node = Node(__pyx_v_node_type);
 
-      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":944
+      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1156
  *             node_type = "OUTPUT"
  *             new_node = Node(node_type)
  *             new_node.set_tree_id(tree.tree_id)             # <<<<<<<<<<<<<<
@@ -8954,7 +11097,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_generate_local_optimal
  */
       __pyx_v_new_node.set_tree_id(__pyx_v_tree.tree_id);
 
-      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":945
+      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1157
  *             new_node = Node(node_type)
  *             new_node.set_tree_id(tree.tree_id)
  *             new_node.set_rule_id(rule_id)             # <<<<<<<<<<<<<<
@@ -8963,7 +11106,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_generate_local_optimal
  */
       __pyx_v_new_node.set_rule_id(__pyx_v_rule_id);
 
-      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":946
+      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1158
  *             new_node.set_tree_id(tree.tree_id)
  *             new_node.set_rule_id(rule_id)
  *             nodes.push_back(new_node)             # <<<<<<<<<<<<<<
@@ -8974,20 +11117,20 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_generate_local_optimal
         __pyx_v_nodes.push_back(__pyx_v_new_node);
       } catch(...) {
         __Pyx_CppExn2PyErr();
-        {__pyx_filename = __pyx_f[0]; __pyx_lineno = 946; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1158; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       }
 
-      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":947
+      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1159
  *             new_node.set_rule_id(rule_id)
  *             nodes.push_back(new_node)
  *             for i in xrange(nodes.size() - 2, -1, -1):             # <<<<<<<<<<<<<<
  *                 nodes[i].add_child(nodes[i+1])
  *             plans.push_back(nodes[0])
  */
-      for (__pyx_t_10 = (__pyx_v_nodes.size() - 2); __pyx_t_10 > -1L; __pyx_t_10-=1) {
-        __pyx_v_i = __pyx_t_10;
+      for (__pyx_t_11 = (__pyx_v_nodes.size() - 2); __pyx_t_11 > -1L; __pyx_t_11-=1) {
+        __pyx_v_i = __pyx_t_11;
 
-        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":948
+        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1160
  *             nodes.push_back(new_node)
  *             for i in xrange(nodes.size() - 2, -1, -1):
  *                 nodes[i].add_child(nodes[i+1])             # <<<<<<<<<<<<<<
@@ -8997,7 +11140,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_generate_local_optimal
         (__pyx_v_nodes[__pyx_v_i]).add_child((__pyx_v_nodes[(__pyx_v_i + 1)]));
       }
 
-      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":949
+      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1161
  *             for i in xrange(nodes.size() - 2, -1, -1):
  *                 nodes[i].add_child(nodes[i+1])
  *             plans.push_back(nodes[0])             # <<<<<<<<<<<<<<
@@ -9008,10 +11151,10 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_generate_local_optimal
         __pyx_v_plans.push_back((__pyx_v_nodes[0]));
       } catch(...) {
         __Pyx_CppExn2PyErr();
-        {__pyx_filename = __pyx_f[0]; __pyx_lineno = 949; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1161; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       }
 
-      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":950
+      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1162
  *                 nodes[i].add_child(nodes[i+1])
  *             plans.push_back(nodes[0])
  *             num_join_nodes.push_back(optimal_seq.second)             # <<<<<<<<<<<<<<
@@ -9022,10 +11165,10 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_generate_local_optimal
         __pyx_v_num_join_nodes.push_back(__pyx_v_optimal_seq.second);
       } catch(...) {
         __Pyx_CppExn2PyErr();
-        {__pyx_filename = __pyx_f[0]; __pyx_lineno = 950; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1162; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       }
 
-      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":951
+      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1163
  *             plans.push_back(nodes[0])
  *             num_join_nodes.push_back(optimal_seq.second)
  *             rule_id += 1             # <<<<<<<<<<<<<<
@@ -9034,7 +11177,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_generate_local_optimal
  */
       __pyx_v_rule_id = (__pyx_v_rule_id + 1);
 
-      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":922
+      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1132
  *     for tree in trees:
  *         rule_id = 0
  *         for rule in tree.rules:             # <<<<<<<<<<<<<<
@@ -9043,7 +11186,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_generate_local_optimal
  */
     }
 
-    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":952
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1164
  *             num_join_nodes.push_back(optimal_seq.second)
  *             rule_id += 1
  *         tree_id += 1             # <<<<<<<<<<<<<<
@@ -9052,7 +11195,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_generate_local_optimal
  */
     __pyx_v_tree_id = (__pyx_v_tree_id + 1);
 
-    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":920
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1130
  *     cdef bool join_pred
  * 
  *     for tree in trees:             # <<<<<<<<<<<<<<
@@ -9061,8 +11204,8 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_generate_local_optimal
  */
   }
 
-  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":907
- *     return combined_plan
+  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1116
+ *     return random_order
  * 
  * cdef void generate_local_optimal_plans(vector[Tree]& trees,             # <<<<<<<<<<<<<<
  *                                        omap[string, Coverage]& coverage,
@@ -9077,7 +11220,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_generate_local_optimal
   __Pyx_RefNannyFinishContext();
 }
 
-/* "py_stringsimjoin/apply_rf/ex_plan.pyx":955
+/* "py_stringsimjoin/apply_rf/ex_plan.pyx":1167
  * 
  * # Ordering a set of predicates
  * cdef pair[vector[int], int] get_optimal_predicate_seq(             # <<<<<<<<<<<<<<
@@ -9105,12 +11248,13 @@ static std::pair<std::vector<int> ,int>  __pyx_f_16py_stringsimjoin_8apply_rf_7e
   std::vector<int> ::iterator __pyx_t_4;
   double __pyx_t_5;
   double __pyx_t_6;
+  int __pyx_t_7;
   int __pyx_lineno = 0;
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("get_optimal_predicate_seq", 0);
 
-  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":963
+  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1175
  *     cdef vector[bool] selected_predicates
  *     cdef Predicatecpp predicate
  *     cdef int i, max_pred, j, n=0             # <<<<<<<<<<<<<<
@@ -9119,7 +11263,7 @@ static std::pair<std::vector<int> ,int>  __pyx_f_16py_stringsimjoin_8apply_rf_7e
  */
   __pyx_v_n = 0;
 
-  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":966
+  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1178
  *     cdef double max_score, pred_score
  * 
  *     for i in xrange(predicates.size()):             # <<<<<<<<<<<<<<
@@ -9130,7 +11274,7 @@ static std::pair<std::vector<int> ,int>  __pyx_f_16py_stringsimjoin_8apply_rf_7e
   for (__pyx_t_2 = 0; __pyx_t_2 < __pyx_t_1; __pyx_t_2+=1) {
     __pyx_v_i = __pyx_t_2;
 
-    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":967
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1179
  * 
  *     for i in xrange(predicates.size()):
  *         if predicates[i].is_join_predicate():             # <<<<<<<<<<<<<<
@@ -9140,7 +11284,7 @@ static std::pair<std::vector<int> ,int>  __pyx_f_16py_stringsimjoin_8apply_rf_7e
     __pyx_t_3 = ((__pyx_v_predicates[__pyx_v_i]).is_join_predicate() != 0);
     if (__pyx_t_3) {
 
-      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":968
+      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1180
  *     for i in xrange(predicates.size()):
  *         if predicates[i].is_join_predicate():
  *             valid_predicates.push_back(i)             # <<<<<<<<<<<<<<
@@ -9151,10 +11295,10 @@ static std::pair<std::vector<int> ,int>  __pyx_f_16py_stringsimjoin_8apply_rf_7e
         __pyx_v_valid_predicates.push_back(__pyx_v_i);
       } catch(...) {
         __Pyx_CppExn2PyErr();
-        {__pyx_filename = __pyx_f[0]; __pyx_lineno = 968; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1180; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       }
 
-      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":969
+      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1181
  *         if predicates[i].is_join_predicate():
  *             valid_predicates.push_back(i)
  *             n += 1             # <<<<<<<<<<<<<<
@@ -9163,7 +11307,7 @@ static std::pair<std::vector<int> ,int>  __pyx_f_16py_stringsimjoin_8apply_rf_7e
  */
       __pyx_v_n = (__pyx_v_n + 1);
 
-      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":967
+      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1179
  * 
  *     for i in xrange(predicates.size()):
  *         if predicates[i].is_join_predicate():             # <<<<<<<<<<<<<<
@@ -9173,7 +11317,7 @@ static std::pair<std::vector<int> ,int>  __pyx_f_16py_stringsimjoin_8apply_rf_7e
       goto __pyx_L5;
     }
 
-    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":971
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1183
  *             n += 1
  *         else:
  *             invalid_predicates.push_back(i)             # <<<<<<<<<<<<<<
@@ -9185,12 +11329,12 @@ static std::pair<std::vector<int> ,int>  __pyx_f_16py_stringsimjoin_8apply_rf_7e
         __pyx_v_invalid_predicates.push_back(__pyx_v_i);
       } catch(...) {
         __Pyx_CppExn2PyErr();
-        {__pyx_filename = __pyx_f[0]; __pyx_lineno = 971; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1183; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       }
     }
     __pyx_L5:;
 
-    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":972
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1184
  *         else:
  *             invalid_predicates.push_back(i)
  *         selected_predicates.push_back(False)             # <<<<<<<<<<<<<<
@@ -9201,11 +11345,11 @@ static std::pair<std::vector<int> ,int>  __pyx_f_16py_stringsimjoin_8apply_rf_7e
       __pyx_v_selected_predicates.push_back(0);
     } catch(...) {
       __Pyx_CppExn2PyErr();
-      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 972; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1184; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     }
   }
 
-  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":975
+  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1187
  * 
  * 
  *     if n == 0:             # <<<<<<<<<<<<<<
@@ -9215,16 +11359,16 @@ static std::pair<std::vector<int> ,int>  __pyx_f_16py_stringsimjoin_8apply_rf_7e
   __pyx_t_3 = ((__pyx_v_n == 0) != 0);
   if (__pyx_t_3) {
 
-    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":976
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1188
  * 
  *     if n == 0:
  *         print 'invalid rf'             # <<<<<<<<<<<<<<
  * 
  *     max_score = 0.0
  */
-    if (__Pyx_PrintOne(0, __pyx_kp_s_invalid_rf) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 976; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    if (__Pyx_PrintOne(0, __pyx_kp_s_invalid_rf) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1188; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
 
-    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":975
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1187
  * 
  * 
  *     if n == 0:             # <<<<<<<<<<<<<<
@@ -9233,7 +11377,7 @@ static std::pair<std::vector<int> ,int>  __pyx_f_16py_stringsimjoin_8apply_rf_7e
  */
   }
 
-  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":978
+  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1190
  *         print 'invalid rf'
  * 
  *     max_score = 0.0             # <<<<<<<<<<<<<<
@@ -9242,7 +11386,7 @@ static std::pair<std::vector<int> ,int>  __pyx_f_16py_stringsimjoin_8apply_rf_7e
  */
   __pyx_v_max_score = 0.0;
 
-  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":979
+  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1191
  * 
  *     max_score = 0.0
  *     max_pred = -1             # <<<<<<<<<<<<<<
@@ -9251,7 +11395,7 @@ static std::pair<std::vector<int> ,int>  __pyx_f_16py_stringsimjoin_8apply_rf_7e
  */
   __pyx_v_max_pred = -1;
 
-  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":982
+  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1194
  *     cdef Coverage prev_coverage
  * 
  *     for i in valid_predicates:             # <<<<<<<<<<<<<<
@@ -9265,51 +11409,59 @@ static std::pair<std::vector<int> ,int>  __pyx_f_16py_stringsimjoin_8apply_rf_7e
     ++__pyx_t_4;
     __pyx_v_i = __pyx_t_2;
 
-    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":983
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1195
  * 
  *     for i in valid_predicates:
  *         pred_score = (1.0 - (coverage[predicates[i].pred_name].count / sample_size)) / predicates[i].cost             # <<<<<<<<<<<<<<
  * 
- *         if pred_score > max_score:
+ *         if pred_score > max_score or max_score == 0.0:
  */
     __pyx_t_2 = (__pyx_v_coverage[(__pyx_v_predicates[__pyx_v_i]).pred_name]).count;
     if (unlikely(__pyx_v_sample_size == 0)) {
       PyErr_SetString(PyExc_ZeroDivisionError, "integer division or modulo by zero");
-      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 983; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1195; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     }
     else if (sizeof(int) == sizeof(long) && (!(((int const )-1) > 0)) && unlikely(__pyx_v_sample_size == (int const )-1)  && unlikely(UNARY_NEG_WOULD_OVERFLOW(__pyx_t_2))) {
       PyErr_SetString(PyExc_OverflowError, "value too large to perform division");
-      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 983; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1195; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     }
     __pyx_t_5 = (1.0 - __Pyx_div_int(__pyx_t_2, __pyx_v_sample_size));
     __pyx_t_6 = (__pyx_v_predicates[__pyx_v_i]).cost;
     if (unlikely(__pyx_t_6 == 0)) {
       PyErr_SetString(PyExc_ZeroDivisionError, "float division");
-      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 983; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1195; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     }
     __pyx_v_pred_score = (__pyx_t_5 / __pyx_t_6);
 
-    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":985
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1197
  *         pred_score = (1.0 - (coverage[predicates[i].pred_name].count / sample_size)) / predicates[i].cost
  * 
- *         if pred_score > max_score:             # <<<<<<<<<<<<<<
+ *         if pred_score > max_score or max_score == 0.0:             # <<<<<<<<<<<<<<
  *             max_score = pred_score
  *             max_pred = i
  */
-    __pyx_t_3 = ((__pyx_v_pred_score > __pyx_v_max_score) != 0);
+    __pyx_t_7 = ((__pyx_v_pred_score > __pyx_v_max_score) != 0);
+    if (!__pyx_t_7) {
+    } else {
+      __pyx_t_3 = __pyx_t_7;
+      goto __pyx_L10_bool_binop_done;
+    }
+    __pyx_t_7 = ((__pyx_v_max_score == 0.0) != 0);
+    __pyx_t_3 = __pyx_t_7;
+    __pyx_L10_bool_binop_done:;
     if (__pyx_t_3) {
 
-      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":986
+      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1198
  * 
- *         if pred_score > max_score:
+ *         if pred_score > max_score or max_score == 0.0:
  *             max_score = pred_score             # <<<<<<<<<<<<<<
  *             max_pred = i
  * 
  */
       __pyx_v_max_score = __pyx_v_pred_score;
 
-      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":987
- *         if pred_score > max_score:
+      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1199
+ *         if pred_score > max_score or max_score == 0.0:
  *             max_score = pred_score
  *             max_pred = i             # <<<<<<<<<<<<<<
  * 
@@ -9317,16 +11469,16 @@ static std::pair<std::vector<int> ,int>  __pyx_f_16py_stringsimjoin_8apply_rf_7e
  */
       __pyx_v_max_pred = __pyx_v_i;
 
-      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":985
+      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1197
  *         pred_score = (1.0 - (coverage[predicates[i].pred_name].count / sample_size)) / predicates[i].cost
  * 
- *         if pred_score > max_score:             # <<<<<<<<<<<<<<
+ *         if pred_score > max_score or max_score == 0.0:             # <<<<<<<<<<<<<<
  *             max_score = pred_score
  *             max_pred = i
  */
     }
 
-    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":982
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1194
  *     cdef Coverage prev_coverage
  * 
  *     for i in valid_predicates:             # <<<<<<<<<<<<<<
@@ -9335,7 +11487,7 @@ static std::pair<std::vector<int> ,int>  __pyx_f_16py_stringsimjoin_8apply_rf_7e
  */
   }
 
-  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":989
+  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1201
  *             max_pred = i
  * 
  *     optimal_seq.first.push_back(max_pred)             # <<<<<<<<<<<<<<
@@ -9346,10 +11498,10 @@ static std::pair<std::vector<int> ,int>  __pyx_f_16py_stringsimjoin_8apply_rf_7e
     __pyx_v_optimal_seq.first.push_back(__pyx_v_max_pred);
   } catch(...) {
     __Pyx_CppExn2PyErr();
-    {__pyx_filename = __pyx_f[0]; __pyx_lineno = 989; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1201; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   }
 
-  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":990
+  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1202
  * 
  *     optimal_seq.first.push_back(max_pred)
  *     selected_predicates[max_pred] = True             # <<<<<<<<<<<<<<
@@ -9358,7 +11510,7 @@ static std::pair<std::vector<int> ,int>  __pyx_f_16py_stringsimjoin_8apply_rf_7e
  */
   (__pyx_v_selected_predicates[__pyx_v_max_pred]) = 1;
 
-  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":992
+  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1204
  *     selected_predicates[max_pred] = True
  * 
  *     prev_coverage.or_coverage(coverage[predicates[max_pred].pred_name])             # <<<<<<<<<<<<<<
@@ -9367,7 +11519,7 @@ static std::pair<std::vector<int> ,int>  __pyx_f_16py_stringsimjoin_8apply_rf_7e
  */
   __pyx_v_prev_coverage.or_coverage((__pyx_v_coverage[(__pyx_v_predicates[__pyx_v_max_pred]).pred_name]));
 
-  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":994
+  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1206
  *     prev_coverage.or_coverage(coverage[predicates[max_pred].pred_name])
  * 
  *     j = 1             # <<<<<<<<<<<<<<
@@ -9376,7 +11528,7 @@ static std::pair<std::vector<int> ,int>  __pyx_f_16py_stringsimjoin_8apply_rf_7e
  */
   __pyx_v_j = 1;
 
-  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":995
+  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1207
  * 
  *     j = 1
  *     while j < n:             # <<<<<<<<<<<<<<
@@ -9387,7 +11539,7 @@ static std::pair<std::vector<int> ,int>  __pyx_f_16py_stringsimjoin_8apply_rf_7e
     __pyx_t_3 = ((__pyx_v_j < __pyx_v_n) != 0);
     if (!__pyx_t_3) break;
 
-    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":996
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1208
  *     j = 1
  *     while j < n:
  *         max_score = -1             # <<<<<<<<<<<<<<
@@ -9396,7 +11548,7 @@ static std::pair<std::vector<int> ,int>  __pyx_f_16py_stringsimjoin_8apply_rf_7e
  */
     __pyx_v_max_score = -1.0;
 
-    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":997
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1209
  *     while j < n:
  *         max_score = -1
  *         max_pred = -1             # <<<<<<<<<<<<<<
@@ -9405,7 +11557,7 @@ static std::pair<std::vector<int> ,int>  __pyx_f_16py_stringsimjoin_8apply_rf_7e
  */
     __pyx_v_max_pred = -1;
 
-    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":999
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1211
  *         max_pred = -1
  * 
  *         for i in valid_predicates:             # <<<<<<<<<<<<<<
@@ -9419,7 +11571,7 @@ static std::pair<std::vector<int> ,int>  __pyx_f_16py_stringsimjoin_8apply_rf_7e
       ++__pyx_t_4;
       __pyx_v_i = __pyx_t_2;
 
-      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1000
+      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1212
  * 
  *         for i in valid_predicates:
  *             if selected_predicates[i]:             # <<<<<<<<<<<<<<
@@ -9429,16 +11581,16 @@ static std::pair<std::vector<int> ,int>  __pyx_f_16py_stringsimjoin_8apply_rf_7e
       __pyx_t_3 = ((__pyx_v_selected_predicates[__pyx_v_i]) != 0);
       if (__pyx_t_3) {
 
-        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1001
+        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1213
  *         for i in valid_predicates:
  *             if selected_predicates[i]:
  *                 continue             # <<<<<<<<<<<<<<
  * 
  *             pred_score = (1.0 - (prev_coverage.and_sum(coverage[predicates[i].pred_name]) / sample_size)) / predicates[i].cost
  */
-        goto __pyx_L12_continue;
+        goto __pyx_L14_continue;
 
-        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1000
+        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1212
  * 
  *         for i in valid_predicates:
  *             if selected_predicates[i]:             # <<<<<<<<<<<<<<
@@ -9447,7 +11599,7 @@ static std::pair<std::vector<int> ,int>  __pyx_f_16py_stringsimjoin_8apply_rf_7e
  */
       }
 
-      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1003
+      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1215
  *                 continue
  * 
  *             pred_score = (1.0 - (prev_coverage.and_sum(coverage[predicates[i].pred_name]) / sample_size)) / predicates[i].cost             # <<<<<<<<<<<<<<
@@ -9457,21 +11609,21 @@ static std::pair<std::vector<int> ,int>  __pyx_f_16py_stringsimjoin_8apply_rf_7e
       __pyx_t_2 = __pyx_v_prev_coverage.and_sum((__pyx_v_coverage[(__pyx_v_predicates[__pyx_v_i]).pred_name]));
       if (unlikely(__pyx_v_sample_size == 0)) {
         PyErr_SetString(PyExc_ZeroDivisionError, "integer division or modulo by zero");
-        {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1003; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1215; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       }
       else if (sizeof(int) == sizeof(long) && (!(((int const )-1) > 0)) && unlikely(__pyx_v_sample_size == (int const )-1)  && unlikely(UNARY_NEG_WOULD_OVERFLOW(__pyx_t_2))) {
         PyErr_SetString(PyExc_OverflowError, "value too large to perform division");
-        {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1003; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1215; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       }
       __pyx_t_6 = (1.0 - __Pyx_div_int(__pyx_t_2, __pyx_v_sample_size));
       __pyx_t_5 = (__pyx_v_predicates[__pyx_v_i]).cost;
       if (unlikely(__pyx_t_5 == 0)) {
         PyErr_SetString(PyExc_ZeroDivisionError, "float division");
-        {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1003; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1215; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       }
       __pyx_v_pred_score = (__pyx_t_6 / __pyx_t_5);
 
-      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1004
+      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1216
  * 
  *             pred_score = (1.0 - (prev_coverage.and_sum(coverage[predicates[i].pred_name]) / sample_size)) / predicates[i].cost
  *             if pred_score > max_score:             # <<<<<<<<<<<<<<
@@ -9481,7 +11633,7 @@ static std::pair<std::vector<int> ,int>  __pyx_f_16py_stringsimjoin_8apply_rf_7e
       __pyx_t_3 = ((__pyx_v_pred_score > __pyx_v_max_score) != 0);
       if (__pyx_t_3) {
 
-        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1005
+        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1217
  *             pred_score = (1.0 - (prev_coverage.and_sum(coverage[predicates[i].pred_name]) / sample_size)) / predicates[i].cost
  *             if pred_score > max_score:
  *                 max_score = pred_score             # <<<<<<<<<<<<<<
@@ -9490,7 +11642,7 @@ static std::pair<std::vector<int> ,int>  __pyx_f_16py_stringsimjoin_8apply_rf_7e
  */
         __pyx_v_max_score = __pyx_v_pred_score;
 
-        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1006
+        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1218
  *             if pred_score > max_score:
  *                 max_score = pred_score
  *                 max_pred = i             # <<<<<<<<<<<<<<
@@ -9499,7 +11651,7 @@ static std::pair<std::vector<int> ,int>  __pyx_f_16py_stringsimjoin_8apply_rf_7e
  */
         __pyx_v_max_pred = __pyx_v_i;
 
-        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1004
+        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1216
  * 
  *             pred_score = (1.0 - (prev_coverage.and_sum(coverage[predicates[i].pred_name]) / sample_size)) / predicates[i].cost
  *             if pred_score > max_score:             # <<<<<<<<<<<<<<
@@ -9508,17 +11660,17 @@ static std::pair<std::vector<int> ,int>  __pyx_f_16py_stringsimjoin_8apply_rf_7e
  */
       }
 
-      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":999
+      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1211
  *         max_pred = -1
  * 
  *         for i in valid_predicates:             # <<<<<<<<<<<<<<
  *             if selected_predicates[i]:
  *                 continue
  */
-      __pyx_L12_continue:;
+      __pyx_L14_continue:;
     }
 
-    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1008
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1220
  *                 max_pred = i
  * 
  *         optimal_seq.first.push_back(max_pred)             # <<<<<<<<<<<<<<
@@ -9529,10 +11681,10 @@ static std::pair<std::vector<int> ,int>  __pyx_f_16py_stringsimjoin_8apply_rf_7e
       __pyx_v_optimal_seq.first.push_back(__pyx_v_max_pred);
     } catch(...) {
       __Pyx_CppExn2PyErr();
-      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1008; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1220; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     }
 
-    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1009
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1221
  * 
  *         optimal_seq.first.push_back(max_pred)
  *         selected_predicates[max_pred] = True             # <<<<<<<<<<<<<<
@@ -9541,7 +11693,7 @@ static std::pair<std::vector<int> ,int>  __pyx_f_16py_stringsimjoin_8apply_rf_7e
  */
     (__pyx_v_selected_predicates[__pyx_v_max_pred]) = 1;
 
-    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1010
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1222
  *         optimal_seq.first.push_back(max_pred)
  *         selected_predicates[max_pred] = True
  *         prev_coverage.and_coverage(coverage[predicates[max_pred].pred_name])             # <<<<<<<<<<<<<<
@@ -9550,7 +11702,7 @@ static std::pair<std::vector<int> ,int>  __pyx_f_16py_stringsimjoin_8apply_rf_7e
  */
     __pyx_v_prev_coverage.and_coverage((__pyx_v_coverage[(__pyx_v_predicates[__pyx_v_max_pred]).pred_name]));
 
-    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1011
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1223
  *         selected_predicates[max_pred] = True
  *         prev_coverage.and_coverage(coverage[predicates[max_pred].pred_name])
  *         j += 1             # <<<<<<<<<<<<<<
@@ -9560,7 +11712,7 @@ static std::pair<std::vector<int> ,int>  __pyx_f_16py_stringsimjoin_8apply_rf_7e
     __pyx_v_j = (__pyx_v_j + 1);
   }
 
-  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1012
+  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1224
  *         prev_coverage.and_coverage(coverage[predicates[max_pred].pred_name])
  *         j += 1
  *     optimal_seq.first.insert(optimal_seq.first.end(), invalid_predicates.begin(),             # <<<<<<<<<<<<<<
@@ -9571,10 +11723,10 @@ static std::pair<std::vector<int> ,int>  __pyx_f_16py_stringsimjoin_8apply_rf_7e
     __pyx_v_optimal_seq.first.insert(__pyx_v_optimal_seq.first.end(), __pyx_v_invalid_predicates.begin(), __pyx_v_invalid_predicates.end());
   } catch(...) {
     __Pyx_CppExn2PyErr();
-    {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1012; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1224; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   }
 
-  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1014
+  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1226
  *     optimal_seq.first.insert(optimal_seq.first.end(), invalid_predicates.begin(),
  *                        invalid_predicates.end())
  *     optimal_seq.second = valid_predicates.size()             # <<<<<<<<<<<<<<
@@ -9583,7 +11735,7 @@ static std::pair<std::vector<int> ,int>  __pyx_f_16py_stringsimjoin_8apply_rf_7e
  */
   __pyx_v_optimal_seq.second = __pyx_v_valid_predicates.size();
 
-  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1015
+  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1227
  *                        invalid_predicates.end())
  *     optimal_seq.second = valid_predicates.size()
  *     return optimal_seq             # <<<<<<<<<<<<<<
@@ -9593,7 +11745,7 @@ static std::pair<std::vector<int> ,int>  __pyx_f_16py_stringsimjoin_8apply_rf_7e
   __pyx_r = __pyx_v_optimal_seq;
   goto __pyx_L0;
 
-  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":955
+  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1167
  * 
  * # Ordering a set of predicates
  * cdef pair[vector[int], int] get_optimal_predicate_seq(             # <<<<<<<<<<<<<<
@@ -9609,7 +11761,7 @@ static std::pair<std::vector<int> ,int>  __pyx_f_16py_stringsimjoin_8apply_rf_7e
   return __pyx_r;
 }
 
-/* "py_stringsimjoin/apply_rf/ex_plan.pyx":1017
+/* "py_stringsimjoin/apply_rf/ex_plan.pyx":1229
  *     return optimal_seq
  * 
  * cdef vector[Rule] extract_pos_rules_from_tree(d_tree, feature_table):             # <<<<<<<<<<<<<<
@@ -9638,87 +11790,87 @@ static std::vector<Rule>  __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_extract_
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("extract_pos_rules_from_tree", 0);
 
-  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1018
+  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1230
  * 
  * cdef vector[Rule] extract_pos_rules_from_tree(d_tree, feature_table):
  *     feature_names = list(feature_table.index)             # <<<<<<<<<<<<<<
  *     # Get the left, right trees and the threshold from the tree
  *     left = d_tree.tree_.children_left
  */
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_feature_table, __pyx_n_s_index); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1018; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_feature_table, __pyx_n_s_index); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1230; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = PySequence_List(__pyx_t_1); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1018; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_2 = PySequence_List(__pyx_t_1); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1230; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_v_feature_names = ((PyObject*)__pyx_t_2);
   __pyx_t_2 = 0;
 
-  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1020
+  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1232
  *     feature_names = list(feature_table.index)
  *     # Get the left, right trees and the threshold from the tree
  *     left = d_tree.tree_.children_left             # <<<<<<<<<<<<<<
  *     right = d_tree.tree_.children_right
  *     threshold = d_tree.tree_.threshold
  */
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_d_tree, __pyx_n_s_tree); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1020; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_d_tree, __pyx_n_s_tree); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1232; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_children_left); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1020; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_children_left); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1232; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __pyx_v_left = __pyx_t_1;
   __pyx_t_1 = 0;
 
-  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1021
+  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1233
  *     # Get the left, right trees and the threshold from the tree
  *     left = d_tree.tree_.children_left
  *     right = d_tree.tree_.children_right             # <<<<<<<<<<<<<<
  *     threshold = d_tree.tree_.threshold
  * 
  */
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_d_tree, __pyx_n_s_tree); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1021; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_d_tree, __pyx_n_s_tree); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1233; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_children_right); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1021; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_children_right); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1233; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_v_right = __pyx_t_2;
   __pyx_t_2 = 0;
 
-  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1022
+  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1234
  *     left = d_tree.tree_.children_left
  *     right = d_tree.tree_.children_right
  *     threshold = d_tree.tree_.threshold             # <<<<<<<<<<<<<<
  * 
  *     # Get the features from the tree
  */
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_d_tree, __pyx_n_s_tree); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1022; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_d_tree, __pyx_n_s_tree); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1234; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_threshold); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1022; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_threshold); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1234; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __pyx_v_threshold = __pyx_t_1;
   __pyx_t_1 = 0;
 
-  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1025
+  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1237
  * 
  *     # Get the features from the tree
  *     features = [feature_names[i] for i in d_tree.tree_.feature]             # <<<<<<<<<<<<<<
  *     value = d_tree.tree_.value
  * 
  */
-  __pyx_t_1 = PyList_New(0); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1025; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = PyList_New(0); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1237; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_d_tree, __pyx_n_s_tree); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1025; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_d_tree, __pyx_n_s_tree); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1237; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_feature); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1025; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_feature); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1237; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   if (likely(PyList_CheckExact(__pyx_t_3)) || PyTuple_CheckExact(__pyx_t_3)) {
     __pyx_t_2 = __pyx_t_3; __Pyx_INCREF(__pyx_t_2); __pyx_t_4 = 0;
     __pyx_t_5 = NULL;
   } else {
-    __pyx_t_4 = -1; __pyx_t_2 = PyObject_GetIter(__pyx_t_3); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1025; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_4 = -1; __pyx_t_2 = PyObject_GetIter(__pyx_t_3); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1237; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_2);
-    __pyx_t_5 = Py_TYPE(__pyx_t_2)->tp_iternext; if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1025; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_5 = Py_TYPE(__pyx_t_2)->tp_iternext; if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1237; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   }
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   for (;;) {
@@ -9726,17 +11878,17 @@ static std::vector<Rule>  __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_extract_
       if (likely(PyList_CheckExact(__pyx_t_2))) {
         if (__pyx_t_4 >= PyList_GET_SIZE(__pyx_t_2)) break;
         #if CYTHON_COMPILING_IN_CPYTHON
-        __pyx_t_3 = PyList_GET_ITEM(__pyx_t_2, __pyx_t_4); __Pyx_INCREF(__pyx_t_3); __pyx_t_4++; if (unlikely(0 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1025; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        __pyx_t_3 = PyList_GET_ITEM(__pyx_t_2, __pyx_t_4); __Pyx_INCREF(__pyx_t_3); __pyx_t_4++; if (unlikely(0 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1237; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
         #else
-        __pyx_t_3 = PySequence_ITEM(__pyx_t_2, __pyx_t_4); __pyx_t_4++; if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1025; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        __pyx_t_3 = PySequence_ITEM(__pyx_t_2, __pyx_t_4); __pyx_t_4++; if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1237; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
         __Pyx_GOTREF(__pyx_t_3);
         #endif
       } else {
         if (__pyx_t_4 >= PyTuple_GET_SIZE(__pyx_t_2)) break;
         #if CYTHON_COMPILING_IN_CPYTHON
-        __pyx_t_3 = PyTuple_GET_ITEM(__pyx_t_2, __pyx_t_4); __Pyx_INCREF(__pyx_t_3); __pyx_t_4++; if (unlikely(0 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1025; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        __pyx_t_3 = PyTuple_GET_ITEM(__pyx_t_2, __pyx_t_4); __Pyx_INCREF(__pyx_t_3); __pyx_t_4++; if (unlikely(0 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1237; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
         #else
-        __pyx_t_3 = PySequence_ITEM(__pyx_t_2, __pyx_t_4); __pyx_t_4++; if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1025; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        __pyx_t_3 = PySequence_ITEM(__pyx_t_2, __pyx_t_4); __pyx_t_4++; if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1237; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
         __Pyx_GOTREF(__pyx_t_3);
         #endif
       }
@@ -9746,7 +11898,7 @@ static std::vector<Rule>  __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_extract_
         PyObject* exc_type = PyErr_Occurred();
         if (exc_type) {
           if (likely(exc_type == PyExc_StopIteration || PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) PyErr_Clear();
-          else {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1025; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+          else {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1237; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
         }
         break;
       }
@@ -9754,43 +11906,43 @@ static std::vector<Rule>  __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_extract_
     }
     __Pyx_XDECREF_SET(__pyx_v_i, __pyx_t_3);
     __pyx_t_3 = 0;
-    __pyx_t_3 = PyObject_GetItem(__pyx_v_feature_names, __pyx_v_i); if (unlikely(__pyx_t_3 == NULL)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1025; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
+    __pyx_t_3 = PyObject_GetItem(__pyx_v_feature_names, __pyx_v_i); if (unlikely(__pyx_t_3 == NULL)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1237; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
     __Pyx_GOTREF(__pyx_t_3);
-    if (unlikely(__Pyx_ListComp_Append(__pyx_t_1, (PyObject*)__pyx_t_3))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1025; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    if (unlikely(__Pyx_ListComp_Append(__pyx_t_1, (PyObject*)__pyx_t_3))) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1237; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   }
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __pyx_v_features = ((PyObject*)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1026
+  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1238
  *     # Get the features from the tree
  *     features = [feature_names[i] for i in d_tree.tree_.feature]
  *     value = d_tree.tree_.value             # <<<<<<<<<<<<<<
  * 
  *     cdef vector[Rule] rules
  */
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_d_tree, __pyx_n_s_tree); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1026; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_d_tree, __pyx_n_s_tree); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1238; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_value); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1026; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_value); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1238; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_v_value = __pyx_t_2;
   __pyx_t_2 = 0;
 
-  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1029
+  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1241
  * 
  *     cdef vector[Rule] rules
  *     traverse(0, left, right, features, threshold, value, feature_table, 0, [], rules)             # <<<<<<<<<<<<<<
  * 
  *     return rules
  */
-  __pyx_t_2 = PyList_New(0); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1029; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_2 = PyList_New(0); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1241; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_traverse(__pyx_int_0, __pyx_v_left, __pyx_v_right, __pyx_v_features, __pyx_v_threshold, __pyx_v_value, __pyx_v_feature_table, __pyx_int_0, __pyx_t_2, __pyx_v_rules);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1031
+  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1243
  *     traverse(0, left, right, features, threshold, value, feature_table, 0, [], rules)
  * 
  *     return rules             # <<<<<<<<<<<<<<
@@ -9800,7 +11952,7 @@ static std::vector<Rule>  __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_extract_
   __pyx_r = __pyx_v_rules;
   goto __pyx_L0;
 
-  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1017
+  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1229
  *     return optimal_seq
  * 
  * cdef vector[Rule] extract_pos_rules_from_tree(d_tree, feature_table):             # <<<<<<<<<<<<<<
@@ -9826,7 +11978,7 @@ static std::vector<Rule>  __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_extract_
   return __pyx_r;
 }
 
-/* "py_stringsimjoin/apply_rf/ex_plan.pyx":1033
+/* "py_stringsimjoin/apply_rf/ex_plan.pyx":1245
  *     return rules
  * 
  * cdef void traverse(node, left, right, features, threshold, value, feature_table, depth, cache, vector[Rule]& rules):             # <<<<<<<<<<<<<<
@@ -9871,20 +12023,20 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_traverse(PyObject *__p
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("traverse", 0);
 
-  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1034
+  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1246
  * 
  * cdef void traverse(node, left, right, features, threshold, value, feature_table, depth, cache, vector[Rule]& rules):
  *     if node == -1:             # <<<<<<<<<<<<<<
  *         return
  *     cdef vector[Predicatecpp] preds
  */
-  __pyx_t_1 = __Pyx_PyInt_EqObjC(__pyx_v_node, __pyx_int_neg_1, -1L, 0); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1034; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = __Pyx_PyInt_EqObjC(__pyx_v_node, __pyx_int_neg_1, -1L, 0); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1246; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_2 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1034; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_2 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1246; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   if (__pyx_t_2) {
 
-    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1035
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1247
  * cdef void traverse(node, left, right, features, threshold, value, feature_table, depth, cache, vector[Rule]& rules):
  *     if node == -1:
  *         return             # <<<<<<<<<<<<<<
@@ -9893,7 +12045,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_traverse(PyObject *__p
  */
     goto __pyx_L0;
 
-    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1034
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1246
  * 
  * cdef void traverse(node, left, right, features, threshold, value, feature_table, depth, cache, vector[Rule]& rules):
  *     if node == -1:             # <<<<<<<<<<<<<<
@@ -9902,91 +12054,91 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_traverse(PyObject *__p
  */
   }
 
-  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1039
+  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1251
  *     cdef Predicatecpp pred
  *     cdef Rule rule
  *     if threshold[node] != -2:             # <<<<<<<<<<<<<<
  *             # node is not a leaf node
  *         feat_row = feature_table.ix[features[node]]
  */
-  __pyx_t_1 = PyObject_GetItem(__pyx_v_threshold, __pyx_v_node); if (unlikely(__pyx_t_1 == NULL)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1039; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
+  __pyx_t_1 = PyObject_GetItem(__pyx_v_threshold, __pyx_v_node); if (unlikely(__pyx_t_1 == NULL)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1251; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_3 = PyObject_RichCompare(__pyx_t_1, __pyx_int_neg_2, Py_NE); __Pyx_XGOTREF(__pyx_t_3); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1039; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_3 = PyObject_RichCompare(__pyx_t_1, __pyx_int_neg_2, Py_NE); __Pyx_XGOTREF(__pyx_t_3); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1251; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_3); if (unlikely(__pyx_t_2 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1039; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_3); if (unlikely(__pyx_t_2 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1251; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   if (__pyx_t_2) {
 
-    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1041
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1253
  *     if threshold[node] != -2:
  *             # node is not a leaf node
  *         feat_row = feature_table.ix[features[node]]             # <<<<<<<<<<<<<<
  *         p = Predicate(features[node],
  *                           feat_row['sim_measure_type'],
  */
-    __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_feature_table, __pyx_n_s_ix); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1041; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_feature_table, __pyx_n_s_ix); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1253; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_3);
-    __pyx_t_1 = PyObject_GetItem(__pyx_v_features, __pyx_v_node); if (unlikely(__pyx_t_1 == NULL)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1041; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
+    __pyx_t_1 = PyObject_GetItem(__pyx_v_features, __pyx_v_node); if (unlikely(__pyx_t_1 == NULL)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1253; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
     __Pyx_GOTREF(__pyx_t_1);
-    __pyx_t_4 = PyObject_GetItem(__pyx_t_3, __pyx_t_1); if (unlikely(__pyx_t_4 == NULL)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1041; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
+    __pyx_t_4 = PyObject_GetItem(__pyx_t_3, __pyx_t_1); if (unlikely(__pyx_t_4 == NULL)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1253; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
     __Pyx_GOTREF(__pyx_t_4);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
     __pyx_v_feat_row = __pyx_t_4;
     __pyx_t_4 = 0;
 
-    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1042
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1254
  *             # node is not a leaf node
  *         feat_row = feature_table.ix[features[node]]
  *         p = Predicate(features[node],             # <<<<<<<<<<<<<<
  *                           feat_row['sim_measure_type'],
  *                           feat_row['tokenizer_type'],
  */
-    __pyx_t_1 = __Pyx_GetModuleGlobalName(__pyx_n_s_Predicate); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1042; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_1 = __Pyx_GetModuleGlobalName(__pyx_n_s_Predicate); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1254; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_1);
-    __pyx_t_3 = PyObject_GetItem(__pyx_v_features, __pyx_v_node); if (unlikely(__pyx_t_3 == NULL)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1042; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
+    __pyx_t_3 = PyObject_GetItem(__pyx_v_features, __pyx_v_node); if (unlikely(__pyx_t_3 == NULL)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1254; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
     __Pyx_GOTREF(__pyx_t_3);
 
-    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1043
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1255
  *         feat_row = feature_table.ix[features[node]]
  *         p = Predicate(features[node],
  *                           feat_row['sim_measure_type'],             # <<<<<<<<<<<<<<
  *                           feat_row['tokenizer_type'],
  *                           feat_row['sim_function'],
  */
-    __pyx_t_5 = PyObject_GetItem(__pyx_v_feat_row, __pyx_n_s_sim_measure_type); if (unlikely(__pyx_t_5 == NULL)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1043; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
+    __pyx_t_5 = PyObject_GetItem(__pyx_v_feat_row, __pyx_n_s_sim_measure_type); if (unlikely(__pyx_t_5 == NULL)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1255; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
     __Pyx_GOTREF(__pyx_t_5);
 
-    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1044
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1256
  *         p = Predicate(features[node],
  *                           feat_row['sim_measure_type'],
  *                           feat_row['tokenizer_type'],             # <<<<<<<<<<<<<<
  *                           feat_row['sim_function'],
  *                           feat_row['tokenizer'], '<=', threshold[node], 0)
  */
-    __pyx_t_6 = PyObject_GetItem(__pyx_v_feat_row, __pyx_n_s_tokenizer_type); if (unlikely(__pyx_t_6 == NULL)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1044; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
+    __pyx_t_6 = PyObject_GetItem(__pyx_v_feat_row, __pyx_n_s_tokenizer_type); if (unlikely(__pyx_t_6 == NULL)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1256; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
     __Pyx_GOTREF(__pyx_t_6);
 
-    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1045
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1257
  *                           feat_row['sim_measure_type'],
  *                           feat_row['tokenizer_type'],
  *                           feat_row['sim_function'],             # <<<<<<<<<<<<<<
  *                           feat_row['tokenizer'], '<=', threshold[node], 0)
  * #            p.set_name(features[node]+' <= '+str(threshold[node]))
  */
-    __pyx_t_7 = PyObject_GetItem(__pyx_v_feat_row, __pyx_n_s_sim_function); if (unlikely(__pyx_t_7 == NULL)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1045; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
+    __pyx_t_7 = PyObject_GetItem(__pyx_v_feat_row, __pyx_n_s_sim_function); if (unlikely(__pyx_t_7 == NULL)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1257; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
     __Pyx_GOTREF(__pyx_t_7);
 
-    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1046
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1258
  *                           feat_row['tokenizer_type'],
  *                           feat_row['sim_function'],
  *                           feat_row['tokenizer'], '<=', threshold[node], 0)             # <<<<<<<<<<<<<<
  * #            p.set_name(features[node]+' <= '+str(threshold[node]))
  *         cache.insert(depth, p)
  */
-    __pyx_t_8 = PyObject_GetItem(__pyx_v_feat_row, __pyx_n_s_tokenizer); if (unlikely(__pyx_t_8 == NULL)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1046; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
+    __pyx_t_8 = PyObject_GetItem(__pyx_v_feat_row, __pyx_n_s_tokenizer); if (unlikely(__pyx_t_8 == NULL)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1258; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
     __Pyx_GOTREF(__pyx_t_8);
-    __pyx_t_9 = PyObject_GetItem(__pyx_v_threshold, __pyx_v_node); if (unlikely(__pyx_t_9 == NULL)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1046; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
+    __pyx_t_9 = PyObject_GetItem(__pyx_v_threshold, __pyx_v_node); if (unlikely(__pyx_t_9 == NULL)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1258; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
     __Pyx_GOTREF(__pyx_t_9);
     __pyx_t_10 = NULL;
     __pyx_t_11 = 0;
@@ -10000,7 +12152,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_traverse(PyObject *__p
         __pyx_t_11 = 1;
       }
     }
-    __pyx_t_12 = PyTuple_New(8+__pyx_t_11); if (unlikely(!__pyx_t_12)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1042; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_12 = PyTuple_New(8+__pyx_t_11); if (unlikely(!__pyx_t_12)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1254; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_12);
     if (__pyx_t_10) {
       __Pyx_GIVEREF(__pyx_t_10); PyTuple_SET_ITEM(__pyx_t_12, 0, __pyx_t_10); __pyx_t_10 = NULL;
@@ -10029,21 +12181,21 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_traverse(PyObject *__p
     __pyx_t_7 = 0;
     __pyx_t_8 = 0;
     __pyx_t_9 = 0;
-    __pyx_t_4 = __Pyx_PyObject_Call(__pyx_t_1, __pyx_t_12, NULL); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1042; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_4 = __Pyx_PyObject_Call(__pyx_t_1, __pyx_t_12, NULL); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1254; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_4);
     __Pyx_DECREF(__pyx_t_12); __pyx_t_12 = 0;
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
     __pyx_v_p = __pyx_t_4;
     __pyx_t_4 = 0;
 
-    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1048
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1260
  *                           feat_row['tokenizer'], '<=', threshold[node], 0)
  * #            p.set_name(features[node]+' <= '+str(threshold[node]))
  *         cache.insert(depth, p)             # <<<<<<<<<<<<<<
  *         traverse(left[node], left, right, features, threshold, value, feature_table, depth+1, cache, rules)
  *         prev_pred = cache.pop(depth)
  */
-    __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_cache, __pyx_n_s_insert); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1048; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_cache, __pyx_n_s_insert); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1260; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_1);
     __pyx_t_12 = NULL;
     __pyx_t_11 = 0;
@@ -10057,7 +12209,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_traverse(PyObject *__p
         __pyx_t_11 = 1;
       }
     }
-    __pyx_t_9 = PyTuple_New(2+__pyx_t_11); if (unlikely(!__pyx_t_9)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1048; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_9 = PyTuple_New(2+__pyx_t_11); if (unlikely(!__pyx_t_9)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1260; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_9);
     if (__pyx_t_12) {
       __Pyx_GIVEREF(__pyx_t_12); PyTuple_SET_ITEM(__pyx_t_9, 0, __pyx_t_12); __pyx_t_12 = NULL;
@@ -10068,35 +12220,35 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_traverse(PyObject *__p
     __Pyx_INCREF(__pyx_v_p);
     __Pyx_GIVEREF(__pyx_v_p);
     PyTuple_SET_ITEM(__pyx_t_9, 1+__pyx_t_11, __pyx_v_p);
-    __pyx_t_4 = __Pyx_PyObject_Call(__pyx_t_1, __pyx_t_9, NULL); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1048; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_4 = __Pyx_PyObject_Call(__pyx_t_1, __pyx_t_9, NULL); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1260; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_4);
     __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1049
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1261
  * #            p.set_name(features[node]+' <= '+str(threshold[node]))
  *         cache.insert(depth, p)
  *         traverse(left[node], left, right, features, threshold, value, feature_table, depth+1, cache, rules)             # <<<<<<<<<<<<<<
  *         prev_pred = cache.pop(depth)
  *         feat_row = feature_table.ix[features[node]]
  */
-    __pyx_t_4 = PyObject_GetItem(__pyx_v_left, __pyx_v_node); if (unlikely(__pyx_t_4 == NULL)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1049; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
+    __pyx_t_4 = PyObject_GetItem(__pyx_v_left, __pyx_v_node); if (unlikely(__pyx_t_4 == NULL)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1261; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
     __Pyx_GOTREF(__pyx_t_4);
-    __pyx_t_1 = __Pyx_PyInt_AddObjC(__pyx_v_depth, __pyx_int_1, 1, 0); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1049; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_1 = __Pyx_PyInt_AddObjC(__pyx_v_depth, __pyx_int_1, 1, 0); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1261; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_1);
     __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_traverse(__pyx_t_4, __pyx_v_left, __pyx_v_right, __pyx_v_features, __pyx_v_threshold, __pyx_v_value, __pyx_v_feature_table, __pyx_t_1, __pyx_v_cache, __pyx_v_rules);
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1050
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1262
  *         cache.insert(depth, p)
  *         traverse(left[node], left, right, features, threshold, value, feature_table, depth+1, cache, rules)
  *         prev_pred = cache.pop(depth)             # <<<<<<<<<<<<<<
  *         feat_row = feature_table.ix[features[node]]
  *         p = Predicate(features[node],
  */
-    __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_v_cache, __pyx_n_s_pop); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1050; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_v_cache, __pyx_n_s_pop); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1262; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_4);
     __pyx_t_9 = NULL;
     if (CYTHON_COMPILING_IN_CPYTHON && likely(PyMethod_Check(__pyx_t_4))) {
@@ -10109,16 +12261,16 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_traverse(PyObject *__p
       }
     }
     if (!__pyx_t_9) {
-      __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_t_4, __pyx_v_depth); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1050; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_t_4, __pyx_v_depth); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1262; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_GOTREF(__pyx_t_1);
     } else {
-      __pyx_t_12 = PyTuple_New(1+1); if (unlikely(!__pyx_t_12)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1050; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_12 = PyTuple_New(1+1); if (unlikely(!__pyx_t_12)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1262; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_GOTREF(__pyx_t_12);
       __Pyx_GIVEREF(__pyx_t_9); PyTuple_SET_ITEM(__pyx_t_12, 0, __pyx_t_9); __pyx_t_9 = NULL;
       __Pyx_INCREF(__pyx_v_depth);
       __Pyx_GIVEREF(__pyx_v_depth);
       PyTuple_SET_ITEM(__pyx_t_12, 0+1, __pyx_v_depth);
-      __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_4, __pyx_t_12, NULL); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1050; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_4, __pyx_t_12, NULL); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1262; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_GOTREF(__pyx_t_1);
       __Pyx_DECREF(__pyx_t_12); __pyx_t_12 = 0;
     }
@@ -10126,76 +12278,76 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_traverse(PyObject *__p
     __pyx_v_prev_pred = __pyx_t_1;
     __pyx_t_1 = 0;
 
-    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1051
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1263
  *         traverse(left[node], left, right, features, threshold, value, feature_table, depth+1, cache, rules)
  *         prev_pred = cache.pop(depth)
  *         feat_row = feature_table.ix[features[node]]             # <<<<<<<<<<<<<<
  *         p = Predicate(features[node],
  *                       feat_row['sim_measure_type'],
  */
-    __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_feature_table, __pyx_n_s_ix); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1051; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_feature_table, __pyx_n_s_ix); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1263; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_1);
-    __pyx_t_4 = PyObject_GetItem(__pyx_v_features, __pyx_v_node); if (unlikely(__pyx_t_4 == NULL)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1051; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
+    __pyx_t_4 = PyObject_GetItem(__pyx_v_features, __pyx_v_node); if (unlikely(__pyx_t_4 == NULL)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1263; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
     __Pyx_GOTREF(__pyx_t_4);
-    __pyx_t_12 = PyObject_GetItem(__pyx_t_1, __pyx_t_4); if (unlikely(__pyx_t_12 == NULL)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1051; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
+    __pyx_t_12 = PyObject_GetItem(__pyx_t_1, __pyx_t_4); if (unlikely(__pyx_t_12 == NULL)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1263; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
     __Pyx_GOTREF(__pyx_t_12);
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     __Pyx_DECREF_SET(__pyx_v_feat_row, __pyx_t_12);
     __pyx_t_12 = 0;
 
-    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1052
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1264
  *         prev_pred = cache.pop(depth)
  *         feat_row = feature_table.ix[features[node]]
  *         p = Predicate(features[node],             # <<<<<<<<<<<<<<
  *                       feat_row['sim_measure_type'],
  *                       feat_row['tokenizer_type'],
  */
-    __pyx_t_4 = __Pyx_GetModuleGlobalName(__pyx_n_s_Predicate); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1052; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_4 = __Pyx_GetModuleGlobalName(__pyx_n_s_Predicate); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1264; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_4);
-    __pyx_t_1 = PyObject_GetItem(__pyx_v_features, __pyx_v_node); if (unlikely(__pyx_t_1 == NULL)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1052; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
+    __pyx_t_1 = PyObject_GetItem(__pyx_v_features, __pyx_v_node); if (unlikely(__pyx_t_1 == NULL)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1264; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
     __Pyx_GOTREF(__pyx_t_1);
 
-    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1053
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1265
  *         feat_row = feature_table.ix[features[node]]
  *         p = Predicate(features[node],
  *                       feat_row['sim_measure_type'],             # <<<<<<<<<<<<<<
  *                       feat_row['tokenizer_type'],
  *                       feat_row['sim_function'],
  */
-    __pyx_t_9 = PyObject_GetItem(__pyx_v_feat_row, __pyx_n_s_sim_measure_type); if (unlikely(__pyx_t_9 == NULL)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1053; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
+    __pyx_t_9 = PyObject_GetItem(__pyx_v_feat_row, __pyx_n_s_sim_measure_type); if (unlikely(__pyx_t_9 == NULL)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1265; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
     __Pyx_GOTREF(__pyx_t_9);
 
-    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1054
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1266
  *         p = Predicate(features[node],
  *                       feat_row['sim_measure_type'],
  *                       feat_row['tokenizer_type'],             # <<<<<<<<<<<<<<
  *                       feat_row['sim_function'],
  *                       feat_row['tokenizer'], '>', threshold[node], 0)
  */
-    __pyx_t_8 = PyObject_GetItem(__pyx_v_feat_row, __pyx_n_s_tokenizer_type); if (unlikely(__pyx_t_8 == NULL)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1054; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
+    __pyx_t_8 = PyObject_GetItem(__pyx_v_feat_row, __pyx_n_s_tokenizer_type); if (unlikely(__pyx_t_8 == NULL)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1266; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
     __Pyx_GOTREF(__pyx_t_8);
 
-    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1055
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1267
  *                       feat_row['sim_measure_type'],
  *                       feat_row['tokenizer_type'],
  *                       feat_row['sim_function'],             # <<<<<<<<<<<<<<
  *                       feat_row['tokenizer'], '>', threshold[node], 0)
  * #            p.set_name(features[node]+' > '+str(threshold[node]))
  */
-    __pyx_t_7 = PyObject_GetItem(__pyx_v_feat_row, __pyx_n_s_sim_function); if (unlikely(__pyx_t_7 == NULL)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1055; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
+    __pyx_t_7 = PyObject_GetItem(__pyx_v_feat_row, __pyx_n_s_sim_function); if (unlikely(__pyx_t_7 == NULL)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1267; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
     __Pyx_GOTREF(__pyx_t_7);
 
-    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1056
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1268
  *                       feat_row['tokenizer_type'],
  *                       feat_row['sim_function'],
  *                       feat_row['tokenizer'], '>', threshold[node], 0)             # <<<<<<<<<<<<<<
  * #            p.set_name(features[node]+' > '+str(threshold[node]))
  *         cache.insert(depth, p)
  */
-    __pyx_t_6 = PyObject_GetItem(__pyx_v_feat_row, __pyx_n_s_tokenizer); if (unlikely(__pyx_t_6 == NULL)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1056; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
+    __pyx_t_6 = PyObject_GetItem(__pyx_v_feat_row, __pyx_n_s_tokenizer); if (unlikely(__pyx_t_6 == NULL)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1268; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
     __Pyx_GOTREF(__pyx_t_6);
-    __pyx_t_5 = PyObject_GetItem(__pyx_v_threshold, __pyx_v_node); if (unlikely(__pyx_t_5 == NULL)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1056; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
+    __pyx_t_5 = PyObject_GetItem(__pyx_v_threshold, __pyx_v_node); if (unlikely(__pyx_t_5 == NULL)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1268; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
     __Pyx_GOTREF(__pyx_t_5);
     __pyx_t_3 = NULL;
     __pyx_t_11 = 0;
@@ -10209,7 +12361,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_traverse(PyObject *__p
         __pyx_t_11 = 1;
       }
     }
-    __pyx_t_10 = PyTuple_New(8+__pyx_t_11); if (unlikely(!__pyx_t_10)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1052; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_10 = PyTuple_New(8+__pyx_t_11); if (unlikely(!__pyx_t_10)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1264; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_10);
     if (__pyx_t_3) {
       __Pyx_GIVEREF(__pyx_t_3); PyTuple_SET_ITEM(__pyx_t_10, 0, __pyx_t_3); __pyx_t_3 = NULL;
@@ -10238,21 +12390,21 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_traverse(PyObject *__p
     __pyx_t_7 = 0;
     __pyx_t_6 = 0;
     __pyx_t_5 = 0;
-    __pyx_t_12 = __Pyx_PyObject_Call(__pyx_t_4, __pyx_t_10, NULL); if (unlikely(!__pyx_t_12)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1052; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_12 = __Pyx_PyObject_Call(__pyx_t_4, __pyx_t_10, NULL); if (unlikely(!__pyx_t_12)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1264; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_12);
     __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     __Pyx_DECREF_SET(__pyx_v_p, __pyx_t_12);
     __pyx_t_12 = 0;
 
-    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1058
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1270
  *                       feat_row['tokenizer'], '>', threshold[node], 0)
  * #            p.set_name(features[node]+' > '+str(threshold[node]))
  *         cache.insert(depth, p)             # <<<<<<<<<<<<<<
  *         traverse(right[node], left, right, features, threshold, value, feature_table, depth+1, cache, rules)
  *         prev_pred = cache.pop(depth)
  */
-    __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_v_cache, __pyx_n_s_insert); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1058; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_v_cache, __pyx_n_s_insert); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1270; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_4);
     __pyx_t_10 = NULL;
     __pyx_t_11 = 0;
@@ -10266,7 +12418,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_traverse(PyObject *__p
         __pyx_t_11 = 1;
       }
     }
-    __pyx_t_5 = PyTuple_New(2+__pyx_t_11); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1058; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_5 = PyTuple_New(2+__pyx_t_11); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1270; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_5);
     if (__pyx_t_10) {
       __Pyx_GIVEREF(__pyx_t_10); PyTuple_SET_ITEM(__pyx_t_5, 0, __pyx_t_10); __pyx_t_10 = NULL;
@@ -10277,35 +12429,35 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_traverse(PyObject *__p
     __Pyx_INCREF(__pyx_v_p);
     __Pyx_GIVEREF(__pyx_v_p);
     PyTuple_SET_ITEM(__pyx_t_5, 1+__pyx_t_11, __pyx_v_p);
-    __pyx_t_12 = __Pyx_PyObject_Call(__pyx_t_4, __pyx_t_5, NULL); if (unlikely(!__pyx_t_12)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1058; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_12 = __Pyx_PyObject_Call(__pyx_t_4, __pyx_t_5, NULL); if (unlikely(!__pyx_t_12)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1270; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_12);
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     __Pyx_DECREF(__pyx_t_12); __pyx_t_12 = 0;
 
-    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1059
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1271
  * #            p.set_name(features[node]+' > '+str(threshold[node]))
  *         cache.insert(depth, p)
  *         traverse(right[node], left, right, features, threshold, value, feature_table, depth+1, cache, rules)             # <<<<<<<<<<<<<<
  *         prev_pred = cache.pop(depth)
  *     else:
  */
-    __pyx_t_12 = PyObject_GetItem(__pyx_v_right, __pyx_v_node); if (unlikely(__pyx_t_12 == NULL)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1059; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
+    __pyx_t_12 = PyObject_GetItem(__pyx_v_right, __pyx_v_node); if (unlikely(__pyx_t_12 == NULL)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1271; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
     __Pyx_GOTREF(__pyx_t_12);
-    __pyx_t_4 = __Pyx_PyInt_AddObjC(__pyx_v_depth, __pyx_int_1, 1, 0); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1059; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_4 = __Pyx_PyInt_AddObjC(__pyx_v_depth, __pyx_int_1, 1, 0); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1271; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_4);
     __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_traverse(__pyx_t_12, __pyx_v_left, __pyx_v_right, __pyx_v_features, __pyx_v_threshold, __pyx_v_value, __pyx_v_feature_table, __pyx_t_4, __pyx_v_cache, __pyx_v_rules);
     __Pyx_DECREF(__pyx_t_12); __pyx_t_12 = 0;
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1060
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1272
  *         cache.insert(depth, p)
  *         traverse(right[node], left, right, features, threshold, value, feature_table, depth+1, cache, rules)
  *         prev_pred = cache.pop(depth)             # <<<<<<<<<<<<<<
  *     else:
  *             # node is a leaf node
  */
-    __pyx_t_12 = __Pyx_PyObject_GetAttrStr(__pyx_v_cache, __pyx_n_s_pop); if (unlikely(!__pyx_t_12)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1060; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_12 = __Pyx_PyObject_GetAttrStr(__pyx_v_cache, __pyx_n_s_pop); if (unlikely(!__pyx_t_12)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1272; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_12);
     __pyx_t_5 = NULL;
     if (CYTHON_COMPILING_IN_CPYTHON && likely(PyMethod_Check(__pyx_t_12))) {
@@ -10318,16 +12470,16 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_traverse(PyObject *__p
       }
     }
     if (!__pyx_t_5) {
-      __pyx_t_4 = __Pyx_PyObject_CallOneArg(__pyx_t_12, __pyx_v_depth); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1060; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_4 = __Pyx_PyObject_CallOneArg(__pyx_t_12, __pyx_v_depth); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1272; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_GOTREF(__pyx_t_4);
     } else {
-      __pyx_t_10 = PyTuple_New(1+1); if (unlikely(!__pyx_t_10)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1060; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_10 = PyTuple_New(1+1); if (unlikely(!__pyx_t_10)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1272; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_GOTREF(__pyx_t_10);
       __Pyx_GIVEREF(__pyx_t_5); PyTuple_SET_ITEM(__pyx_t_10, 0, __pyx_t_5); __pyx_t_5 = NULL;
       __Pyx_INCREF(__pyx_v_depth);
       __Pyx_GIVEREF(__pyx_v_depth);
       PyTuple_SET_ITEM(__pyx_t_10, 0+1, __pyx_v_depth);
-      __pyx_t_4 = __Pyx_PyObject_Call(__pyx_t_12, __pyx_t_10, NULL); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1060; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_4 = __Pyx_PyObject_Call(__pyx_t_12, __pyx_t_10, NULL); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1272; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_GOTREF(__pyx_t_4);
       __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
     }
@@ -10335,7 +12487,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_traverse(PyObject *__p
     __Pyx_DECREF_SET(__pyx_v_prev_pred, __pyx_t_4);
     __pyx_t_4 = 0;
 
-    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1039
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1251
  *     cdef Predicatecpp pred
  *     cdef Rule rule
  *     if threshold[node] != -2:             # <<<<<<<<<<<<<<
@@ -10345,7 +12497,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_traverse(PyObject *__p
     goto __pyx_L4;
   }
 
-  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1063
+  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1275
  *     else:
  *             # node is a leaf node
  *         if value[node][0][0] <= value[node][0][1]:             # <<<<<<<<<<<<<<
@@ -10353,63 +12505,63 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_traverse(PyObject *__p
  *             for i in xrange(depth):
  */
   /*else*/ {
-    __pyx_t_4 = PyObject_GetItem(__pyx_v_value, __pyx_v_node); if (unlikely(__pyx_t_4 == NULL)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1063; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
+    __pyx_t_4 = PyObject_GetItem(__pyx_v_value, __pyx_v_node); if (unlikely(__pyx_t_4 == NULL)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1275; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
     __Pyx_GOTREF(__pyx_t_4);
-    __pyx_t_12 = __Pyx_GetItemInt(__pyx_t_4, 0, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(__pyx_t_12 == NULL)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1063; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
+    __pyx_t_12 = __Pyx_GetItemInt(__pyx_t_4, 0, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(__pyx_t_12 == NULL)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1275; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
     __Pyx_GOTREF(__pyx_t_12);
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-    __pyx_t_4 = __Pyx_GetItemInt(__pyx_t_12, 0, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(__pyx_t_4 == NULL)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1063; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
+    __pyx_t_4 = __Pyx_GetItemInt(__pyx_t_12, 0, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(__pyx_t_4 == NULL)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1275; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
     __Pyx_GOTREF(__pyx_t_4);
     __Pyx_DECREF(__pyx_t_12); __pyx_t_12 = 0;
-    __pyx_t_12 = PyObject_GetItem(__pyx_v_value, __pyx_v_node); if (unlikely(__pyx_t_12 == NULL)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1063; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
+    __pyx_t_12 = PyObject_GetItem(__pyx_v_value, __pyx_v_node); if (unlikely(__pyx_t_12 == NULL)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1275; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
     __Pyx_GOTREF(__pyx_t_12);
-    __pyx_t_10 = __Pyx_GetItemInt(__pyx_t_12, 0, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(__pyx_t_10 == NULL)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1063; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
+    __pyx_t_10 = __Pyx_GetItemInt(__pyx_t_12, 0, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(__pyx_t_10 == NULL)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1275; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
     __Pyx_GOTREF(__pyx_t_10);
     __Pyx_DECREF(__pyx_t_12); __pyx_t_12 = 0;
-    __pyx_t_12 = __Pyx_GetItemInt(__pyx_t_10, 1, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(__pyx_t_12 == NULL)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1063; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
+    __pyx_t_12 = __Pyx_GetItemInt(__pyx_t_10, 1, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(__pyx_t_12 == NULL)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1275; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
     __Pyx_GOTREF(__pyx_t_12);
     __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
-    __pyx_t_10 = PyObject_RichCompare(__pyx_t_4, __pyx_t_12, Py_LE); __Pyx_XGOTREF(__pyx_t_10); if (unlikely(!__pyx_t_10)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1063; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_10 = PyObject_RichCompare(__pyx_t_4, __pyx_t_12, Py_LE); __Pyx_XGOTREF(__pyx_t_10); if (unlikely(!__pyx_t_10)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1275; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     __Pyx_DECREF(__pyx_t_12); __pyx_t_12 = 0;
-    __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_10); if (unlikely(__pyx_t_2 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1063; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_10); if (unlikely(__pyx_t_2 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1275; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
     if (__pyx_t_2) {
 
-      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1064
+      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1276
  *             # node is a leaf node
  *         if value[node][0][0] <= value[node][0][1]:
  *             pred_dict = {}             # <<<<<<<<<<<<<<
  *             for i in xrange(depth):
  *                 if pred_dict.get(cache[i].feat_name+cache[i].comp_op) is None:
  */
-      __pyx_t_10 = PyDict_New(); if (unlikely(!__pyx_t_10)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1064; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_10 = PyDict_New(); if (unlikely(!__pyx_t_10)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1276; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_GOTREF(__pyx_t_10);
       __pyx_v_pred_dict = ((PyObject*)__pyx_t_10);
       __pyx_t_10 = 0;
 
-      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1065
+      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1277
  *         if value[node][0][0] <= value[node][0][1]:
  *             pred_dict = {}
  *             for i in xrange(depth):             # <<<<<<<<<<<<<<
  *                 if pred_dict.get(cache[i].feat_name+cache[i].comp_op) is None:
  *                     pred_dict[cache[i].feat_name+cache[i].comp_op] = i
  */
-      __pyx_t_10 = PyTuple_New(1); if (unlikely(!__pyx_t_10)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1065; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_10 = PyTuple_New(1); if (unlikely(!__pyx_t_10)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1277; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_GOTREF(__pyx_t_10);
       __Pyx_INCREF(__pyx_v_depth);
       __Pyx_GIVEREF(__pyx_v_depth);
       PyTuple_SET_ITEM(__pyx_t_10, 0, __pyx_v_depth);
-      __pyx_t_12 = __Pyx_PyObject_Call(__pyx_builtin_xrange, __pyx_t_10, NULL); if (unlikely(!__pyx_t_12)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1065; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_12 = __Pyx_PyObject_Call(__pyx_builtin_xrange, __pyx_t_10, NULL); if (unlikely(!__pyx_t_12)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1277; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_GOTREF(__pyx_t_12);
       __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
       if (likely(PyList_CheckExact(__pyx_t_12)) || PyTuple_CheckExact(__pyx_t_12)) {
         __pyx_t_10 = __pyx_t_12; __Pyx_INCREF(__pyx_t_10); __pyx_t_11 = 0;
         __pyx_t_13 = NULL;
       } else {
-        __pyx_t_11 = -1; __pyx_t_10 = PyObject_GetIter(__pyx_t_12); if (unlikely(!__pyx_t_10)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1065; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        __pyx_t_11 = -1; __pyx_t_10 = PyObject_GetIter(__pyx_t_12); if (unlikely(!__pyx_t_10)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1277; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
         __Pyx_GOTREF(__pyx_t_10);
-        __pyx_t_13 = Py_TYPE(__pyx_t_10)->tp_iternext; if (unlikely(!__pyx_t_13)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1065; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        __pyx_t_13 = Py_TYPE(__pyx_t_10)->tp_iternext; if (unlikely(!__pyx_t_13)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1277; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       }
       __Pyx_DECREF(__pyx_t_12); __pyx_t_12 = 0;
       for (;;) {
@@ -10417,17 +12569,17 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_traverse(PyObject *__p
           if (likely(PyList_CheckExact(__pyx_t_10))) {
             if (__pyx_t_11 >= PyList_GET_SIZE(__pyx_t_10)) break;
             #if CYTHON_COMPILING_IN_CPYTHON
-            __pyx_t_12 = PyList_GET_ITEM(__pyx_t_10, __pyx_t_11); __Pyx_INCREF(__pyx_t_12); __pyx_t_11++; if (unlikely(0 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1065; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+            __pyx_t_12 = PyList_GET_ITEM(__pyx_t_10, __pyx_t_11); __Pyx_INCREF(__pyx_t_12); __pyx_t_11++; if (unlikely(0 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1277; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
             #else
-            __pyx_t_12 = PySequence_ITEM(__pyx_t_10, __pyx_t_11); __pyx_t_11++; if (unlikely(!__pyx_t_12)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1065; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+            __pyx_t_12 = PySequence_ITEM(__pyx_t_10, __pyx_t_11); __pyx_t_11++; if (unlikely(!__pyx_t_12)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1277; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
             __Pyx_GOTREF(__pyx_t_12);
             #endif
           } else {
             if (__pyx_t_11 >= PyTuple_GET_SIZE(__pyx_t_10)) break;
             #if CYTHON_COMPILING_IN_CPYTHON
-            __pyx_t_12 = PyTuple_GET_ITEM(__pyx_t_10, __pyx_t_11); __Pyx_INCREF(__pyx_t_12); __pyx_t_11++; if (unlikely(0 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1065; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+            __pyx_t_12 = PyTuple_GET_ITEM(__pyx_t_10, __pyx_t_11); __Pyx_INCREF(__pyx_t_12); __pyx_t_11++; if (unlikely(0 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1277; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
             #else
-            __pyx_t_12 = PySequence_ITEM(__pyx_t_10, __pyx_t_11); __pyx_t_11++; if (unlikely(!__pyx_t_12)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1065; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+            __pyx_t_12 = PySequence_ITEM(__pyx_t_10, __pyx_t_11); __pyx_t_11++; if (unlikely(!__pyx_t_12)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1277; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
             __Pyx_GOTREF(__pyx_t_12);
             #endif
           }
@@ -10437,7 +12589,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_traverse(PyObject *__p
             PyObject* exc_type = PyErr_Occurred();
             if (exc_type) {
               if (likely(exc_type == PyExc_StopIteration || PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) PyErr_Clear();
-              else {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1065; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+              else {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1277; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
             }
             break;
           }
@@ -10446,28 +12598,28 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_traverse(PyObject *__p
         __Pyx_XDECREF_SET(__pyx_v_i, __pyx_t_12);
         __pyx_t_12 = 0;
 
-        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1066
+        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1278
  *             pred_dict = {}
  *             for i in xrange(depth):
  *                 if pred_dict.get(cache[i].feat_name+cache[i].comp_op) is None:             # <<<<<<<<<<<<<<
  *                     pred_dict[cache[i].feat_name+cache[i].comp_op] = i
  *                     continue
  */
-        __pyx_t_12 = PyObject_GetItem(__pyx_v_cache, __pyx_v_i); if (unlikely(__pyx_t_12 == NULL)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1066; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
+        __pyx_t_12 = PyObject_GetItem(__pyx_v_cache, __pyx_v_i); if (unlikely(__pyx_t_12 == NULL)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1278; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
         __Pyx_GOTREF(__pyx_t_12);
-        __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_12, __pyx_n_s_feat_name); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1066; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_12, __pyx_n_s_feat_name); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1278; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
         __Pyx_GOTREF(__pyx_t_4);
         __Pyx_DECREF(__pyx_t_12); __pyx_t_12 = 0;
-        __pyx_t_12 = PyObject_GetItem(__pyx_v_cache, __pyx_v_i); if (unlikely(__pyx_t_12 == NULL)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1066; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
+        __pyx_t_12 = PyObject_GetItem(__pyx_v_cache, __pyx_v_i); if (unlikely(__pyx_t_12 == NULL)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1278; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
         __Pyx_GOTREF(__pyx_t_12);
-        __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_12, __pyx_n_s_comp_op); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1066; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_12, __pyx_n_s_comp_op); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1278; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
         __Pyx_GOTREF(__pyx_t_5);
         __Pyx_DECREF(__pyx_t_12); __pyx_t_12 = 0;
-        __pyx_t_12 = PyNumber_Add(__pyx_t_4, __pyx_t_5); if (unlikely(!__pyx_t_12)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1066; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        __pyx_t_12 = PyNumber_Add(__pyx_t_4, __pyx_t_5); if (unlikely(!__pyx_t_12)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1278; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
         __Pyx_GOTREF(__pyx_t_12);
         __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
         __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-        __pyx_t_5 = __Pyx_PyDict_GetItemDefault(__pyx_v_pred_dict, __pyx_t_12, Py_None); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1066; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        __pyx_t_5 = __Pyx_PyDict_GetItemDefault(__pyx_v_pred_dict, __pyx_t_12, Py_None); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1278; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
         __Pyx_GOTREF(__pyx_t_5);
         __Pyx_DECREF(__pyx_t_12); __pyx_t_12 = 0;
         __pyx_t_2 = (__pyx_t_5 == Py_None);
@@ -10475,31 +12627,31 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_traverse(PyObject *__p
         __pyx_t_14 = (__pyx_t_2 != 0);
         if (__pyx_t_14) {
 
-          /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1067
+          /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1279
  *             for i in xrange(depth):
  *                 if pred_dict.get(cache[i].feat_name+cache[i].comp_op) is None:
  *                     pred_dict[cache[i].feat_name+cache[i].comp_op] = i             # <<<<<<<<<<<<<<
  *                     continue
  *                 if cache[i].comp_op == '<=':
  */
-          __pyx_t_5 = PyObject_GetItem(__pyx_v_cache, __pyx_v_i); if (unlikely(__pyx_t_5 == NULL)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1067; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
+          __pyx_t_5 = PyObject_GetItem(__pyx_v_cache, __pyx_v_i); if (unlikely(__pyx_t_5 == NULL)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1279; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
           __Pyx_GOTREF(__pyx_t_5);
-          __pyx_t_12 = __Pyx_PyObject_GetAttrStr(__pyx_t_5, __pyx_n_s_feat_name); if (unlikely(!__pyx_t_12)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1067; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+          __pyx_t_12 = __Pyx_PyObject_GetAttrStr(__pyx_t_5, __pyx_n_s_feat_name); if (unlikely(!__pyx_t_12)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1279; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
           __Pyx_GOTREF(__pyx_t_12);
           __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-          __pyx_t_5 = PyObject_GetItem(__pyx_v_cache, __pyx_v_i); if (unlikely(__pyx_t_5 == NULL)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1067; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
+          __pyx_t_5 = PyObject_GetItem(__pyx_v_cache, __pyx_v_i); if (unlikely(__pyx_t_5 == NULL)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1279; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
           __Pyx_GOTREF(__pyx_t_5);
-          __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_5, __pyx_n_s_comp_op); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1067; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+          __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_5, __pyx_n_s_comp_op); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1279; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
           __Pyx_GOTREF(__pyx_t_4);
           __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-          __pyx_t_5 = PyNumber_Add(__pyx_t_12, __pyx_t_4); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1067; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+          __pyx_t_5 = PyNumber_Add(__pyx_t_12, __pyx_t_4); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1279; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
           __Pyx_GOTREF(__pyx_t_5);
           __Pyx_DECREF(__pyx_t_12); __pyx_t_12 = 0;
           __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-          if (unlikely(PyDict_SetItem(__pyx_v_pred_dict, __pyx_t_5, __pyx_v_i) < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1067; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+          if (unlikely(PyDict_SetItem(__pyx_v_pred_dict, __pyx_t_5, __pyx_v_i) < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1279; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
           __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
 
-          /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1068
+          /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1280
  *                 if pred_dict.get(cache[i].feat_name+cache[i].comp_op) is None:
  *                     pred_dict[cache[i].feat_name+cache[i].comp_op] = i
  *                     continue             # <<<<<<<<<<<<<<
@@ -10508,7 +12660,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_traverse(PyObject *__p
  */
           goto __pyx_L6_continue;
 
-          /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1066
+          /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1278
  *             pred_dict = {}
  *             for i in xrange(depth):
  *                 if pred_dict.get(cache[i].feat_name+cache[i].comp_op) is None:             # <<<<<<<<<<<<<<
@@ -10517,89 +12669,89 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_traverse(PyObject *__p
  */
         }
 
-        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1069
+        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1281
  *                     pred_dict[cache[i].feat_name+cache[i].comp_op] = i
  *                     continue
  *                 if cache[i].comp_op == '<=':             # <<<<<<<<<<<<<<
  *                     if cache[i].threshold > cache[pred_dict[cache[i].feat_name+cache[i].comp_op]].threshold:
  *                         pred_dict[cache[i].feat_name+cache[i].comp_op] = i
  */
-        __pyx_t_5 = PyObject_GetItem(__pyx_v_cache, __pyx_v_i); if (unlikely(__pyx_t_5 == NULL)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1069; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
+        __pyx_t_5 = PyObject_GetItem(__pyx_v_cache, __pyx_v_i); if (unlikely(__pyx_t_5 == NULL)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1281; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
         __Pyx_GOTREF(__pyx_t_5);
-        __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_5, __pyx_n_s_comp_op); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1069; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_5, __pyx_n_s_comp_op); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1281; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
         __Pyx_GOTREF(__pyx_t_4);
         __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-        __pyx_t_14 = (__Pyx_PyString_Equals(__pyx_t_4, __pyx_kp_s_, Py_EQ)); if (unlikely(__pyx_t_14 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1069; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        __pyx_t_14 = (__Pyx_PyString_Equals(__pyx_t_4, __pyx_kp_s_, Py_EQ)); if (unlikely(__pyx_t_14 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1281; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
         __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
         if (__pyx_t_14) {
 
-          /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1070
+          /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1282
  *                     continue
  *                 if cache[i].comp_op == '<=':
  *                     if cache[i].threshold > cache[pred_dict[cache[i].feat_name+cache[i].comp_op]].threshold:             # <<<<<<<<<<<<<<
  *                         pred_dict[cache[i].feat_name+cache[i].comp_op] = i
  *                 else:
  */
-          __pyx_t_4 = PyObject_GetItem(__pyx_v_cache, __pyx_v_i); if (unlikely(__pyx_t_4 == NULL)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1070; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
+          __pyx_t_4 = PyObject_GetItem(__pyx_v_cache, __pyx_v_i); if (unlikely(__pyx_t_4 == NULL)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1282; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
           __Pyx_GOTREF(__pyx_t_4);
-          __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_n_s_threshold); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1070; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+          __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_n_s_threshold); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1282; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
           __Pyx_GOTREF(__pyx_t_5);
           __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-          __pyx_t_4 = PyObject_GetItem(__pyx_v_cache, __pyx_v_i); if (unlikely(__pyx_t_4 == NULL)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1070; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
+          __pyx_t_4 = PyObject_GetItem(__pyx_v_cache, __pyx_v_i); if (unlikely(__pyx_t_4 == NULL)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1282; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
           __Pyx_GOTREF(__pyx_t_4);
-          __pyx_t_12 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_n_s_feat_name); if (unlikely(!__pyx_t_12)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1070; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+          __pyx_t_12 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_n_s_feat_name); if (unlikely(!__pyx_t_12)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1282; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
           __Pyx_GOTREF(__pyx_t_12);
           __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-          __pyx_t_4 = PyObject_GetItem(__pyx_v_cache, __pyx_v_i); if (unlikely(__pyx_t_4 == NULL)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1070; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
+          __pyx_t_4 = PyObject_GetItem(__pyx_v_cache, __pyx_v_i); if (unlikely(__pyx_t_4 == NULL)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1282; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
           __Pyx_GOTREF(__pyx_t_4);
-          __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_n_s_comp_op); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1070; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+          __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_n_s_comp_op); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1282; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
           __Pyx_GOTREF(__pyx_t_6);
           __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-          __pyx_t_4 = PyNumber_Add(__pyx_t_12, __pyx_t_6); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1070; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+          __pyx_t_4 = PyNumber_Add(__pyx_t_12, __pyx_t_6); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1282; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
           __Pyx_GOTREF(__pyx_t_4);
           __Pyx_DECREF(__pyx_t_12); __pyx_t_12 = 0;
           __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-          __pyx_t_6 = __Pyx_PyDict_GetItem(__pyx_v_pred_dict, __pyx_t_4); if (unlikely(__pyx_t_6 == NULL)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1070; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
+          __pyx_t_6 = __Pyx_PyDict_GetItem(__pyx_v_pred_dict, __pyx_t_4); if (unlikely(__pyx_t_6 == NULL)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1282; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
           __Pyx_GOTREF(__pyx_t_6);
           __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-          __pyx_t_4 = PyObject_GetItem(__pyx_v_cache, __pyx_t_6); if (unlikely(__pyx_t_4 == NULL)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1070; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
+          __pyx_t_4 = PyObject_GetItem(__pyx_v_cache, __pyx_t_6); if (unlikely(__pyx_t_4 == NULL)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1282; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
           __Pyx_GOTREF(__pyx_t_4);
           __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-          __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_n_s_threshold); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1070; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+          __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_n_s_threshold); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1282; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
           __Pyx_GOTREF(__pyx_t_6);
           __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-          __pyx_t_4 = PyObject_RichCompare(__pyx_t_5, __pyx_t_6, Py_GT); __Pyx_XGOTREF(__pyx_t_4); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1070; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+          __pyx_t_4 = PyObject_RichCompare(__pyx_t_5, __pyx_t_6, Py_GT); __Pyx_XGOTREF(__pyx_t_4); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1282; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
           __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
           __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-          __pyx_t_14 = __Pyx_PyObject_IsTrue(__pyx_t_4); if (unlikely(__pyx_t_14 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1070; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+          __pyx_t_14 = __Pyx_PyObject_IsTrue(__pyx_t_4); if (unlikely(__pyx_t_14 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1282; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
           __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
           if (__pyx_t_14) {
 
-            /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1071
+            /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1283
  *                 if cache[i].comp_op == '<=':
  *                     if cache[i].threshold > cache[pred_dict[cache[i].feat_name+cache[i].comp_op]].threshold:
  *                         pred_dict[cache[i].feat_name+cache[i].comp_op] = i             # <<<<<<<<<<<<<<
  *                 else:
  *                     if cache[i].threshold < cache[pred_dict[cache[i].feat_name+cache[i].comp_op]].threshold:
  */
-            __pyx_t_4 = PyObject_GetItem(__pyx_v_cache, __pyx_v_i); if (unlikely(__pyx_t_4 == NULL)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1071; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
+            __pyx_t_4 = PyObject_GetItem(__pyx_v_cache, __pyx_v_i); if (unlikely(__pyx_t_4 == NULL)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1283; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
             __Pyx_GOTREF(__pyx_t_4);
-            __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_n_s_feat_name); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1071; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+            __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_n_s_feat_name); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1283; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
             __Pyx_GOTREF(__pyx_t_6);
             __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-            __pyx_t_4 = PyObject_GetItem(__pyx_v_cache, __pyx_v_i); if (unlikely(__pyx_t_4 == NULL)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1071; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
+            __pyx_t_4 = PyObject_GetItem(__pyx_v_cache, __pyx_v_i); if (unlikely(__pyx_t_4 == NULL)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1283; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
             __Pyx_GOTREF(__pyx_t_4);
-            __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_n_s_comp_op); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1071; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+            __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_n_s_comp_op); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1283; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
             __Pyx_GOTREF(__pyx_t_5);
             __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-            __pyx_t_4 = PyNumber_Add(__pyx_t_6, __pyx_t_5); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1071; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+            __pyx_t_4 = PyNumber_Add(__pyx_t_6, __pyx_t_5); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1283; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
             __Pyx_GOTREF(__pyx_t_4);
             __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
             __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-            if (unlikely(PyDict_SetItem(__pyx_v_pred_dict, __pyx_t_4, __pyx_v_i) < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1071; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+            if (unlikely(PyDict_SetItem(__pyx_v_pred_dict, __pyx_t_4, __pyx_v_i) < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1283; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
             __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-            /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1070
+            /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1282
  *                     continue
  *                 if cache[i].comp_op == '<=':
  *                     if cache[i].threshold > cache[pred_dict[cache[i].feat_name+cache[i].comp_op]].threshold:             # <<<<<<<<<<<<<<
@@ -10608,7 +12760,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_traverse(PyObject *__p
  */
           }
 
-          /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1069
+          /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1281
  *                     pred_dict[cache[i].feat_name+cache[i].comp_op] = i
  *                     continue
  *                 if cache[i].comp_op == '<=':             # <<<<<<<<<<<<<<
@@ -10618,7 +12770,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_traverse(PyObject *__p
           goto __pyx_L9;
         }
 
-        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1073
+        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1285
  *                         pred_dict[cache[i].feat_name+cache[i].comp_op] = i
  *                 else:
  *                     if cache[i].threshold < cache[pred_dict[cache[i].feat_name+cache[i].comp_op]].threshold:             # <<<<<<<<<<<<<<
@@ -10626,66 +12778,66 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_traverse(PyObject *__p
  * 
  */
         /*else*/ {
-          __pyx_t_4 = PyObject_GetItem(__pyx_v_cache, __pyx_v_i); if (unlikely(__pyx_t_4 == NULL)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1073; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
+          __pyx_t_4 = PyObject_GetItem(__pyx_v_cache, __pyx_v_i); if (unlikely(__pyx_t_4 == NULL)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1285; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
           __Pyx_GOTREF(__pyx_t_4);
-          __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_n_s_threshold); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1073; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+          __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_n_s_threshold); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1285; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
           __Pyx_GOTREF(__pyx_t_5);
           __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-          __pyx_t_4 = PyObject_GetItem(__pyx_v_cache, __pyx_v_i); if (unlikely(__pyx_t_4 == NULL)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1073; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
+          __pyx_t_4 = PyObject_GetItem(__pyx_v_cache, __pyx_v_i); if (unlikely(__pyx_t_4 == NULL)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1285; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
           __Pyx_GOTREF(__pyx_t_4);
-          __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_n_s_feat_name); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1073; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+          __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_n_s_feat_name); if (unlikely(!__pyx_t_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1285; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
           __Pyx_GOTREF(__pyx_t_6);
           __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-          __pyx_t_4 = PyObject_GetItem(__pyx_v_cache, __pyx_v_i); if (unlikely(__pyx_t_4 == NULL)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1073; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
+          __pyx_t_4 = PyObject_GetItem(__pyx_v_cache, __pyx_v_i); if (unlikely(__pyx_t_4 == NULL)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1285; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
           __Pyx_GOTREF(__pyx_t_4);
-          __pyx_t_12 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_n_s_comp_op); if (unlikely(!__pyx_t_12)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1073; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+          __pyx_t_12 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_n_s_comp_op); if (unlikely(!__pyx_t_12)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1285; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
           __Pyx_GOTREF(__pyx_t_12);
           __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-          __pyx_t_4 = PyNumber_Add(__pyx_t_6, __pyx_t_12); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1073; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+          __pyx_t_4 = PyNumber_Add(__pyx_t_6, __pyx_t_12); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1285; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
           __Pyx_GOTREF(__pyx_t_4);
           __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
           __Pyx_DECREF(__pyx_t_12); __pyx_t_12 = 0;
-          __pyx_t_12 = __Pyx_PyDict_GetItem(__pyx_v_pred_dict, __pyx_t_4); if (unlikely(__pyx_t_12 == NULL)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1073; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
+          __pyx_t_12 = __Pyx_PyDict_GetItem(__pyx_v_pred_dict, __pyx_t_4); if (unlikely(__pyx_t_12 == NULL)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1285; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
           __Pyx_GOTREF(__pyx_t_12);
           __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-          __pyx_t_4 = PyObject_GetItem(__pyx_v_cache, __pyx_t_12); if (unlikely(__pyx_t_4 == NULL)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1073; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
+          __pyx_t_4 = PyObject_GetItem(__pyx_v_cache, __pyx_t_12); if (unlikely(__pyx_t_4 == NULL)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1285; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
           __Pyx_GOTREF(__pyx_t_4);
           __Pyx_DECREF(__pyx_t_12); __pyx_t_12 = 0;
-          __pyx_t_12 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_n_s_threshold); if (unlikely(!__pyx_t_12)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1073; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+          __pyx_t_12 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_n_s_threshold); if (unlikely(!__pyx_t_12)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1285; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
           __Pyx_GOTREF(__pyx_t_12);
           __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-          __pyx_t_4 = PyObject_RichCompare(__pyx_t_5, __pyx_t_12, Py_LT); __Pyx_XGOTREF(__pyx_t_4); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1073; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+          __pyx_t_4 = PyObject_RichCompare(__pyx_t_5, __pyx_t_12, Py_LT); __Pyx_XGOTREF(__pyx_t_4); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1285; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
           __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
           __Pyx_DECREF(__pyx_t_12); __pyx_t_12 = 0;
-          __pyx_t_14 = __Pyx_PyObject_IsTrue(__pyx_t_4); if (unlikely(__pyx_t_14 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1073; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+          __pyx_t_14 = __Pyx_PyObject_IsTrue(__pyx_t_4); if (unlikely(__pyx_t_14 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1285; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
           __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
           if (__pyx_t_14) {
 
-            /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1074
+            /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1286
  *                 else:
  *                     if cache[i].threshold < cache[pred_dict[cache[i].feat_name+cache[i].comp_op]].threshold:
  *                         pred_dict[cache[i].feat_name+cache[i].comp_op] = i             # <<<<<<<<<<<<<<
  * 
  *             for k in pred_dict.keys():
  */
-            __pyx_t_4 = PyObject_GetItem(__pyx_v_cache, __pyx_v_i); if (unlikely(__pyx_t_4 == NULL)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1074; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
+            __pyx_t_4 = PyObject_GetItem(__pyx_v_cache, __pyx_v_i); if (unlikely(__pyx_t_4 == NULL)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1286; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
             __Pyx_GOTREF(__pyx_t_4);
-            __pyx_t_12 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_n_s_feat_name); if (unlikely(!__pyx_t_12)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1074; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+            __pyx_t_12 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_n_s_feat_name); if (unlikely(!__pyx_t_12)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1286; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
             __Pyx_GOTREF(__pyx_t_12);
             __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-            __pyx_t_4 = PyObject_GetItem(__pyx_v_cache, __pyx_v_i); if (unlikely(__pyx_t_4 == NULL)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1074; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
+            __pyx_t_4 = PyObject_GetItem(__pyx_v_cache, __pyx_v_i); if (unlikely(__pyx_t_4 == NULL)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1286; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
             __Pyx_GOTREF(__pyx_t_4);
-            __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_n_s_comp_op); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1074; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+            __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_n_s_comp_op); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1286; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
             __Pyx_GOTREF(__pyx_t_5);
             __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-            __pyx_t_4 = PyNumber_Add(__pyx_t_12, __pyx_t_5); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1074; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+            __pyx_t_4 = PyNumber_Add(__pyx_t_12, __pyx_t_5); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1286; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
             __Pyx_GOTREF(__pyx_t_4);
             __Pyx_DECREF(__pyx_t_12); __pyx_t_12 = 0;
             __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-            if (unlikely(PyDict_SetItem(__pyx_v_pred_dict, __pyx_t_4, __pyx_v_i) < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1074; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+            if (unlikely(PyDict_SetItem(__pyx_v_pred_dict, __pyx_t_4, __pyx_v_i) < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1286; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
             __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-            /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1073
+            /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1285
  *                         pred_dict[cache[i].feat_name+cache[i].comp_op] = i
  *                 else:
  *                     if cache[i].threshold < cache[pred_dict[cache[i].feat_name+cache[i].comp_op]].threshold:             # <<<<<<<<<<<<<<
@@ -10696,7 +12848,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_traverse(PyObject *__p
         }
         __pyx_L9:;
 
-        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1065
+        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1277
  *         if value[node][0][0] <= value[node][0][1]:
  *             pred_dict = {}
  *             for i in xrange(depth):             # <<<<<<<<<<<<<<
@@ -10707,22 +12859,22 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_traverse(PyObject *__p
       }
       __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
 
-      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1076
+      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1288
  *                         pred_dict[cache[i].feat_name+cache[i].comp_op] = i
  * 
  *             for k in pred_dict.keys():             # <<<<<<<<<<<<<<
  *                 i = pred_dict[k]
  *                 pred_name = cache[i].feat_name+cache[i].comp_op+str(cache[i].threshold)
  */
-      __pyx_t_10 = __Pyx_PyDict_Keys(__pyx_v_pred_dict); if (unlikely(!__pyx_t_10)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1076; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_10 = __Pyx_PyDict_Keys(__pyx_v_pred_dict); if (unlikely(!__pyx_t_10)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1288; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_GOTREF(__pyx_t_10);
       if (likely(PyList_CheckExact(__pyx_t_10)) || PyTuple_CheckExact(__pyx_t_10)) {
         __pyx_t_4 = __pyx_t_10; __Pyx_INCREF(__pyx_t_4); __pyx_t_11 = 0;
         __pyx_t_13 = NULL;
       } else {
-        __pyx_t_11 = -1; __pyx_t_4 = PyObject_GetIter(__pyx_t_10); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1076; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        __pyx_t_11 = -1; __pyx_t_4 = PyObject_GetIter(__pyx_t_10); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1288; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
         __Pyx_GOTREF(__pyx_t_4);
-        __pyx_t_13 = Py_TYPE(__pyx_t_4)->tp_iternext; if (unlikely(!__pyx_t_13)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1076; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        __pyx_t_13 = Py_TYPE(__pyx_t_4)->tp_iternext; if (unlikely(!__pyx_t_13)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1288; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       }
       __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
       for (;;) {
@@ -10730,17 +12882,17 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_traverse(PyObject *__p
           if (likely(PyList_CheckExact(__pyx_t_4))) {
             if (__pyx_t_11 >= PyList_GET_SIZE(__pyx_t_4)) break;
             #if CYTHON_COMPILING_IN_CPYTHON
-            __pyx_t_10 = PyList_GET_ITEM(__pyx_t_4, __pyx_t_11); __Pyx_INCREF(__pyx_t_10); __pyx_t_11++; if (unlikely(0 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1076; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+            __pyx_t_10 = PyList_GET_ITEM(__pyx_t_4, __pyx_t_11); __Pyx_INCREF(__pyx_t_10); __pyx_t_11++; if (unlikely(0 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1288; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
             #else
-            __pyx_t_10 = PySequence_ITEM(__pyx_t_4, __pyx_t_11); __pyx_t_11++; if (unlikely(!__pyx_t_10)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1076; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+            __pyx_t_10 = PySequence_ITEM(__pyx_t_4, __pyx_t_11); __pyx_t_11++; if (unlikely(!__pyx_t_10)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1288; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
             __Pyx_GOTREF(__pyx_t_10);
             #endif
           } else {
             if (__pyx_t_11 >= PyTuple_GET_SIZE(__pyx_t_4)) break;
             #if CYTHON_COMPILING_IN_CPYTHON
-            __pyx_t_10 = PyTuple_GET_ITEM(__pyx_t_4, __pyx_t_11); __Pyx_INCREF(__pyx_t_10); __pyx_t_11++; if (unlikely(0 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1076; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+            __pyx_t_10 = PyTuple_GET_ITEM(__pyx_t_4, __pyx_t_11); __Pyx_INCREF(__pyx_t_10); __pyx_t_11++; if (unlikely(0 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1288; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
             #else
-            __pyx_t_10 = PySequence_ITEM(__pyx_t_4, __pyx_t_11); __pyx_t_11++; if (unlikely(!__pyx_t_10)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1076; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+            __pyx_t_10 = PySequence_ITEM(__pyx_t_4, __pyx_t_11); __pyx_t_11++; if (unlikely(!__pyx_t_10)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1288; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
             __Pyx_GOTREF(__pyx_t_10);
             #endif
           }
@@ -10750,7 +12902,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_traverse(PyObject *__p
             PyObject* exc_type = PyErr_Occurred();
             if (exc_type) {
               if (likely(exc_type == PyExc_StopIteration || PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) PyErr_Clear();
-              else {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1076; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+              else {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1288; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
             }
             break;
           }
@@ -10759,105 +12911,105 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_traverse(PyObject *__p
         __Pyx_XDECREF_SET(__pyx_v_k, __pyx_t_10);
         __pyx_t_10 = 0;
 
-        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1077
+        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1289
  * 
  *             for k in pred_dict.keys():
  *                 i = pred_dict[k]             # <<<<<<<<<<<<<<
  *                 pred_name = cache[i].feat_name+cache[i].comp_op+str(cache[i].threshold)
  *                 pred = Predicatecpp(pred_name, cache[i].feat_name, cache[i].sim_measure_type, cache[i].tokenizer_type, cache[i].comp_op, cache[i].threshold)
  */
-        __pyx_t_10 = __Pyx_PyDict_GetItem(__pyx_v_pred_dict, __pyx_v_k); if (unlikely(__pyx_t_10 == NULL)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1077; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
+        __pyx_t_10 = __Pyx_PyDict_GetItem(__pyx_v_pred_dict, __pyx_v_k); if (unlikely(__pyx_t_10 == NULL)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1289; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
         __Pyx_GOTREF(__pyx_t_10);
         __Pyx_XDECREF_SET(__pyx_v_i, __pyx_t_10);
         __pyx_t_10 = 0;
 
-        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1078
+        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1290
  *             for k in pred_dict.keys():
  *                 i = pred_dict[k]
  *                 pred_name = cache[i].feat_name+cache[i].comp_op+str(cache[i].threshold)             # <<<<<<<<<<<<<<
  *                 pred = Predicatecpp(pred_name, cache[i].feat_name, cache[i].sim_measure_type, cache[i].tokenizer_type, cache[i].comp_op, cache[i].threshold)
  *                 preds.push_back(pred)
  */
-        __pyx_t_10 = PyObject_GetItem(__pyx_v_cache, __pyx_v_i); if (unlikely(__pyx_t_10 == NULL)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1078; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
+        __pyx_t_10 = PyObject_GetItem(__pyx_v_cache, __pyx_v_i); if (unlikely(__pyx_t_10 == NULL)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1290; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
         __Pyx_GOTREF(__pyx_t_10);
-        __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_10, __pyx_n_s_feat_name); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1078; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_10, __pyx_n_s_feat_name); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1290; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
         __Pyx_GOTREF(__pyx_t_5);
         __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
-        __pyx_t_10 = PyObject_GetItem(__pyx_v_cache, __pyx_v_i); if (unlikely(__pyx_t_10 == NULL)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1078; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
+        __pyx_t_10 = PyObject_GetItem(__pyx_v_cache, __pyx_v_i); if (unlikely(__pyx_t_10 == NULL)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1290; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
         __Pyx_GOTREF(__pyx_t_10);
-        __pyx_t_12 = __Pyx_PyObject_GetAttrStr(__pyx_t_10, __pyx_n_s_comp_op); if (unlikely(!__pyx_t_12)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1078; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        __pyx_t_12 = __Pyx_PyObject_GetAttrStr(__pyx_t_10, __pyx_n_s_comp_op); if (unlikely(!__pyx_t_12)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1290; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
         __Pyx_GOTREF(__pyx_t_12);
         __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
-        __pyx_t_10 = PyNumber_Add(__pyx_t_5, __pyx_t_12); if (unlikely(!__pyx_t_10)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1078; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        __pyx_t_10 = PyNumber_Add(__pyx_t_5, __pyx_t_12); if (unlikely(!__pyx_t_10)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1290; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
         __Pyx_GOTREF(__pyx_t_10);
         __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
         __Pyx_DECREF(__pyx_t_12); __pyx_t_12 = 0;
-        __pyx_t_12 = PyObject_GetItem(__pyx_v_cache, __pyx_v_i); if (unlikely(__pyx_t_12 == NULL)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1078; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
+        __pyx_t_12 = PyObject_GetItem(__pyx_v_cache, __pyx_v_i); if (unlikely(__pyx_t_12 == NULL)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1290; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
         __Pyx_GOTREF(__pyx_t_12);
-        __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_12, __pyx_n_s_threshold); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1078; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_12, __pyx_n_s_threshold); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1290; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
         __Pyx_GOTREF(__pyx_t_5);
         __Pyx_DECREF(__pyx_t_12); __pyx_t_12 = 0;
-        __pyx_t_12 = PyTuple_New(1); if (unlikely(!__pyx_t_12)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1078; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        __pyx_t_12 = PyTuple_New(1); if (unlikely(!__pyx_t_12)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1290; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
         __Pyx_GOTREF(__pyx_t_12);
         __Pyx_GIVEREF(__pyx_t_5);
         PyTuple_SET_ITEM(__pyx_t_12, 0, __pyx_t_5);
         __pyx_t_5 = 0;
-        __pyx_t_5 = __Pyx_PyObject_Call(((PyObject *)(&PyString_Type)), __pyx_t_12, NULL); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1078; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        __pyx_t_5 = __Pyx_PyObject_Call(((PyObject *)(&PyString_Type)), __pyx_t_12, NULL); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1290; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
         __Pyx_GOTREF(__pyx_t_5);
         __Pyx_DECREF(__pyx_t_12); __pyx_t_12 = 0;
-        __pyx_t_12 = PyNumber_Add(__pyx_t_10, __pyx_t_5); if (unlikely(!__pyx_t_12)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1078; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        __pyx_t_12 = PyNumber_Add(__pyx_t_10, __pyx_t_5); if (unlikely(!__pyx_t_12)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1290; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
         __Pyx_GOTREF(__pyx_t_12);
         __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
         __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
         __Pyx_XDECREF_SET(__pyx_v_pred_name, __pyx_t_12);
         __pyx_t_12 = 0;
 
-        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1079
+        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1291
  *                 i = pred_dict[k]
  *                 pred_name = cache[i].feat_name+cache[i].comp_op+str(cache[i].threshold)
  *                 pred = Predicatecpp(pred_name, cache[i].feat_name, cache[i].sim_measure_type, cache[i].tokenizer_type, cache[i].comp_op, cache[i].threshold)             # <<<<<<<<<<<<<<
  *                 preds.push_back(pred)
  *             rule = Rule(preds)
  */
-        __pyx_t_15 = __pyx_convert_string_from_py_std__in_string(__pyx_v_pred_name); if (unlikely(PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1079; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-        __pyx_t_12 = PyObject_GetItem(__pyx_v_cache, __pyx_v_i); if (unlikely(__pyx_t_12 == NULL)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1079; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
+        __pyx_t_15 = __pyx_convert_string_from_py_std__in_string(__pyx_v_pred_name); if (unlikely(PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1291; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        __pyx_t_12 = PyObject_GetItem(__pyx_v_cache, __pyx_v_i); if (unlikely(__pyx_t_12 == NULL)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1291; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
         __Pyx_GOTREF(__pyx_t_12);
-        __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_12, __pyx_n_s_feat_name); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1079; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_12, __pyx_n_s_feat_name); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1291; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
         __Pyx_GOTREF(__pyx_t_5);
         __Pyx_DECREF(__pyx_t_12); __pyx_t_12 = 0;
-        __pyx_t_16 = __pyx_convert_string_from_py_std__in_string(__pyx_t_5); if (unlikely(PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1079; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        __pyx_t_16 = __pyx_convert_string_from_py_std__in_string(__pyx_t_5); if (unlikely(PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1291; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
         __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-        __pyx_t_5 = PyObject_GetItem(__pyx_v_cache, __pyx_v_i); if (unlikely(__pyx_t_5 == NULL)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1079; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
+        __pyx_t_5 = PyObject_GetItem(__pyx_v_cache, __pyx_v_i); if (unlikely(__pyx_t_5 == NULL)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1291; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
         __Pyx_GOTREF(__pyx_t_5);
-        __pyx_t_12 = __Pyx_PyObject_GetAttrStr(__pyx_t_5, __pyx_n_s_sim_measure_type); if (unlikely(!__pyx_t_12)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1079; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-        __Pyx_GOTREF(__pyx_t_12);
-        __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-        __pyx_t_17 = __pyx_convert_string_from_py_std__in_string(__pyx_t_12); if (unlikely(PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1079; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-        __Pyx_DECREF(__pyx_t_12); __pyx_t_12 = 0;
-        __pyx_t_12 = PyObject_GetItem(__pyx_v_cache, __pyx_v_i); if (unlikely(__pyx_t_12 == NULL)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1079; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
-        __Pyx_GOTREF(__pyx_t_12);
-        __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_12, __pyx_n_s_tokenizer_type); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1079; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-        __Pyx_GOTREF(__pyx_t_5);
-        __Pyx_DECREF(__pyx_t_12); __pyx_t_12 = 0;
-        __pyx_t_18 = __pyx_convert_string_from_py_std__in_string(__pyx_t_5); if (unlikely(PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1079; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-        __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-        __pyx_t_5 = PyObject_GetItem(__pyx_v_cache, __pyx_v_i); if (unlikely(__pyx_t_5 == NULL)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1079; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
-        __Pyx_GOTREF(__pyx_t_5);
-        __pyx_t_12 = __Pyx_PyObject_GetAttrStr(__pyx_t_5, __pyx_n_s_comp_op); if (unlikely(!__pyx_t_12)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1079; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        __pyx_t_12 = __Pyx_PyObject_GetAttrStr(__pyx_t_5, __pyx_n_s_sim_measure_type); if (unlikely(!__pyx_t_12)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1291; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
         __Pyx_GOTREF(__pyx_t_12);
         __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-        __pyx_t_19 = __pyx_convert_string_from_py_std__in_string(__pyx_t_12); if (unlikely(PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1079; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        __pyx_t_17 = __pyx_convert_string_from_py_std__in_string(__pyx_t_12); if (unlikely(PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1291; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
         __Pyx_DECREF(__pyx_t_12); __pyx_t_12 = 0;
-        __pyx_t_12 = PyObject_GetItem(__pyx_v_cache, __pyx_v_i); if (unlikely(__pyx_t_12 == NULL)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1079; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
+        __pyx_t_12 = PyObject_GetItem(__pyx_v_cache, __pyx_v_i); if (unlikely(__pyx_t_12 == NULL)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1291; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
         __Pyx_GOTREF(__pyx_t_12);
-        __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_12, __pyx_n_s_threshold); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1079; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_12, __pyx_n_s_tokenizer_type); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1291; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
         __Pyx_GOTREF(__pyx_t_5);
         __Pyx_DECREF(__pyx_t_12); __pyx_t_12 = 0;
-        __pyx_t_20 = __pyx_PyFloat_AsDouble(__pyx_t_5); if (unlikely((__pyx_t_20 == (double)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1079; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        __pyx_t_18 = __pyx_convert_string_from_py_std__in_string(__pyx_t_5); if (unlikely(PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1291; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
+        __pyx_t_5 = PyObject_GetItem(__pyx_v_cache, __pyx_v_i); if (unlikely(__pyx_t_5 == NULL)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1291; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
+        __Pyx_GOTREF(__pyx_t_5);
+        __pyx_t_12 = __Pyx_PyObject_GetAttrStr(__pyx_t_5, __pyx_n_s_comp_op); if (unlikely(!__pyx_t_12)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1291; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        __Pyx_GOTREF(__pyx_t_12);
+        __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
+        __pyx_t_19 = __pyx_convert_string_from_py_std__in_string(__pyx_t_12); if (unlikely(PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1291; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        __Pyx_DECREF(__pyx_t_12); __pyx_t_12 = 0;
+        __pyx_t_12 = PyObject_GetItem(__pyx_v_cache, __pyx_v_i); if (unlikely(__pyx_t_12 == NULL)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1291; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
+        __Pyx_GOTREF(__pyx_t_12);
+        __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_12, __pyx_n_s_threshold); if (unlikely(!__pyx_t_5)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1291; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        __Pyx_GOTREF(__pyx_t_5);
+        __Pyx_DECREF(__pyx_t_12); __pyx_t_12 = 0;
+        __pyx_t_20 = __pyx_PyFloat_AsDouble(__pyx_t_5); if (unlikely((__pyx_t_20 == (double)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1291; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
         __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
         __pyx_v_pred = Predicatecpp(__pyx_t_15, __pyx_t_16, __pyx_t_17, __pyx_t_18, __pyx_t_19, __pyx_t_20);
 
-        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1080
+        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1292
  *                 pred_name = cache[i].feat_name+cache[i].comp_op+str(cache[i].threshold)
  *                 pred = Predicatecpp(pred_name, cache[i].feat_name, cache[i].sim_measure_type, cache[i].tokenizer_type, cache[i].comp_op, cache[i].threshold)
  *                 preds.push_back(pred)             # <<<<<<<<<<<<<<
@@ -10868,10 +13020,10 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_traverse(PyObject *__p
           __pyx_v_preds.push_back(__pyx_v_pred);
         } catch(...) {
           __Pyx_CppExn2PyErr();
-          {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1080; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+          {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1292; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
         }
 
-        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1076
+        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1288
  *                         pred_dict[cache[i].feat_name+cache[i].comp_op] = i
  * 
  *             for k in pred_dict.keys():             # <<<<<<<<<<<<<<
@@ -10881,7 +13033,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_traverse(PyObject *__p
       }
       __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1081
+      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1293
  *                 pred = Predicatecpp(pred_name, cache[i].feat_name, cache[i].sim_measure_type, cache[i].tokenizer_type, cache[i].comp_op, cache[i].threshold)
  *                 preds.push_back(pred)
  *             rule = Rule(preds)             # <<<<<<<<<<<<<<
@@ -10890,7 +13042,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_traverse(PyObject *__p
  */
       __pyx_v_rule = Rule(__pyx_v_preds);
 
-      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1083
+      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1295
  *             rule = Rule(preds)
  * #                r.set_name('r'+str(start_rule_id + len(rule_set.rules)+1))
  *             rules.push_back(rule)             # <<<<<<<<<<<<<<
@@ -10901,10 +13053,10 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_traverse(PyObject *__p
         __pyx_v_rules.push_back(__pyx_v_rule);
       } catch(...) {
         __Pyx_CppExn2PyErr();
-        {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1083; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1295; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       }
 
-      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1063
+      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1275
  *     else:
  *             # node is a leaf node
  *         if value[node][0][0] <= value[node][0][1]:             # <<<<<<<<<<<<<<
@@ -10915,7 +13067,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_traverse(PyObject *__p
   }
   __pyx_L4:;
 
-  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1033
+  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1245
  *     return rules
  * 
  * cdef void traverse(node, left, right, features, threshold, value, feature_table, depth, cache, vector[Rule]& rules):             # <<<<<<<<<<<<<<
@@ -10948,7 +13100,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_traverse(PyObject *__p
   __Pyx_RefNannyFinishContext();
 }
 
-/* "py_stringsimjoin/apply_rf/ex_plan.pyx":1086
+/* "py_stringsimjoin/apply_rf/ex_plan.pyx":1298
  * #            print 'pos rule: ', cache[0:depth]
  * 
  * cdef vector[Tree] extract_pos_rules_from_rf(rf, feature_table):             # <<<<<<<<<<<<<<
@@ -10976,7 +13128,7 @@ static std::vector<Tree>  __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_extract_
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("extract_pos_rules_from_rf", 0);
 
-  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1090
+  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1302
  *     cdef vector[Rule] rules
  *     cdef Tree tree
  *     rule_id = 1             # <<<<<<<<<<<<<<
@@ -10985,7 +13137,7 @@ static std::vector<Tree>  __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_extract_
  */
   __pyx_v_rule_id = 1;
 
-  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1091
+  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1303
  *     cdef Tree tree
  *     rule_id = 1
  *     predicate_id = 1             # <<<<<<<<<<<<<<
@@ -10994,7 +13146,7 @@ static std::vector<Tree>  __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_extract_
  */
   __pyx_v_predicate_id = 1;
 
-  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1092
+  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1304
  *     rule_id = 1
  *     predicate_id = 1
  *     tree_id = 0             # <<<<<<<<<<<<<<
@@ -11004,22 +13156,22 @@ static std::vector<Tree>  __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_extract_
   __Pyx_INCREF(__pyx_int_0);
   __pyx_v_tree_id = __pyx_int_0;
 
-  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1093
+  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1305
  *     predicate_id = 1
  *     tree_id = 0
  *     for dt in rf.estimators_:             # <<<<<<<<<<<<<<
  *         rules = extract_pos_rules_from_tree(dt, feature_table)
  *         tree = Tree(rules)
  */
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_rf, __pyx_n_s_estimators); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1093; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_rf, __pyx_n_s_estimators); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1305; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
   if (likely(PyList_CheckExact(__pyx_t_1)) || PyTuple_CheckExact(__pyx_t_1)) {
     __pyx_t_2 = __pyx_t_1; __Pyx_INCREF(__pyx_t_2); __pyx_t_3 = 0;
     __pyx_t_4 = NULL;
   } else {
-    __pyx_t_3 = -1; __pyx_t_2 = PyObject_GetIter(__pyx_t_1); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1093; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_3 = -1; __pyx_t_2 = PyObject_GetIter(__pyx_t_1); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1305; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_2);
-    __pyx_t_4 = Py_TYPE(__pyx_t_2)->tp_iternext; if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1093; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_4 = Py_TYPE(__pyx_t_2)->tp_iternext; if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1305; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   }
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   for (;;) {
@@ -11027,17 +13179,17 @@ static std::vector<Tree>  __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_extract_
       if (likely(PyList_CheckExact(__pyx_t_2))) {
         if (__pyx_t_3 >= PyList_GET_SIZE(__pyx_t_2)) break;
         #if CYTHON_COMPILING_IN_CPYTHON
-        __pyx_t_1 = PyList_GET_ITEM(__pyx_t_2, __pyx_t_3); __Pyx_INCREF(__pyx_t_1); __pyx_t_3++; if (unlikely(0 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1093; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        __pyx_t_1 = PyList_GET_ITEM(__pyx_t_2, __pyx_t_3); __Pyx_INCREF(__pyx_t_1); __pyx_t_3++; if (unlikely(0 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1305; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
         #else
-        __pyx_t_1 = PySequence_ITEM(__pyx_t_2, __pyx_t_3); __pyx_t_3++; if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1093; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        __pyx_t_1 = PySequence_ITEM(__pyx_t_2, __pyx_t_3); __pyx_t_3++; if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1305; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
         __Pyx_GOTREF(__pyx_t_1);
         #endif
       } else {
         if (__pyx_t_3 >= PyTuple_GET_SIZE(__pyx_t_2)) break;
         #if CYTHON_COMPILING_IN_CPYTHON
-        __pyx_t_1 = PyTuple_GET_ITEM(__pyx_t_2, __pyx_t_3); __Pyx_INCREF(__pyx_t_1); __pyx_t_3++; if (unlikely(0 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1093; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        __pyx_t_1 = PyTuple_GET_ITEM(__pyx_t_2, __pyx_t_3); __Pyx_INCREF(__pyx_t_1); __pyx_t_3++; if (unlikely(0 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1305; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
         #else
-        __pyx_t_1 = PySequence_ITEM(__pyx_t_2, __pyx_t_3); __pyx_t_3++; if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1093; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        __pyx_t_1 = PySequence_ITEM(__pyx_t_2, __pyx_t_3); __pyx_t_3++; if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1305; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
         __Pyx_GOTREF(__pyx_t_1);
         #endif
       }
@@ -11047,7 +13199,7 @@ static std::vector<Tree>  __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_extract_
         PyObject* exc_type = PyErr_Occurred();
         if (exc_type) {
           if (likely(exc_type == PyExc_StopIteration || PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) PyErr_Clear();
-          else {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1093; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+          else {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1305; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
         }
         break;
       }
@@ -11056,7 +13208,7 @@ static std::vector<Tree>  __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_extract_
     __Pyx_XDECREF_SET(__pyx_v_dt, __pyx_t_1);
     __pyx_t_1 = 0;
 
-    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1094
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1306
  *     tree_id = 0
  *     for dt in rf.estimators_:
  *         rules = extract_pos_rules_from_tree(dt, feature_table)             # <<<<<<<<<<<<<<
@@ -11065,7 +13217,7 @@ static std::vector<Tree>  __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_extract_
  */
     __pyx_v_rules = __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_extract_pos_rules_from_tree(__pyx_v_dt, __pyx_v_feature_table);
 
-    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1095
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1307
  *     for dt in rf.estimators_:
  *         rules = extract_pos_rules_from_tree(dt, feature_table)
  *         tree = Tree(rules)             # <<<<<<<<<<<<<<
@@ -11074,29 +13226,29 @@ static std::vector<Tree>  __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_extract_
  */
     __pyx_v_tree = Tree(__pyx_v_rules);
 
-    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1096
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1308
  *         rules = extract_pos_rules_from_tree(dt, feature_table)
  *         tree = Tree(rules)
  *         tree.set_tree_id(tree_id)             # <<<<<<<<<<<<<<
  * #        rs.set_name('t'+str(tree_id))
  *         tree_id += 1
  */
-    __pyx_t_5 = __Pyx_PyInt_As_int(__pyx_v_tree_id); if (unlikely((__pyx_t_5 == (int)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1096; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_5 = __Pyx_PyInt_As_int(__pyx_v_tree_id); if (unlikely((__pyx_t_5 == (int)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1308; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __pyx_v_tree.set_tree_id(__pyx_t_5);
 
-    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1098
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1310
  *         tree.set_tree_id(tree_id)
  * #        rs.set_name('t'+str(tree_id))
  *         tree_id += 1             # <<<<<<<<<<<<<<
  * #        rule_id += tree.rules.size()
  *         trees.push_back(tree)
  */
-    __pyx_t_1 = __Pyx_PyInt_AddObjC(__pyx_v_tree_id, __pyx_int_1, 1, 1); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1098; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_1 = __Pyx_PyInt_AddObjC(__pyx_v_tree_id, __pyx_int_1, 1, 1); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1310; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF_SET(__pyx_v_tree_id, __pyx_t_1);
     __pyx_t_1 = 0;
 
-    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1100
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1312
  *         tree_id += 1
  * #        rule_id += tree.rules.size()
  *         trees.push_back(tree)             # <<<<<<<<<<<<<<
@@ -11107,10 +13259,10 @@ static std::vector<Tree>  __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_extract_
       __pyx_v_trees.push_back(__pyx_v_tree);
     } catch(...) {
       __Pyx_CppExn2PyErr();
-      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1100; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1312; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     }
 
-    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1093
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1305
  *     predicate_id = 1
  *     tree_id = 0
  *     for dt in rf.estimators_:             # <<<<<<<<<<<<<<
@@ -11120,7 +13272,7 @@ static std::vector<Tree>  __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_extract_
   }
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1101
+  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1313
  * #        rule_id += tree.rules.size()
  *         trees.push_back(tree)
  *     return trees             # <<<<<<<<<<<<<<
@@ -11130,7 +13282,7 @@ static std::vector<Tree>  __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_extract_
   __pyx_r = __pyx_v_trees;
   goto __pyx_L0;
 
-  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1086
+  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1298
  * #            print 'pos rule: ', cache[0:depth]
  * 
  * cdef vector[Tree] extract_pos_rules_from_rf(rf, feature_table):             # <<<<<<<<<<<<<<
@@ -11150,7 +13302,7 @@ static std::vector<Tree>  __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_extract_
   return __pyx_r;
 }
 
-/* "py_stringsimjoin/apply_rf/ex_plan.pyx":1104
+/* "py_stringsimjoin/apply_rf/ex_plan.pyx":1316
  * 
  * 
  * cdef Node merge_plans(Node plan1, Node plan2):             # <<<<<<<<<<<<<<
@@ -11181,7 +13333,7 @@ static Node __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_merge_plans(Node __pyx
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("merge_plans", 0);
 
-  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1105
+  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1317
  * 
  * cdef Node merge_plans(Node plan1, Node plan2):
  *     cdef Node plan2_node = plan2.children[0]             # <<<<<<<<<<<<<<
@@ -11190,17 +13342,17 @@ static Node __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_merge_plans(Node __pyx
  */
   __pyx_v_plan2_node = (__pyx_v_plan2.children[0]);
 
-  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1107
+  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1319
  *     cdef Node plan2_node = plan2.children[0]
  *     cdef Predicatecpp pred1, pred2
  *     cdef string node_type = "SELECT"             # <<<<<<<<<<<<<<
  *     pred2 = plan2_node.predicates[0]
  *     cdef int i=0
  */
-  __pyx_t_1 = __pyx_convert_string_from_py_std__in_string(__pyx_n_b_SELECT); if (unlikely(PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1107; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = __pyx_convert_string_from_py_std__in_string(__pyx_n_b_SELECT); if (unlikely(PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1319; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_v_node_type = __pyx_t_1;
 
-  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1108
+  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1320
  *     cdef Predicatecpp pred1, pred2
  *     cdef string node_type = "SELECT"
  *     pred2 = plan2_node.predicates[0]             # <<<<<<<<<<<<<<
@@ -11209,7 +13361,7 @@ static Node __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_merge_plans(Node __pyx
  */
   __pyx_v_pred2 = (__pyx_v_plan2_node.predicates[0]);
 
-  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1109
+  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1321
  *     cdef string node_type = "SELECT"
  *     pred2 = plan2_node.predicates[0]
  *     cdef int i=0             # <<<<<<<<<<<<<<
@@ -11218,7 +13370,7 @@ static Node __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_merge_plans(Node __pyx
  */
   __pyx_v_i = 0;
 
-  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1111
+  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1323
  *     cdef int i=0
  * 
  *     while i < plan1.children.size():             # <<<<<<<<<<<<<<
@@ -11229,7 +13381,7 @@ static Node __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_merge_plans(Node __pyx
     __pyx_t_2 = ((__pyx_v_i < __pyx_v_plan1.children.size()) != 0);
     if (!__pyx_t_2) break;
 
-    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1113
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1325
  *     while i < plan1.children.size():
  * #        print 'sib : ', plan1.children[i].node_type
  *         if nodes_can_be_merged(plan1.children[i], plan2_node,             # <<<<<<<<<<<<<<
@@ -11239,7 +13391,7 @@ static Node __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_merge_plans(Node __pyx
     __pyx_t_2 = (__pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_nodes_can_be_merged((__pyx_v_plan1.children[__pyx_v_i]), __pyx_v_plan2_node, ((__pyx_v_plan1.children[__pyx_v_i]).predicates[0]), __pyx_v_pred2) != 0);
     if (__pyx_t_2) {
 
-      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1115
+      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1327
  *         if nodes_can_be_merged(plan1.children[i], plan2_node,
  *                                plan1.children[i].predicates[0], pred2):
  *             break             # <<<<<<<<<<<<<<
@@ -11248,7 +13400,7 @@ static Node __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_merge_plans(Node __pyx
  */
       goto __pyx_L4_break;
 
-      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1113
+      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1325
  *     while i < plan1.children.size():
  * #        print 'sib : ', plan1.children[i].node_type
  *         if nodes_can_be_merged(plan1.children[i], plan2_node,             # <<<<<<<<<<<<<<
@@ -11257,7 +13409,7 @@ static Node __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_merge_plans(Node __pyx
  */
     }
 
-    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1116
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1328
  *                                plan1.children[i].predicates[0], pred2):
  *             break
  *         i += 1             # <<<<<<<<<<<<<<
@@ -11268,7 +13420,7 @@ static Node __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_merge_plans(Node __pyx
   }
   __pyx_L4_break:;
 
-  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1118
+  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1330
  *         i += 1
  * 
  *     if i == plan1.children.size():             # <<<<<<<<<<<<<<
@@ -11278,7 +13430,7 @@ static Node __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_merge_plans(Node __pyx
   __pyx_t_2 = ((__pyx_v_i == __pyx_v_plan1.children.size()) != 0);
   if (__pyx_t_2) {
 
-    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1119
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1331
  * 
  *     if i == plan1.children.size():
  *         plan1.add_child(plan2.children[0])             # <<<<<<<<<<<<<<
@@ -11287,7 +13439,7 @@ static Node __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_merge_plans(Node __pyx
  */
     __pyx_v_plan1.add_child((__pyx_v_plan2.children[0]));
 
-    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1120
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1332
  *     if i == plan1.children.size():
  *         plan1.add_child(plan2.children[0])
  *         return plan1             # <<<<<<<<<<<<<<
@@ -11297,7 +13449,7 @@ static Node __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_merge_plans(Node __pyx
     __pyx_r = __pyx_v_plan1;
     goto __pyx_L0;
 
-    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1118
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1330
  *         i += 1
  * 
  *     if i == plan1.children.size():             # <<<<<<<<<<<<<<
@@ -11306,18 +13458,18 @@ static Node __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_merge_plans(Node __pyx
  */
   }
 
-  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1126
+  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1338
  *     cdef Node node_to_move
  *     cdef int k
  *     if plan2_node.node_type.compare("JOIN") == 0:             # <<<<<<<<<<<<<<
  *         pred1 = plan1.children[i].predicates[0]
  *         if ((pred1.threshold < pred2.threshold) or
  */
-  __pyx_t_1 = __pyx_convert_string_from_py_std__in_string(__pyx_n_b_JOIN); if (unlikely(PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1126; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = __pyx_convert_string_from_py_std__in_string(__pyx_n_b_JOIN); if (unlikely(PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1338; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_t_2 = ((__pyx_v_plan2_node.node_type.compare(__pyx_t_1) == 0) != 0);
   if (__pyx_t_2) {
 
-    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1127
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1339
  *     cdef int k
  *     if plan2_node.node_type.compare("JOIN") == 0:
  *         pred1 = plan1.children[i].predicates[0]             # <<<<<<<<<<<<<<
@@ -11326,7 +13478,7 @@ static Node __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_merge_plans(Node __pyx
  */
     __pyx_v_pred1 = ((__pyx_v_plan1.children[__pyx_v_i]).predicates[0]);
 
-    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1128
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1340
  *     if plan2_node.node_type.compare("JOIN") == 0:
  *         pred1 = plan1.children[i].predicates[0]
  *         if ((pred1.threshold < pred2.threshold) or             # <<<<<<<<<<<<<<
@@ -11340,7 +13492,7 @@ static Node __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_merge_plans(Node __pyx
       goto __pyx_L9_bool_binop_done;
     }
 
-    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1129
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1341
  *         pred1 = plan1.children[i].predicates[0]
  *         if ((pred1.threshold < pred2.threshold) or
  *             (pred1.threshold == pred2.threshold and             # <<<<<<<<<<<<<<
@@ -11354,14 +13506,14 @@ static Node __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_merge_plans(Node __pyx
       goto __pyx_L9_bool_binop_done;
     }
 
-    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1130
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1342
  *         if ((pred1.threshold < pred2.threshold) or
  *             (pred1.threshold == pred2.threshold and
  *              pred1.comp_op.compare(">=") == 0 and             # <<<<<<<<<<<<<<
  *              pred2.comp_op.compare(">") == 0)):
  * #            print 't2'
  */
-    __pyx_t_1 = __pyx_convert_string_from_py_std__in_string(__pyx_kp_b__3); if (unlikely(PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1130; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_1 = __pyx_convert_string_from_py_std__in_string(__pyx_kp_b__3); if (unlikely(PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1342; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __pyx_t_3 = ((__pyx_v_pred1.comp_op.compare(__pyx_t_1) == 0) != 0);
     if (__pyx_t_3) {
     } else {
@@ -11369,19 +13521,19 @@ static Node __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_merge_plans(Node __pyx
       goto __pyx_L9_bool_binop_done;
     }
 
-    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1131
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1343
  *             (pred1.threshold == pred2.threshold and
  *              pred1.comp_op.compare(">=") == 0 and
  *              pred2.comp_op.compare(">") == 0)):             # <<<<<<<<<<<<<<
  * #            print 't2'
  *             plan2_node.set_node_type(node_type)
  */
-    __pyx_t_1 = __pyx_convert_string_from_py_std__in_string(__pyx_kp_b__2); if (unlikely(PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1131; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_1 = __pyx_convert_string_from_py_std__in_string(__pyx_kp_b__2); if (unlikely(PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1343; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __pyx_t_3 = ((__pyx_v_pred2.comp_op.compare(__pyx_t_1) == 0) != 0);
     __pyx_t_2 = __pyx_t_3;
     __pyx_L9_bool_binop_done:;
 
-    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1128
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1340
  *     if plan2_node.node_type.compare("JOIN") == 0:
  *         pred1 = plan1.children[i].predicates[0]
  *         if ((pred1.threshold < pred2.threshold) or             # <<<<<<<<<<<<<<
@@ -11390,7 +13542,7 @@ static Node __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_merge_plans(Node __pyx
  */
     if (__pyx_t_2) {
 
-      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1133
+      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1345
  *              pred2.comp_op.compare(">") == 0)):
  * #            print 't2'
  *             plan2_node.set_node_type(node_type)             # <<<<<<<<<<<<<<
@@ -11399,7 +13551,7 @@ static Node __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_merge_plans(Node __pyx
  */
       __pyx_v_plan2_node.set_node_type(__pyx_v_node_type);
 
-      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1134
+      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1346
  * #            print 't2'
  *             plan2_node.set_node_type(node_type)
  *             plan1.children[i].add_child(plan2_node)             # <<<<<<<<<<<<<<
@@ -11408,7 +13560,7 @@ static Node __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_merge_plans(Node __pyx
  */
       (__pyx_v_plan1.children[__pyx_v_i]).add_child(__pyx_v_plan2_node);
 
-      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1128
+      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1340
  *     if plan2_node.node_type.compare("JOIN") == 0:
  *         pred1 = plan1.children[i].predicates[0]
  *         if ((pred1.threshold < pred2.threshold) or             # <<<<<<<<<<<<<<
@@ -11418,7 +13570,7 @@ static Node __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_merge_plans(Node __pyx
       goto __pyx_L8;
     }
 
-    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1136
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1348
  *             plan1.children[i].add_child(plan2_node)
  * 
  *         elif ((pred1.threshold > pred2.threshold) or             # <<<<<<<<<<<<<<
@@ -11432,7 +13584,7 @@ static Node __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_merge_plans(Node __pyx
       goto __pyx_L13_bool_binop_done;
     }
 
-    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1137
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1349
  * 
  *         elif ((pred1.threshold > pred2.threshold) or
  *               (pred1.threshold == pred2.threshold and             # <<<<<<<<<<<<<<
@@ -11446,14 +13598,14 @@ static Node __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_merge_plans(Node __pyx
       goto __pyx_L13_bool_binop_done;
     }
 
-    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1138
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1350
  *         elif ((pred1.threshold > pred2.threshold) or
  *               (pred1.threshold == pred2.threshold and
  *                pred1.comp_op.compare(">") == 0 and             # <<<<<<<<<<<<<<
  *                pred2.comp_op.compare(">=") == 0)):
  * #            print 't3'
  */
-    __pyx_t_1 = __pyx_convert_string_from_py_std__in_string(__pyx_kp_b__2); if (unlikely(PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1138; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_1 = __pyx_convert_string_from_py_std__in_string(__pyx_kp_b__2); if (unlikely(PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1350; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __pyx_t_3 = ((__pyx_v_pred1.comp_op.compare(__pyx_t_1) == 0) != 0);
     if (__pyx_t_3) {
     } else {
@@ -11461,19 +13613,19 @@ static Node __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_merge_plans(Node __pyx
       goto __pyx_L13_bool_binop_done;
     }
 
-    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1139
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1351
  *               (pred1.threshold == pred2.threshold and
  *                pred1.comp_op.compare(">") == 0 and
  *                pred2.comp_op.compare(">=") == 0)):             # <<<<<<<<<<<<<<
  * #            print 't3'
  *             plan1.children[i].set_node_type(node_type)
  */
-    __pyx_t_1 = __pyx_convert_string_from_py_std__in_string(__pyx_kp_b__3); if (unlikely(PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1139; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_1 = __pyx_convert_string_from_py_std__in_string(__pyx_kp_b__3); if (unlikely(PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1351; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __pyx_t_3 = ((__pyx_v_pred2.comp_op.compare(__pyx_t_1) == 0) != 0);
     __pyx_t_2 = __pyx_t_3;
     __pyx_L13_bool_binop_done:;
 
-    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1136
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1348
  *             plan1.children[i].add_child(plan2_node)
  * 
  *         elif ((pred1.threshold > pred2.threshold) or             # <<<<<<<<<<<<<<
@@ -11482,7 +13634,7 @@ static Node __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_merge_plans(Node __pyx
  */
     if (__pyx_t_2) {
 
-      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1141
+      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1353
  *                pred2.comp_op.compare(">=") == 0)):
  * #            print 't3'
  *             plan1.children[i].set_node_type(node_type)             # <<<<<<<<<<<<<<
@@ -11491,7 +13643,7 @@ static Node __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_merge_plans(Node __pyx
  */
       (__pyx_v_plan1.children[__pyx_v_i]).set_node_type(__pyx_v_node_type);
 
-      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1142
+      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1354
  * #            print 't3'
  *             plan1.children[i].set_node_type(node_type)
  *             for k in xrange(plan1.children[i].children.size()):             # <<<<<<<<<<<<<<
@@ -11502,18 +13654,18 @@ static Node __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_merge_plans(Node __pyx
       for (__pyx_t_5 = 0; __pyx_t_5 < __pyx_t_4; __pyx_t_5+=1) {
         __pyx_v_k = __pyx_t_5;
 
-        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1143
+        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1355
  *             plan1.children[i].set_node_type(node_type)
  *             for k in xrange(plan1.children[i].children.size()):
  *                 if plan1.children[i].children[k].node_type.compare("SELECT") == 0:             # <<<<<<<<<<<<<<
  *                     child_nodes_to_move.push_back(plan1.children[i].children[k])
  *             for node_to_move in child_nodes_to_move:
  */
-        __pyx_t_1 = __pyx_convert_string_from_py_std__in_string(__pyx_n_b_SELECT); if (unlikely(PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1143; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+        __pyx_t_1 = __pyx_convert_string_from_py_std__in_string(__pyx_n_b_SELECT); if (unlikely(PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1355; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
         __pyx_t_2 = ((((__pyx_v_plan1.children[__pyx_v_i]).children[__pyx_v_k]).node_type.compare(__pyx_t_1) == 0) != 0);
         if (__pyx_t_2) {
 
-          /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1144
+          /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1356
  *             for k in xrange(plan1.children[i].children.size()):
  *                 if plan1.children[i].children[k].node_type.compare("SELECT") == 0:
  *                     child_nodes_to_move.push_back(plan1.children[i].children[k])             # <<<<<<<<<<<<<<
@@ -11524,10 +13676,10 @@ static Node __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_merge_plans(Node __pyx
             __pyx_v_child_nodes_to_move.push_back(((__pyx_v_plan1.children[__pyx_v_i]).children[__pyx_v_k]));
           } catch(...) {
             __Pyx_CppExn2PyErr();
-            {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1144; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+            {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1356; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
           }
 
-          /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1143
+          /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1355
  *             plan1.children[i].set_node_type(node_type)
  *             for k in xrange(plan1.children[i].children.size()):
  *                 if plan1.children[i].children[k].node_type.compare("SELECT") == 0:             # <<<<<<<<<<<<<<
@@ -11537,7 +13689,7 @@ static Node __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_merge_plans(Node __pyx
         }
       }
 
-      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1145
+      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1357
  *                 if plan1.children[i].children[k].node_type.compare("SELECT") == 0:
  *                     child_nodes_to_move.push_back(plan1.children[i].children[k])
  *             for node_to_move in child_nodes_to_move:             # <<<<<<<<<<<<<<
@@ -11551,7 +13703,7 @@ static Node __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_merge_plans(Node __pyx
         ++__pyx_t_6;
         __pyx_v_node_to_move = __pyx_t_7;
 
-        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1146
+        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1358
  *                     child_nodes_to_move.push_back(plan1.children[i].children[k])
  *             for node_to_move in child_nodes_to_move:
  *                 plan2_node.add_child(node_to_move)             # <<<<<<<<<<<<<<
@@ -11560,7 +13712,7 @@ static Node __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_merge_plans(Node __pyx
  */
         __pyx_v_plan2_node.add_child(__pyx_v_node_to_move);
 
-        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1147
+        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1359
  *             for node_to_move in child_nodes_to_move:
  *                 plan2_node.add_child(node_to_move)
  *                 plan1.children[i].remove_child(node_to_move)             # <<<<<<<<<<<<<<
@@ -11569,7 +13721,7 @@ static Node __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_merge_plans(Node __pyx
  */
         (__pyx_v_plan1.children[__pyx_v_i]).remove_child(__pyx_v_node_to_move);
 
-        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1145
+        /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1357
  *                 if plan1.children[i].children[k].node_type.compare("SELECT") == 0:
  *                     child_nodes_to_move.push_back(plan1.children[i].children[k])
  *             for node_to_move in child_nodes_to_move:             # <<<<<<<<<<<<<<
@@ -11578,7 +13730,7 @@ static Node __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_merge_plans(Node __pyx
  */
       }
 
-      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1149
+      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1361
  *                 plan1.children[i].remove_child(node_to_move)
  * 
  *             plan2_node.add_child(plan1.children[i])             # <<<<<<<<<<<<<<
@@ -11587,7 +13739,7 @@ static Node __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_merge_plans(Node __pyx
  */
       __pyx_v_plan2_node.add_child((__pyx_v_plan1.children[__pyx_v_i]));
 
-      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1150
+      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1362
  * 
  *             plan2_node.add_child(plan1.children[i])
  *             plan1.remove_child(plan1.children[i])             # <<<<<<<<<<<<<<
@@ -11596,7 +13748,7 @@ static Node __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_merge_plans(Node __pyx
  */
       __pyx_v_plan1.remove_child((__pyx_v_plan1.children[__pyx_v_i]));
 
-      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1151
+      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1363
  *             plan2_node.add_child(plan1.children[i])
  *             plan1.remove_child(plan1.children[i])
  *             plan1.add_child(plan2_node)             # <<<<<<<<<<<<<<
@@ -11605,7 +13757,7 @@ static Node __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_merge_plans(Node __pyx
  */
       __pyx_v_plan1.add_child(__pyx_v_plan2_node);
 
-      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1136
+      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1348
  *             plan1.children[i].add_child(plan2_node)
  * 
  *         elif ((pred1.threshold > pred2.threshold) or             # <<<<<<<<<<<<<<
@@ -11615,7 +13767,7 @@ static Node __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_merge_plans(Node __pyx
       goto __pyx_L8;
     }
 
-    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1153
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1365
  *             plan1.add_child(plan2_node)
  * 
  *         elif pred1.threshold == pred2.threshold:             # <<<<<<<<<<<<<<
@@ -11625,7 +13777,7 @@ static Node __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_merge_plans(Node __pyx
     __pyx_t_2 = ((__pyx_v_pred1.threshold == __pyx_v_pred2.threshold) != 0);
     if (__pyx_t_2) {
 
-      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1155
+      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1367
  *         elif pred1.threshold == pred2.threshold:
  * #            print 't4'
  *             plan1.children[i].add_child(plan2_node.children[0])             # <<<<<<<<<<<<<<
@@ -11634,7 +13786,7 @@ static Node __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_merge_plans(Node __pyx
  */
       (__pyx_v_plan1.children[__pyx_v_i]).add_child((__pyx_v_plan2_node.children[0]));
 
-      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1153
+      /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1365
  *             plan1.add_child(plan2_node)
  * 
  *         elif pred1.threshold == pred2.threshold:             # <<<<<<<<<<<<<<
@@ -11644,7 +13796,7 @@ static Node __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_merge_plans(Node __pyx
     }
     __pyx_L8:;
 
-    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1126
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1338
  *     cdef Node node_to_move
  *     cdef int k
  *     if plan2_node.node_type.compare("JOIN") == 0:             # <<<<<<<<<<<<<<
@@ -11654,7 +13806,7 @@ static Node __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_merge_plans(Node __pyx
     goto __pyx_L7;
   }
 
-  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1157
+  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1369
  *             plan1.children[i].add_child(plan2_node.children[0])
  *     else:
  *         print 'invalid rf'             # <<<<<<<<<<<<<<
@@ -11662,11 +13814,11 @@ static Node __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_merge_plans(Node __pyx
  *     return plan1
  */
   /*else*/ {
-    if (__Pyx_PrintOne(0, __pyx_kp_s_invalid_rf) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1157; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    if (__Pyx_PrintOne(0, __pyx_kp_s_invalid_rf) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1369; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   }
   __pyx_L7:;
 
-  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1159
+  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1371
  *         print 'invalid rf'
  * 
  *     return plan1             # <<<<<<<<<<<<<<
@@ -11676,7 +13828,7 @@ static Node __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_merge_plans(Node __pyx
   __pyx_r = __pyx_v_plan1;
   goto __pyx_L0;
 
-  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1104
+  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1316
  * 
  * 
  * cdef Node merge_plans(Node plan1, Node plan2):             # <<<<<<<<<<<<<<
@@ -11692,7 +13844,7 @@ static Node __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_merge_plans(Node __pyx
   return __pyx_r;
 }
 
-/* "py_stringsimjoin/apply_rf/ex_plan.pyx":1161
+/* "py_stringsimjoin/apply_rf/ex_plan.pyx":1373
  *     return plan1
  * 
  * cdef bool nodes_can_be_merged(Node& node1, Node& node2, Predicatecpp& pred1,             # <<<<<<<<<<<<<<
@@ -11712,7 +13864,7 @@ static bool __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_nodes_can_be_merged(No
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("nodes_can_be_merged", 0);
 
-  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1163
+  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1375
  * cdef bool nodes_can_be_merged(Node& node1, Node& node2, Predicatecpp& pred1,
  *                               Predicatecpp& pred2):
  *     if node1.node_type.compare(node2.node_type) != 0:             # <<<<<<<<<<<<<<
@@ -11722,7 +13874,7 @@ static bool __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_nodes_can_be_merged(No
   __pyx_t_1 = ((__pyx_v_node1.node_type.compare(__pyx_v_node2.node_type) != 0) != 0);
   if (__pyx_t_1) {
 
-    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1164
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1376
  *                               Predicatecpp& pred2):
  *     if node1.node_type.compare(node2.node_type) != 0:
  *         return False             # <<<<<<<<<<<<<<
@@ -11732,7 +13884,7 @@ static bool __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_nodes_can_be_merged(No
     __pyx_r = 0;
     goto __pyx_L0;
 
-    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1163
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1375
  * cdef bool nodes_can_be_merged(Node& node1, Node& node2, Predicatecpp& pred1,
  *                               Predicatecpp& pred2):
  *     if node1.node_type.compare(node2.node_type) != 0:             # <<<<<<<<<<<<<<
@@ -11741,7 +13893,7 @@ static bool __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_nodes_can_be_merged(No
  */
   }
 
-  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1165
+  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1377
  *     if node1.node_type.compare(node2.node_type) != 0:
  *         return False
  *     if pred1.feat_name.compare(pred2.feat_name) != 0:             # <<<<<<<<<<<<<<
@@ -11751,7 +13903,7 @@ static bool __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_nodes_can_be_merged(No
   __pyx_t_1 = ((__pyx_v_pred1.feat_name.compare(__pyx_v_pred2.feat_name) != 0) != 0);
   if (__pyx_t_1) {
 
-    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1166
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1378
  *         return False
  *     if pred1.feat_name.compare(pred2.feat_name) != 0:
  *         return False             # <<<<<<<<<<<<<<
@@ -11761,7 +13913,7 @@ static bool __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_nodes_can_be_merged(No
     __pyx_r = 0;
     goto __pyx_L0;
 
-    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1165
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1377
  *     if node1.node_type.compare(node2.node_type) != 0:
  *         return False
  *     if pred1.feat_name.compare(pred2.feat_name) != 0:             # <<<<<<<<<<<<<<
@@ -11770,18 +13922,18 @@ static bool __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_nodes_can_be_merged(No
  */
   }
 
-  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1167
+  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1379
  *     if pred1.feat_name.compare(pred2.feat_name) != 0:
  *         return False
  *     return are_comp_ops_compatible(pred1.comp_op, pred2.comp_op, node1.node_type)             # <<<<<<<<<<<<<<
  * 
  * cdef bool are_comp_ops_compatible(comp_op1, comp_op2, node_type):
  */
-  __pyx_t_2 = __pyx_convert_PyBytes_string_to_py_std__in_string(__pyx_v_pred1.comp_op); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1167; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_2 = __pyx_convert_PyBytes_string_to_py_std__in_string(__pyx_v_pred1.comp_op); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1379; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_3 = __pyx_convert_PyBytes_string_to_py_std__in_string(__pyx_v_pred2.comp_op); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1167; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_3 = __pyx_convert_PyBytes_string_to_py_std__in_string(__pyx_v_pred2.comp_op); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1379; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_4 = __pyx_convert_PyBytes_string_to_py_std__in_string(__pyx_v_node1.node_type); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1167; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_4 = __pyx_convert_PyBytes_string_to_py_std__in_string(__pyx_v_node1.node_type); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1379; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_4);
   __pyx_r = __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_are_comp_ops_compatible(__pyx_t_2, __pyx_t_3, __pyx_t_4);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
@@ -11789,7 +13941,7 @@ static bool __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_nodes_can_be_merged(No
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
   goto __pyx_L0;
 
-  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1161
+  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1373
  *     return plan1
  * 
  * cdef bool nodes_can_be_merged(Node& node1, Node& node2, Predicatecpp& pred1,             # <<<<<<<<<<<<<<
@@ -11809,7 +13961,7 @@ static bool __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_nodes_can_be_merged(No
   return __pyx_r;
 }
 
-/* "py_stringsimjoin/apply_rf/ex_plan.pyx":1169
+/* "py_stringsimjoin/apply_rf/ex_plan.pyx":1381
  *     return are_comp_ops_compatible(pred1.comp_op, pred2.comp_op, node1.node_type)
  * 
  * cdef bool are_comp_ops_compatible(comp_op1, comp_op2, node_type):             # <<<<<<<<<<<<<<
@@ -11830,17 +13982,17 @@ static bool __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_are_comp_ops_compatibl
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("are_comp_ops_compatible", 0);
 
-  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1170
+  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1382
  * 
  * cdef bool are_comp_ops_compatible(comp_op1, comp_op2, node_type):
  *     if node_type == "FILTER":             # <<<<<<<<<<<<<<
  *         return True
  *     if node_type == "SELECT":
  */
-  __pyx_t_1 = (__Pyx_PyString_Equals(__pyx_v_node_type, __pyx_n_s_FILTER, Py_EQ)); if (unlikely(__pyx_t_1 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1170; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = (__Pyx_PyString_Equals(__pyx_v_node_type, __pyx_n_s_FILTER, Py_EQ)); if (unlikely(__pyx_t_1 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1382; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   if (__pyx_t_1) {
 
-    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1171
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1383
  * cdef bool are_comp_ops_compatible(comp_op1, comp_op2, node_type):
  *     if node_type == "FILTER":
  *         return True             # <<<<<<<<<<<<<<
@@ -11850,7 +14002,7 @@ static bool __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_are_comp_ops_compatibl
     __pyx_r = 1;
     goto __pyx_L0;
 
-    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1170
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1382
  * 
  * cdef bool are_comp_ops_compatible(comp_op1, comp_op2, node_type):
  *     if node_type == "FILTER":             # <<<<<<<<<<<<<<
@@ -11859,30 +14011,30 @@ static bool __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_are_comp_ops_compatibl
  */
   }
 
-  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1172
+  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1384
  *     if node_type == "FILTER":
  *         return True
  *     if node_type == "SELECT":             # <<<<<<<<<<<<<<
  *         return comp_op1 == comp_op2
  *     if comp_op1 in ['<', '<='] and comp_op2 in ['>' '>=']:
  */
-  __pyx_t_1 = (__Pyx_PyString_Equals(__pyx_v_node_type, __pyx_n_s_SELECT, Py_EQ)); if (unlikely(__pyx_t_1 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1172; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = (__Pyx_PyString_Equals(__pyx_v_node_type, __pyx_n_s_SELECT, Py_EQ)); if (unlikely(__pyx_t_1 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1384; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   if (__pyx_t_1) {
 
-    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1173
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1385
  *         return True
  *     if node_type == "SELECT":
  *         return comp_op1 == comp_op2             # <<<<<<<<<<<<<<
  *     if comp_op1 in ['<', '<='] and comp_op2 in ['>' '>=']:
  *         return False
  */
-    __pyx_t_2 = PyObject_RichCompare(__pyx_v_comp_op1, __pyx_v_comp_op2, Py_EQ); __Pyx_XGOTREF(__pyx_t_2); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1173; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-    __pyx_t_3 = __Pyx_PyObject_IsTrue(__pyx_t_2); if (unlikely((__pyx_t_3 == (bool)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1173; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_2 = PyObject_RichCompare(__pyx_v_comp_op1, __pyx_v_comp_op2, Py_EQ); __Pyx_XGOTREF(__pyx_t_2); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1385; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_3 = __Pyx_PyObject_IsTrue(__pyx_t_2); if (unlikely((__pyx_t_3 == (bool)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1385; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
     __pyx_r = __pyx_t_3;
     goto __pyx_L0;
 
-    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1172
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1384
  *     if node_type == "FILTER":
  *         return True
  *     if node_type == "SELECT":             # <<<<<<<<<<<<<<
@@ -11891,7 +14043,7 @@ static bool __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_are_comp_ops_compatibl
  */
   }
 
-  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1174
+  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1386
  *     if node_type == "SELECT":
  *         return comp_op1 == comp_op2
  *     if comp_op1 in ['<', '<='] and comp_op2 in ['>' '>=']:             # <<<<<<<<<<<<<<
@@ -11900,13 +14052,13 @@ static bool __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_are_comp_ops_compatibl
  */
   __Pyx_INCREF(__pyx_v_comp_op1);
   __pyx_t_2 = __pyx_v_comp_op1;
-  __pyx_t_5 = (__Pyx_PyString_Equals(__pyx_t_2, __pyx_kp_s__4, Py_EQ)); if (unlikely(__pyx_t_5 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1174; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_5 = (__Pyx_PyString_Equals(__pyx_t_2, __pyx_kp_s__4, Py_EQ)); if (unlikely(__pyx_t_5 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1386; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   if (!__pyx_t_5) {
   } else {
     __pyx_t_4 = __pyx_t_5;
     goto __pyx_L8_bool_binop_done;
   }
-  __pyx_t_5 = (__Pyx_PyString_Equals(__pyx_t_2, __pyx_kp_s_, Py_EQ)); if (unlikely(__pyx_t_5 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1174; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_5 = (__Pyx_PyString_Equals(__pyx_t_2, __pyx_kp_s_, Py_EQ)); if (unlikely(__pyx_t_5 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1386; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_t_4 = __pyx_t_5;
   __pyx_L8_bool_binop_done:;
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
@@ -11918,14 +14070,14 @@ static bool __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_are_comp_ops_compatibl
   }
   __Pyx_INCREF(__pyx_v_comp_op2);
   __pyx_t_2 = __pyx_v_comp_op2;
-  __pyx_t_5 = (__Pyx_PyString_Equals(__pyx_t_2, __pyx_kp_s__5, Py_EQ)); if (unlikely(__pyx_t_5 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1174; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_5 = (__Pyx_PyString_Equals(__pyx_t_2, __pyx_kp_s__5, Py_EQ)); if (unlikely(__pyx_t_5 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1386; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __pyx_t_4 = (__pyx_t_5 != 0);
   __pyx_t_1 = __pyx_t_4;
   __pyx_L6_bool_binop_done:;
   if (__pyx_t_1) {
 
-    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1175
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1387
  *         return comp_op1 == comp_op2
  *     if comp_op1 in ['<', '<='] and comp_op2 in ['>' '>=']:
  *         return False             # <<<<<<<<<<<<<<
@@ -11935,7 +14087,7 @@ static bool __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_are_comp_ops_compatibl
     __pyx_r = 0;
     goto __pyx_L0;
 
-    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1174
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1386
  *     if node_type == "SELECT":
  *         return comp_op1 == comp_op2
  *     if comp_op1 in ['<', '<='] and comp_op2 in ['>' '>=']:             # <<<<<<<<<<<<<<
@@ -11944,7 +14096,7 @@ static bool __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_are_comp_ops_compatibl
  */
   }
 
-  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1176
+  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1388
  *     if comp_op1 in ['<', '<='] and comp_op2 in ['>' '>=']:
  *         return False
  *     if comp_op1 in ['>', '>='] and comp_op2 in ['<', '<=']:             # <<<<<<<<<<<<<<
@@ -11953,13 +14105,13 @@ static bool __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_are_comp_ops_compatibl
  */
   __Pyx_INCREF(__pyx_v_comp_op1);
   __pyx_t_2 = __pyx_v_comp_op1;
-  __pyx_t_5 = (__Pyx_PyString_Equals(__pyx_t_2, __pyx_kp_s__2, Py_EQ)); if (unlikely(__pyx_t_5 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1176; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_5 = (__Pyx_PyString_Equals(__pyx_t_2, __pyx_kp_s__2, Py_EQ)); if (unlikely(__pyx_t_5 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1388; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   if (!__pyx_t_5) {
   } else {
     __pyx_t_4 = __pyx_t_5;
     goto __pyx_L13_bool_binop_done;
   }
-  __pyx_t_5 = (__Pyx_PyString_Equals(__pyx_t_2, __pyx_kp_s__3, Py_EQ)); if (unlikely(__pyx_t_5 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1176; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_5 = (__Pyx_PyString_Equals(__pyx_t_2, __pyx_kp_s__3, Py_EQ)); if (unlikely(__pyx_t_5 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1388; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_t_4 = __pyx_t_5;
   __pyx_L13_bool_binop_done:;
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
@@ -11971,13 +14123,13 @@ static bool __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_are_comp_ops_compatibl
   }
   __Pyx_INCREF(__pyx_v_comp_op2);
   __pyx_t_2 = __pyx_v_comp_op2;
-  __pyx_t_4 = (__Pyx_PyString_Equals(__pyx_t_2, __pyx_kp_s__4, Py_EQ)); if (unlikely(__pyx_t_4 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1176; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_4 = (__Pyx_PyString_Equals(__pyx_t_2, __pyx_kp_s__4, Py_EQ)); if (unlikely(__pyx_t_4 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1388; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   if (!__pyx_t_4) {
   } else {
     __pyx_t_5 = __pyx_t_4;
     goto __pyx_L15_bool_binop_done;
   }
-  __pyx_t_4 = (__Pyx_PyString_Equals(__pyx_t_2, __pyx_kp_s_, Py_EQ)); if (unlikely(__pyx_t_4 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1176; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_4 = (__Pyx_PyString_Equals(__pyx_t_2, __pyx_kp_s_, Py_EQ)); if (unlikely(__pyx_t_4 < 0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1388; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_t_5 = __pyx_t_4;
   __pyx_L15_bool_binop_done:;
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
@@ -11986,7 +14138,7 @@ static bool __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_are_comp_ops_compatibl
   __pyx_L11_bool_binop_done:;
   if (__pyx_t_1) {
 
-    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1177
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1389
  *         return False
  *     if comp_op1 in ['>', '>='] and comp_op2 in ['<', '<=']:
  *         return False             # <<<<<<<<<<<<<<
@@ -11996,7 +14148,7 @@ static bool __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_are_comp_ops_compatibl
     __pyx_r = 0;
     goto __pyx_L0;
 
-    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1176
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1388
  *     if comp_op1 in ['<', '<='] and comp_op2 in ['>' '>=']:
  *         return False
  *     if comp_op1 in ['>', '>='] and comp_op2 in ['<', '<=']:             # <<<<<<<<<<<<<<
@@ -12005,7 +14157,7 @@ static bool __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_are_comp_ops_compatibl
  */
   }
 
-  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1178
+  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1390
  *     if comp_op1 in ['>', '>='] and comp_op2 in ['<', '<=']:
  *         return False
  *     return True             # <<<<<<<<<<<<<<
@@ -12015,7 +14167,7 @@ static bool __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_are_comp_ops_compatibl
   __pyx_r = 1;
   goto __pyx_L0;
 
-  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1169
+  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1381
  *     return are_comp_ops_compatible(pred1.comp_op, pred2.comp_op, node1.node_type)
  * 
  * cdef bool are_comp_ops_compatible(comp_op1, comp_op2, node_type):             # <<<<<<<<<<<<<<
@@ -12033,7 +14185,7 @@ static bool __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_are_comp_ops_compatibl
   return __pyx_r;
 }
 
-/* "py_stringsimjoin/apply_rf/ex_plan.pyx":1180
+/* "py_stringsimjoin/apply_rf/ex_plan.pyx":1392
  *     return True
  * 
  * cdef Node generate_overall_plan(vector[Node] plans):             # <<<<<<<<<<<<<<
@@ -12054,7 +14206,7 @@ static Node __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_generate_overall_plan(
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("generate_overall_plan", 0);
 
-  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1181
+  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1393
  * 
  * cdef Node generate_overall_plan(vector[Node] plans):
  *     cdef Node combined_plan = plans[0]             # <<<<<<<<<<<<<<
@@ -12063,7 +14215,7 @@ static Node __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_generate_overall_plan(
  */
   __pyx_v_combined_plan = (__pyx_v_plans[0]);
 
-  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1182
+  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1394
  * cdef Node generate_overall_plan(vector[Node] plans):
  *     cdef Node combined_plan = plans[0]
  *     cdef int i=1             # <<<<<<<<<<<<<<
@@ -12072,16 +14224,16 @@ static Node __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_generate_overall_plan(
  */
   __pyx_v_i = 1;
 
-  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1183
+  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1395
  *     cdef Node combined_plan = plans[0]
  *     cdef int i=1
  *     print 'before merge size : ', combined_plan.children.size()             # <<<<<<<<<<<<<<
  *     while i < plans.size():
  *         combined_plan = merge_plans(combined_plan, plans[i])
  */
-  __pyx_t_1 = __Pyx_PyInt_FromSize_t(__pyx_v_combined_plan.children.size()); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1183; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_1 = __Pyx_PyInt_FromSize_t(__pyx_v_combined_plan.children.size()); if (unlikely(!__pyx_t_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1395; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = PyTuple_New(2); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1183; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_2 = PyTuple_New(2); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1395; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_INCREF(__pyx_kp_s_before_merge_size);
   __Pyx_GIVEREF(__pyx_kp_s_before_merge_size);
@@ -12089,10 +14241,10 @@ static Node __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_generate_overall_plan(
   __Pyx_GIVEREF(__pyx_t_1);
   PyTuple_SET_ITEM(__pyx_t_2, 1, __pyx_t_1);
   __pyx_t_1 = 0;
-  if (__Pyx_Print(0, __pyx_t_2, 1) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1183; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (__Pyx_Print(0, __pyx_t_2, 1) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 1395; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1184
+  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1396
  *     cdef int i=1
  *     print 'before merge size : ', combined_plan.children.size()
  *     while i < plans.size():             # <<<<<<<<<<<<<<
@@ -12103,7 +14255,7 @@ static Node __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_generate_overall_plan(
     __pyx_t_3 = ((__pyx_v_i < __pyx_v_plans.size()) != 0);
     if (!__pyx_t_3) break;
 
-    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1185
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1397
  *     print 'before merge size : ', combined_plan.children.size()
  *     while i < plans.size():
  *         combined_plan = merge_plans(combined_plan, plans[i])             # <<<<<<<<<<<<<<
@@ -12112,7 +14264,7 @@ static Node __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_generate_overall_plan(
  */
     __pyx_v_combined_plan = __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_merge_plans(__pyx_v_combined_plan, (__pyx_v_plans[__pyx_v_i]));
 
-    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1186
+    /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1398
  *     while i < plans.size():
  *         combined_plan = merge_plans(combined_plan, plans[i])
  *         i += 1             # <<<<<<<<<<<<<<
@@ -12122,7 +14274,7 @@ static Node __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_generate_overall_plan(
     __pyx_v_i = (__pyx_v_i + 1);
   }
 
-  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1188
+  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1400
  *         i += 1
  * #        print 'i = ', i, ' , num child nodes : ', combined_plan.children.size()
  *     return combined_plan             # <<<<<<<<<<<<<<
@@ -12130,7 +14282,7 @@ static Node __pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_generate_overall_plan(
   __pyx_r = __pyx_v_combined_plan;
   goto __pyx_L0;
 
-  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1180
+  /* "py_stringsimjoin/apply_rf/ex_plan.pyx":1392
  *     return True
  * 
  * cdef Node generate_overall_plan(vector[Node] plans):             # <<<<<<<<<<<<<<
@@ -12510,7 +14662,9 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_key, __pyx_k_key, sizeof(__pyx_k_key), 0, 0, 1, 1},
   {&__pyx_n_s_keys, __pyx_k_keys, sizeof(__pyx_k_keys), 0, 0, 1, 1},
   {&__pyx_n_s_main, __pyx_k_main, sizeof(__pyx_k_main), 0, 0, 1, 1},
+  {&__pyx_kp_s_n, __pyx_k_n, sizeof(__pyx_k_n), 0, 0, 1, 0},
   {&__pyx_n_b_none, __pyx_k_none, sizeof(__pyx_k_none), 0, 0, 0, 1},
+  {&__pyx_kp_s_num_preds, __pyx_k_num_preds, sizeof(__pyx_k_num_preds), 0, 0, 1, 0},
   {&__pyx_n_s_pop, __pyx_k_pop, sizeof(__pyx_k_pop), 0, 0, 1, 1},
   {&__pyx_n_s_print, __pyx_k_print, sizeof(__pyx_k_print), 0, 0, 1, 1},
   {&__pyx_n_s_py_stringsimjoin_apply_rf_predic, __pyx_k_py_stringsimjoin_apply_rf_predic, sizeof(__pyx_k_py_stringsimjoin_apply_rf_predic), 0, 0, 1, 1},
@@ -12528,8 +14682,6 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_t3, __pyx_k_t3, sizeof(__pyx_k_t3), 0, 0, 1, 1},
   {&__pyx_n_s_t4, __pyx_k_t4, sizeof(__pyx_k_t4), 0, 0, 1, 1},
   {&__pyx_n_s_t5, __pyx_k_t5, sizeof(__pyx_k_t5), 0, 0, 1, 1},
-  {&__pyx_n_s_t6, __pyx_k_t6, sizeof(__pyx_k_t6), 0, 0, 1, 1},
-  {&__pyx_n_s_t7, __pyx_k_t7, sizeof(__pyx_k_t7), 0, 0, 1, 1},
   {&__pyx_n_s_test, __pyx_k_test, sizeof(__pyx_k_test), 0, 0, 1, 1},
   {&__pyx_n_s_threshold, __pyx_k_threshold, sizeof(__pyx_k_threshold), 0, 0, 1, 1},
   {&__pyx_n_s_time, __pyx_k_time, sizeof(__pyx_k_time), 0, 0, 1, 1},
@@ -12547,8 +14699,8 @@ static int __Pyx_InitCachedBuiltins(void) {
   #else
   __pyx_builtin_xrange = __Pyx_GetBuiltinName(__pyx_n_s_xrange); if (!__pyx_builtin_xrange) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 35; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   #endif
-  __pyx_builtin_range = __Pyx_GetBuiltinName(__pyx_n_s_range); if (!__pyx_builtin_range) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 279; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __pyx_builtin_sorted = __Pyx_GetBuiltinName(__pyx_n_s_sorted); if (!__pyx_builtin_sorted) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 529; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_builtin_range = __Pyx_GetBuiltinName(__pyx_n_s_range); if (!__pyx_builtin_range) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 397; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_builtin_sorted = __Pyx_GetBuiltinName(__pyx_n_s_sorted); if (!__pyx_builtin_sorted) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 704; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   return 0;
   __pyx_L1_error:;
   return -1;
@@ -12566,6 +14718,7 @@ static int __Pyx_InitGlobals(void) {
   if (__Pyx_InitStrings(__pyx_string_tab) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 2; __pyx_clineno = __LINE__; goto __pyx_L1_error;};
   __pyx_int_0 = PyInt_FromLong(0); if (unlikely(!__pyx_int_0)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 2; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_int_1 = PyInt_FromLong(1); if (unlikely(!__pyx_int_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 2; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_int_6 = PyInt_FromLong(6); if (unlikely(!__pyx_int_6)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 2; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_int_neg_1 = PyInt_FromLong(-1); if (unlikely(!__pyx_int_neg_1)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 2; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __pyx_int_neg_2 = PyInt_FromLong(-2); if (unlikely(!__pyx_int_neg_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 2; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   return 0;
@@ -12662,12 +14815,13 @@ PyMODINIT_FUNC PyInit_ex_plan(void)
   /*--- Variable export code ---*/
   /*--- Function export code ---*/
   if (__Pyx_ExportFunction("compute_predicate_cost_and_coverage", (void (*)(void))__pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_compute_predicate_cost_and_coverage, "void (std::vector<std::string>  &, std::vector<std::string>  &, std::vector<Tree>  &, std::map<std::string,Coverage>  &, std::map<int,Coverage>  &, int)") < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 2; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  if (__Pyx_ExportFunction("get_default_execution_plan", (void (*)(void))__pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_get_default_execution_plan, "Node (std::vector<Tree>  &, std::map<std::string,Coverage>  &, std::map<int,Coverage>  &, int const , std::vector<Tree>  &, std::vector<Tree>  &, bool, bool, PyObject *)") < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 2; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (__Pyx_ExportFunction("get_default_execution_plan", (void (*)(void))__pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_get_default_execution_plan, "Node (std::vector<Tree>  &, std::map<std::string,Coverage>  &, std::map<int,Coverage>  &, int const , std::vector<Tree>  &, std::vector<Tree>  &, bool, bool, PyObject *, PyObject *, bool)") < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 2; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   if (__Pyx_ExportFunction("get_plans_for_rules", (void (*)(void))__pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_get_plans_for_rules, "std::map<int,std::vector<Node> >  (std::vector<Tree>  &, std::map<std::string,Coverage>  &, std::map<int,Coverage>  &, int const , std::vector<Tree>  &, std::vector<Tree>  &, bool, bool, PyObject *)") < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 2; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   if (__Pyx_ExportFunction("extract_pos_rules_from_rf", (void (*)(void))__pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_extract_pos_rules_from_rf, "std::vector<Tree>  (PyObject *, PyObject *)") < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 2; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  if (__Pyx_ExportFunction("generate_local_optimal_plans", (void (*)(void))__pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_generate_local_optimal_plans, "void (std::vector<Tree>  &, std::map<std::string,Coverage>  &, int, std::vector<Node>  &, std::vector<int>  &)") < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 2; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (__Pyx_ExportFunction("generate_local_optimal_plans", (void (*)(void))__pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_generate_local_optimal_plans, "void (std::vector<Tree>  &, std::map<std::string,Coverage>  &, int, std::vector<Node>  &, std::vector<int>  &, bool)") < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 2; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   if (__Pyx_ExportFunction("generate_overall_plan", (void (*)(void))__pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_generate_overall_plan, "Node (std::vector<Node> )") < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 2; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  if (__Pyx_ExportFunction("generate_ex_plan_for_stage2", (void (*)(void))__pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_generate_ex_plan_for_stage2, "std::vector<Node>  (std::pair<std::vector<std::pair<int,int> > ,std::vector<int> >  &, std::vector<std::string>  &, std::vector<std::string>  &, std::vector<Tree>  &, int, int, bool)") < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 2; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (__Pyx_ExportFunction("generate_ex_plan_for_stage2", (void (*)(void))__pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_generate_ex_plan_for_stage2, "std::vector<Node>  (std::pair<std::vector<std::pair<int,int> > ,std::vector<int> >  &, std::vector<std::string>  &, std::vector<std::string>  &, std::vector<Tree>  &, int, int, bool, bool)") < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 2; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (__Pyx_ExportFunction("generate_ex_plan_for_stage2_test", (void (*)(void))__pyx_f_16py_stringsimjoin_8apply_rf_7ex_plan_generate_ex_plan_for_stage2_test, "Node (std::pair<std::vector<std::pair<int,int> > ,std::vector<int> >  &, std::vector<std::string>  &, std::vector<std::string>  &, std::vector<Tree>  &, int, int, bool)") < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 2; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   /*--- Type init code ---*/
   /*--- Type import code ---*/
   /*--- Variable import code ---*/
@@ -12976,6 +15130,135 @@ static void __Pyx_WriteUnraisable(const char *name, CYTHON_UNUSED int clineno,
 #endif
 }
 
+static CYTHON_INLINE PyObject *__Pyx_GetItemInt_Generic(PyObject *o, PyObject* j) {
+    PyObject *r;
+    if (!j) return NULL;
+    r = PyObject_GetItem(o, j);
+    Py_DECREF(j);
+    return r;
+}
+static CYTHON_INLINE PyObject *__Pyx_GetItemInt_List_Fast(PyObject *o, Py_ssize_t i,
+                                                              CYTHON_NCP_UNUSED int wraparound,
+                                                              CYTHON_NCP_UNUSED int boundscheck) {
+#if CYTHON_COMPILING_IN_CPYTHON
+    if (wraparound & unlikely(i < 0)) i += PyList_GET_SIZE(o);
+    if ((!boundscheck) || likely((0 <= i) & (i < PyList_GET_SIZE(o)))) {
+        PyObject *r = PyList_GET_ITEM(o, i);
+        Py_INCREF(r);
+        return r;
+    }
+    return __Pyx_GetItemInt_Generic(o, PyInt_FromSsize_t(i));
+#else
+    return PySequence_GetItem(o, i);
+#endif
+}
+static CYTHON_INLINE PyObject *__Pyx_GetItemInt_Tuple_Fast(PyObject *o, Py_ssize_t i,
+                                                              CYTHON_NCP_UNUSED int wraparound,
+                                                              CYTHON_NCP_UNUSED int boundscheck) {
+#if CYTHON_COMPILING_IN_CPYTHON
+    if (wraparound & unlikely(i < 0)) i += PyTuple_GET_SIZE(o);
+    if ((!boundscheck) || likely((0 <= i) & (i < PyTuple_GET_SIZE(o)))) {
+        PyObject *r = PyTuple_GET_ITEM(o, i);
+        Py_INCREF(r);
+        return r;
+    }
+    return __Pyx_GetItemInt_Generic(o, PyInt_FromSsize_t(i));
+#else
+    return PySequence_GetItem(o, i);
+#endif
+}
+static CYTHON_INLINE PyObject *__Pyx_GetItemInt_Fast(PyObject *o, Py_ssize_t i, int is_list,
+                                                     CYTHON_NCP_UNUSED int wraparound,
+                                                     CYTHON_NCP_UNUSED int boundscheck) {
+#if CYTHON_COMPILING_IN_CPYTHON
+    if (is_list || PyList_CheckExact(o)) {
+        Py_ssize_t n = ((!wraparound) | likely(i >= 0)) ? i : i + PyList_GET_SIZE(o);
+        if ((!boundscheck) || (likely((n >= 0) & (n < PyList_GET_SIZE(o))))) {
+            PyObject *r = PyList_GET_ITEM(o, n);
+            Py_INCREF(r);
+            return r;
+        }
+    }
+    else if (PyTuple_CheckExact(o)) {
+        Py_ssize_t n = ((!wraparound) | likely(i >= 0)) ? i : i + PyTuple_GET_SIZE(o);
+        if ((!boundscheck) || likely((n >= 0) & (n < PyTuple_GET_SIZE(o)))) {
+            PyObject *r = PyTuple_GET_ITEM(o, n);
+            Py_INCREF(r);
+            return r;
+        }
+    } else {
+        PySequenceMethods *m = Py_TYPE(o)->tp_as_sequence;
+        if (likely(m && m->sq_item)) {
+            if (wraparound && unlikely(i < 0) && likely(m->sq_length)) {
+                Py_ssize_t l = m->sq_length(o);
+                if (likely(l >= 0)) {
+                    i += l;
+                } else {
+                    if (PyErr_ExceptionMatches(PyExc_OverflowError))
+                        PyErr_Clear();
+                    else
+                        return NULL;
+                }
+            }
+            return m->sq_item(o, i);
+        }
+    }
+#else
+    if (is_list || PySequence_Check(o)) {
+        return PySequence_GetItem(o, i);
+    }
+#endif
+    return __Pyx_GetItemInt_Generic(o, PyInt_FromSsize_t(i));
+}
+
+static CYTHON_INLINE int __Pyx_SetItemInt_Generic(PyObject *o, PyObject *j, PyObject *v) {
+    int r;
+    if (!j) return -1;
+    r = PyObject_SetItem(o, j, v);
+    Py_DECREF(j);
+    return r;
+}
+static CYTHON_INLINE int __Pyx_SetItemInt_Fast(PyObject *o, Py_ssize_t i, PyObject *v, int is_list,
+                                               CYTHON_NCP_UNUSED int wraparound, CYTHON_NCP_UNUSED int boundscheck) {
+#if CYTHON_COMPILING_IN_CPYTHON
+    if (is_list || PyList_CheckExact(o)) {
+        Py_ssize_t n = (!wraparound) ? i : ((likely(i >= 0)) ? i : i + PyList_GET_SIZE(o));
+        if ((!boundscheck) || likely((n >= 0) & (n < PyList_GET_SIZE(o)))) {
+            PyObject* old = PyList_GET_ITEM(o, n);
+            Py_INCREF(v);
+            PyList_SET_ITEM(o, n, v);
+            Py_DECREF(old);
+            return 1;
+        }
+    } else {
+        PySequenceMethods *m = Py_TYPE(o)->tp_as_sequence;
+        if (likely(m && m->sq_ass_item)) {
+            if (wraparound && unlikely(i < 0) && likely(m->sq_length)) {
+                Py_ssize_t l = m->sq_length(o);
+                if (likely(l >= 0)) {
+                    i += l;
+                } else {
+                    if (PyErr_ExceptionMatches(PyExc_OverflowError))
+                        PyErr_Clear();
+                    else
+                        return -1;
+                }
+            }
+            return m->sq_ass_item(o, i, v);
+        }
+    }
+#else
+#if CYTHON_COMPILING_IN_PYPY
+    if (is_list || (PySequence_Check(o) && !PyDict_Check(o))) {
+#else
+    if (is_list || PySequence_Check(o)) {
+#endif
+        return PySequence_SetItem(o, i, v);
+    }
+#endif
+    return __Pyx_SetItemInt_Generic(o, PyInt_FromSsize_t(i), v);
+}
+
 static CYTHON_INLINE int __Pyx_div_int(int a, int b) {
     int q = a / b;
     int r = a - q*b;
@@ -13201,87 +15484,6 @@ static PyObject* __Pyx_PyInt_AddObjC(PyObject *op1, PyObject *op2, CYTHON_UNUSED
     return (inplace ? PyNumber_InPlaceAdd : PyNumber_Add)(op1, op2);
 }
 #endif
-
-static CYTHON_INLINE PyObject *__Pyx_GetItemInt_Generic(PyObject *o, PyObject* j) {
-    PyObject *r;
-    if (!j) return NULL;
-    r = PyObject_GetItem(o, j);
-    Py_DECREF(j);
-    return r;
-}
-static CYTHON_INLINE PyObject *__Pyx_GetItemInt_List_Fast(PyObject *o, Py_ssize_t i,
-                                                              CYTHON_NCP_UNUSED int wraparound,
-                                                              CYTHON_NCP_UNUSED int boundscheck) {
-#if CYTHON_COMPILING_IN_CPYTHON
-    if (wraparound & unlikely(i < 0)) i += PyList_GET_SIZE(o);
-    if ((!boundscheck) || likely((0 <= i) & (i < PyList_GET_SIZE(o)))) {
-        PyObject *r = PyList_GET_ITEM(o, i);
-        Py_INCREF(r);
-        return r;
-    }
-    return __Pyx_GetItemInt_Generic(o, PyInt_FromSsize_t(i));
-#else
-    return PySequence_GetItem(o, i);
-#endif
-}
-static CYTHON_INLINE PyObject *__Pyx_GetItemInt_Tuple_Fast(PyObject *o, Py_ssize_t i,
-                                                              CYTHON_NCP_UNUSED int wraparound,
-                                                              CYTHON_NCP_UNUSED int boundscheck) {
-#if CYTHON_COMPILING_IN_CPYTHON
-    if (wraparound & unlikely(i < 0)) i += PyTuple_GET_SIZE(o);
-    if ((!boundscheck) || likely((0 <= i) & (i < PyTuple_GET_SIZE(o)))) {
-        PyObject *r = PyTuple_GET_ITEM(o, i);
-        Py_INCREF(r);
-        return r;
-    }
-    return __Pyx_GetItemInt_Generic(o, PyInt_FromSsize_t(i));
-#else
-    return PySequence_GetItem(o, i);
-#endif
-}
-static CYTHON_INLINE PyObject *__Pyx_GetItemInt_Fast(PyObject *o, Py_ssize_t i, int is_list,
-                                                     CYTHON_NCP_UNUSED int wraparound,
-                                                     CYTHON_NCP_UNUSED int boundscheck) {
-#if CYTHON_COMPILING_IN_CPYTHON
-    if (is_list || PyList_CheckExact(o)) {
-        Py_ssize_t n = ((!wraparound) | likely(i >= 0)) ? i : i + PyList_GET_SIZE(o);
-        if ((!boundscheck) || (likely((n >= 0) & (n < PyList_GET_SIZE(o))))) {
-            PyObject *r = PyList_GET_ITEM(o, n);
-            Py_INCREF(r);
-            return r;
-        }
-    }
-    else if (PyTuple_CheckExact(o)) {
-        Py_ssize_t n = ((!wraparound) | likely(i >= 0)) ? i : i + PyTuple_GET_SIZE(o);
-        if ((!boundscheck) || likely((n >= 0) & (n < PyTuple_GET_SIZE(o)))) {
-            PyObject *r = PyTuple_GET_ITEM(o, n);
-            Py_INCREF(r);
-            return r;
-        }
-    } else {
-        PySequenceMethods *m = Py_TYPE(o)->tp_as_sequence;
-        if (likely(m && m->sq_item)) {
-            if (wraparound && unlikely(i < 0) && likely(m->sq_length)) {
-                Py_ssize_t l = m->sq_length(o);
-                if (likely(l >= 0)) {
-                    i += l;
-                } else {
-                    if (PyErr_ExceptionMatches(PyExc_OverflowError))
-                        PyErr_Clear();
-                    else
-                        return NULL;
-                }
-            }
-            return m->sq_item(o, i);
-        }
-    }
-#else
-    if (is_list || PySequence_Check(o)) {
-        return PySequence_GetItem(o, i);
-    }
-#endif
-    return __Pyx_GetItemInt_Generic(o, PyInt_FromSsize_t(i));
-}
 
 static CYTHON_INLINE int __Pyx_PyBytes_Equals(PyObject* s1, PyObject* s2, int equals) {
 #if CYTHON_COMPILING_IN_PYPY
@@ -14064,6 +16266,32 @@ static CYTHON_INLINE PyObject* __Pyx_PyInt_From_int(int value) {
     }
 }
 
+static CYTHON_INLINE PyObject* __Pyx_PyInt_From_long(long value) {
+    const long neg_one = (long) -1, const_zero = (long) 0;
+    const int is_unsigned = neg_one > const_zero;
+    if (is_unsigned) {
+        if (sizeof(long) < sizeof(long)) {
+            return PyInt_FromLong((long) value);
+        } else if (sizeof(long) <= sizeof(unsigned long)) {
+            return PyLong_FromUnsignedLong((unsigned long) value);
+        } else if (sizeof(long) <= sizeof(unsigned PY_LONG_LONG)) {
+            return PyLong_FromUnsignedLongLong((unsigned PY_LONG_LONG) value);
+        }
+    } else {
+        if (sizeof(long) <= sizeof(long)) {
+            return PyInt_FromLong((long) value);
+        } else if (sizeof(long) <= sizeof(PY_LONG_LONG)) {
+            return PyLong_FromLongLong((PY_LONG_LONG) value);
+        }
+    }
+    {
+        int one = 1; int little = (int)*(unsigned char *)&one;
+        unsigned char *bytes = (unsigned char *)&value;
+        return _PyLong_FromByteArray(bytes, sizeof(long),
+                                     little, !is_unsigned);
+    }
+}
+
 static CYTHON_INLINE size_t __Pyx_PyInt_As_size_t(PyObject *x) {
     const size_t neg_one = (size_t) -1, const_zero = (size_t) 0;
     const int is_unsigned = neg_one > const_zero;
@@ -14246,32 +16474,6 @@ raise_neg_overflow:
     PyErr_SetString(PyExc_OverflowError,
         "can't convert negative value to size_t");
     return (size_t) -1;
-}
-
-static CYTHON_INLINE PyObject* __Pyx_PyInt_From_long(long value) {
-    const long neg_one = (long) -1, const_zero = (long) 0;
-    const int is_unsigned = neg_one > const_zero;
-    if (is_unsigned) {
-        if (sizeof(long) < sizeof(long)) {
-            return PyInt_FromLong((long) value);
-        } else if (sizeof(long) <= sizeof(unsigned long)) {
-            return PyLong_FromUnsignedLong((unsigned long) value);
-        } else if (sizeof(long) <= sizeof(unsigned PY_LONG_LONG)) {
-            return PyLong_FromUnsignedLongLong((unsigned PY_LONG_LONG) value);
-        }
-    } else {
-        if (sizeof(long) <= sizeof(long)) {
-            return PyInt_FromLong((long) value);
-        } else if (sizeof(long) <= sizeof(PY_LONG_LONG)) {
-            return PyLong_FromLongLong((PY_LONG_LONG) value);
-        }
-    }
-    {
-        int one = 1; int little = (int)*(unsigned char *)&one;
-        unsigned char *bytes = (unsigned char *)&value;
-        return _PyLong_FromByteArray(bytes, sizeof(long),
-                                     little, !is_unsigned);
-    }
 }
 
 static CYTHON_INLINE long __Pyx_PyInt_As_long(PyObject *x) {

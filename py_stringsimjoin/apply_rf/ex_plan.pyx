@@ -127,6 +127,15 @@ cdef void compute_predicate_cost_and_coverage(vector[string]& lstrings,
                     c1.and_coverage(coverage[predicate.pred_name])              
             tree_cov[x].or_coverage(c1) 
 
+#    cdef Node plan
+#    cdef double cost1, sel1
+#    for x in xrange(trees.size()):
+#        plan = gen_plan_for_tree(trees[x], coverage, sample_size, False)
+#        cost1 = compute_plan_cost(plan, coverage, sample_size)
+#        sel1 = <double>tree_cov[x].sum()/ <double>sample_size
+#        print 'tree ', x, ' , cost : ', cost1, ' , sel : ', sel1
+
+
 # Generate execution plans for executing the remaining (n/2 - 1) trees
 # This function would find an optimal ordering of the remaining trees and return
 # a plan for each of the (n/2 - 1) trees in that order.
@@ -134,7 +143,7 @@ cdef vector[Node] generate_ex_plan_for_stage2(pair[vector[pair[int, int]], vecto
                                               vector[string]& lstrings, 
                                               vector[string]& rstrings, 
                                               vector[Tree]& trees,
-                                              int orig_sample_size, int n_jobs, bool push_flag):
+                                              int orig_sample_size, int n_jobs, bool push_flag, bool random_order):
     cdef pair[pair[vector[string], vector[string]], vector[int]] sample = sample_pairs(
                                                                     candset_votes,
                                                                     orig_sample_size,
@@ -224,23 +233,130 @@ cdef vector[Node] generate_ex_plan_for_stage2(pair[vector[pair[int, int]], vecto
 
     for i in xrange(trees.size()):
 #        print i
-        plan = gen_plan_for_tree(trees[i], coverage, sample_size, push_flag)
+        plan = gen_plan_for_tree(trees[i], coverage, sample_size, push_flag, random_order)
         tree_plans.push_back(plan)
         tree_costs.push_back(compute_plan_cost(plan, coverage, sample_size))
 
     print 't5'
 #    cdef vector[int] opt_tree_seq = get_optimal_tree_seq(tree_costs, tree_cov, sample_size) 
     cdef vector[int] opt_tree_seq = get_optimal_tree_seq_v1(tree_costs, tree_cov, sample_size, sample.second)
+# cit worst    opt_tree_seq = [3, 0, 1, 2]
+#    opt_tree_seq = [1, 2, 3, 0]
     cdef vector[Node] ordered_plans
-    print 't6'
+
     for i in opt_tree_seq:
         print i
         ordered_plans.push_back(tree_plans[i])
-    print 't7'
+
     return ordered_plans 
 
+cdef Node generate_ex_plan_for_stage2_test(pair[vector[pair[int, int]], vector[int]]& candset_votes,
+                                              vector[string]& lstrings,
+                                              vector[string]& rstrings,
+                                              vector[Tree]& trees,
+                                              int orig_sample_size, int n_jobs, bool push_flag):
+    cdef pair[pair[vector[string], vector[string]], vector[int]] sample = sample_pairs(
+                                                                    candset_votes,
+                                                                    orig_sample_size,
+                                                                    lstrings,
+                                                                    rstrings)
+    cdef omap[string, Coverage] coverage
+    cdef omap[string, vector[double]] features
+    cdef omap[string, double] cost
+    cdef int i, sample_size = sample.second.size()
+    cdef omap[string, pair[string, string]] feature_info
+    cdef omap[string, vector[vector[int]]] ltokens, rtokens
+    cdef Tree tree
+    cdef Rule rule
+    cdef Predicatecpp predicate
+    cdef oset[string] tok_types
+    cdef double sim_score, start_time, end_time
+    cdef token_simfnptr token_sim_fn
+    cdef str_simfnptr str_sim_fn
+    cdef compfnptr comp_fn
+    cdef omap[string, vector[double]] feature_values
+
+    for tree in trees:
+        for rule in tree.rules:
+            for predicate in rule.predicates:
+                feature_info[predicate.feat_name] = pair[string, string](predicate.sim_measure_type, predicate.tokenizer_type)
+                if predicate.is_tok_sim_measure:
+                    tok_types.insert(predicate.tokenizer_type)
+    print 't1'
+    for tok_type in tok_types:
+        ltokens[tok_type] = vector[vector[int]]()
+        rtokens[tok_type] = vector[vector[int]]()
+        tokenize_without_materializing(sample.first.first, sample.first.second, tok_type,
+                                       ltokens[tok_type], rtokens[tok_type], n_jobs)
+
+    print 't2'
+    for feature in feature_info:
+        print feature.first, feature.second.first, feature.second.second
+        if feature.second.second.compare('none') == 0:
+            str_sim_fn = get_str_sim_function(get_sim_type(feature.second.first))
+            cost[feature.first] = 0.0
+            for i in xrange(sample_size):
+                start_time = time.time()
+                sim_score = str_sim_fn(sample.first.first[i], sample.first.second[i])
+                end_time = time.time()
+                cost[feature.first] += (end_time - start_time)
+                feature_values[feature.first].push_back(sim_score)
+            cost[feature.first] /= sample_size
+        else:
+            token_sim_fn = get_token_sim_function(get_sim_type(feature.second.first))
+            cost[feature.first] = 0.0
+            for i in xrange(sample_size):
+                start_time = time.time()
+                sim_score = token_sim_fn(ltokens[feature.second.second][i],
+                                         rtokens[feature.second.second][i])
+                end_time = time.time()
+                cost[feature.first] += (end_time - start_time)
+                feature_values[feature.first].push_back(sim_score)
+            cost[feature.first] /= sample_size
+    print 't3'
+    cdef int max_size = 0
+    cdef omap[string, vector[bool]] cov
+    cdef int x, y, z
+    cdef omap[int, Coverage] tree_cov
+    cdef Coverage c1
+    for x in xrange(trees.size()):
+        for y in xrange(trees[x].rules.size()):
+            c1.reset()
+            for z in xrange(trees[x].rules[y].predicates.size()):
+                predicate = trees[x].rules[y].predicates[z]
+                trees[x].rules[y].predicates[z].set_cost(cost[predicate.feat_name])
+                if cov[predicate.pred_name].size() == 0:
+                    comp_fn = get_comparison_function(get_comp_type(predicate.comp_op))
+                    for i in xrange(sample_size):
+                        cov[predicate.pred_name].push_back(comp_fn(feature_values[predicate.feat_name][i], predicate.threshold))
+                    if cov[predicate.pred_name].size() > max_size:
+                        max_size = cov[predicate.pred_name].size()
+                    coverage[predicate.pred_name] = Coverage(cov[predicate.pred_name])
+                if z == 0:
+                    c1.or_coverage(coverage[predicate.pred_name])
+                else:
+                    c1.and_coverage(coverage[predicate.pred_name])
+            tree_cov[x].or_coverage(c1)
+    print 't4'
+    cdef Node plan
+    plan = gen_plan_for_trees_stage2(trees, coverage, sample_size, push_flag)
+    return plan
+
+cdef vector[int] get_random_filter_order(vector[int] optimal_seq):
+    cdef vector[int] random_order
+    cdef int n = optimal_seq.size(), i, j
+    used = [False for _ in xrange(n)]    
+    i = 0
+    while i < n:
+        j = random.randint(0, n-1)
+        if not used[j]:
+            random_order.push_back(optimal_seq[j])
+            used[j] = True
+            i += 1
+    return random_order
+
 cdef Node gen_plan_for_tree(Tree& tree, omap[string, Coverage]& coverage, 
-                            const int& sample_size, bool push_flag):
+                            const int& sample_size, bool push_flag, bool random_order):
     cdef Rule rule                                                              
     cdef vector[int] optimal_seq                                                
     cdef vector[Node] nodes, plans                                                     
@@ -250,9 +366,11 @@ cdef Node gen_plan_for_tree(Tree& tree, omap[string, Coverage]& coverage,
 
     for rule in tree.rules:                                                 
         nodes = vector[Node]()                                             
- #       print 'test1' 
+        
         optimal_seq = get_optimal_filter_seq(rule.predicates, coverage, sample_size)
-#        print 'test2'
+        if random_order:
+            optimal_seq = get_random_filter_order(optimal_seq)
+ 
         node_type = "ROOT"                                                  
         nodes.push_back(Node(node_type))                                    
                                                                                 
@@ -265,11 +383,11 @@ cdef Node gen_plan_for_tree(Tree& tree, omap[string, Coverage]& coverage,
         node_type = "OUTPUT"                                                
         new_node = Node(node_type)                                          
         nodes.push_back(new_node)                                           
-#        print 'n ', nodes.size()                                            
+        print 'n ', nodes.size()                                            
         for i in xrange(nodes.size() - 2, -1, -1):                          
             nodes[i].add_child(nodes[i+1])                                  
         plans.push_back(nodes[0])
-
+    
     cdef vector[Node] pushed_plans
     cdef Node combined_plan                                        
 
@@ -280,7 +398,8 @@ cdef Node gen_plan_for_tree(Tree& tree, omap[string, Coverage]& coverage,
             if i == 0:                                                          
                 combined_plan = pushed_plans[i]                                 
             else:                                                               
-                combined_plan = merge_plans_stage2(combined_plan, pushed_plans[i])    
+                combined_plan = merge_plans_stage2(combined_plan, pushed_plans[i])
+        
     else:
         for i in range(plans.size()):                                    
             if i == 0:                                                          
@@ -289,6 +408,61 @@ cdef Node gen_plan_for_tree(Tree& tree, omap[string, Coverage]& coverage,
                 combined_plan = merge_plans_stage2(combined_plan, plans[i])    
 
     return combined_plan    
+
+cdef Node gen_plan_for_trees_stage2(vector[Tree]& trees, omap[string, Coverage]& coverage,
+                            const int& sample_size, bool push_flag):
+    cdef Rule rule
+    cdef vector[int] optimal_seq
+    cdef vector[Node] nodes, plans
+    cdef Node root, new_node, curr_node
+    cdef string node_type
+    cdef Tree tree
+    cdef int i
+
+    for tree in trees:
+        for rule in tree.rules:
+            nodes = vector[Node]()
+ #       print 'test1' 
+            optimal_seq = get_optimal_filter_seq(rule.predicates, coverage, sample_size)
+#        print 'test2'
+            node_type = "ROOT"
+            nodes.push_back(Node(node_type))
+
+            for i in optimal_seq:
+                node_type = "FILTER"
+                new_node = Node(node_type)
+                new_node.predicates.push_back(rule.predicates[i])
+                nodes.push_back(new_node)
+
+            node_type = "OUTPUT"
+            new_node = Node(node_type)
+            new_node.set_tree_id(tree.tree_id)
+            nodes.push_back(new_node)
+#        print 'n ', nodes.size()                                            
+            for i in xrange(nodes.size() - 2, -1, -1):
+                nodes[i].add_child(nodes[i+1])
+            plans.push_back(nodes[0])
+
+    cdef vector[Node] pushed_plans
+    cdef Node combined_plan
+
+    if push_flag:
+        push_filters(plans, pushed_plans)
+
+        for i in range(pushed_plans.size()):
+            if i == 0:
+                combined_plan = pushed_plans[i]
+            else:
+                combined_plan = merge_plans_stage2(combined_plan, pushed_plans[i])
+    else:
+        for i in range(plans.size()):
+            if i == 0:
+                combined_plan = plans[i]
+            else:
+                combined_plan = merge_plans_stage2(combined_plan, plans[i])
+
+    return combined_plan
+
 
 cdef double compute_plan_cost(Node& plan, omap[string, Coverage]& coverage, const int& sample_size):
     cdef vector[bool] bool_vector
@@ -370,7 +544,7 @@ cdef vector[int] get_optimal_filter_seq(vector[Predicatecpp]& predicates,
     cdef Coverage prev_coverage                                                 
     cdef int i, j = 0, n=predicates.size(), max_pred 
     cdef double max_score, pred_score                                           
-    
+    print 'num preds : ', n 
     for i in xrange(n):
         selected_predicates.push_back(False)
                                                                   
@@ -387,14 +561,15 @@ cdef vector[int] get_optimal_filter_seq(vector[Predicatecpp]& predicates,
             else:                                                            
                 pred_score = (1.0 - (prev_coverage.and_sum(coverage[predicates[i].pred_name]) / sample_size)) / predicates[i].cost
 
-#            print pred_score, max_score                                         
+            #print pred_score, max_score                                         
                                                                                 
-            if pred_score > max_score:                                          
+            if pred_score > max_score or max_score == 0.0:                                          
                 max_score = pred_score                                          
                 max_pred = i                                                    
                                                                                 
         optimal_seq.push_back(max_pred)                                         
-        selected_predicates[max_pred] = True                                    
+        selected_predicates[max_pred] = True
+                                           
         if j == 0:
             prev_coverage.or_coverage(coverage[predicates[max_pred].pred_name])         
         else:
@@ -430,7 +605,7 @@ cdef vector[int] get_optimal_tree_seq(vector[double] costs,
                                                                                 
 #            print tree_score, max_score                                         
                                                                                 
-            if tree_score > max_score:                                          
+            if tree_score > max_score or max_score == 0.0:                                          
                 max_score = tree_score                                          
                 max_tree = i                                                    
                                                                                 
@@ -479,7 +654,7 @@ cdef vector[int] get_optimal_tree_seq_v1(vector[double]& costs,
                 
             tree_score = (<double>d / <double>sample_size) / costs[i]
 
-            if tree_score > max_score:
+            if tree_score > max_score or max_score == 0.0:
                 max_score = tree_score
                 max_tree = i
 
@@ -728,14 +903,14 @@ cdef void find_optimal_subset(omap[int, vector[Node]]& plans,
                          omap[string, Coverage]& coverage,
                          omap[int, Coverage]& tree_cov,
                          vector[bool]& selected_trees,
-                         const int sample_size):
+                         const int sample_size, num_trees_for_blocking=6):
 
     cdef Node combined_plan
     cdef int i, j, num_trees = selected_trees.size(), num_trees_to_remove
     cdef bool flag
 
     flag = True
-
+   
     for i in range(num_trees):
         for j in range(plans[i].size()):
             if flag:
@@ -743,11 +918,11 @@ cdef void find_optimal_subset(omap[int, vector[Node]]& plans,
                 flag = False
             else:
                 combined_plan = merge_plans(combined_plan, plans[i][j])        
-
+   
     cdef double cost, curr_cost = compute_plan_cost(combined_plan, coverage, sample_size)
     
-    num_trees_to_remove = num_trees - (num_trees / 2) - 1                                           
-
+    #num_trees_to_remove = num_trees - (num_trees / 2) - 1                                           
+    num_trees_to_remove = num_trees - num_trees_for_blocking
     for j in xrange(num_trees_to_remove):                                       
         max_reduction = 0.0
         max_cost = 0.0                                                         
@@ -756,15 +931,17 @@ cdef void find_optimal_subset(omap[int, vector[Node]]& plans,
             if not selected_trees[i]:                                               
                 continue
             selected_trees[i] = False
+        
             cost = compute_cost_of_combined_plan(plans, coverage, tree_cov, 
                                                  sample_size, selected_trees)
             selected_trees[i] = True
-            if curr_cost - cost >= max_reduction:
+            if curr_cost - cost >= max_reduction or max_reduction == 0.0:
                 max_reduction = curr_cost - cost
                 max_cost = cost
                 max_tree = i
         selected_trees[max_tree] = False
         curr_cost = max_cost
+
 
 cdef omap[int, vector[Node]] get_plans_for_rules(vector[Tree]& trees,                       
                                      omap[string, Coverage]& coverage,          
@@ -780,7 +957,7 @@ cdef omap[int, vector[Node]] get_plans_for_rules(vector[Tree]& trees,
     cdef vector[Tree] tmp_vec                                                   
     for i in xrange(n):                                                         
         tmp_vec.push_back(trees[i])                                             
-        generate_local_optimal_plans(tmp_vec, coverage, sample_size, plans[i], num_join_nodes[i])
+        generate_local_optimal_plans(tmp_vec, coverage, sample_size, plans[i], num_join_nodes[i], False)
         tmp_vec.clear()
     return plans    
 
@@ -790,7 +967,8 @@ cdef Node get_default_execution_plan(vector[Tree]& trees,
                                      const int sample_size,
                                      vector[Tree]& sel_trees, 
                                      vector[Tree]& rem_trees,
-                                     bool reuse_flag, bool push_flag, tree_list):                   
+                                     bool reuse_flag, bool push_flag, tree_list, 
+                                     num_trees_for_blocking, bool random_order):                   
     cdef omap[int, vector[Node]] plans
     cdef omap[int, vector[int]] num_join_nodes                                                        
     cdef Node new_global_plan, curr_global_plan, tmp_node                                 
@@ -799,14 +977,15 @@ cdef Node get_default_execution_plan(vector[Tree]& trees,
     cdef Coverage prev_coverage                                                 
     cdef int i, j = 0, k, n=trees.size(), max_tree, num_trees_to_select                
     cdef double max_score, tree_score, plan_cost                                           
-
+    
     cdef vector[Tree] tmp_vec
     for i in xrange(n):
         tmp_vec.push_back(trees[i])
-        generate_local_optimal_plans(tmp_vec, coverage, sample_size, plans[i], num_join_nodes[i])           
+        generate_local_optimal_plans(tmp_vec, coverage, sample_size, plans[i], num_join_nodes[i], random_order)           
         tmp_vec.clear()
-                                                              
-    num_trees_to_select = (n / 2) + 1                                         
+                                                            
+#    num_trees_to_select = (n / 2) + 1
+    num_trees_to_select = num_trees_for_blocking                                        
 #    num_trees_to_select = n
     for i in xrange(n):                                                         
         selected_trees.push_back(True)                                         
@@ -858,13 +1037,15 @@ cdef Node get_default_execution_plan(vector[Tree]& trees,
             prev_coverage.and_coverage(tree_cov[max_tree])                      
     '''
 #    cit_trees = [0, 2, 3, 5]
-    find_optimal_subset(plans, coverage, tree_cov, selected_trees, sample_size)                                                                            
-
+    
+#    find_optimal_subset(plans, coverage, tree_cov, selected_trees, sample_size)                                                                            
     if len(tree_list) > 1:
         for i in xrange(n):
             selected_trees[i] = False
         for i in tree_list:
             selected_trees[i] = True
+    else:
+        find_optimal_subset(plans, coverage, tree_cov, selected_trees, sample_size, num_trees_to_select)                                                             
 
 #    find_random_subset(selected_trees)
     print 'total number of trees : ' , n
@@ -904,10 +1085,39 @@ cdef Node get_default_execution_plan(vector[Tree]& trees,
 
     return combined_plan 
 
+cdef pair[vector[int], int] get_random_order(pair[vector[int], int] optimal_seq):
+    cdef pair[vector[int], int] random_order
+    cdef int total_nodes=optimal_seq.first.size(), join_nodes = optimal_seq.second
+    cdef vector[int] rand_seq
+
+    used = [False for _ in xrange(total_nodes)]
+    rand_seq.push_back(optimal_seq.first[0])
+    used[0] = True
+
+    cdef int i = 1, j
+    while i < join_nodes:
+        j = random.randint(1, join_nodes - 1)
+        if not used[j]:
+            rand_seq.push_back(optimal_seq.first[j])
+            used[j] = True
+            i += 1
+    i = 0
+    while i < total_nodes - join_nodes:
+        j = random.randint(join_nodes, total_nodes - 1)
+        if not used[j]:
+            rand_seq.push_back(optimal_seq.first[j])
+            used[j] = True
+            i += 1
+
+    random_order.first = rand_seq
+    random_order.second = join_nodes
+    return random_order
+
 cdef void generate_local_optimal_plans(vector[Tree]& trees, 
                                        omap[string, Coverage]& coverage, 
                                        int sample_size, 
-                                       vector[Node]& plans, vector[int]& num_join_nodes):
+                                       vector[Node]& plans, vector[int]& num_join_nodes,
+                                       bool random_order):
     cdef Tree tree
     cdef Rule rule
     cdef pair[vector[int], int] optimal_seq
@@ -922,6 +1132,8 @@ cdef void generate_local_optimal_plans(vector[Tree]& trees,
         for rule in tree.rules:
             nodes = vector[Node]()
             optimal_seq = get_optimal_predicate_seq(rule.predicates, coverage, sample_size)
+            if random_order:
+                optimal_seq = get_random_order(optimal_seq)
             node_type = "ROOT"
             new_node = Node(node_type)                                          
             new_node.set_tree_id(tree.tree_id)                                  
@@ -982,7 +1194,7 @@ cdef pair[vector[int], int] get_optimal_predicate_seq(
     for i in valid_predicates:                                      
         pred_score = (1.0 - (coverage[predicates[i].pred_name].count / sample_size)) / predicates[i].cost     
                                                                                 
-        if pred_score > max_score:                                              
+        if pred_score > max_score or max_score == 0.0:                                              
             max_score = pred_score                                              
             max_pred = i                   
                                

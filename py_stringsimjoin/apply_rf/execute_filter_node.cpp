@@ -650,6 +650,12 @@ static void __pyx_insert_code_object(int code_line, PyCodeObject* code_object);
 static void __Pyx_AddTraceback(const char *funcname, int c_line,
                                int py_line, const char *filename);
 
+static int __Pyx_Print(PyObject*, PyObject *, int);
+#if CYTHON_COMPILING_IN_PYPY || PY_MAJOR_VERSION >= 3
+static PyObject* __pyx_print = 0;
+static PyObject* __pyx_print_kwargs = 0;
+#endif
+
 static CYTHON_INLINE PyObject* __Pyx_PyInt_From_int(int value);
 
 static CYTHON_INLINE int __Pyx_PyInt_As_int(PyObject *);
@@ -691,12 +697,6 @@ static void __Pyx_CppExn2PyErr() {
     PyErr_SetString(PyExc_RuntimeError, "Unknown exception");
   }
 }
-#endif
-
-static int __Pyx_Print(PyObject*, PyObject *, int);
-#if CYTHON_COMPILING_IN_PYPY || PY_MAJOR_VERSION >= 3
-static PyObject* __pyx_print = 0;
-static PyObject* __pyx_print_kwargs = 0;
 #endif
 
 static int __Pyx_PrintOne(PyObject* stream, PyObject *o);
@@ -779,10 +779,12 @@ static char __pyx_k_test[] = "__test__";
 static char __pyx_k_print[] = "print";
 static char __pyx_k_range[] = "range";
 static char __pyx_k_xrange[] = "xrange";
+static char __pyx_k_loaded_tok[] = "loaded tok: ";
 static char __pyx_k_parallen_end[] = "parallen end";
 static char __pyx_k_parallen_begin[] = "parallen begin";
 static PyObject *__pyx_n_s_end;
 static PyObject *__pyx_n_s_file;
+static PyObject *__pyx_kp_s_loaded_tok;
 static PyObject *__pyx_n_s_main;
 static PyObject *__pyx_kp_s_parallen_begin;
 static PyObject *__pyx_kp_s_parallen_end;
@@ -818,13 +820,14 @@ static std::vector<int>  __pyx_f_16py_stringsimjoin_8apply_rf_19execute_filter_n
   int __pyx_t_1;
   PyObject *__pyx_t_2 = NULL;
   PyObject *__pyx_t_3 = NULL;
-  int __pyx_t_4;
+  PyObject *__pyx_t_4 = NULL;
   int __pyx_t_5;
   int __pyx_t_6;
   int __pyx_t_7;
-  std::pair<int,int>  __pyx_t_8;
-  std::vector<int>  __pyx_t_9;
-  std::vector<std::vector<int> > ::iterator __pyx_t_10;
+  int __pyx_t_8;
+  std::pair<int,int>  __pyx_t_9;
+  std::vector<int>  __pyx_t_10;
+  std::vector<std::vector<int> > ::iterator __pyx_t_11;
   int __pyx_lineno = 0;
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
@@ -882,8 +885,8 @@ static std::vector<int>  __pyx_f_16py_stringsimjoin_8apply_rf_19execute_filter_n
  *             rtokens = rtokens_cache[predicate.tokenizer_type]
  *         else:
  *             load_tok(predicate.tokenizer_type, working_dir, ltokens, rtokens)             # <<<<<<<<<<<<<<
+ *             print 'loaded tok: ', ltokens.size(), rtokens.size()
  *     cdef vector[pair[int, int]] partitions
- *     cdef vector[int] final_output_pairs, part_pairs
  */
     /*else*/ {
       __pyx_t_2 = __pyx_convert_PyBytes_string_to_py_std__in_string(__pyx_v_predicate.tokenizer_type); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 34; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
@@ -893,6 +896,31 @@ static std::vector<int>  __pyx_f_16py_stringsimjoin_8apply_rf_19execute_filter_n
       __pyx_f_16py_stringsimjoin_8apply_rf_10tokenizers_load_tok(__pyx_t_2, __pyx_t_3, __pyx_v_ltokens, __pyx_v_rtokens, 0);
       __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
       __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+
+      /* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":35
+ *         else:
+ *             load_tok(predicate.tokenizer_type, working_dir, ltokens, rtokens)
+ *             print 'loaded tok: ', ltokens.size(), rtokens.size()             # <<<<<<<<<<<<<<
+ *     cdef vector[pair[int, int]] partitions
+ *     cdef vector[int] final_output_pairs, part_pairs
+ */
+      __pyx_t_3 = __Pyx_PyInt_FromSize_t(__pyx_v_ltokens.size()); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 35; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __Pyx_GOTREF(__pyx_t_3);
+      __pyx_t_2 = __Pyx_PyInt_FromSize_t(__pyx_v_rtokens.size()); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 35; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __Pyx_GOTREF(__pyx_t_2);
+      __pyx_t_4 = PyTuple_New(3); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 35; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __Pyx_GOTREF(__pyx_t_4);
+      __Pyx_INCREF(__pyx_kp_s_loaded_tok);
+      __Pyx_GIVEREF(__pyx_kp_s_loaded_tok);
+      PyTuple_SET_ITEM(__pyx_t_4, 0, __pyx_kp_s_loaded_tok);
+      __Pyx_GIVEREF(__pyx_t_3);
+      PyTuple_SET_ITEM(__pyx_t_4, 1, __pyx_t_3);
+      __Pyx_GIVEREF(__pyx_t_2);
+      PyTuple_SET_ITEM(__pyx_t_4, 2, __pyx_t_2);
+      __pyx_t_3 = 0;
+      __pyx_t_2 = 0;
+      if (__Pyx_Print(0, __pyx_t_4, 1) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 35; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     }
     __pyx_L4:;
 
@@ -905,7 +933,7 @@ static std::vector<int>  __pyx_f_16py_stringsimjoin_8apply_rf_19execute_filter_n
  */
   }
 
-  /* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":38
+  /* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":39
  *     cdef vector[int] final_output_pairs, part_pairs
  *     cdef vector[vector[int]] output_pairs
  *     cdef int n, start=0, end, i             # <<<<<<<<<<<<<<
@@ -914,7 +942,7 @@ static std::vector<int>  __pyx_f_16py_stringsimjoin_8apply_rf_19execute_filter_n
  */
   __pyx_v_start = 0;
 
-  /* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":40
+  /* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":41
  *     cdef int n, start=0, end, i
  * 
  *     if top_level_node:             # <<<<<<<<<<<<<<
@@ -924,7 +952,7 @@ static std::vector<int>  __pyx_f_16py_stringsimjoin_8apply_rf_19execute_filter_n
   __pyx_t_1 = (__pyx_v_top_level_node != 0);
   if (__pyx_t_1) {
 
-    /* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":41
+    /* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":42
  * 
  *     if top_level_node:
  *         n = candset.size()             # <<<<<<<<<<<<<<
@@ -933,7 +961,7 @@ static std::vector<int>  __pyx_f_16py_stringsimjoin_8apply_rf_19execute_filter_n
  */
     __pyx_v_n = __pyx_v_candset.size();
 
-    /* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":40
+    /* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":41
  *     cdef int n, start=0, end, i
  * 
  *     if top_level_node:             # <<<<<<<<<<<<<<
@@ -943,7 +971,7 @@ static std::vector<int>  __pyx_f_16py_stringsimjoin_8apply_rf_19execute_filter_n
     goto __pyx_L5;
   }
 
-  /* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":43
+  /* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":44
  *         n = candset.size()
  *     else:
  *         n = pair_ids.size()             # <<<<<<<<<<<<<<
@@ -955,7 +983,7 @@ static std::vector<int>  __pyx_f_16py_stringsimjoin_8apply_rf_19execute_filter_n
   }
   __pyx_L5:;
 
-  /* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":45
+  /* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":46
  *         n = pair_ids.size()
  * 
  *     partition_size = <int>(<float> n / <float> n_jobs)             # <<<<<<<<<<<<<<
@@ -964,59 +992,59 @@ static std::vector<int>  __pyx_f_16py_stringsimjoin_8apply_rf_19execute_filter_n
  */
   if (unlikely(((float)__pyx_v_n_jobs) == 0)) {
     PyErr_SetString(PyExc_ZeroDivisionError, "float division");
-    {__pyx_filename = __pyx_f[0]; __pyx_lineno = 45; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    {__pyx_filename = __pyx_f[0]; __pyx_lineno = 46; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   }
-  __pyx_t_3 = __Pyx_PyInt_From_int(((int)(((float)__pyx_v_n) / ((float)__pyx_v_n_jobs)))); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 45; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-  __Pyx_GOTREF(__pyx_t_3);
-  __pyx_v_partition_size = __pyx_t_3;
-  __pyx_t_3 = 0;
+  __pyx_t_4 = __Pyx_PyInt_From_int(((int)(((float)__pyx_v_n) / ((float)__pyx_v_n_jobs)))); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 46; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __Pyx_GOTREF(__pyx_t_4);
+  __pyx_v_partition_size = __pyx_t_4;
+  __pyx_t_4 = 0;
 
-  /* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":47
+  /* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":48
  *     partition_size = <int>(<float> n / <float> n_jobs)
  * 
  *     for i in range(n_jobs):             # <<<<<<<<<<<<<<
  *         end = start + partition_size
  *         if end > n or i == n_jobs - 1:
  */
-  __pyx_t_4 = __pyx_v_n_jobs;
-  for (__pyx_t_5 = 0; __pyx_t_5 < __pyx_t_4; __pyx_t_5+=1) {
-    __pyx_v_i = __pyx_t_5;
+  __pyx_t_5 = __pyx_v_n_jobs;
+  for (__pyx_t_6 = 0; __pyx_t_6 < __pyx_t_5; __pyx_t_6+=1) {
+    __pyx_v_i = __pyx_t_6;
 
-    /* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":48
+    /* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":49
  * 
  *     for i in range(n_jobs):
  *         end = start + partition_size             # <<<<<<<<<<<<<<
  *         if end > n or i == n_jobs - 1:
  *             end = n
  */
-    __pyx_t_3 = __Pyx_PyInt_From_int(__pyx_v_start); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 48; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
-    __Pyx_GOTREF(__pyx_t_3);
-    __pyx_t_2 = PyNumber_Add(__pyx_t_3, __pyx_v_partition_size); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 48; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_4 = __Pyx_PyInt_From_int(__pyx_v_start); if (unlikely(!__pyx_t_4)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 49; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __Pyx_GOTREF(__pyx_t_4);
+    __pyx_t_2 = PyNumber_Add(__pyx_t_4, __pyx_v_partition_size); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 49; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_2);
-    __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    __pyx_t_6 = __Pyx_PyInt_As_int(__pyx_t_2); if (unlikely((__pyx_t_6 == (int)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 48; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+    __pyx_t_7 = __Pyx_PyInt_As_int(__pyx_t_2); if (unlikely((__pyx_t_7 == (int)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 49; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-    __pyx_v_end = __pyx_t_6;
+    __pyx_v_end = __pyx_t_7;
 
-    /* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":49
+    /* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":50
  *     for i in range(n_jobs):
  *         end = start + partition_size
  *         if end > n or i == n_jobs - 1:             # <<<<<<<<<<<<<<
  *             end = n
  *         partitions.push_back(pair[int, int](start, end))
  */
-    __pyx_t_7 = ((__pyx_v_end > __pyx_v_n) != 0);
-    if (!__pyx_t_7) {
+    __pyx_t_8 = ((__pyx_v_end > __pyx_v_n) != 0);
+    if (!__pyx_t_8) {
     } else {
-      __pyx_t_1 = __pyx_t_7;
+      __pyx_t_1 = __pyx_t_8;
       goto __pyx_L9_bool_binop_done;
     }
-    __pyx_t_7 = ((__pyx_v_i == (__pyx_v_n_jobs - 1)) != 0);
-    __pyx_t_1 = __pyx_t_7;
+    __pyx_t_8 = ((__pyx_v_i == (__pyx_v_n_jobs - 1)) != 0);
+    __pyx_t_1 = __pyx_t_8;
     __pyx_L9_bool_binop_done:;
     if (__pyx_t_1) {
 
-      /* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":50
+      /* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":51
  *         end = start + partition_size
  *         if end > n or i == n_jobs - 1:
  *             end = n             # <<<<<<<<<<<<<<
@@ -1025,7 +1053,7 @@ static std::vector<int>  __pyx_f_16py_stringsimjoin_8apply_rf_19execute_filter_n
  */
       __pyx_v_end = __pyx_v_n;
 
-      /* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":49
+      /* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":50
  *     for i in range(n_jobs):
  *         end = start + partition_size
  *         if end > n or i == n_jobs - 1:             # <<<<<<<<<<<<<<
@@ -1034,7 +1062,7 @@ static std::vector<int>  __pyx_f_16py_stringsimjoin_8apply_rf_19execute_filter_n
  */
     }
 
-    /* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":51
+    /* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":52
  *         if end > n or i == n_jobs - 1:
  *             end = n
  *         partitions.push_back(pair[int, int](start, end))             # <<<<<<<<<<<<<<
@@ -1042,19 +1070,19 @@ static std::vector<int>  __pyx_f_16py_stringsimjoin_8apply_rf_19execute_filter_n
  *         start = end
  */
     try {
-      __pyx_t_8 = std::pair<int,int> (__pyx_v_start, __pyx_v_end);
+      __pyx_t_9 = std::pair<int,int> (__pyx_v_start, __pyx_v_end);
     } catch(...) {
       __Pyx_CppExn2PyErr();
-      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 51; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 52; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     }
     try {
-      __pyx_v_partitions.push_back(__pyx_t_8);
+      __pyx_v_partitions.push_back(__pyx_t_9);
     } catch(...) {
       __Pyx_CppExn2PyErr();
-      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 51; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 52; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     }
 
-    /* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":53
+    /* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":54
  *         partitions.push_back(pair[int, int](start, end))
  * 
  *         start = end             # <<<<<<<<<<<<<<
@@ -1063,7 +1091,7 @@ static std::vector<int>  __pyx_f_16py_stringsimjoin_8apply_rf_19execute_filter_n
  */
     __pyx_v_start = __pyx_v_end;
 
-    /* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":54
+    /* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":55
  * 
  *         start = end
  *         output_pairs.push_back(vector[int]())             # <<<<<<<<<<<<<<
@@ -1071,20 +1099,20 @@ static std::vector<int>  __pyx_f_16py_stringsimjoin_8apply_rf_19execute_filter_n
  *     cdef int sim_type, comp_type
  */
     try {
-      __pyx_t_9 = std::vector<int> ();
+      __pyx_t_10 = std::vector<int> ();
     } catch(...) {
       __Pyx_CppExn2PyErr();
-      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 54; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 55; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     }
     try {
-      __pyx_v_output_pairs.push_back(__pyx_t_9);
+      __pyx_v_output_pairs.push_back(__pyx_t_10);
     } catch(...) {
       __Pyx_CppExn2PyErr();
-      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 54; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 55; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     }
   }
 
-  /* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":58
+  /* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":59
  *     cdef int sim_type, comp_type
  * 
  *     sim_type = get_sim_type(predicate.sim_measure_type)             # <<<<<<<<<<<<<<
@@ -1093,7 +1121,7 @@ static std::vector<int>  __pyx_f_16py_stringsimjoin_8apply_rf_19execute_filter_n
  */
   __pyx_v_sim_type = __pyx_f_16py_stringsimjoin_8apply_rf_5utils_get_sim_type(__pyx_v_predicate.sim_measure_type);
 
-  /* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":59
+  /* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":60
  * 
  *     sim_type = get_sim_type(predicate.sim_measure_type)
  *     comp_type = get_comp_type(predicate.comp_op)             # <<<<<<<<<<<<<<
@@ -1102,16 +1130,16 @@ static std::vector<int>  __pyx_f_16py_stringsimjoin_8apply_rf_19execute_filter_n
  */
   __pyx_v_comp_type = __pyx_f_16py_stringsimjoin_8apply_rf_5utils_get_comp_type(__pyx_v_predicate.comp_op);
 
-  /* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":60
+  /* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":61
  *     sim_type = get_sim_type(predicate.sim_measure_type)
  *     comp_type = get_comp_type(predicate.comp_op)
  *     print 'parallen begin'             # <<<<<<<<<<<<<<
  *     for i in prange(n_jobs, nogil=True):
  *         execute_filter_node_part(partitions[i], candset, pair_ids, top_level_node,
  */
-  if (__Pyx_PrintOne(0, __pyx_kp_s_parallen_begin) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 60; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (__Pyx_PrintOne(0, __pyx_kp_s_parallen_begin) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 61; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
 
-  /* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":61
+  /* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":62
  *     comp_type = get_comp_type(predicate.comp_op)
  *     print 'parallen begin'
  *     for i in prange(n_jobs, nogil=True):             # <<<<<<<<<<<<<<
@@ -1124,7 +1152,7 @@ static std::vector<int>  __pyx_f_16py_stringsimjoin_8apply_rf_19execute_filter_n
       Py_UNBLOCK_THREADS
       #endif
       /*try:*/ {
-        __pyx_t_4 = __pyx_v_n_jobs;
+        __pyx_t_5 = __pyx_v_n_jobs;
         if (1 == 0) abort();
         {
             #if ((defined(__APPLE__) || defined(__OSX__)) && (defined(__GNUC__) && (__GNUC__ > 2 || (__GNUC__ == 2 && (__GNUC_MINOR__ > 95)))))
@@ -1133,8 +1161,8 @@ static std::vector<int>  __pyx_f_16py_stringsimjoin_8apply_rf_19execute_filter_n
                 #define likely(x)   (x)
                 #define unlikely(x) (x)
             #endif
-            __pyx_t_6 = (__pyx_t_4 - 0) / 1;
-            if (__pyx_t_6 > 0)
+            __pyx_t_7 = (__pyx_t_5 - 0) / 1;
+            if (__pyx_t_7 > 0)
             {
                 #ifdef _OPENMP
                 #pragma omp parallel
@@ -1143,11 +1171,11 @@ static std::vector<int>  __pyx_f_16py_stringsimjoin_8apply_rf_19execute_filter_n
                     #ifdef _OPENMP
                     #pragma omp for firstprivate(__pyx_v_i) lastprivate(__pyx_v_i)
                     #endif /* _OPENMP */
-                    for (__pyx_t_5 = 0; __pyx_t_5 < __pyx_t_6; __pyx_t_5++){
+                    for (__pyx_t_6 = 0; __pyx_t_6 < __pyx_t_7; __pyx_t_6++){
                         {
-                            __pyx_v_i = 0 + 1 * __pyx_t_5;
+                            __pyx_v_i = 0 + 1 * __pyx_t_6;
 
-                            /* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":62
+                            /* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":63
  *     print 'parallen begin'
  *     for i in prange(n_jobs, nogil=True):
  *         execute_filter_node_part(partitions[i], candset, pair_ids, top_level_node,             # <<<<<<<<<<<<<<
@@ -1168,7 +1196,7 @@ static std::vector<int>  __pyx_f_16py_stringsimjoin_8apply_rf_19execute_filter_n
         #endif
       }
 
-      /* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":61
+      /* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":62
  *     comp_type = get_comp_type(predicate.comp_op)
  *     print 'parallen begin'
  *     for i in prange(n_jobs, nogil=True):             # <<<<<<<<<<<<<<
@@ -1186,30 +1214,30 @@ static std::vector<int>  __pyx_f_16py_stringsimjoin_8apply_rf_19execute_filter_n
       }
   }
 
-  /* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":66
+  /* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":67
  *                                   predicate, sim_type, comp_type,
  *                                   output_pairs[i])
  *     print 'parallen end'             # <<<<<<<<<<<<<<
  *     for part_pairs in output_pairs:
  *         final_output_pairs.insert(final_output_pairs.end(), part_pairs.begin(), part_pairs.end())
  */
-  if (__Pyx_PrintOne(0, __pyx_kp_s_parallen_end) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 66; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (__Pyx_PrintOne(0, __pyx_kp_s_parallen_end) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 67; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
 
-  /* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":67
+  /* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":68
  *                                   output_pairs[i])
  *     print 'parallen end'
  *     for part_pairs in output_pairs:             # <<<<<<<<<<<<<<
  *         final_output_pairs.insert(final_output_pairs.end(), part_pairs.begin(), part_pairs.end())
  * 
  */
-  __pyx_t_10 = __pyx_v_output_pairs.begin();
+  __pyx_t_11 = __pyx_v_output_pairs.begin();
   for (;;) {
-    if (!(__pyx_t_10 != __pyx_v_output_pairs.end())) break;
-    __pyx_t_9 = *__pyx_t_10;
-    ++__pyx_t_10;
-    __pyx_v_part_pairs = __pyx_t_9;
+    if (!(__pyx_t_11 != __pyx_v_output_pairs.end())) break;
+    __pyx_t_10 = *__pyx_t_11;
+    ++__pyx_t_11;
+    __pyx_v_part_pairs = __pyx_t_10;
 
-    /* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":68
+    /* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":69
  *     print 'parallen end'
  *     for part_pairs in output_pairs:
  *         final_output_pairs.insert(final_output_pairs.end(), part_pairs.begin(), part_pairs.end())             # <<<<<<<<<<<<<<
@@ -1220,10 +1248,10 @@ static std::vector<int>  __pyx_f_16py_stringsimjoin_8apply_rf_19execute_filter_n
       __pyx_v_final_output_pairs.insert(__pyx_v_final_output_pairs.end(), __pyx_v_part_pairs.begin(), __pyx_v_part_pairs.end());
     } catch(...) {
       __Pyx_CppExn2PyErr();
-      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 68; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 69; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     }
 
-    /* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":67
+    /* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":68
  *                                   output_pairs[i])
  *     print 'parallen end'
  *     for part_pairs in output_pairs:             # <<<<<<<<<<<<<<
@@ -1232,7 +1260,7 @@ static std::vector<int>  __pyx_f_16py_stringsimjoin_8apply_rf_19execute_filter_n
  */
   }
 
-  /* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":70
+  /* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":71
  *         final_output_pairs.insert(final_output_pairs.end(), part_pairs.begin(), part_pairs.end())
  * 
  *     return final_output_pairs             # <<<<<<<<<<<<<<
@@ -1254,6 +1282,7 @@ static std::vector<int>  __pyx_f_16py_stringsimjoin_8apply_rf_19execute_filter_n
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_2);
   __Pyx_XDECREF(__pyx_t_3);
+  __Pyx_XDECREF(__pyx_t_4);
   __Pyx_WriteUnraisable("py_stringsimjoin.apply_rf.execute_filter_node.execute_filter_node", __pyx_clineno, __pyx_lineno, __pyx_filename, 0, 0);
   __pyx_L0:;
   __Pyx_XDECREF(__pyx_v_partition_size);
@@ -1261,7 +1290,7 @@ static std::vector<int>  __pyx_f_16py_stringsimjoin_8apply_rf_19execute_filter_n
   return __pyx_r;
 }
 
-/* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":72
+/* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":73
  *     return final_output_pairs
  * 
  * cdef void execute_filter_node_part(pair[int, int] partition,             # <<<<<<<<<<<<<<
@@ -1282,7 +1311,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_19execute_filter_node_execute_f
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
 
-  /* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":89
+  /* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":90
  *     cdef str_simfnptr str_sim_fn
  *     cdef token_simfnptr token_sim_fn
  *     cdef compfnptr comp_fn = get_comparison_function(comp_type)             # <<<<<<<<<<<<<<
@@ -1291,7 +1320,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_19execute_filter_node_execute_f
  */
   __pyx_v_comp_fn = __pyx_f_16py_stringsimjoin_8apply_rf_5utils_get_comparison_function(__pyx_v_comp_type);
 
-  /* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":91
+  /* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":92
  *     cdef compfnptr comp_fn = get_comparison_function(comp_type)
  * 
  *     if predicate.is_tok_sim_measure:             # <<<<<<<<<<<<<<
@@ -1301,7 +1330,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_19execute_filter_node_execute_f
   __pyx_t_1 = (__pyx_v_predicate.is_tok_sim_measure != 0);
   if (__pyx_t_1) {
 
-    /* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":92
+    /* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":93
  * 
  *     if predicate.is_tok_sim_measure:
  *         token_sim_fn = get_token_sim_function(sim_type)             # <<<<<<<<<<<<<<
@@ -1310,7 +1339,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_19execute_filter_node_execute_f
  */
     __pyx_v_token_sim_fn = __pyx_f_16py_stringsimjoin_8apply_rf_5utils_get_token_sim_function(__pyx_v_sim_type);
 
-    /* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":93
+    /* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":94
  *     if predicate.is_tok_sim_measure:
  *         token_sim_fn = get_token_sim_function(sim_type)
  *         if top_level_node:             # <<<<<<<<<<<<<<
@@ -1320,7 +1349,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_19execute_filter_node_execute_f
     __pyx_t_1 = (__pyx_v_top_level_node != 0);
     if (__pyx_t_1) {
 
-      /* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":94
+      /* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":95
  *         token_sim_fn = get_token_sim_function(sim_type)
  *         if top_level_node:
  *             for i in range(partition.first, partition.second):             # <<<<<<<<<<<<<<
@@ -1331,7 +1360,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_19execute_filter_node_execute_f
       for (__pyx_t_3 = __pyx_v_partition.first; __pyx_t_3 < __pyx_t_2; __pyx_t_3+=1) {
         __pyx_v_i = __pyx_t_3;
 
-        /* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":95
+        /* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":96
  *         if top_level_node:
  *             for i in range(partition.first, partition.second):
  *                 cand  = candset[i]             # <<<<<<<<<<<<<<
@@ -1340,7 +1369,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_19execute_filter_node_execute_f
  */
         __pyx_v_cand = (__pyx_v_candset[__pyx_v_i]);
 
-        /* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":96
+        /* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":97
  *             for i in range(partition.first, partition.second):
  *                 cand  = candset[i]
  *                 if comp_fn(token_sim_fn(ltokens[cand.first], rtokens[cand.second]),             # <<<<<<<<<<<<<<
@@ -1350,7 +1379,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_19execute_filter_node_execute_f
         __pyx_t_1 = (__pyx_v_comp_fn(__pyx_v_token_sim_fn((__pyx_v_ltokens[__pyx_v_cand.first]), (__pyx_v_rtokens[__pyx_v_cand.second])), __pyx_v_predicate.threshold) != 0);
         if (__pyx_t_1) {
 
-          /* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":98
+          /* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":99
  *                 if comp_fn(token_sim_fn(ltokens[cand.first], rtokens[cand.second]),
  *                            predicate.threshold):
  *                     output_pairs.push_back(i)             # <<<<<<<<<<<<<<
@@ -1367,10 +1396,10 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_19execute_filter_node_execute_f
             #ifdef WITH_THREAD
             PyGILState_Release(__pyx_gilstate_save);
             #endif
-            {__pyx_filename = __pyx_f[0]; __pyx_lineno = 98; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+            {__pyx_filename = __pyx_f[0]; __pyx_lineno = 99; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
           }
 
-          /* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":96
+          /* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":97
  *             for i in range(partition.first, partition.second):
  *                 cand  = candset[i]
  *                 if comp_fn(token_sim_fn(ltokens[cand.first], rtokens[cand.second]),             # <<<<<<<<<<<<<<
@@ -1380,7 +1409,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_19execute_filter_node_execute_f
         }
       }
 
-      /* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":93
+      /* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":94
  *     if predicate.is_tok_sim_measure:
  *         token_sim_fn = get_token_sim_function(sim_type)
  *         if top_level_node:             # <<<<<<<<<<<<<<
@@ -1390,7 +1419,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_19execute_filter_node_execute_f
       goto __pyx_L4;
     }
 
-    /* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":100
+    /* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":101
  *                     output_pairs.push_back(i)
  *         else:
  *             for i in range(partition.first, partition.second):             # <<<<<<<<<<<<<<
@@ -1402,7 +1431,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_19execute_filter_node_execute_f
       for (__pyx_t_3 = __pyx_v_partition.first; __pyx_t_3 < __pyx_t_2; __pyx_t_3+=1) {
         __pyx_v_i = __pyx_t_3;
 
-        /* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":101
+        /* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":102
  *         else:
  *             for i in range(partition.first, partition.second):
  *                 cand  = candset[pair_ids[i]]             # <<<<<<<<<<<<<<
@@ -1411,7 +1440,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_19execute_filter_node_execute_f
  */
         __pyx_v_cand = (__pyx_v_candset[(__pyx_v_pair_ids[__pyx_v_i])]);
 
-        /* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":102
+        /* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":103
  *             for i in range(partition.first, partition.second):
  *                 cand  = candset[pair_ids[i]]
  *                 if comp_fn(token_sim_fn(ltokens[cand.first], rtokens[cand.second]),             # <<<<<<<<<<<<<<
@@ -1421,7 +1450,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_19execute_filter_node_execute_f
         __pyx_t_1 = (__pyx_v_comp_fn(__pyx_v_token_sim_fn((__pyx_v_ltokens[__pyx_v_cand.first]), (__pyx_v_rtokens[__pyx_v_cand.second])), __pyx_v_predicate.threshold) != 0);
         if (__pyx_t_1) {
 
-          /* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":104
+          /* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":105
  *                 if comp_fn(token_sim_fn(ltokens[cand.first], rtokens[cand.second]),
  *                            predicate.threshold):
  *                     output_pairs.push_back(pair_ids[i])             # <<<<<<<<<<<<<<
@@ -1438,10 +1467,10 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_19execute_filter_node_execute_f
             #ifdef WITH_THREAD
             PyGILState_Release(__pyx_gilstate_save);
             #endif
-            {__pyx_filename = __pyx_f[0]; __pyx_lineno = 104; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+            {__pyx_filename = __pyx_f[0]; __pyx_lineno = 105; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
           }
 
-          /* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":102
+          /* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":103
  *             for i in range(partition.first, partition.second):
  *                 cand  = candset[pair_ids[i]]
  *                 if comp_fn(token_sim_fn(ltokens[cand.first], rtokens[cand.second]),             # <<<<<<<<<<<<<<
@@ -1453,7 +1482,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_19execute_filter_node_execute_f
     }
     __pyx_L4:;
 
-    /* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":91
+    /* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":92
  *     cdef compfnptr comp_fn = get_comparison_function(comp_type)
  * 
  *     if predicate.is_tok_sim_measure:             # <<<<<<<<<<<<<<
@@ -1463,7 +1492,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_19execute_filter_node_execute_f
     goto __pyx_L3;
   }
 
-  /* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":106
+  /* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":107
  *                     output_pairs.push_back(pair_ids[i])
  *     else:
  *         str_sim_fn = get_str_sim_function(sim_type)             # <<<<<<<<<<<<<<
@@ -1473,7 +1502,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_19execute_filter_node_execute_f
   /*else*/ {
     __pyx_v_str_sim_fn = __pyx_f_16py_stringsimjoin_8apply_rf_5utils_get_str_sim_function(__pyx_v_sim_type);
 
-    /* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":107
+    /* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":108
  *     else:
  *         str_sim_fn = get_str_sim_function(sim_type)
  *         if top_level_node:             # <<<<<<<<<<<<<<
@@ -1483,7 +1512,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_19execute_filter_node_execute_f
     __pyx_t_1 = (__pyx_v_top_level_node != 0);
     if (__pyx_t_1) {
 
-      /* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":108
+      /* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":109
  *         str_sim_fn = get_str_sim_function(sim_type)
  *         if top_level_node:
  *             for i in range(partition.first, partition.second):             # <<<<<<<<<<<<<<
@@ -1494,7 +1523,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_19execute_filter_node_execute_f
       for (__pyx_t_3 = __pyx_v_partition.first; __pyx_t_3 < __pyx_t_2; __pyx_t_3+=1) {
         __pyx_v_i = __pyx_t_3;
 
-        /* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":109
+        /* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":110
  *         if top_level_node:
  *             for i in range(partition.first, partition.second):
  *                 cand  = candset[i]             # <<<<<<<<<<<<<<
@@ -1503,7 +1532,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_19execute_filter_node_execute_f
  */
         __pyx_v_cand = (__pyx_v_candset[__pyx_v_i]);
 
-        /* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":110
+        /* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":111
  *             for i in range(partition.first, partition.second):
  *                 cand  = candset[i]
  *                 if comp_fn(str_sim_fn(lstrings[cand.first], rstrings[cand.second]),             # <<<<<<<<<<<<<<
@@ -1513,7 +1542,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_19execute_filter_node_execute_f
         __pyx_t_1 = (__pyx_v_comp_fn(__pyx_v_str_sim_fn((__pyx_v_lstrings[__pyx_v_cand.first]), (__pyx_v_rstrings[__pyx_v_cand.second])), __pyx_v_predicate.threshold) != 0);
         if (__pyx_t_1) {
 
-          /* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":112
+          /* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":113
  *                 if comp_fn(str_sim_fn(lstrings[cand.first], rstrings[cand.second]),
  *                            predicate.threshold):
  *                     output_pairs.push_back(i)             # <<<<<<<<<<<<<<
@@ -1530,10 +1559,10 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_19execute_filter_node_execute_f
             #ifdef WITH_THREAD
             PyGILState_Release(__pyx_gilstate_save);
             #endif
-            {__pyx_filename = __pyx_f[0]; __pyx_lineno = 112; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+            {__pyx_filename = __pyx_f[0]; __pyx_lineno = 113; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
           }
 
-          /* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":110
+          /* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":111
  *             for i in range(partition.first, partition.second):
  *                 cand  = candset[i]
  *                 if comp_fn(str_sim_fn(lstrings[cand.first], rstrings[cand.second]),             # <<<<<<<<<<<<<<
@@ -1543,7 +1572,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_19execute_filter_node_execute_f
         }
       }
 
-      /* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":107
+      /* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":108
  *     else:
  *         str_sim_fn = get_str_sim_function(sim_type)
  *         if top_level_node:             # <<<<<<<<<<<<<<
@@ -1553,7 +1582,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_19execute_filter_node_execute_f
       goto __pyx_L11;
     }
 
-    /* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":114
+    /* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":115
  *                     output_pairs.push_back(i)
  *         else:
  *             for i in range(partition.first, partition.second):             # <<<<<<<<<<<<<<
@@ -1565,7 +1594,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_19execute_filter_node_execute_f
       for (__pyx_t_3 = __pyx_v_partition.first; __pyx_t_3 < __pyx_t_2; __pyx_t_3+=1) {
         __pyx_v_i = __pyx_t_3;
 
-        /* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":115
+        /* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":116
  *         else:
  *             for i in range(partition.first, partition.second):
  *                 cand  = candset[pair_ids[i]]             # <<<<<<<<<<<<<<
@@ -1574,7 +1603,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_19execute_filter_node_execute_f
  */
         __pyx_v_cand = (__pyx_v_candset[(__pyx_v_pair_ids[__pyx_v_i])]);
 
-        /* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":116
+        /* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":117
  *             for i in range(partition.first, partition.second):
  *                 cand  = candset[pair_ids[i]]
  *                 if comp_fn(str_sim_fn(lstrings[cand.first], rstrings[cand.second]),             # <<<<<<<<<<<<<<
@@ -1584,7 +1613,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_19execute_filter_node_execute_f
         __pyx_t_1 = (__pyx_v_comp_fn(__pyx_v_str_sim_fn((__pyx_v_lstrings[__pyx_v_cand.first]), (__pyx_v_rstrings[__pyx_v_cand.second])), __pyx_v_predicate.threshold) != 0);
         if (__pyx_t_1) {
 
-          /* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":118
+          /* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":119
  *                 if comp_fn(str_sim_fn(lstrings[cand.first], rstrings[cand.second]),
  *                            predicate.threshold):
  *                     output_pairs.push_back(pair_ids[i])             # <<<<<<<<<<<<<<
@@ -1601,10 +1630,10 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_19execute_filter_node_execute_f
             #ifdef WITH_THREAD
             PyGILState_Release(__pyx_gilstate_save);
             #endif
-            {__pyx_filename = __pyx_f[0]; __pyx_lineno = 118; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+            {__pyx_filename = __pyx_f[0]; __pyx_lineno = 119; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
           }
 
-          /* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":116
+          /* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":117
  *             for i in range(partition.first, partition.second):
  *                 cand  = candset[pair_ids[i]]
  *                 if comp_fn(str_sim_fn(lstrings[cand.first], rstrings[cand.second]),             # <<<<<<<<<<<<<<
@@ -1618,7 +1647,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_19execute_filter_node_execute_f
   }
   __pyx_L3:;
 
-  /* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":72
+  /* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":73
  *     return final_output_pairs
  * 
  * cdef void execute_filter_node_part(pair[int, int] partition,             # <<<<<<<<<<<<<<
@@ -1633,7 +1662,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_19execute_filter_node_execute_f
   __pyx_L0:;
 }
 
-/* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":121
+/* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":122
  * 
  * 
  * cdef vector[int] execute_filters(vector[pair[int, int]]& candset,             # <<<<<<<<<<<<<<
@@ -1671,7 +1700,7 @@ static std::vector<int>  __pyx_f_16py_stringsimjoin_8apply_rf_19execute_filter_n
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("execute_filters", 0);
 
-  /* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":132
+  /* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":133
  *                                  omap[string, vector[vector[int]]]& rtokens_cache):
  *     cdef vector[vector[int]] ltokens, rtokens
  *     if predicates[0].is_tok_sim_measure:             # <<<<<<<<<<<<<<
@@ -1681,7 +1710,7 @@ static std::vector<int>  __pyx_f_16py_stringsimjoin_8apply_rf_19execute_filter_n
   __pyx_t_1 = ((__pyx_v_predicates[0]).is_tok_sim_measure != 0);
   if (__pyx_t_1) {
 
-    /* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":133
+    /* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":134
  *     cdef vector[vector[int]] ltokens, rtokens
  *     if predicates[0].is_tok_sim_measure:
  *         if use_cache:             # <<<<<<<<<<<<<<
@@ -1691,7 +1720,7 @@ static std::vector<int>  __pyx_f_16py_stringsimjoin_8apply_rf_19execute_filter_n
     __pyx_t_1 = (__pyx_v_use_cache != 0);
     if (__pyx_t_1) {
 
-      /* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":134
+      /* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":135
  *     if predicates[0].is_tok_sim_measure:
  *         if use_cache:
  *             ltokens = ltokens_cache[predicates[0].tokenizer_type]             # <<<<<<<<<<<<<<
@@ -1700,7 +1729,7 @@ static std::vector<int>  __pyx_f_16py_stringsimjoin_8apply_rf_19execute_filter_n
  */
       __pyx_v_ltokens = (__pyx_v_ltokens_cache[(__pyx_v_predicates[0]).tokenizer_type]);
 
-      /* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":135
+      /* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":136
  *         if use_cache:
  *             ltokens = ltokens_cache[predicates[0].tokenizer_type]
  *             rtokens = rtokens_cache[predicates[0].tokenizer_type]             # <<<<<<<<<<<<<<
@@ -1709,7 +1738,7 @@ static std::vector<int>  __pyx_f_16py_stringsimjoin_8apply_rf_19execute_filter_n
  */
       __pyx_v_rtokens = (__pyx_v_rtokens_cache[(__pyx_v_predicates[0]).tokenizer_type]);
 
-      /* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":133
+      /* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":134
  *     cdef vector[vector[int]] ltokens, rtokens
  *     if predicates[0].is_tok_sim_measure:
  *         if use_cache:             # <<<<<<<<<<<<<<
@@ -1719,7 +1748,7 @@ static std::vector<int>  __pyx_f_16py_stringsimjoin_8apply_rf_19execute_filter_n
       goto __pyx_L4;
     }
 
-    /* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":137
+    /* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":138
  *             rtokens = rtokens_cache[predicates[0].tokenizer_type]
  *         else:
  *             load_tok(predicates[0].tokenizer_type, working_dir, ltokens, rtokens)             # <<<<<<<<<<<<<<
@@ -1727,9 +1756,9 @@ static std::vector<int>  __pyx_f_16py_stringsimjoin_8apply_rf_19execute_filter_n
  *     cdef vector[int] final_output_pairs, part_pairs
  */
     /*else*/ {
-      __pyx_t_2 = __pyx_convert_PyBytes_string_to_py_std__in_string((__pyx_v_predicates[0]).tokenizer_type); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 137; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_2 = __pyx_convert_PyBytes_string_to_py_std__in_string((__pyx_v_predicates[0]).tokenizer_type); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 138; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_GOTREF(__pyx_t_2);
-      __pyx_t_3 = __pyx_convert_PyBytes_string_to_py_std__in_string(__pyx_v_working_dir); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 137; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      __pyx_t_3 = __pyx_convert_PyBytes_string_to_py_std__in_string(__pyx_v_working_dir); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 138; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
       __Pyx_GOTREF(__pyx_t_3);
       __pyx_f_16py_stringsimjoin_8apply_rf_10tokenizers_load_tok(__pyx_t_2, __pyx_t_3, __pyx_v_ltokens, __pyx_v_rtokens, 0);
       __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
@@ -1737,7 +1766,7 @@ static std::vector<int>  __pyx_f_16py_stringsimjoin_8apply_rf_19execute_filter_n
     }
     __pyx_L4:;
 
-    /* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":132
+    /* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":133
  *                                  omap[string, vector[vector[int]]]& rtokens_cache):
  *     cdef vector[vector[int]] ltokens, rtokens
  *     if predicates[0].is_tok_sim_measure:             # <<<<<<<<<<<<<<
@@ -1746,7 +1775,7 @@ static std::vector<int>  __pyx_f_16py_stringsimjoin_8apply_rf_19execute_filter_n
  */
   }
 
-  /* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":141
+  /* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":142
  *     cdef vector[int] final_output_pairs, part_pairs
  *     cdef vector[vector[int]] output_pairs
  *     cdef int n, start=0, end, i             # <<<<<<<<<<<<<<
@@ -1755,7 +1784,7 @@ static std::vector<int>  __pyx_f_16py_stringsimjoin_8apply_rf_19execute_filter_n
  */
   __pyx_v_start = 0;
 
-  /* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":143
+  /* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":144
  *     cdef int n, start=0, end, i
  * 
  *     if top_level_node:             # <<<<<<<<<<<<<<
@@ -1765,7 +1794,7 @@ static std::vector<int>  __pyx_f_16py_stringsimjoin_8apply_rf_19execute_filter_n
   __pyx_t_1 = (__pyx_v_top_level_node != 0);
   if (__pyx_t_1) {
 
-    /* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":144
+    /* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":145
  * 
  *     if top_level_node:
  *         n = candset.size()             # <<<<<<<<<<<<<<
@@ -1774,7 +1803,7 @@ static std::vector<int>  __pyx_f_16py_stringsimjoin_8apply_rf_19execute_filter_n
  */
     __pyx_v_n = __pyx_v_candset.size();
 
-    /* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":143
+    /* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":144
  *     cdef int n, start=0, end, i
  * 
  *     if top_level_node:             # <<<<<<<<<<<<<<
@@ -1784,7 +1813,7 @@ static std::vector<int>  __pyx_f_16py_stringsimjoin_8apply_rf_19execute_filter_n
     goto __pyx_L5;
   }
 
-  /* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":146
+  /* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":147
  *         n = candset.size()
  *     else:
  *         n = pair_ids.size()             # <<<<<<<<<<<<<<
@@ -1796,7 +1825,7 @@ static std::vector<int>  __pyx_f_16py_stringsimjoin_8apply_rf_19execute_filter_n
   }
   __pyx_L5:;
 
-  /* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":148
+  /* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":149
  *         n = pair_ids.size()
  * 
  *     partition_size = <int>(<float> n / <float> n_jobs)             # <<<<<<<<<<<<<<
@@ -1805,14 +1834,14 @@ static std::vector<int>  __pyx_f_16py_stringsimjoin_8apply_rf_19execute_filter_n
  */
   if (unlikely(((float)__pyx_v_n_jobs) == 0)) {
     PyErr_SetString(PyExc_ZeroDivisionError, "float division");
-    {__pyx_filename = __pyx_f[0]; __pyx_lineno = 148; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    {__pyx_filename = __pyx_f[0]; __pyx_lineno = 149; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   }
-  __pyx_t_3 = __Pyx_PyInt_From_int(((int)(((float)__pyx_v_n) / ((float)__pyx_v_n_jobs)))); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 148; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_t_3 = __Pyx_PyInt_From_int(((int)(((float)__pyx_v_n) / ((float)__pyx_v_n_jobs)))); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 149; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   __Pyx_GOTREF(__pyx_t_3);
   __pyx_v_partition_size = __pyx_t_3;
   __pyx_t_3 = 0;
 
-  /* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":150
+  /* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":151
  *     partition_size = <int>(<float> n / <float> n_jobs)
  * 
  *     for i in range(n_jobs):             # <<<<<<<<<<<<<<
@@ -1823,23 +1852,23 @@ static std::vector<int>  __pyx_f_16py_stringsimjoin_8apply_rf_19execute_filter_n
   for (__pyx_t_5 = 0; __pyx_t_5 < __pyx_t_4; __pyx_t_5+=1) {
     __pyx_v_i = __pyx_t_5;
 
-    /* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":151
+    /* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":152
  * 
  *     for i in range(n_jobs):
  *         end = start + partition_size             # <<<<<<<<<<<<<<
  *         if end > n or i == n_jobs - 1:
  *             end = n
  */
-    __pyx_t_3 = __Pyx_PyInt_From_int(__pyx_v_start); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 151; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_3 = __Pyx_PyInt_From_int(__pyx_v_start); if (unlikely(!__pyx_t_3)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 152; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_3);
-    __pyx_t_2 = PyNumber_Add(__pyx_t_3, __pyx_v_partition_size); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 151; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_2 = PyNumber_Add(__pyx_t_3, __pyx_v_partition_size); if (unlikely(!__pyx_t_2)) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 152; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_GOTREF(__pyx_t_2);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    __pyx_t_6 = __Pyx_PyInt_As_int(__pyx_t_2); if (unlikely((__pyx_t_6 == (int)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 151; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+    __pyx_t_6 = __Pyx_PyInt_As_int(__pyx_t_2); if (unlikely((__pyx_t_6 == (int)-1) && PyErr_Occurred())) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 152; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
     __pyx_v_end = __pyx_t_6;
 
-    /* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":152
+    /* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":153
  *     for i in range(n_jobs):
  *         end = start + partition_size
  *         if end > n or i == n_jobs - 1:             # <<<<<<<<<<<<<<
@@ -1857,7 +1886,7 @@ static std::vector<int>  __pyx_f_16py_stringsimjoin_8apply_rf_19execute_filter_n
     __pyx_L9_bool_binop_done:;
     if (__pyx_t_1) {
 
-      /* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":153
+      /* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":154
  *         end = start + partition_size
  *         if end > n or i == n_jobs - 1:
  *             end = n             # <<<<<<<<<<<<<<
@@ -1866,7 +1895,7 @@ static std::vector<int>  __pyx_f_16py_stringsimjoin_8apply_rf_19execute_filter_n
  */
       __pyx_v_end = __pyx_v_n;
 
-      /* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":152
+      /* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":153
  *     for i in range(n_jobs):
  *         end = start + partition_size
  *         if end > n or i == n_jobs - 1:             # <<<<<<<<<<<<<<
@@ -1875,7 +1904,7 @@ static std::vector<int>  __pyx_f_16py_stringsimjoin_8apply_rf_19execute_filter_n
  */
     }
 
-    /* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":154
+    /* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":155
  *         if end > n or i == n_jobs - 1:
  *             end = n
  *         partitions.push_back(pair[int, int](start, end))             # <<<<<<<<<<<<<<
@@ -1886,16 +1915,16 @@ static std::vector<int>  __pyx_f_16py_stringsimjoin_8apply_rf_19execute_filter_n
       __pyx_t_8 = std::pair<int,int> (__pyx_v_start, __pyx_v_end);
     } catch(...) {
       __Pyx_CppExn2PyErr();
-      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 154; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 155; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     }
     try {
       __pyx_v_partitions.push_back(__pyx_t_8);
     } catch(...) {
       __Pyx_CppExn2PyErr();
-      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 154; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 155; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     }
 
-    /* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":156
+    /* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":157
  *         partitions.push_back(pair[int, int](start, end))
  * 
  *         start = end             # <<<<<<<<<<<<<<
@@ -1904,7 +1933,7 @@ static std::vector<int>  __pyx_f_16py_stringsimjoin_8apply_rf_19execute_filter_n
  */
     __pyx_v_start = __pyx_v_end;
 
-    /* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":157
+    /* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":158
  * 
  *         start = end
  *         output_pairs.push_back(vector[int]())             # <<<<<<<<<<<<<<
@@ -1915,17 +1944,17 @@ static std::vector<int>  __pyx_f_16py_stringsimjoin_8apply_rf_19execute_filter_n
       __pyx_t_9 = std::vector<int> ();
     } catch(...) {
       __Pyx_CppExn2PyErr();
-      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 157; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 158; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     }
     try {
       __pyx_v_output_pairs.push_back(__pyx_t_9);
     } catch(...) {
       __Pyx_CppExn2PyErr();
-      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 157; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 158; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     }
   }
 
-  /* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":161
+  /* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":162
  *     cdef vector[int] sim_types, comp_types
  * 
  *     for i in range(predicates.size()):             # <<<<<<<<<<<<<<
@@ -1936,7 +1965,7 @@ static std::vector<int>  __pyx_f_16py_stringsimjoin_8apply_rf_19execute_filter_n
   for (__pyx_t_4 = 0; __pyx_t_4 < __pyx_t_10; __pyx_t_4+=1) {
     __pyx_v_i = __pyx_t_4;
 
-    /* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":162
+    /* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":163
  * 
  *     for i in range(predicates.size()):
  *         sim_types.push_back(get_sim_type(predicates[i].sim_measure_type))             # <<<<<<<<<<<<<<
@@ -1947,10 +1976,10 @@ static std::vector<int>  __pyx_f_16py_stringsimjoin_8apply_rf_19execute_filter_n
       __pyx_v_sim_types.push_back(__pyx_f_16py_stringsimjoin_8apply_rf_5utils_get_sim_type((__pyx_v_predicates[__pyx_v_i]).sim_measure_type));
     } catch(...) {
       __Pyx_CppExn2PyErr();
-      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 162; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 163; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     }
 
-    /* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":163
+    /* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":164
  *     for i in range(predicates.size()):
  *         sim_types.push_back(get_sim_type(predicates[i].sim_measure_type))
  *         comp_types.push_back(get_comp_type(predicates[i].comp_op))             # <<<<<<<<<<<<<<
@@ -1961,20 +1990,20 @@ static std::vector<int>  __pyx_f_16py_stringsimjoin_8apply_rf_19execute_filter_n
       __pyx_v_comp_types.push_back(__pyx_f_16py_stringsimjoin_8apply_rf_5utils_get_comp_type((__pyx_v_predicates[__pyx_v_i]).comp_op));
     } catch(...) {
       __Pyx_CppExn2PyErr();
-      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 163; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 164; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     }
   }
 
-  /* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":165
+  /* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":166
  *         comp_types.push_back(get_comp_type(predicates[i].comp_op))
  * 
  *     print 'parallen begin'             # <<<<<<<<<<<<<<
  *     for i in prange(n_jobs, nogil=True):
  *         execute_filters_part(partitions[i], candset, pair_ids, top_level_node,
  */
-  if (__Pyx_PrintOne(0, __pyx_kp_s_parallen_begin) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 165; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (__Pyx_PrintOne(0, __pyx_kp_s_parallen_begin) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 166; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
 
-  /* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":166
+  /* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":167
  * 
  *     print 'parallen begin'
  *     for i in prange(n_jobs, nogil=True):             # <<<<<<<<<<<<<<
@@ -2010,7 +2039,7 @@ static std::vector<int>  __pyx_f_16py_stringsimjoin_8apply_rf_19execute_filter_n
                         {
                             __pyx_v_i = 0 + 1 * __pyx_t_5;
 
-                            /* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":167
+                            /* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":168
  *     print 'parallen begin'
  *     for i in prange(n_jobs, nogil=True):
  *         execute_filters_part(partitions[i], candset, pair_ids, top_level_node,             # <<<<<<<<<<<<<<
@@ -2031,7 +2060,7 @@ static std::vector<int>  __pyx_f_16py_stringsimjoin_8apply_rf_19execute_filter_n
         #endif
       }
 
-      /* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":166
+      /* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":167
  * 
  *     print 'parallen begin'
  *     for i in prange(n_jobs, nogil=True):             # <<<<<<<<<<<<<<
@@ -2049,16 +2078,16 @@ static std::vector<int>  __pyx_f_16py_stringsimjoin_8apply_rf_19execute_filter_n
       }
   }
 
-  /* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":170
+  /* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":171
  *                              ltokens, rtokens, lstrings, rstrings,
  *                              predicates, sim_types, comp_types, output_pairs[i])
  *     print 'parallen end'             # <<<<<<<<<<<<<<
  * 
  *     for i in range(n_jobs):
  */
-  if (__Pyx_PrintOne(0, __pyx_kp_s_parallen_end) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 170; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  if (__Pyx_PrintOne(0, __pyx_kp_s_parallen_end) < 0) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 171; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
 
-  /* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":172
+  /* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":173
  *     print 'parallen end'
  * 
  *     for i in range(n_jobs):             # <<<<<<<<<<<<<<
@@ -2069,7 +2098,7 @@ static std::vector<int>  __pyx_f_16py_stringsimjoin_8apply_rf_19execute_filter_n
   for (__pyx_t_5 = 0; __pyx_t_5 < __pyx_t_6; __pyx_t_5+=1) {
     __pyx_v_i = __pyx_t_5;
 
-    /* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":173
+    /* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":174
  * 
  *     for i in range(n_jobs):
  *         final_output_pairs.insert(final_output_pairs.end(),             # <<<<<<<<<<<<<<
@@ -2080,11 +2109,11 @@ static std::vector<int>  __pyx_f_16py_stringsimjoin_8apply_rf_19execute_filter_n
       __pyx_v_final_output_pairs.insert(__pyx_v_final_output_pairs.end(), (__pyx_v_output_pairs[__pyx_v_i]).begin(), (__pyx_v_output_pairs[__pyx_v_i]).end());
     } catch(...) {
       __Pyx_CppExn2PyErr();
-      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 173; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 174; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     }
   }
 
-  /* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":177
+  /* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":178
  *                                   output_pairs[i].end())
  * 
  *     return final_output_pairs             # <<<<<<<<<<<<<<
@@ -2094,7 +2123,7 @@ static std::vector<int>  __pyx_f_16py_stringsimjoin_8apply_rf_19execute_filter_n
   __pyx_r = __pyx_v_final_output_pairs;
   goto __pyx_L0;
 
-  /* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":121
+  /* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":122
  * 
  * 
  * cdef vector[int] execute_filters(vector[pair[int, int]]& candset,             # <<<<<<<<<<<<<<
@@ -2113,7 +2142,7 @@ static std::vector<int>  __pyx_f_16py_stringsimjoin_8apply_rf_19execute_filter_n
   return __pyx_r;
 }
 
-/* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":179
+/* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":180
  *     return final_output_pairs
  * 
  * cdef void execute_filters_part(pair[int, int] partition,             # <<<<<<<<<<<<<<
@@ -2140,7 +2169,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_19execute_filter_node_execute_f
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
 
-  /* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":198
+  /* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":199
  *     cdef vector[compfnptr] comp_fns
  * 
  *     for i in range(sim_types.size()):             # <<<<<<<<<<<<<<
@@ -2151,7 +2180,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_19execute_filter_node_execute_f
   for (__pyx_t_2 = 0; __pyx_t_2 < __pyx_t_1; __pyx_t_2+=1) {
     __pyx_v_i = __pyx_t_2;
 
-    /* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":199
+    /* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":200
  * 
  *     for i in range(sim_types.size()):
  *         token_sim_fns.push_back(get_overlap_sim_function(sim_types[i]))             # <<<<<<<<<<<<<<
@@ -2168,10 +2197,10 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_19execute_filter_node_execute_f
       #ifdef WITH_THREAD
       PyGILState_Release(__pyx_gilstate_save);
       #endif
-      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 199; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 200; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     }
 
-    /* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":200
+    /* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":201
  *     for i in range(sim_types.size()):
  *         token_sim_fns.push_back(get_overlap_sim_function(sim_types[i]))
  *         comp_fns.push_back(get_comparison_function(comp_types[i]))             # <<<<<<<<<<<<<<
@@ -2188,11 +2217,11 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_19execute_filter_node_execute_f
       #ifdef WITH_THREAD
       PyGILState_Release(__pyx_gilstate_save);
       #endif
-      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 200; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+      {__pyx_filename = __pyx_f[0]; __pyx_lineno = 201; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
     }
   }
 
-  /* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":202
+  /* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":203
  *         comp_fns.push_back(get_comparison_function(comp_types[i]))
  * 
  *     if top_level_node:             # <<<<<<<<<<<<<<
@@ -2202,7 +2231,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_19execute_filter_node_execute_f
   __pyx_t_3 = (__pyx_v_top_level_node != 0);
   if (__pyx_t_3) {
 
-    /* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":203
+    /* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":204
  * 
  *     if top_level_node:
  *         for i in range(partition.first, partition.second):             # <<<<<<<<<<<<<<
@@ -2213,7 +2242,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_19execute_filter_node_execute_f
     for (__pyx_t_4 = __pyx_v_partition.first; __pyx_t_4 < __pyx_t_2; __pyx_t_4+=1) {
       __pyx_v_i = __pyx_t_4;
 
-      /* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":204
+      /* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":205
  *     if top_level_node:
  *         for i in range(partition.first, partition.second):
  *             cand  = candset[i]             # <<<<<<<<<<<<<<
@@ -2222,7 +2251,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_19execute_filter_node_execute_f
  */
       __pyx_v_cand = (__pyx_v_candset[__pyx_v_i]);
 
-      /* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":205
+      /* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":206
  *         for i in range(partition.first, partition.second):
  *             cand  = candset[i]
  *             overlap_score = overlap(ltokens[cand.first], rtokens[cand.second])             # <<<<<<<<<<<<<<
@@ -2231,7 +2260,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_19execute_filter_node_execute_f
  */
       __pyx_v_overlap_score = __pyx_f_16py_stringsimjoin_8apply_rf_13sim_functions_overlap((__pyx_v_ltokens[__pyx_v_cand.first]), (__pyx_v_rtokens[__pyx_v_cand.second]));
 
-      /* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":206
+      /* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":207
  *             cand  = candset[i]
  *             overlap_score = overlap(ltokens[cand.first], rtokens[cand.second])
  *             size1 = ltokens[cand.first].size()             # <<<<<<<<<<<<<<
@@ -2240,7 +2269,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_19execute_filter_node_execute_f
  */
       __pyx_v_size1 = (__pyx_v_ltokens[__pyx_v_cand.first]).size();
 
-      /* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":207
+      /* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":208
  *             overlap_score = overlap(ltokens[cand.first], rtokens[cand.second])
  *             size1 = ltokens[cand.first].size()
  *             size2 = rtokens[cand.second].size()             # <<<<<<<<<<<<<<
@@ -2249,7 +2278,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_19execute_filter_node_execute_f
  */
       __pyx_v_size2 = (__pyx_v_rtokens[__pyx_v_cand.second]).size();
 
-      /* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":208
+      /* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":209
  *             size1 = ltokens[cand.first].size()
  *             size2 = rtokens[cand.second].size()
  *             flag = True             # <<<<<<<<<<<<<<
@@ -2258,7 +2287,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_19execute_filter_node_execute_f
  */
       __pyx_v_flag = 1;
 
-      /* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":209
+      /* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":210
  *             size2 = rtokens[cand.second].size()
  *             flag = True
  *             for j in xrange(sim_types.size()):             # <<<<<<<<<<<<<<
@@ -2269,7 +2298,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_19execute_filter_node_execute_f
       for (__pyx_t_5 = 0; __pyx_t_5 < __pyx_t_1; __pyx_t_5+=1) {
         __pyx_v_j = __pyx_t_5;
 
-        /* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":210
+        /* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":211
  *             flag = True
  *             for j in xrange(sim_types.size()):
  *                 if not comp_fns[j](token_sim_fns[j](size1, size2, overlap_score),             # <<<<<<<<<<<<<<
@@ -2279,7 +2308,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_19execute_filter_node_execute_f
         __pyx_t_3 = ((!((__pyx_v_comp_fns[__pyx_v_j])((__pyx_v_token_sim_fns[__pyx_v_j])(__pyx_v_size1, __pyx_v_size2, __pyx_v_overlap_score), (__pyx_v_predicates[__pyx_v_j]).threshold) != 0)) != 0);
         if (__pyx_t_3) {
 
-          /* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":212
+          /* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":213
  *                 if not comp_fns[j](token_sim_fns[j](size1, size2, overlap_score),
  *                                    predicates[j].threshold):
  *                     flag = False             # <<<<<<<<<<<<<<
@@ -2288,7 +2317,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_19execute_filter_node_execute_f
  */
           __pyx_v_flag = 0;
 
-          /* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":213
+          /* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":214
  *                                    predicates[j].threshold):
  *                     flag = False
  *                     break             # <<<<<<<<<<<<<<
@@ -2297,7 +2326,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_19execute_filter_node_execute_f
  */
           goto __pyx_L9_break;
 
-          /* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":210
+          /* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":211
  *             flag = True
  *             for j in xrange(sim_types.size()):
  *                 if not comp_fns[j](token_sim_fns[j](size1, size2, overlap_score),             # <<<<<<<<<<<<<<
@@ -2308,7 +2337,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_19execute_filter_node_execute_f
       }
       __pyx_L9_break:;
 
-      /* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":214
+      /* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":215
  *                     flag = False
  *                     break
  *             if flag:             # <<<<<<<<<<<<<<
@@ -2318,7 +2347,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_19execute_filter_node_execute_f
       __pyx_t_3 = (__pyx_v_flag != 0);
       if (__pyx_t_3) {
 
-        /* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":215
+        /* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":216
  *                     break
  *             if flag:
  *                 output_pairs.push_back(i)             # <<<<<<<<<<<<<<
@@ -2335,10 +2364,10 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_19execute_filter_node_execute_f
           #ifdef WITH_THREAD
           PyGILState_Release(__pyx_gilstate_save);
           #endif
-          {__pyx_filename = __pyx_f[0]; __pyx_lineno = 215; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+          {__pyx_filename = __pyx_f[0]; __pyx_lineno = 216; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
         }
 
-        /* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":214
+        /* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":215
  *                     flag = False
  *                     break
  *             if flag:             # <<<<<<<<<<<<<<
@@ -2348,7 +2377,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_19execute_filter_node_execute_f
       }
     }
 
-    /* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":202
+    /* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":203
  *         comp_fns.push_back(get_comparison_function(comp_types[i]))
  * 
  *     if top_level_node:             # <<<<<<<<<<<<<<
@@ -2358,7 +2387,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_19execute_filter_node_execute_f
     goto __pyx_L5;
   }
 
-  /* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":217
+  /* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":218
  *                 output_pairs.push_back(i)
  *     else:
  *         for i in range(partition.first, partition.second):             # <<<<<<<<<<<<<<
@@ -2370,7 +2399,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_19execute_filter_node_execute_f
     for (__pyx_t_4 = __pyx_v_partition.first; __pyx_t_4 < __pyx_t_2; __pyx_t_4+=1) {
       __pyx_v_i = __pyx_t_4;
 
-      /* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":218
+      /* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":219
  *     else:
  *         for i in range(partition.first, partition.second):
  *             cand  = candset[pair_ids[i]]             # <<<<<<<<<<<<<<
@@ -2379,7 +2408,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_19execute_filter_node_execute_f
  */
       __pyx_v_cand = (__pyx_v_candset[(__pyx_v_pair_ids[__pyx_v_i])]);
 
-      /* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":219
+      /* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":220
  *         for i in range(partition.first, partition.second):
  *             cand  = candset[pair_ids[i]]
  *             overlap_score = overlap(ltokens[cand.first], rtokens[cand.second])             # <<<<<<<<<<<<<<
@@ -2388,7 +2417,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_19execute_filter_node_execute_f
  */
       __pyx_v_overlap_score = __pyx_f_16py_stringsimjoin_8apply_rf_13sim_functions_overlap((__pyx_v_ltokens[__pyx_v_cand.first]), (__pyx_v_rtokens[__pyx_v_cand.second]));
 
-      /* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":220
+      /* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":221
  *             cand  = candset[pair_ids[i]]
  *             overlap_score = overlap(ltokens[cand.first], rtokens[cand.second])
  *             size1 = ltokens[cand.first].size()             # <<<<<<<<<<<<<<
@@ -2397,7 +2426,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_19execute_filter_node_execute_f
  */
       __pyx_v_size1 = (__pyx_v_ltokens[__pyx_v_cand.first]).size();
 
-      /* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":221
+      /* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":222
  *             overlap_score = overlap(ltokens[cand.first], rtokens[cand.second])
  *             size1 = ltokens[cand.first].size()
  *             size2 = rtokens[cand.second].size()             # <<<<<<<<<<<<<<
@@ -2406,7 +2435,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_19execute_filter_node_execute_f
  */
       __pyx_v_size2 = (__pyx_v_rtokens[__pyx_v_cand.second]).size();
 
-      /* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":222
+      /* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":223
  *             size1 = ltokens[cand.first].size()
  *             size2 = rtokens[cand.second].size()
  *             flag = True             # <<<<<<<<<<<<<<
@@ -2415,7 +2444,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_19execute_filter_node_execute_f
  */
       __pyx_v_flag = 1;
 
-      /* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":223
+      /* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":224
  *             size2 = rtokens[cand.second].size()
  *             flag = True
  *             for j in xrange(sim_types.size()):             # <<<<<<<<<<<<<<
@@ -2426,7 +2455,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_19execute_filter_node_execute_f
       for (__pyx_t_5 = 0; __pyx_t_5 < __pyx_t_1; __pyx_t_5+=1) {
         __pyx_v_j = __pyx_t_5;
 
-        /* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":224
+        /* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":225
  *             flag = True
  *             for j in xrange(sim_types.size()):
  *                 if not comp_fns[j](token_sim_fns[j](size1, size2, overlap_score),             # <<<<<<<<<<<<<<
@@ -2436,7 +2465,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_19execute_filter_node_execute_f
         __pyx_t_3 = ((!((__pyx_v_comp_fns[__pyx_v_j])((__pyx_v_token_sim_fns[__pyx_v_j])(__pyx_v_size1, __pyx_v_size2, __pyx_v_overlap_score), (__pyx_v_predicates[__pyx_v_j]).threshold) != 0)) != 0);
         if (__pyx_t_3) {
 
-          /* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":226
+          /* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":227
  *                 if not comp_fns[j](token_sim_fns[j](size1, size2, overlap_score),
  *                                    predicates[j].threshold):
  *                     flag = False             # <<<<<<<<<<<<<<
@@ -2445,7 +2474,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_19execute_filter_node_execute_f
  */
           __pyx_v_flag = 0;
 
-          /* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":227
+          /* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":228
  *                                    predicates[j].threshold):
  *                     flag = False
  *                     break             # <<<<<<<<<<<<<<
@@ -2454,7 +2483,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_19execute_filter_node_execute_f
  */
           goto __pyx_L15_break;
 
-          /* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":224
+          /* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":225
  *             flag = True
  *             for j in xrange(sim_types.size()):
  *                 if not comp_fns[j](token_sim_fns[j](size1, size2, overlap_score),             # <<<<<<<<<<<<<<
@@ -2465,7 +2494,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_19execute_filter_node_execute_f
       }
       __pyx_L15_break:;
 
-      /* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":228
+      /* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":229
  *                     flag = False
  *                     break
  *             if flag:             # <<<<<<<<<<<<<<
@@ -2475,7 +2504,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_19execute_filter_node_execute_f
       __pyx_t_3 = (__pyx_v_flag != 0);
       if (__pyx_t_3) {
 
-        /* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":229
+        /* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":230
  *                     break
  *             if flag:
  *                 output_pairs.push_back(i)             # <<<<<<<<<<<<<<
@@ -2491,10 +2520,10 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_19execute_filter_node_execute_f
           #ifdef WITH_THREAD
           PyGILState_Release(__pyx_gilstate_save);
           #endif
-          {__pyx_filename = __pyx_f[0]; __pyx_lineno = 229; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+          {__pyx_filename = __pyx_f[0]; __pyx_lineno = 230; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
         }
 
-        /* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":228
+        /* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":229
  *                     flag = False
  *                     break
  *             if flag:             # <<<<<<<<<<<<<<
@@ -2506,7 +2535,7 @@ static void __pyx_f_16py_stringsimjoin_8apply_rf_19execute_filter_node_execute_f
   }
   __pyx_L5:;
 
-  /* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":179
+  /* "py_stringsimjoin/apply_rf/execute_filter_node.pyx":180
  *     return final_output_pairs
  * 
  * cdef void execute_filters_part(pair[int, int] partition,             # <<<<<<<<<<<<<<
@@ -2795,6 +2824,7 @@ static struct PyModuleDef __pyx_moduledef = {
 static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_end, __pyx_k_end, sizeof(__pyx_k_end), 0, 0, 1, 1},
   {&__pyx_n_s_file, __pyx_k_file, sizeof(__pyx_k_file), 0, 0, 1, 1},
+  {&__pyx_kp_s_loaded_tok, __pyx_k_loaded_tok, sizeof(__pyx_k_loaded_tok), 0, 0, 1, 0},
   {&__pyx_n_s_main, __pyx_k_main, sizeof(__pyx_k_main), 0, 0, 1, 1},
   {&__pyx_kp_s_parallen_begin, __pyx_k_parallen_begin, sizeof(__pyx_k_parallen_begin), 0, 0, 1, 0},
   {&__pyx_kp_s_parallen_end, __pyx_k_parallen_end, sizeof(__pyx_k_parallen_end), 0, 0, 1, 0},
@@ -2805,11 +2835,11 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {0, 0, 0, 0, 0, 0, 0}
 };
 static int __Pyx_InitCachedBuiltins(void) {
-  __pyx_builtin_range = __Pyx_GetBuiltinName(__pyx_n_s_range); if (!__pyx_builtin_range) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 47; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_builtin_range = __Pyx_GetBuiltinName(__pyx_n_s_range); if (!__pyx_builtin_range) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 48; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   #if PY_MAJOR_VERSION >= 3
-  __pyx_builtin_xrange = __Pyx_GetBuiltinName(__pyx_n_s_range); if (!__pyx_builtin_xrange) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 209; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_builtin_xrange = __Pyx_GetBuiltinName(__pyx_n_s_range); if (!__pyx_builtin_xrange) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 210; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   #else
-  __pyx_builtin_xrange = __Pyx_GetBuiltinName(__pyx_n_s_xrange); if (!__pyx_builtin_xrange) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 209; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
+  __pyx_builtin_xrange = __Pyx_GetBuiltinName(__pyx_n_s_xrange); if (!__pyx_builtin_xrange) {__pyx_filename = __pyx_f[0]; __pyx_lineno = 210; __pyx_clineno = __LINE__; goto __pyx_L1_error;}
   #endif
   return 0;
   __pyx_L1_error:;
@@ -3252,6 +3282,111 @@ bad:
     Py_XDECREF(py_frame);
 }
 
+#if !CYTHON_COMPILING_IN_PYPY && PY_MAJOR_VERSION < 3
+static PyObject *__Pyx_GetStdout(void) {
+    PyObject *f = PySys_GetObject((char *)"stdout");
+    if (!f) {
+        PyErr_SetString(PyExc_RuntimeError, "lost sys.stdout");
+    }
+    return f;
+}
+static int __Pyx_Print(PyObject* f, PyObject *arg_tuple, int newline) {
+    int i;
+    if (!f) {
+        if (!(f = __Pyx_GetStdout()))
+            return -1;
+    }
+    Py_INCREF(f);
+    for (i=0; i < PyTuple_GET_SIZE(arg_tuple); i++) {
+        PyObject* v;
+        if (PyFile_SoftSpace(f, 1)) {
+            if (PyFile_WriteString(" ", f) < 0)
+                goto error;
+        }
+        v = PyTuple_GET_ITEM(arg_tuple, i);
+        if (PyFile_WriteObject(v, f, Py_PRINT_RAW) < 0)
+            goto error;
+        if (PyString_Check(v)) {
+            char *s = PyString_AsString(v);
+            Py_ssize_t len = PyString_Size(v);
+            if (len > 0) {
+                switch (s[len-1]) {
+                    case ' ': break;
+                    case '\f': case '\r': case '\n': case '\t': case '\v':
+                        PyFile_SoftSpace(f, 0);
+                        break;
+                    default:  break;
+                }
+            }
+        }
+    }
+    if (newline) {
+        if (PyFile_WriteString("\n", f) < 0)
+            goto error;
+        PyFile_SoftSpace(f, 0);
+    }
+    Py_DECREF(f);
+    return 0;
+error:
+    Py_DECREF(f);
+    return -1;
+}
+#else
+static int __Pyx_Print(PyObject* stream, PyObject *arg_tuple, int newline) {
+    PyObject* kwargs = 0;
+    PyObject* result = 0;
+    PyObject* end_string;
+    if (unlikely(!__pyx_print)) {
+        __pyx_print = PyObject_GetAttr(__pyx_b, __pyx_n_s_print);
+        if (!__pyx_print)
+            return -1;
+    }
+    if (stream) {
+        kwargs = PyDict_New();
+        if (unlikely(!kwargs))
+            return -1;
+        if (unlikely(PyDict_SetItem(kwargs, __pyx_n_s_file, stream) < 0))
+            goto bad;
+        if (!newline) {
+            end_string = PyUnicode_FromStringAndSize(" ", 1);
+            if (unlikely(!end_string))
+                goto bad;
+            if (PyDict_SetItem(kwargs, __pyx_n_s_end, end_string) < 0) {
+                Py_DECREF(end_string);
+                goto bad;
+            }
+            Py_DECREF(end_string);
+        }
+    } else if (!newline) {
+        if (unlikely(!__pyx_print_kwargs)) {
+            __pyx_print_kwargs = PyDict_New();
+            if (unlikely(!__pyx_print_kwargs))
+                return -1;
+            end_string = PyUnicode_FromStringAndSize(" ", 1);
+            if (unlikely(!end_string))
+                return -1;
+            if (PyDict_SetItem(__pyx_print_kwargs, __pyx_n_s_end, end_string) < 0) {
+                Py_DECREF(end_string);
+                return -1;
+            }
+            Py_DECREF(end_string);
+        }
+        kwargs = __pyx_print_kwargs;
+    }
+    result = PyObject_Call(__pyx_print, arg_tuple, kwargs);
+    if (unlikely(kwargs) && (kwargs != __pyx_print_kwargs))
+        Py_DECREF(kwargs);
+    if (!result)
+        return -1;
+    Py_DECREF(result);
+    return 0;
+bad:
+    if (kwargs != __pyx_print_kwargs)
+        Py_XDECREF(kwargs);
+    return -1;
+}
+#endif
+
 static CYTHON_INLINE PyObject* __Pyx_PyInt_From_int(int value) {
     const int neg_one = (int) -1, const_zero = (int) 0;
     const int is_unsigned = neg_one > const_zero;
@@ -3486,111 +3621,6 @@ raise_neg_overflow:
         "can't convert negative value to int");
     return (int) -1;
 }
-
-#if !CYTHON_COMPILING_IN_PYPY && PY_MAJOR_VERSION < 3
-static PyObject *__Pyx_GetStdout(void) {
-    PyObject *f = PySys_GetObject((char *)"stdout");
-    if (!f) {
-        PyErr_SetString(PyExc_RuntimeError, "lost sys.stdout");
-    }
-    return f;
-}
-static int __Pyx_Print(PyObject* f, PyObject *arg_tuple, int newline) {
-    int i;
-    if (!f) {
-        if (!(f = __Pyx_GetStdout()))
-            return -1;
-    }
-    Py_INCREF(f);
-    for (i=0; i < PyTuple_GET_SIZE(arg_tuple); i++) {
-        PyObject* v;
-        if (PyFile_SoftSpace(f, 1)) {
-            if (PyFile_WriteString(" ", f) < 0)
-                goto error;
-        }
-        v = PyTuple_GET_ITEM(arg_tuple, i);
-        if (PyFile_WriteObject(v, f, Py_PRINT_RAW) < 0)
-            goto error;
-        if (PyString_Check(v)) {
-            char *s = PyString_AsString(v);
-            Py_ssize_t len = PyString_Size(v);
-            if (len > 0) {
-                switch (s[len-1]) {
-                    case ' ': break;
-                    case '\f': case '\r': case '\n': case '\t': case '\v':
-                        PyFile_SoftSpace(f, 0);
-                        break;
-                    default:  break;
-                }
-            }
-        }
-    }
-    if (newline) {
-        if (PyFile_WriteString("\n", f) < 0)
-            goto error;
-        PyFile_SoftSpace(f, 0);
-    }
-    Py_DECREF(f);
-    return 0;
-error:
-    Py_DECREF(f);
-    return -1;
-}
-#else
-static int __Pyx_Print(PyObject* stream, PyObject *arg_tuple, int newline) {
-    PyObject* kwargs = 0;
-    PyObject* result = 0;
-    PyObject* end_string;
-    if (unlikely(!__pyx_print)) {
-        __pyx_print = PyObject_GetAttr(__pyx_b, __pyx_n_s_print);
-        if (!__pyx_print)
-            return -1;
-    }
-    if (stream) {
-        kwargs = PyDict_New();
-        if (unlikely(!kwargs))
-            return -1;
-        if (unlikely(PyDict_SetItem(kwargs, __pyx_n_s_file, stream) < 0))
-            goto bad;
-        if (!newline) {
-            end_string = PyUnicode_FromStringAndSize(" ", 1);
-            if (unlikely(!end_string))
-                goto bad;
-            if (PyDict_SetItem(kwargs, __pyx_n_s_end, end_string) < 0) {
-                Py_DECREF(end_string);
-                goto bad;
-            }
-            Py_DECREF(end_string);
-        }
-    } else if (!newline) {
-        if (unlikely(!__pyx_print_kwargs)) {
-            __pyx_print_kwargs = PyDict_New();
-            if (unlikely(!__pyx_print_kwargs))
-                return -1;
-            end_string = PyUnicode_FromStringAndSize(" ", 1);
-            if (unlikely(!end_string))
-                return -1;
-            if (PyDict_SetItem(__pyx_print_kwargs, __pyx_n_s_end, end_string) < 0) {
-                Py_DECREF(end_string);
-                return -1;
-            }
-            Py_DECREF(end_string);
-        }
-        kwargs = __pyx_print_kwargs;
-    }
-    result = PyObject_Call(__pyx_print, arg_tuple, kwargs);
-    if (unlikely(kwargs) && (kwargs != __pyx_print_kwargs))
-        Py_DECREF(kwargs);
-    if (!result)
-        return -1;
-    Py_DECREF(result);
-    return 0;
-bad:
-    if (kwargs != __pyx_print_kwargs)
-        Py_XDECREF(kwargs);
-    return -1;
-}
-#endif
 
 #if !CYTHON_COMPILING_IN_PYPY && PY_MAJOR_VERSION < 3
 static int __Pyx_PrintOne(PyObject* f, PyObject *o) {

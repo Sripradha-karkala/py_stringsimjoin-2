@@ -529,9 +529,18 @@ typedef double (*__pyx_t_16py_stringsimjoin_8apply_rf_5utils_simfnptr_str)(std::
  * ctypedef double (*simfnptr_str)(vector[string]&, vector[string]&) nogil
  * ctypedef bool (*compfnptr)(double, double) nogil             # <<<<<<<<<<<<<<
  * 
- * cdef int get_sim_type(const string&)
+ * ctypedef double (*overlap_simfnptr)(const int&, const int&, const double&) nogil
  */
 typedef bool (*__pyx_t_16py_stringsimjoin_8apply_rf_5utils_compfnptr)(double, double);
+
+/* "py_stringsimjoin/apply_rf/utils.pxd":16
+ * ctypedef bool (*compfnptr)(double, double) nogil
+ * 
+ * ctypedef double (*overlap_simfnptr)(const int&, const int&, const double&) nogil             # <<<<<<<<<<<<<<
+ * 
+ * cdef int get_sim_type(const string&)
+ */
+typedef double (*__pyx_t_16py_stringsimjoin_8apply_rf_5utils_overlap_simfnptr)(int const &, int const &, double const &);
 
 /* --- Runtime support code (head) --- */
 #ifndef CYTHON_REFNANNY

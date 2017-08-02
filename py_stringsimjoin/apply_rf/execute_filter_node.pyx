@@ -32,6 +32,7 @@ cdef vector[int] execute_filter_node(vector[pair[int, int]]& candset,
             rtokens = rtokens_cache[predicate.tokenizer_type]
         else:
             load_tok(predicate.tokenizer_type, working_dir, ltokens, rtokens)           
+            print 'loaded tok: ', ltokens.size(), rtokens.size()
     cdef vector[pair[int, int]] partitions                                      
     cdef vector[int] final_output_pairs, part_pairs                             
     cdef vector[vector[int]] output_pairs                                       

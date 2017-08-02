@@ -138,14 +138,15 @@ class NumericTokenizer:
 
 def test_tok(df, attr):
     cdef int q=3
-    ws = QgramTokenizer(q, True, ord('#'), ord('$'), True)
+    ws = WhitespaceTokenizer(True)
+#    ws = QgramTokenizer(q, True, ord('#'), ord('$'), True)
 #    ws = AlphanumericTokenizer(True)
     cdef vector[string] strings
     convert_to_vector(df[attr], strings)                           
     cdef vector[string] t
     for s in strings:
         t = ws.tokenize(s)                
-        print t                
+        print t, s                
 
 def test_tok2(df1, attr1, df2, attr2):
     cdef vector[string] lstrings, rstrings                                      

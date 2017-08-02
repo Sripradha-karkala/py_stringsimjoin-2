@@ -1,8 +1,11 @@
 
+import os
+import subprocess
 import time
 import random
 import pandas as pd
 from cython.parallel import prange                                              
+from math import ceil
 
 from libcpp.vector cimport vector
 from libcpp.set cimport set as oset
@@ -29,7 +32,7 @@ from py_stringsimjoin.apply_rf.node cimport Node
 from py_stringsimjoin.apply_rf.coverage cimport Coverage         
 from py_stringsimjoin.apply_rf.rule cimport Rule                                
 from py_stringsimjoin.apply_rf.tree cimport Tree  
-from py_stringsimjoin.apply_rf.ex_plan cimport get_plans_for_rules, get_default_execution_plan, generate_ex_plan_for_stage2, compute_predicate_cost_and_coverage, extract_pos_rules_from_rf, generate_local_optimal_plans, generate_overall_plan  
+from py_stringsimjoin.apply_rf.ex_plan cimport get_plans_for_rules, get_default_execution_plan, generate_ex_plan_for_stage2, compute_predicate_cost_and_coverage, extract_pos_rules_from_rf, generate_local_optimal_plans, generate_overall_plan, generate_ex_plan_for_stage2_test  
 from py_stringsimjoin.apply_rf.execute_join_node cimport execute_join_node
 from py_stringsimjoin.apply_rf.execute_select_node cimport execute_select_node, execute_select_node_candset      
 from py_stringsimjoin.apply_rf.execute_feature_node cimport execute_feature_node      
@@ -45,7 +48,7 @@ cdef void load_strings(data_path, attr, vector[string]& strings):
 
 def test_execute_rf(rf, feature_table, l1, l2, path1, attr1, path2, attr2, 
                     working_dir, n_jobs, py_reuse_flag, py_push_flag, 
-                    tree_list, use_cache):
+                    tree_list, use_cache, num_trees_for_blocking=6, random_order=False):
     start_time = time.time()                                                    
     cdef vector[Tree] trees, trees1, trees2                                     
     trees = extract_pos_rules_from_rf(rf, feature_table)                        
@@ -70,12 +73,12 @@ def test_execute_rf(rf, feature_table, l1, l2, path1, attr1, path2, attr2,
     cdef Node global_plan, join_node
     global_plan = get_default_execution_plan(trees, coverage, tree_cov, 
                                              l.size(), trees1, trees2,
-                                             reuse_flag, push_flag, tree_list) 
+                                             reuse_flag, push_flag, tree_list, num_trees_for_blocking, random_order) 
 
     print 'num join nodes : ', global_plan.children.size()
     for join_node in global_plan.children:                                             
          print 'JOIN', join_node.predicates[0].pred_name
- 
+     
     tok_st = time.time()
     print 'tokenizing strings'                                                  
     tokenize_strings(trees, lstrings, rstrings, working_dir, n_jobs)                    
@@ -119,7 +122,7 @@ def test_execute_rf(rf, feature_table, l1, l2, path1, attr1, path2, attr2,
     plans = generate_ex_plan_for_stage2(candset_votes,                    
                                         lstrings, rstrings,   
                                         trees2, sample_size, n_jobs, 
-                                        push_flag)
+                                        push_flag, random_order)
 
     print 'executing remaining trees'                                           
     cdef int label = 1, num_trees_processed=trees1.size()                                                          
@@ -138,6 +141,159 @@ def test_execute_rf(rf, feature_table, l1, l2, path1, attr1, path2, attr2,
     print 'tok time : ', tok_time
     print 'stage1 time : ', stage1_time
     print 'stage2 time : ', stage2_time
+
+def stage2_test_all(rf, feature_table, l1, l2, path1, attr1, path2, attr2,
+                    working_dir, n_jobs, py_reuse_flag, py_push_flag,
+                    tree_list, use_cache, fn):
+    start_time = time.time()
+    cdef vector[Tree] trees, trees1, trees2
+    trees = extract_pos_rules_from_rf(rf, feature_table)
+
+    cdef int i=0, num_total_trees = trees.size()
+    cdef bool reuse_flag, push_flag
+    reuse_flag = py_reuse_flag
+    push_flag = py_push_flag
+    cdef vector[string] lstrings, rstrings
+    load_strings(path1, attr1, lstrings)
+    load_strings(path2, attr2, rstrings)
+
+    cdef omap[string, Coverage] coverage
+    cdef omap[int, Coverage] tree_cov
+    cdef vector[string] l, r
+    for s in l1:
+        l.push_back(lstrings[int(s)])
+    for s in l2:
+        r.push_back(rstrings[int(s)])
+    print ' computing coverage'
+    compute_predicate_cost_and_coverage(l, r, trees, coverage, tree_cov, n_jobs)
+    cdef Node global_plan, join_node
+    global_plan = get_default_execution_plan(trees, coverage, tree_cov,
+                                             l.size(), trees1, trees2,
+                                             reuse_flag, push_flag, tree_list, 6, False)
+
+    print 'num join nodes : ', global_plan.children.size()
+    for join_node in global_plan.children:
+         print 'JOIN', join_node.predicates[0].pred_name
+
+    cdef omap[string, vector[vector[int]]] ltokens_cache, rtokens_cache
+    cdef oset[string] tokenizers
+    cdef Tree tree
+    cdef Rule rule
+    cdef Predicatecpp predicate
+    cdef string tok_type
+
+    if use_cache:
+        for tree in trees:
+            for rule in tree.rules:
+                for predicate in rule.predicates:
+                    if predicate.sim_measure_type.compare('EDIT_DISTANCE') == 0:
+                        tokenizers.insert('qg2_bag')
+                        continue
+                    tokenizers.insert(predicate.tokenizer_type)
+
+        for tok_type in tokenizers:
+            ltokens_cache[tok_type] = vector[vector[int]]()
+            rtokens_cache[tok_type] = vector[vector[int]]()
+            load_tok(tok_type, working_dir, ltokens_cache[tok_type], rtokens_cache[tok_type])
+
+    cdef int sample_size = 10000
+    cdef pair[vector[pair[int, int]], vector[int]] candset_votes
+    candset_votes = load_merged_candset(working_dir, fn)
+    print 'generating plan'
+    stage2_st = time.time()
+    cdef Node plan
+    plan = generate_ex_plan_for_stage2_test(candset_votes,
+                                        lstrings, rstrings,
+                                        trees2, sample_size, n_jobs,
+                                        push_flag)
+    print 'executing remaining trees'
+    cdef int label = 1, num_trees_processed=trees1.size()
+    candset_votes = execute_tree_plan(candset_votes, lstrings, rstrings, plan,
+                                  num_total_trees, num_trees_processed, label,
+                                  n_jobs, working_dir, use_cache,
+                                  ltokens_cache, rtokens_cache)
+
+    stage2_time = time.time() - stage2_st
+    print 'stage2 time : ', stage2_time
+
+def stage2_test_seq(rf, feature_table, l1, l2, path1, attr1, path2, attr2,
+                    working_dir, n_jobs, py_reuse_flag, py_push_flag,
+                    tree_list, use_cache, fn):
+    start_time = time.time()
+    cdef vector[Tree] trees, trees1, trees2
+    trees = extract_pos_rules_from_rf(rf, feature_table)
+
+    cdef int i=0, num_total_trees = trees.size()
+    cdef bool reuse_flag, push_flag
+    reuse_flag = py_reuse_flag
+    push_flag = py_push_flag
+    cdef vector[string] lstrings, rstrings
+    load_strings(path1, attr1, lstrings)
+    load_strings(path2, attr2, rstrings)
+
+    cdef omap[string, Coverage] coverage
+    cdef omap[int, Coverage] tree_cov
+    cdef vector[string] l, r
+    for s in l1:
+        l.push_back(lstrings[int(s)])
+    for s in l2:
+        r.push_back(rstrings[int(s)])
+    print ' computing coverage'
+    compute_predicate_cost_and_coverage(l, r, trees, coverage, tree_cov, n_jobs)
+    cdef Node global_plan, join_node
+    global_plan = get_default_execution_plan(trees, coverage, tree_cov,
+                                             l.size(), trees1, trees2,
+                                             reuse_flag, push_flag, tree_list, 6, False)
+
+    print 'num join nodes : ', global_plan.children.size()
+    for join_node in global_plan.children:
+         print 'JOIN', join_node.predicates[0].pred_name
+
+    cdef omap[string, vector[vector[int]]] ltokens_cache, rtokens_cache
+    cdef oset[string] tokenizers
+    cdef Tree tree
+    cdef Rule rule
+    cdef Predicatecpp predicate
+    cdef string tok_type
+
+    if use_cache:
+        for tree in trees:
+            for rule in tree.rules:
+                for predicate in rule.predicates:
+                    if predicate.sim_measure_type.compare('EDIT_DISTANCE') == 0:
+                        tokenizers.insert('qg2_bag')
+                        continue
+                    tokenizers.insert(predicate.tokenizer_type)
+
+        for tok_type in tokenizers:
+            ltokens_cache[tok_type] = vector[vector[int]]()
+            rtokens_cache[tok_type] = vector[vector[int]]()
+            load_tok(tok_type, working_dir, ltokens_cache[tok_type], rtokens_cache[tok_type])
+
+    cdef int sample_size = 10000
+    cdef pair[vector[pair[int, int]], vector[int]] candset_votes
+    candset_votes = load_merged_candset(working_dir, fn)
+    print 'generating plan'
+    stage2_st = time.time()
+    cdef vector[Node] plans
+    plans = generate_ex_plan_for_stage2(candset_votes,
+                                        lstrings, rstrings,
+                                        trees2, sample_size, n_jobs,
+                                        push_flag, False)
+    print 'executing remaining trees'
+    cdef int label = 1, num_trees_processed=trees1.size()
+    i = 0
+    while candset_votes.first.size() > 0 and i < plans.size():
+        candset_votes = execute_tree_plan(candset_votes, lstrings, rstrings, plans[i],
+                                  num_total_trees, num_trees_processed, label,
+                                  n_jobs, working_dir, use_cache,
+                                  ltokens_cache, rtokens_cache)
+        num_trees_processed += 1
+        label += 1
+
+    stage2_time = time.time() - stage2_st
+    print 'stage2 time : ', stage2_time
+
 
 def naive_execute_rf(rf, feature_table, l1, l2, path1, attr1, path2, attr2,      
                      working_dir, n_jobs, py_reuse_flag, py_push_flag,           
@@ -158,13 +314,14 @@ def naive_execute_rf(rf, feature_table, l1, l2, path1, attr1, path2, attr2,
     cdef omap[int, Coverage] tree_cov                                           
     cdef vector[string] l, r                                                    
     for s in l1:                                                                
-        l.push_back(lstrings[int(s)])                                           
+        l.push_back(lstrings[int(s)])                                       
     for s in l2:                                                                
-        r.push_back(rstrings[int(s)])                                           
+        r.push_back(rstrings[int(s)])                                       
+
     print ' computing coverage'                                                 
     compute_predicate_cost_and_coverage(l, r, trees, coverage, tree_cov, n_jobs)
     cdef omap[int, vector[Node]] plans
-    global_plan = get_plans_for_rules(trees, coverage, tree_cov,         
+    plans = get_plans_for_rules(trees, coverage, tree_cov,         
                                              l.size(), trees1, trees2,          
                                              reuse_flag, push_flag, tree_list) 
 
@@ -172,6 +329,26 @@ def naive_execute_rf(rf, feature_table, l1, l2, path1, attr1, path2, attr2,
     tokenize_strings(trees, lstrings, rstrings, working_dir, n_jobs)            
     print 'finished tokenizing. executing plan' 
     cdef omap[string, vector[vector[int]]] ltokens_cache, rtokens_cache         
+    cdef oset[string] tokenizers
+    cdef Tree tree
+    cdef Rule rule
+    cdef Predicatecpp predicate
+    cdef string tok_type
+
+    if use_cache:
+        for tree in trees:
+            for rule in tree.rules:
+                for predicate in rule.predicates:
+                    if predicate.sim_measure_type.compare('EDIT_DISTANCE') == 0:
+                        tokenizers.insert('qg2_bag')
+                        continue
+                    tokenizers.insert(predicate.tokenizer_type)
+
+        for tok_type in tokenizers:
+            ltokens_cache[tok_type] = vector[vector[int]]()
+            rtokens_cache[tok_type] = vector[vector[int]]()
+            load_tok(tok_type, working_dir, ltokens_cache[tok_type], rtokens_cache[tok_type])
+
  
     cdef vector[int] trees2_index
     naive_rf_time = time.time() - start_time
@@ -214,6 +391,357 @@ def naive_execute_rf(rf, feature_table, l1, l2, path1, attr1, path2, attr2,
     print 'subset rf time : ', subset_rf_time
 
 
+def multiattr_execute_rf(rf, feature_table, l1, l2, path1, attr1, path2, attr2,     
+                         working_dir, n_jobs, py_reuse_flag, py_push_flag,          
+                         tree_list, use_cache):                                     
+    start_time = time.time()                                                    
+    cdef vector[Tree] trees, trees1, trees2                                     
+    trees = extract_pos_rules_from_rf(rf, feature_table)                        
+                                                                                
+    cdef int i=0,j, num_total_trees = trees.size()                              
+    cdef bool reuse_flag, push_flag                                             
+    reuse_flag = py_reuse_flag                                                  
+    push_flag = py_push_flag                                                    
+    cdef vector[string] lstrings, rstrings                                      
+    load_strings(path1, attr1, lstrings)                                        
+    load_strings(path2, attr2, rstrings)                                        
+
+    cdef omap[string, Coverage] coverage                                        
+    cdef omap[int, Coverage] tree_cov                                           
+    cdef vector[string] l, r                                                    
+    i = 0
+    for s in l1:                                                                
+        if int(l2[i]) < rstrings.size():                                            
+            l.push_back(lstrings[int(s)])
+        i += 1
+    i = 0                                           
+    for s in l2:
+        if int(l2[i]) < rstrings.size():                                                                          
+            r.push_back(rstrings[int(s)])
+        i += 1
+    i = 0                                          
+    print ' computing coverage'                                                 
+    compute_predicate_cost_and_coverage(l, r, trees, coverage, tree_cov, n_jobs)
+    cdef omap[int, vector[Node]] plans                                          
+    plans = get_plans_for_rules(trees, coverage, tree_cov,                      
+                                             l.size(), trees1, trees2,          
+                                             reuse_flag, push_flag, tree_list)  
+                                                                                
+    print 'tokenizing strings'                                                  
+    tokenize_strings(trees, lstrings, rstrings, working_dir, n_jobs)            
+    print 'finished tokenizing. executing plan'                                 
+    cdef omap[string, vector[vector[int]]] ltokens_cache, rtokens_cache
+
+    lstrings.clear()
+    rstrings.clear()
+    load_strings(path1, attr1, lstrings)                                        
+    load_strings(path2, attr2, rstrings)  
+    cdef string st
+    fh = open(working_dir+"/lstrings", 'w')                                     
+    for st in lstrings:
+        fh.write(st + '\n')                                                                         
+    fh.close()    
+    fh = open(working_dir+"/rstrings", 'w')                                     
+    for st in rstrings:                                                         
+        fh.write(st + '\n')                                                                       
+    fh.close()   
+
+    print 'generating combined file'
+    p = subprocess.Popen("paste -d '|' " + 
+                         working_dir + "/ltable_alph " +
+                         working_dir + "/ltable_alph_num " +
+                         working_dir + "/ltable_num " +
+                         working_dir + "/ltable_qg2 " +
+                         working_dir + "/ltable_qg3 " +
+                         working_dir + "/lstrings " +
+                         " > " + working_dir + "/ltable_multiattr",
+                         shell = True)
+    os.waitpid(p.pid, 0)
+    p = subprocess.Popen("paste -d '|' " +                                      
+                         working_dir + "/rtable_alph " +                        
+                         working_dir + "/rtable_alph_num " +                    
+                         working_dir + "/rtable_num " +                         
+                         working_dir + "/rtable_qg2 " +                         
+                         working_dir + "/rtable_qg3 " +                         
+                         working_dir + "/rstrings " +                          
+                         " > " + working_dir + "/rtable_multiattr",             
+                         shell = True)                                          
+    os.waitpid(p.pid, 0)   
+    print 'finished generating combined file'       
+    
+    part_size = int(ceil(float(rstrings.size()) / float(n_jobs)))
+    p = subprocess.Popen("split -l " + str(part_size) + " " + working_dir + "/rtable_multiattr " + 
+                         working_dir + "/rtable_multipart_",
+                         shell = True)
+    os.waitpid(p.pid, 0)
+
+    cdef vector[int] trees2_index                                               
+    naive_rf_time = time.time() - start_time                                    
+    subset_rf_time = naive_rf_time                                              
+    sel_trees = {}                                                              
+    for i in tree_list:                                                         
+        sel_trees[i] = True                                                     
+    for i in xrange(num_total_trees):                                           
+        start_time = time.time()                                                
+        for j in xrange(plans[i].size()):    
+            if can_apply_multiattr_join(plans[i][j]):
+                execute_plan_using_multiattr(plans[i][j], trees, lstrings, rstrings, working_dir, n_jobs,
+                     use_cache, ltokens_cache, rtokens_cache)
+            else:
+                execute_plan(plans[i][j], trees, lstrings, rstrings, working_dir, n_jobs,
+                     use_cache, ltokens_cache, rtokens_cache)                       
+        naive_rf_time += time.time() - start_time                               
+        if sel_trees.get(i) is not None:                                        
+            subset_rf_time += time.time() - start_time                          
+            trees1.push_back(trees[i])                                          
+        else:                                                                   
+            trees2_index.push_back(i)                    
+
+    cdef pair[vector[pair[int, int]], vector[int]] candset_votes                
+    start_time = time.time()                                                    
+    candset_votes = merge_candsets(num_total_trees, trees1,                     
+                                   working_dir)                                 
+    print 'executing remaining trees'                                           
+    cdef int label = 1, num_trees_processed=trees1.size()                       
+    i = 0                                                                       
+    while candset_votes.first.size() > 0 and i < trees2_index.size():           
+        for j in xrange(plans[trees2_index[i]].size()):                         
+            candset_votes = execute_tree_plan(candset_votes, lstrings, rstrings, plans[trees2_index[i]][j],
+                                  num_total_trees, num_trees_processed, label,  
+                                  n_jobs, working_dir, use_cache,               
+                                  ltokens_cache, rtokens_cache)                 
+        num_trees_processed += 1                                                
+        label += 1                                                              
+                                                                                
+    print 'rem trees time : ', time.time() - start_time                         
+    subset_rf_time += time.time() - start_time                                  
+                                                                                
+    print 'naive multiattr rf time : ', naive_rf_time                                     
+    print 'subset multiattr rf time : ', subset_rf_time        
+
+
+cdef bool can_apply_multiattr_join(Node& root):
+    cdef Node curr_node
+    cdef string sim_measure_type                                            
+
+    curr_node = root.children[0]                                                    
+    while curr_node.node_type.compare("OUTPUT") != 0:
+        sim_measure_type = curr_node.predicates[0].sim_measure_type         
+        if (curr_node.predicates[0].is_join_predicate() and                 
+            (sim_measure_type.compare("JACCARD") == 0 or                    
+             sim_measure_type.compare("DICE") == 0 or                       
+             sim_measure_type.compare("COSINE") == 0 or                     
+             sim_measure_type.compare("EDIT_DISTANCE") == 0)):
+            return True
+        curr_node = curr_node.children[0]                                   
+
+    return False
+
+cdef void execute_plan_using_multiattr(Node& root, vector[Tree]& trees,         
+        vector[string]& lstrings, vector[string]& rstrings,                     
+        const string& working_dir, int n_jobs,                                  
+        bool use_cache,                                                         
+        omap[string, vector[vector[int]]]& ltokens_cache,                       
+        omap[string, vector[vector[int]]]& rtokens_cache):                      
+                                                                                
+    cdef string sim_measure_type                                                
+    cdef Node curr_node                                                         
+    cdef vector[Predicatecpp] multi_attr_preds, remaining_preds                 
+    curr_node = root.children[0]                                                
+                                                                                
+    while curr_node.node_type.compare("OUTPUT") != 0:                           
+        sim_measure_type = curr_node.predicates[0].sim_measure_type             
+        if (curr_node.predicates[0].is_join_predicate() and                     
+            (sim_measure_type.compare("JACCARD") == 0 or                        
+             sim_measure_type.compare("DICE") == 0 or                           
+             sim_measure_type.compare("COSINE") == 0 or                         
+             sim_measure_type.compare("EDIT_DISTANCE") == 0)):                  
+            multi_attr_preds.push_back(curr_node.predicates[0])                 
+        else:                                                                   
+            remaining_preds.push_back(curr_node.predicates[0])                  
+        curr_node = curr_node.children[0]                                       
+                                                                                
+    rule_path = working_dir+'/mapping_rule_tree_'+str(curr_node.tree_id)+'_rule_'+str(curr_node.rule_id)
+    rule_file = open(rule_path, 'w')                                            
+    cdef Predicatecpp pred                                                      
+    cdef int col_index                                                          
+    for pred in multi_attr_preds:                                               
+        sim_measure_type = pred.sim_measure_type                                
+        if sim_measure_type.compare("EDIT_DISTANCE") == 0:                      
+            sim_measure_type = "ED"                                             
+            col_index = 5                                                       
+        elif pred.tokenizer_type.compare("alph") == 0:                          
+            col_index = 0                                                       
+        elif pred.tokenizer_type.compare("alph_num") == 0:                      
+            col_index = 1                                                       
+        elif pred.tokenizer_type.compare("num") == 0:                           
+            col_index = 2                                                       
+        elif pred.tokenizer_type.compare("qg2") == 0:                           
+            col_index = 3                                                       
+        elif pred.tokenizer_type.compare("qg3") == 0:                           
+            col_index = 4                                                       
+        else:         
+            col_index = 5                                                       
+        rule_file.write(str(sim_measure_type)+' '+str(col_index)+' '+str(col_index)+' '+str(pred.threshold)+'\n')
+    rule_file.close()                                                           
+                                                                                
+    rule_out_path = working_dir + "/rule_out_tree_"+str(curr_node.tree_id)+'_rule_'+str(curr_node.rule_id)
+
+    p = subprocess.Popen("/users/paulgc/similarity-table-join-clean/similarity_table_join " +
+                         rule_path + " " +                                  
+                         working_dir + "/ltable_multiattr" + " " +         
+                         working_dir + "/rtable_multiattr" + " " +
+                         rule_out_path + " " +     
+                         "--verify_exp_version=0" + " --max_base_table_size=1000000" +
+                         " --max_query_table_size=1000000" + " --index_version=4",
+                         shell = True)   
+
+    os.waitpid(p.pid, 0)                                                        
+    cdef vector[pair[int,int]] candset                                          
+    rule_out_handle = open(rule_out_path, 'r')                                  
+    for line in rule_out_handle:                                                
+        fields = line.strip().split(',')                                        
+        candset.push_back(pair[int, int](int(fields[0]), int(fields[1])))       
+    rule_out_handle.close()                                                     
+                                                                                
+    cdef vector[int] pair_ids                                                   
+    for pred in remaining_preds:                                                
+        print pred.pred_name, pred.feat_name                                    
+    print 'num remaining preds : ', remaining_preds.size()                      
+    print 'candset size : ', candset.size()                                     
+    print 'pair_ids size : ', pair_ids.size()                                   
+    cdef bool top_level_node                                                    
+    top_level_node = True                                                       
+    for pred in remaining_preds:                                                
+        print 'pair_ids size : ', pair_ids.size()                               
+        print 'pred : ', pred.pred_name                                         
+        pair_ids = execute_filter_node(candset, pair_ids, top_level_node,       
+                                   lstrings, rstrings,                          
+                                   pred, 32,                                     
+                                   working_dir, use_cache,                      
+                                   ltokens_cache, rtokens_cache)                
+        top_level_node = False                                                  
+                                                                                
+    write_candset_using_pair_ids(candset, pair_ids,                             
+                                 curr_node.tree_id,                             
+                                 curr_node.rule_id, working_dir)   
+
+cdef void execute_plan_using_multiattr_old(Node& root, vector[Tree]& trees, 
+        vector[string]& lstrings, vector[string]& rstrings, 
+        const string& working_dir, int n_jobs,
+        bool use_cache,                                                         
+        omap[string, vector[vector[int]]]& ltokens_cache,                       
+        omap[string, vector[vector[int]]]& rtokens_cache):   
+
+    cdef string sim_measure_type        
+    cdef Node curr_node
+    cdef vector[Predicatecpp] multi_attr_preds, remaining_preds
+    curr_node = root.children[0]
+
+    while curr_node.node_type.compare("OUTPUT") != 0:
+        sim_measure_type = curr_node.predicates[0].sim_measure_type
+        if (curr_node.predicates[0].is_join_predicate() and
+            (sim_measure_type.compare("JACCARD") == 0 or
+             sim_measure_type.compare("DICE") == 0 or
+             sim_measure_type.compare("COSINE") == 0 or
+             sim_measure_type.compare("EDIT_DISTANCE") == 0)):
+            multi_attr_preds.push_back(curr_node.predicates[0])
+        else:
+            remaining_preds.push_back(curr_node.predicates[0])
+        curr_node = curr_node.children[0]   
+    
+    rule_path = working_dir+'/mapping_rule_tree_'+str(curr_node.tree_id)+'_rule_'+str(curr_node.rule_id)
+    rule_file = open(rule_path, 'w')
+    cdef Predicatecpp pred
+    cdef int col_index 
+    for pred in multi_attr_preds:
+        sim_measure_type = pred.sim_measure_type             
+        if sim_measure_type.compare("EDIT_DISTANCE") == 0:
+            sim_measure_type = "ED"
+            col_index = 5
+        elif pred.tokenizer_type.compare("alph") == 0:
+            col_index = 0
+        elif pred.tokenizer_type.compare("alph_num") == 0:
+            col_index = 1                                                                                 
+        elif pred.tokenizer_type.compare("num") == 0:
+            col_index = 2                          
+        elif pred.tokenizer_type.compare("qg2") == 0:
+            col_index = 3                          
+        elif pred.tokenizer_type.compare("qg3") == 0:
+            col_index = 4
+        else:
+            col_index = 5 
+        rule_file.write(str(sim_measure_type)+' '+str(col_index)+' '+str(col_index)+' '+str(pred.threshold)+'\n')
+    rule_file.close()
+
+    rule_out_path = working_dir + "/rule_out_tree_"+str(curr_node.tree_id)+'_rule_'+str(curr_node.rule_id)
+
+    part_suffixes = ['aa', 'ab', 'ac', 'ad', 'ae', 'af', 'ag', 'ah', 'ai', 'aj',
+                     'ak', 'al', 'am', 'an', 'ao', 'ap', 'aq', 'ar', 'as', 'at',
+                     'au', 'av', 'aw', 'ax', 'ay', 'az', 'ba', 'bb', 'bc', 'bd',
+                     'be', 'bf', 'bg', 'bh', 'bi', 'bj', 'bk']                  
+
+    processes = []
+    for i in xrange(n_jobs):                                                                 
+        p = subprocess.Popen("/u/p/a/paulgc/multi-attr-join/similarity-table-join-clean/similarity_table_join " + 
+                             rule_path + " " + 
+                             working_dir + "/ltable_multiattr " + " " +
+                             working_dir + "/rtable_multipart_" + part_suffixes[i] + " " + 
+                             rule_out_path + "_" + part_suffixes[i] + " " + 
+                             "--verify_exp_version=2" + " --max_base_table_size=1000000" + 
+                             " --max_query_table_size=100000" + " --index_version=4",
+                             shell = True)
+        processes.append(p)
+
+#    for p in processes:
+#        os.waitpid(p.pid, 0)                                                        
+    print 'started processes' 
+    os.waitpid(-1, 0)
+#    while True:
+#        fl = True
+#        for p in processes:
+#            if not p.poll():
+#                fl = False
+#        if fl:
+#            break
+#        p.wait()
+    print 'done'
+    p = subprocess.Popen("cat " + rule_out_path + "_* > " + rule_out_path,
+                         shell = True)
+#    p.wait()
+    os.waitpid(p.pid, 0)                                                        
+    print 'concat done'
+ 
+    cdef vector[pair[int,int]] candset
+    rule_out_handle = open(rule_out_path, 'r')
+    for line in rule_out_handle:
+        fields = line.strip().split(',')
+        candset.push_back(pair[int, int](int(fields[0]), int(fields[1])))
+    rule_out_handle.close()
+
+    cdef vector[int] pair_ids
+    for pred in remaining_preds:
+        print pred.pred_name, pred.feat_name
+    print 'num remaining preds : ', remaining_preds.size()
+    print 'candset size : ', candset.size()
+    print 'pair_ids size : ', pair_ids.size()
+    cdef bool top_level_node
+    top_level_node = True
+    for pred in remaining_preds:
+        print 'pair_ids size : ', pair_ids.size()
+        print 'pred : ', pred.pred_name                                   
+        pair_ids = execute_filter_node(candset, pair_ids, top_level_node,   
+                                   lstrings, rstrings,                  
+                                   pred, 1,        
+                                   working_dir, use_cache,              
+                                   ltokens_cache, rtokens_cache)
+        top_level_node = False 
+         
+    write_candset_using_pair_ids(candset, pair_ids,                 
+                                 curr_node.tree_id,                 
+                                 curr_node.rule_id, working_dir)
+
+ 
 cdef void execute_plan(Node& root, vector[Tree]& trees, vector[string]& lstrings, 
         vector[string]& rstrings, const string& working_dir, int n_jobs, 
         bool use_cache, 
@@ -389,6 +917,19 @@ cdef pair[vector[pair[int, int]], vector[int]] execute_join_subtree(
             cached_pair_ids[curr_index] = pair_ids                      
             curr_index += 1                                                     
             
+cdef pair[vector[pair[int, int]], vector[int]] load_merged_candset(const string& working_dir,
+                                                                   const string& fn):
+    cdef vector[pair[int, int]] candset
+    cdef vector[int] votes
+    file_name = working_dir + "/" + fn
+    f = open(file_name, 'r')
+    for line in f:
+        candset.push_back(pair[int, int](int(line.split(',')[0]), 
+                                         int(line.split(',')[1])))
+        votes.push_back(int(line.split(',')[2]))
+    f.close()
+    return pair[vector[pair[int, int]], vector[int]](candset,
+                                                     votes)
 
 cdef pair[vector[pair[int, int]], vector[int]] merge_candsets(
                                            int num_total_trees, 
@@ -604,7 +1145,7 @@ cdef pair[vector[pair[int, int]], vector[int]] execute_tree_plan(
             next_candset.push_back(candset_votes.first[i])
             next_votes.push_back(curr_votes)
  
-    write_output_pairs(output_pairs, working_dir, label)                            
+#    write_output_pairs(output_pairs, working_dir, label)                            
                                                                                 
     return pair[vector[pair[int, int]], vector[int]](next_candset,   
                                                      next_votes)           
