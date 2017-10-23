@@ -19,14 +19,14 @@ def validate_attr(attr, table_cols, attr_label, table_label):
     """Check if the attribute exists in the table."""
     if attr not in table_cols:
         raise AssertionError(attr_label + ' \'' + attr + '\' not found in ' + \
-                             table_label) 
+                             table_label)
     return True
 
 
 def validate_attr_type(attr, attr_type, attr_label, table_label):
     """Check if the attribute is not of numeric type."""
     if attr_type != pd.np.object:
-        raise AssertionError(attr_label + ' \'' + attr + '\' in ' + 
+        raise AssertionError(attr_label + ' \'' + attr + '\' in ' +
                              table_label + ' is not of string type.')
     return True
 
@@ -34,7 +34,7 @@ def validate_attr_type(attr, attr_type, attr_label, table_label):
 def validate_key_attr(key_attr, table, table_label):
     """Check if the attribute is a valid key attribute."""
     unique_flag = len(table[key_attr].unique()) == len(table)
-    nan_flag = sum(table[key_attr].isnull()) == 0 
+    nan_flag = sum(table[key_attr].isnull()) == 0
     if not (unique_flag and nan_flag):
         raise AssertionError('\'' + key_attr + '\' is not a key attribute ' + \
                              'in ' + table_label)
@@ -125,4 +125,10 @@ def validate_comp_op(comp_op):
     """Check if the comparison operator is valid."""
     if comp_op not in COMP_OP_MAP.keys():
         raise AssertionError('Comparison operator not supported. ' + \
-            'Supported comparison operators are >=, >, <=, <, = and !=.')        
+            'Supported comparison operators are >=, >, <=, <, = and !=.')
+            
+def validate_fn(attr):
+    """Check if the attribute is a function"""
+    if not callable(attr):
+        raise TypeError(attr + ' is not a function')
+    return True
