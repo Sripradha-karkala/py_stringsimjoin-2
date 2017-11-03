@@ -1,6 +1,9 @@
 from math import log
 import operator
 from py_stringsimjoin.utils.generic_helper import remove_exclude_attr
+from py_stringsimjoin.utils.validation import *
+from py_stringsimjoin.labeler.labeler import Labeler
+from py_stringsimjoin.exampleselector.example_selector import ExampleSelector
 
 class ActiveLearner:
     """
@@ -69,12 +72,20 @@ class ActiveLearner:
         Returns:
             A learned model
         """
-
-        #Add validation to the input tables
+        #validate input tables
+        validate_input_table(unlabeled_dataset, 'unlabeled dataset')
+        validate_input_table(seed, 'seed')
+        
+        #validate labeler
+        if not isinstance(self.labeler, Labeler):
+            raise TypeError(self.labeler + ' is not an object of labeler class')
+            
+        #validate example selector
+        if not isinstance(self.example_selector, ExampleSelector):
+            raise TypeError(self.example_selector + ' is not an object of example selector ')
 
         # find the attributes to be used as features
         feature_attrs = list(unlabeled_dataset.columns)
-        
 
         # Remove any excluded attributes
         feature_attrs = remove_exclude_attr(feature_attrs, exclude_attrs, unlabeled_dataset)
@@ -83,7 +94,6 @@ class ActiveLearner:
         labeled_pairs = self._generate_labelled_data(seed, unlabeled_dataset)
         # Check with Paul, we probably do not need the above function
         # labeled_pairs = seed
-        print labeled_pairs
         unlabeled_pairs = unlabeled_dataset.drop(labeled_pairs.index)
         i = 0
 
