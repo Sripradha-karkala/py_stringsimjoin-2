@@ -106,9 +106,6 @@ class ActiveLearner:
             selected_examples = self.example_selector.select_examples(unlabeled_pairs,
                                                     self.model, exclude_attrs, self.batch_size)
 
-            # get labels for current batch
-            
-            
             # label the selected examples
             labeled_examples = self.labeler.label(selected_examples, context,
                                                   label_attr)
