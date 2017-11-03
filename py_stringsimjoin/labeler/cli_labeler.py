@@ -82,17 +82,17 @@ class CliLabeler(Labeler):
         """
         # check if the input examples_to_label is a dataframe
         validate_input_table(examples_to_label, 'unlabeled dataset')
-
         #Show the instruction to the user
-        print(self.get_instruction_fn(context))
+        print(self.get_instruction_fn())
 
         user_labels = []
 
-        for example in examples_to_label.iterrows():
+        for index, example in examples_to_label.iterrows():
             #Fetch and display the raw example to be labeled
             label_str = self._input_from_stdin(
                             self.get_example_display_fn(example, context))
             if self.validate_label_input(label_str):
+                #example[label_attr] = label_str 
                 user_labels.append(self.labels[label_str])
             else:
                 #Display error message if user enters a wrong label
@@ -100,5 +100,5 @@ class CliLabeler(Labeler):
                 self.label(examples_to_label, context, label_attr='label')
 
 
-        examples_to_label[label_attr] = user_labels
+        examples_to_label.loc[:,label_attr] = user_labels
         return examples_to_label

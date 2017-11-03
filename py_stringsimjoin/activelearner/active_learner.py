@@ -1,4 +1,3 @@
-
 from math import log
 import operator
 from py_stringsimjoin.utils.generic_helper import remove_exclude_attr
@@ -10,7 +9,7 @@ class ActiveLearner:
 
     Args:
         Model (model): Scikit-Learn Model to learn
-        example_selector: example selector to query informative examples
+        Example_selector(Example Selector): example selector to query informative examples
         labeler (Labeler): A labeler which fetches labels from the oracle/human
         batch_size (int): The number of examples to be labeled per iteration
         num_iters (int): Number of iterations to run the active learner
@@ -26,11 +25,26 @@ class ActiveLearner:
     def __init__(self, model, example_selector, labeler, batch_size, num_iters):
         self.model = model
         self.batch_size = batch_size
-        self.max_iters = max_iters
+        self.max_iters = num_iters
         self.labeler = labeler
         self.example_selector = example_selector
+    
+    def _generate_labelled_data(self, seed, unlabeled_dataset):
+        #Generate the first set of labeled data set using the seed file
+        seed_pairs = {}
+	
+        for seed_rows in seed.itertuples(index=False):
+            seed_pairs[str(seed_rows[0]) + ',' + str(seed_rows[1])] = int(seed_rows[2])
 
-    def learn(self, unlabeled_dataset, seed, exclude_attrs=None, context=None, label_attr='label'):
+        first_batch = unlabeled_dataset[unlabeled_dataset.apply(lambda row: seed_pairs.get(str(row['l_id'].astype(int))+','+str(row['r_id'].astype(int))) != None, 1)].copy()
+	
+        labels = (first_batch['l_id'].astype(str) +',' + first_batch['r_id'].astype(str)) \
+                  .apply(lambda value : 
+                         seed_pairs.get(value, 0))
+        first_batch['label'] = labels
+        return first_batch
+
+    def learn(self, unlabeled_dataset, seed, exclude_attrs=[], context=None, label_attr='label'):
 
         """
         Performs the Active Learning Loop to help learn the model by querying
@@ -60,26 +74,32 @@ class ActiveLearner:
 
         # find the attributes to be used as features
         feature_attrs = list(unlabeled_dataset.columns)
+        
 
         # Remove any excluded attributes
         feature_attrs = remove_exclude_attr(feature_attrs, exclude_attrs, unlabeled_dataset)
+        
+        #Generate the first labelled pairs from seed data
+        labeled_pairs = self._generate_labelled_data(seed, unlabeled_dataset)
+        # Check with Paul, we probably do not need the above function
+        # labeled_pairs = seed
+        print labeled_pairs
+        unlabeled_pairs = unlabeled_dataset.drop(labeled_pairs.index)
+        i = 0
 
-        labeled_pairs = seed
-
-        unlabeled_pairs = unlabeled_pairs.drop(labeled_pairs.index)
-
-        while self.max_iters > 0:
+        while i < self.max_iters:
             # train matcher using the current set of labeled pairs
             self.model = self.model.fit(labeled_pairs[feature_attrs].values,
                                             labeled_pairs[label_attr].values)
 
             # select next batch to label
-            current_batch = self.example_selector.select_examples(unlabeled_pairs,
-                                                    self.model, exclude_attr, self.batch_size)
+            selected_examples = self.example_selector.select_examples(unlabeled_pairs,
+                                                    self.model, exclude_attrs, self.batch_size)
 
             # get labels for current batch
-
-             # label the selected examples
+            
+            
+            # label the selected examples
             labeled_examples = self.labeler.label(selected_examples, context,
                                                   label_attr)
 
@@ -89,5 +109,6 @@ class ActiveLearner:
             # append the current batch of labeled pairs to the previous
             labeled_pairs = labeled_pairs.append(labeled_examples)
 
-            self.max_iters-= self.max_iters;
+            i = i + 1
         return labeled_pairs
+		
